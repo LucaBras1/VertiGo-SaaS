@@ -1,0 +1,352 @@
+// ShootFlow - Photography Management Platform
+// Database Schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// CORE MODELS
+// ============================================
+
+model Tenant {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  plan      String   @default("free") // free, basic, pro, enterprise
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users     User[]
+  packages  Package[]
+  shoots    Shoot[]
+  shotLists ShotList[]
+  galleries Gallery[]
+  clients   Client[]
+  invoices  Invoice[]
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  passwordHash  String
+  role          String    @default("photographer") // photographer, admin
+  tenantId      String
+  tenant        Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([tenantId])
+}
+
+model Client {
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  name      String
+  email     String
+  phone     String?
+  address   String?
+
+  // Client type
+  type      String   @default("individual") // individual, couple, business
+  tags      String[]
+
+  notes     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  packages  Package[]
+  invoices  Invoice[]
+
+  @@index([tenantId])
+  @@index([email])
+}
+
+// ============================================
+// PHOTOGRAPHY MODELS
+// ============================================
+
+model Package {
+  id        String        @id @default(cuid())
+  tenantId  String
+  tenant    Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  clientId  String
+  client    Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  title     String
+  status    PackageStatus @default(INQUIRY)
+
+  // Event details
+  eventType String?       // wedding, portrait, corporate, family, product, newborn, maternity
+  eventDate DateTime?
+
+  // Photography-specific
+  shotCount        Int?      // Estimated final delivered photos
+  deliveryDays     Int?      // Days until delivery after shoot
+  galleryUrl       String?   // Client gallery link
+  editingHours     Float?    // Estimated edit time
+  styleTags        String[]  // moody, bright, documentary, artistic
+  equipment        String[]  // Cameras, lenses used
+  secondShooter    Boolean   @default(false)
+  rawFilesIncluded Boolean   @default(false)
+
+  // Timeline
+  timeline         Json?     // Shoot day timeline
+
+  // Pricing
+  basePrice     Int?
+  travelCosts   Int?
+  totalPrice    Int?
+
+  // Metadata
+  notes         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  shoots        Shoot[]
+  addons        PackageAddon[]
+  invoices      Invoice[]
+  shotLists     ShotList[]
+
+  @@index([tenantId])
+  @@index([clientId])
+  @@index([status])
+  @@index([eventDate])
+}
+
+enum PackageStatus {
+  INQUIRY
+  QUOTE_SENT
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+model PackageAddon {
+  id          String   @id @default(cuid())
+  packageId   String
+  package     Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+  name        String   // "Photo Album", "Prints", "Drone Coverage", "Rush Delivery"
+  description String?
+  price       Int
+  quantity    Int      @default(1)
+
+  createdAt   DateTime @default(now())
+
+  @@index([packageId])
+}
+
+model Shoot {
+  id          String   @id @default(cuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  packageId   String
+  package     Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+  date        DateTime
+  startTime   String
+  endTime     String
+
+  // Photography-specific
+  shotListId  String?  @unique
+  shotList    ShotList? @relation(fields: [shotListId], references: [id])
+
+  timeline        Json?      // Day timeline with key moments
+  locations       Json[]     // Multiple locations with addresses
+  sunsetTime      DateTime?  // For golden hour planning
+  weatherForecast Json?      // Weather data for planning
+
+  // Venue details
+  venueType       String?    // indoor, outdoor, mixed
+  venueName       String?
+  venueAddress    String?
+  lightingNotes   String?
+
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  galleries   Gallery[]
+
+  @@index([tenantId])
+  @@index([packageId])
+  @@index([date])
+}
+
+// ============================================
+// SHOT LIST MODELS
+// ============================================
+
+model ShotList {
+  id             String         @id @default(cuid())
+  tenantId       String
+  tenant         Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  packageId      String?
+  package        Package?       @relation(fields: [packageId], references: [id], onDelete: SetNull)
+
+  name           String
+  status         ShotListStatus @default(DRAFT)
+  eventType      String
+  aiGenerated    Boolean        @default(false)
+
+  // Organized shot list
+  sections       Json           // Array of categories with shots
+  totalShots     Int
+  mustHaveCount  Int
+
+  // Metadata
+  estimatedTime  Int?           // Minutes
+  equipmentList  Json?
+  lightingPlan   Json?
+  backupPlans    Json?
+
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  shoot          Shoot?
+
+  @@index([tenantId])
+  @@index([packageId])
+  @@index([status])
+}
+
+enum ShotListStatus {
+  DRAFT
+  FINALIZED
+  COMPLETED
+}
+
+// ============================================
+// GALLERY MODELS
+// ============================================
+
+model Gallery {
+  id             String        @id @default(cuid())
+  tenantId       String
+  shootId        String
+  shoot          Shoot         @relation(fields: [shootId], references: [id], onDelete: Cascade)
+
+  name           String
+  status         GalleryStatus @default(PROCESSING)
+
+  // AI Curation
+  totalPhotos    Int           @default(0)
+  selectedPhotos Int           @default(0)
+  aiCurated      Boolean       @default(false)
+  curationData   Json?         // AI analysis results
+
+  // Client access
+  publicUrl      String?       @unique
+  password       String?
+  expiresAt      DateTime?
+  downloadEnabled Boolean      @default(true)
+
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  photos         GalleryPhoto[]
+
+  @@index([shootId])
+  @@index([publicUrl])
+}
+
+enum GalleryStatus {
+  PROCESSING
+  READY
+  DELIVERED
+}
+
+model GalleryPhoto {
+  id             String    @id @default(cuid())
+  galleryId      String
+  gallery        Gallery   @relation(fields: [galleryId], references: [id], onDelete: Cascade)
+
+  filename       String
+  url            String
+  thumbnailUrl   String?
+
+  // AI Analysis
+  qualityScore   Float?         // 0-100
+  category       String?        // ceremony, portraits, reception, etc.
+  isHighlight    Boolean        @default(false)
+  aiReasoning    String?
+  technicalQuality Json?        // sharpness, exposure, composition, color
+  emotionalImpact Float?        // 0-10
+
+  // Metadata
+  takenAt        DateTime?
+  camera         String?
+  lens           String?
+  settings       Json?          // aperture, shutter, ISO
+
+  // Status
+  selected       Boolean        @default(true)
+  rejected       Boolean        @default(false)
+  rejectionReason String?
+
+  createdAt      DateTime       @default(now())
+
+  @@index([galleryId])
+  @@index([selected])
+  @@index([isHighlight])
+}
+
+// ============================================
+// INVOICING
+// ============================================
+
+model Invoice {
+  id          String        @id @default(cuid())
+  tenantId    String
+  tenant      Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  clientId    String
+  client      Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  packageId   String?
+  package     Package?      @relation(fields: [packageId], references: [id], onDelete: SetNull)
+
+  invoiceNumber String      @unique
+  status      InvoiceStatus @default(DRAFT)
+
+  items       Json          // Line items
+  subtotal    Int
+  tax         Int           @default(0)
+  total       Int
+
+  dueDate     DateTime?
+  paidAt      DateTime?
+
+  notes       String?
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([tenantId])
+  @@index([clientId])
+  @@index([packageId])
+  @@index([status])
+  @@index([invoiceNumber])
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+}

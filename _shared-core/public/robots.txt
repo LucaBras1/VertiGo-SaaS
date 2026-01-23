@@ -1,0 +1,11 @@
+# robots.txt for Divadlo Studna
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://divadlo-studna.cz/sitemap.xml
+
+# Disallow admin pages
+Disallow: /api/
+Disallow: /_next/
+Disallow: /sanity/

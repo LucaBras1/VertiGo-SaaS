@@ -1,0 +1,1373 @@
+// Prisma Schema for Divadlo Studna
+// Full Custom CMS - 0 Vendor Lock-in
+// Vyfakturuj 2.0AI - Custom Invoicing System
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ========================================
+// VYFAKTURUJ 2.0AI - ENUMS
+// ========================================
+
+// Document type enum (replaces vyfakturujType integer)
+enum DocumentType {
+  FAKTURA           // Standard invoice
+  PROFORMA          // Proforma invoice
+  ZALOHOVA          // Advance/deposit invoice
+  VYZVA_K_PLATBE    // Payment request
+  OPRAVNY_DOKLAD    // Credit note (dobropis)
+  PRIJMOVY_DOKLAD   // Receipt
+  DANOVY_DOKLAD     // Tax document
+  CENOVA_NABIDKA    // Price quote
+  OBJEDNAVKA        // Order document
+}
+
+// Invoice status enum
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  VIEWED
+  PAID
+  PARTIALLY_PAID
+  OVERDUE
+  CANCELLED
+  DISPUTED
+}
+
+// Expense status enum
+enum ExpenseStatus {
+  PENDING
+  PAID
+  CANCELLED
+}
+
+// Expense category enum
+enum ExpenseCategory {
+  TRAVEL        // Cestovné
+  MATERIAL      // Materiál
+  SERVICE       // Služby
+  EQUIPMENT     // Vybavení
+  OFFICE        // Kancelář
+  MARKETING     // Marketing
+  OTHER         // Ostatní
+}
+
+// ========================================
+// PUBLIC CONTENT MODELS (8)
+// ========================================
+
+model Performance {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Basic Info
+  title    String
+  slug     String  @unique
+  category String // 'theatre' | 'stilts' | 'music' | 'special'
+  status   String  @default("active") // 'active' | 'archived' | 'draft'
+  featured Boolean @default(false)
+  order    Int     @default(100)
+
+  // Content (Tiptap JSON format)
+  subtitle    String?
+  excerpt     String?
+  description Json? // Tiptap JSON
+
+  // Technical Details
+  duration              Int
+  ageRange              Json? // { from: number, to: number }
+  technicalRequirements Json? // { space, water, electricity, other }
+  crew                  Json? // [{ role, name }]
+  premiere              DateTime?
+
+  // Pricing
+  price Int? // Fixed price in CZK
+
+  // Media (URLs after migration to Vercel Blob)
+  featuredImageUrl String
+  featuredImageAlt String
+  galleryImages    Json? // [{ url, alt, caption }]
+  videoUrl         String?
+  posterUrl        String?
+
+  // References
+  references Json? // [{ quote, author, organization, date }]
+
+  // SEO
+  seo Json? // { metaTitle, metaDescription, ogImageUrl }
+
+  // Relations
+  events     Event[]
+  orderItems OrderItem[]
+
+  @@index([status])
+  @@index([category])
+  @@index([slug])
+}
+
+model Game {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Basic Info
+  title    String
+  slug     String  @unique
+  category String // 'skill' | 'team' | 'creative' | 'active'
+  status   String  @default("active")
+  featured Boolean @default(false)
+  order    Int     @default(100)
+
+  // Content
+  subtitle    String?
+  excerpt     String?
+  description Json?
+
+  // Technical
+  duration              Int
+  ageRange              Json?
+  minPlayers            Int?
+  maxPlayers            Int?
+  technicalRequirements Json?
+
+  // Pricing
+  price Int? // Fixed price in CZK
+
+  // Media
+  featuredImageUrl String
+  featuredImageAlt String
+  galleryImages    Json?
+
+  // SEO
+  seo Json?
+
+  // Relations
+  events     Event[]
+  orderItems OrderItem[]
+
+  @@index([status])
+  @@index([slug])
+}
+
+model Service {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Basic Info
+  title    String
+  slug     String  @unique
+  category String // 'workshop' | 'consultation' | 'rental' | 'other'
+  status   String  @default("active")
+  order    Int     @default(100)
+
+  // Content
+  excerpt     String?
+  description Json?
+
+  // Pricing
+  priceFrom Int?
+  priceUnit String? // 'per_hour' | 'per_day' | 'per_person'
+
+  // Media
+  featuredImageUrl String?
+  featuredImageAlt String?
+
+  // SEO
+  seo Json?
+
+  // Relations
+  orderItems OrderItem[]
+
+  @@index([status])
+  @@index([slug])
+}
+
+model Event {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  performanceId String?
+  performance   Performance? @relation(fields: [performanceId], references: [id])
+  gameId        String?
+  game          Game?        @relation(fields: [gameId], references: [id])
+
+  // Event Details
+  date    DateTime
+  endDate DateTime?
+  venue   Json // { name, city, address }
+
+  // Status
+  status   String  @default("confirmed") // 'confirmed' | 'tentative' | 'cancelled'
+  isPublic Boolean @default(true)
+
+  // Additional Info
+  ticketUrl String?
+  notes     String?
+
+  // Linked from Order
+  orders Order[]
+
+  @@index([date])
+  @@index([performanceId])
+  @@index([gameId])
+  @@index([status])
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  publishedAt DateTime?
+
+  // Basic Info
+  title      String
+  slug       String  @unique
+  status     String  @default("draft") // 'draft' | 'published'
+  featured   Boolean @default(false)
+  categories Json? // string[]
+
+  // Content
+  excerpt String?
+  content Json? // Tiptap JSON
+
+  // Media
+  featuredImageUrl String?
+  featuredImageAlt String?
+
+  // Author
+  author Json? // { name, role }
+
+  // SEO
+  seo Json?
+
+  @@index([status])
+  @@index([slug])
+  @@index([publishedAt])
+}
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Basic Info
+  firstName String
+  lastName  String
+  role      String
+  order     Int    @default(100)
+
+  // Content
+  bio Json? // Tiptap JSON
+
+  // Media
+  photoUrl String?
+  photoAlt String?
+
+  // Contact
+  email String?
+  phone String?
+
+  // Social
+  socialLinks Json? // { facebook?, instagram?, website? }
+
+  // Status
+  isActive Boolean @default(true)
+
+  // Relations
+  eventParticipations EventParticipant[]
+
+  @@index([order])
+  @@index([isActive])
+}
+
+model Page {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Basic Info
+  title  String
+  slug   String  @unique
+  status String  @default("draft") // 'draft' | 'published'
+
+  // Content
+  content Json? // Tiptap JSON with sections
+
+  // SEO
+  seo Json?
+
+  @@index([slug])
+  @@index([status])
+}
+
+model Settings {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Site Info
+  siteTitle       String
+  siteDescription String?
+
+  // Contact
+  contactEmail String?
+  contactPhone String?
+  address      Json? // { street, city, postalCode, country }
+
+  // Social Media
+  socialLinks Json? // { facebook?, instagram?, youtube? }
+
+  // SEO Defaults
+  defaultSeo Json? // { metaTitle, metaDescription, ogImageUrl }
+
+  // SMTP Email Configuration
+  smtpHost     String?
+  smtpPort     Int?
+  smtpSecure   Boolean @default(false)
+  smtpUser     String?
+  smtpPassword String? // Will be encrypted in application layer
+  emailFrom    String? // "Name <email@example.com>" format
+  emailTo      String? // Target email for contact form messages
+
+  // Email Template Settings (for offer emails)
+  offerEmailSubject      String?  // Subject template, e.g. "Dohoda o umeleckem vykonu - {eventName}"
+  offerEmailGreeting     String?  // Greeting, e.g. "Dobry den,"
+  offerEmailIntro        String?  // Intro text, e.g. "zasilame Vam nabidku..."
+  offerEmailFooterNote   String?  // Footer note, e.g. "Pokud mate dotazy..."
+  offerEmailCompanyName  String?  // Company name, e.g. "Divadlo Studna"
+  offerEmailCompanyEmail String?  // Company email, e.g. "produkce@divadlo-studna.cz"
+  offerEmailCompanyWeb   String?  // Company website, e.g. "www.divadlo-studna.cz"
+  offerEmailLinkExpiry   Int?     @default(7) // Confirmation link expiry in days
+
+  // Event Reminder Settings (automatic reminders before confirmed events)
+  enableEventReminders      Boolean @default(false) // Enable/disable automatic reminders
+  eventReminderDaysBefore   Int     @default(30)    // Days before event to send reminder
+  eventReminderEmailSubject String?                 // Subject template, e.g. "Pripominka: {eventName}"
+  eventReminderEmailIntro   String?                 // Intro text for reminder email
+
+  // Cancellation Fee Settings (disclaimer in reminder emails)
+  cancellationFeeEnabled    Boolean @default(true)        // Show cancellation fee disclaimer
+  cancellationFeeDaysBefore Int     @default(14)          // Days before event for free cancellation
+  cancellationFeeType       String  @default("percentage") // "percentage" | "fixed"
+  cancellationFeeValue      Float   @default(50)          // Fee value (% or CZK)
+  cancellationFeeText       String?                       // Custom disclaimer text (overrides default)
+
+  // Contact Form Settings
+  contactFormCopyEnabled  Boolean @default(true)  // Send copy of contact form messages to admin email
+  contactFormCopyEmail    String?                 // Alternative email for copies (defaults to emailTo)
+
+  // Company Info (for contracts and documents)
+  companyIco         String?  // IČO firmy
+  companyDic         String?  // DIČ (i když nejsou plátci)
+  companyBankAccount String?  // Číslo bankovního účtu
+  companyFullAddress Json?    // { street, city, postalCode } pro dokumenty/smlouvy
+
+  // Singleton pattern - only one row
+  @@map("settings")
+}
+
+// ========================================
+// ADMIN MODELS (4)
+// ========================================
+
+model Customer {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Basic Info
+  email    String  @unique
+  firstName String
+  lastName  String
+  phone     String?
+
+  // Organization
+  organization     String?
+  organizationType String? // 'elementary_school' | 'kindergarten' | etc.
+
+  // Address
+  address Json? // { street, city, postalCode, country }
+
+  // Billing Info
+  billingInfo Json? // { companyName, ico, dic, billingAddress }
+
+  // CRM
+  tags  Json? // string[]
+  notes String?
+
+  // GDPR
+  gdprConsent Json? // { marketing, dataProcessing, consentDate }
+
+  // Vyfakturuj.cz Integration (legacy)
+  vyfakturujContactId Int?      @unique // ID kontaktu ve Vyfakturuj
+  vyfakturujSyncedAt  DateTime?          // Poslední synchronizace
+  source              String?   @default("manual") // 'manual' | 'vyfakturuj_import' | 'contact_form'
+
+  // ========================================
+  // PAYMENT ANALYTICS (AI-calculated)
+  // ========================================
+  averagePaymentDays  Int?      // Average days to pay invoices
+  paymentReliability  String?   // "excellent" | "good" | "average" | "poor"
+  totalInvoiced       Int       @default(0) // Total amount ever invoiced (hellers)
+  totalPaid           Int       @default(0) // Total amount ever paid
+  invoiceCount        Int       @default(0) // Number of invoices
+  overdueCount        Int       @default(0) // Number of overdue invoices
+  lastInvoiceDate     DateTime? // Date of last invoice
+  lastPaymentDate     DateTime? // Date of last payment
+
+  // Relations
+  orders            Order[]
+  invoices          Invoice[]
+  communications    Communication[]
+  recurringInvoices RecurringInvoice[]
+
+  @@index([email])
+  @@index([vyfakturujContactId])
+  @@index([paymentReliability])
+}
+
+model Order {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Basic Info
+  orderNumber String  @unique
+  customerId  String? // Optional during migration; FK to Customer
+  customer    Customer? @relation(fields: [customerId], references: [id])
+  source      String  @default("manual") // 'contact_form' | 'manual' | 'phone' | 'email' | 'repeat'
+  status      String  @default("new") // 'new' | 'reviewing' | 'awaiting_info' | 'quote_sent' | 'confirmed' | 'approved' | 'completed' | 'cancelled'
+
+  // Event Details
+  eventName       String?
+  dates           Json // string[] - date array
+  venue           Json // { name, street, city, postalCode, gpsCoordinates: { lat, lng } }
+  arrivalTime     String?
+  preparationTime Int?
+  eventDuration   Int?    // Délka akce v minutách
+
+  // Program Items
+  items OrderItem[]
+
+  // Technical Requirements
+  technicalRequirements Json? // { parking, parkingSpaces, electricity, electricityVoltage, accommodation, accommodationPersons, sound, lighting, otherRequirements }
+
+  // Pricing
+  pricing Json? // { items: [{ description, amount }], subtotal, travelCosts, discount, totalPrice, vatIncluded, notes }
+
+  // Payment & Invoicing
+  paymentMethod  String?   // 'deposit' | 'invoice' | 'cash' | 'prepaid'
+  paymentDueDate DateTime? // Datum splatnosti faktury
+  invoiceEmail   String?   // Email pro zaslání faktury
+
+  // Logistics (internal use - travel planning)
+  logistics Json? // { departureTime, returnTime, travelDuration, totalKilometers, transportType, transportNotes }
+
+  // Contacts
+  contacts Json? // { primary: { name, phone, email, ico }, onSite: { name, phone }, divadloOnSite: { name, phone } }
+
+  // Documents
+  documents Json? // { customerOrderNumber, contractNumber }
+
+  // Approval
+  approvalInfo Json? // { approvedBy, approvedAt, calendarEventId, emailsSent }
+
+  // Linked Event
+  linkedEventId String?
+  linkedEvent   Event?  @relation(fields: [linkedEventId], references: [id])
+
+  // Communication
+  contactMessage   String?
+  emailRecipients  Json? // [{ email, name, includePricing }]
+  internalNotes    Json? // [{ note, author, createdAt }]
+
+  // Customer Confirmation Flow
+  confirmationToken    String?   @unique
+  confirmationTokenExp DateTime?
+  confirmedAt          DateTime?
+  confirmedByName      String?
+  confirmedByEmail     String?
+  customerComments     String?   // Comments from customer when rejecting offer
+
+  // Event Reminder
+  eventReminderSentAt  DateTime? // When the event reminder was sent
+
+  // Relations
+  invoices       Invoice[]
+  communications Communication[]
+  participants   EventParticipant[]
+
+  @@index([customerId])
+  @@index([status])
+  @@index([orderNumber])
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // Relations
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  // Item can be Performance, Game, or Service
+  performanceId String?
+  performance   Performance? @relation(fields: [performanceId], references: [id])
+  gameId        String?
+  game          Game?        @relation(fields: [gameId], references: [id])
+  serviceId     String?
+  service       Service?     @relation(fields: [serviceId], references: [id])
+
+  // Schedule
+  date      String
+  startTime String?
+  endTime   String?
+
+  // Pricing
+  price Int @default(0)
+  notes String?
+
+  @@index([orderId])
+  @@index([performanceId])
+  @@index([gameId])
+  @@index([serviceId])
+}
+
+model Invoice {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // ========================================
+  // DOCUMENT IDENTIFICATION
+  // ========================================
+  invoiceNumber   String        @unique
+  documentType    DocumentType  @default(FAKTURA)
+  invoiceStatus   InvoiceStatus @default(DRAFT) // New enum status
+
+  // Legacy string status (for backward compatibility during migration)
+  status          String        @default("draft") // 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled'
+
+  // ========================================
+  // RELATIONSHIPS
+  // ========================================
+  customerId      String
+  customer        Customer @relation(fields: [customerId], references: [id])
+  orderId         String?
+  order           Order?   @relation(fields: [orderId], references: [id])
+
+  // Number series reference
+  numberSeriesId  String?
+  numberSeries    NumberSeries? @relation(fields: [numberSeriesId], references: [id])
+
+  // Template reference
+  templateId      String?
+  template        InvoiceTemplate? @relation(fields: [templateId], references: [id])
+
+  // Recurring invoice reference
+  recurringInvoiceId String?
+  recurringInvoice   RecurringInvoice? @relation(fields: [recurringInvoiceId], references: [id])
+
+  // Related documents (parent/child for credit notes)
+  parentInvoiceId String?
+  parentInvoice   Invoice?  @relation("RelatedInvoices", fields: [parentInvoiceId], references: [id])
+  childInvoices   Invoice[] @relation("RelatedInvoices")
+
+  // ========================================
+  // DATES
+  // ========================================
+  issueDate         DateTime  @default(now())
+  dueDate           DateTime
+  taxableSupplyDate DateTime? // DUZP - Datum uskutečnění zdanitelného plnění
+  paidDate          DateTime?
+
+  // ========================================
+  // LINE ITEMS
+  // ========================================
+  // [{ description, quantity, unit, unitPrice, vatRate, vatAmount, total }]
+  items Json
+
+  // ========================================
+  // TOTALS (stored in hellers/cents for precision)
+  // ========================================
+  subtotal     Int           // Without VAT
+  vatRate      Int?          @default(0) // e.g. 21 for 21%
+  vatAmount    Int?          @default(0)
+  totalAmount  Int           // Total with VAT
+  discount     Int?          @default(0) // Discount amount
+  discountType String?       @default("amount") // "amount" | "percentage"
+
+  // ========================================
+  // PAYMENT TRACKING
+  // ========================================
+  paidAmount      Int       @default(0)
+  remainingAmount Int?      // Computed: totalAmount - paidAmount
+  paymentMethod   String?   // bank_transfer | cash | card | paypal
+  bankAccount     String?   // Target bank account
+  iban            String?   // IBAN
+  bic             String?   // BIC/SWIFT
+  variableSymbol  String?   // VS for Czech bank transfers
+  constantSymbol  String?   // KS
+  specificSymbol  String?   // SS
+
+  // ========================================
+  // CURRENCY
+  // ========================================
+  currency     String @default("CZK")
+  exchangeRate Float? @default(1)
+
+  // ========================================
+  // PDF & DOCUMENTS
+  // ========================================
+  pdfUrl         String?
+  pdfGeneratedAt DateTime?
+
+  // ========================================
+  // CUSTOM TEXTS
+  // ========================================
+  textBeforeItems String?
+  textAfterItems  String?
+  footerNote      String?
+  internalNote    String?
+  notes           String?
+
+  // ========================================
+  // SNAPSHOTS (for historical accuracy)
+  // ========================================
+  customerSnapshot Json? // Frozen customer data at invoice time
+  supplierSnapshot Json? // Frozen supplier data
+
+  // ========================================
+  // EMAIL & VIEW TRACKING
+  // ========================================
+  lastEmailSentAt DateTime?
+  emailSentCount  Int       @default(0)
+  lastViewedAt    DateTime?
+  viewCount       Int       @default(0)
+  publicUrl       String?   // Public view URL
+  publicToken     String?   @unique // Token for public access
+  onlinePaymentUrl String?  // Payment gateway URL
+
+  // ========================================
+  // REMINDER TRACKING
+  // ========================================
+  reminder1SentAt DateTime?
+  reminder2SentAt DateTime?
+  reminder3SentAt DateTime?
+
+  // ========================================
+  // LEGACY VYFAKTURUJ FIELDS (for migration)
+  // ========================================
+  vyfakturujId         Int?      @unique
+  vyfakturujNumber     String?
+  vyfakturujType       Int?
+  vyfakturujFlags      Int?
+  vyfakturujVS         Int?
+  vyfakturujSyncedAt   DateTime?
+  vyfakturujRawData    Json?
+
+  // ========================================
+  // AI METADATA
+  // ========================================
+  aiGeneratedNotes    Json?  // AI suggestions, predictions
+  predictedPaymentDate DateTime? // AI predicted payment date
+
+  // ========================================
+  // RELATIONS
+  // ========================================
+  communications Communication[]
+  expenses       Expense[]
+  payments       Payment[]
+
+  @@index([customerId])
+  @@index([orderId])
+  @@index([status])
+  @@index([invoiceStatus])
+  @@index([documentType])
+  @@index([invoiceNumber])
+  @@index([issueDate])
+  @@index([dueDate])
+  @@index([vyfakturujId])
+  @@index([publicToken])
+}
+
+model Communication {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // Relations
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id])
+  orderId    String?
+  order      Order?    @relation(fields: [orderId], references: [id])
+  invoiceId  String?
+  invoice    Invoice?  @relation(fields: [invoiceId], references: [id])
+
+  // Communication Details
+  type      String // 'email' | 'phone' | 'sms' | 'note'
+  direction String // 'incoming' | 'outgoing'
+
+  // Content
+  subject String?
+  content String
+
+  // Author
+  author String?
+
+  @@index([customerId])
+  @@index([orderId])
+  @@index([invoiceId])
+  @@index([type])
+  @@index([createdAt])
+}
+
+// ========================================
+// AUTHENTICATION MODELS (NextAuth.js)
+// ========================================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?   // For credentials provider
+  role          String    @default("admin") // 'admin' | 'editor' | 'viewer'
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ========================================
+// VYFAKTURUJ.CZ INTEGRATION
+// ========================================
+
+model VyfakturujSettings {
+  id        String   @id @default("singleton")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // API Credentials
+  apiEmail     String?           // API login email
+  apiKeyHash   String?           // Hashovaný API klíč (NIKDY plain text!)
+  isConfigured Boolean @default(false)
+
+  // Default Settings
+  defaultPaymentMethodId Int?              // ID výchozí platební metody
+  defaultNumberSeriesId  Int?              // ID výchozí číselné řady
+  defaultDaysDue         Int    @default(14) // Výchozí splatnost (dny)
+
+  // Supplier Information (Divadlo Studna)
+  supplierName        String?
+  supplierIco         String?
+  supplierDic         String?
+  supplierStreet      String?
+  supplierCity        String?
+  supplierZip         String?
+  supplierCountry     String? @default("CZ")
+  supplierEmail       String?
+  supplierPhone       String?
+  supplierWeb         String?
+  supplierBankAccount String?
+  supplierIban        String?
+  supplierBic         String?
+
+  // Invoice Text Settings
+  textUnderSupplier String? // Text pod dodavatelem
+  textInvoiceFooter String? // Patička faktury
+
+  // Sync Settings
+  autoSyncCustomers Boolean   @default(true)
+  lastSyncAt        DateTime?
+
+  // Cached Settings from Vyfakturuj (JSON)
+  cachedPaymentMethods Json? // [{ id, name, type }]
+  cachedNumberSeries   Json? // [{ id, name, type, pattern }]
+  cachedTags           Json? // [{ id, name, color }]
+  cacheUpdatedAt       DateTime?
+
+  // Webhook Settings
+  webhookSecret String? // Secret pro ověření webhook podpisu
+  webhookUrl    String? // URL pro nastavení ve Vyfakturuj
+
+  // Automation Settings
+  autoCreateProforma Boolean @default(false) // Auto-vytvořit proforma při potvrzení objednávky
+
+  // Reminder Settings
+  enableReminders       Boolean @default(false)
+  reminder1Days         Int     @default(7)   // Dní po splatnosti pro 1. upomínku
+  reminder2Days         Int     @default(14)  // Dní po splatnosti pro 2. upomínku
+  reminder3Days         Int     @default(30)  // Dní po splatnosti pro 3. upomínku
+  reminderEmailSubject  String? // Předmět emailu upomínky
+  reminderEmailTemplate String? // HTML šablona upomínky
+
+  @@map("vyfakturuj_settings")
+}
+
+// ========================================
+// CONTACT MESSAGES (záloha kontaktního formuláře)
+// ========================================
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // Odesílatel
+  name    String
+  email   String
+  phone   String?
+  subject String
+  message String
+
+  // Stav zpracování
+  status      String   @default("received") // 'received' | 'email_sent' | 'email_failed' | 'read' | 'replied'
+  emailSentAt DateTime?
+  emailError  String?
+
+  // Admin tracking
+  readAt    DateTime?
+  readBy    String?
+  repliedAt DateTime?
+  repliedBy String?
+  notes     String?
+
+  // Reply history (JSON array of replies)
+  replies Json? // [{ id, subject, message, sentAt, sentBy, emailSent, emailError }]
+
+  // IP a metadata
+  ipAddress String?
+  userAgent String?
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([email])
+}
+
+// ========================================
+// EVENT PARTICIPANTS (Google Calendar integration)
+// ========================================
+
+model EventParticipant {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relation to Order
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  // Participant Type
+  type String // 'employee' | 'customer' | 'external'
+
+  // Personal Info (for external participants)
+  name  String?
+  email String
+  phone String?
+
+  // Reference to TeamMember (for employees)
+  teamMemberId String?
+  teamMember   TeamMember? @relation(fields: [teamMemberId], references: [id])
+
+  // Settings
+  includePricing Boolean @default(false) // Show price in event details
+
+  // Google Calendar
+  calendarEventId      String?   // ID of event in Google Calendar
+  calendarInviteSentAt DateTime? // When calendar invite was sent
+
+  // Invite Status
+  inviteStatus String @default("pending") // 'pending' | 'sent' | 'accepted' | 'declined'
+
+  @@index([orderId])
+  @@index([email])
+  @@index([teamMemberId])
+}
+
+// ========================================
+// GOOGLE CALENDAR SETTINGS
+// ========================================
+
+model GoogleCalendarSettings {
+  id        String   @id @default("singleton")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // OAuth 2.0 Credentials
+  clientId        String?
+  clientSecretEnc String? // Encrypted
+  refreshToken    String? // Encrypted
+  accessToken     String? // Encrypted
+  tokenExpiry     DateTime?
+
+  // Calendar Configuration
+  calendarId   String?  // ID of calendar to use for events
+  isConfigured Boolean  @default(false)
+
+  // Connected Account Info
+  connectedEmail String?
+  connectedAt    DateTime?
+
+  @@map("google_calendar_settings")
+}
+
+// ========================================
+// WEBHOOK LOGS
+// ========================================
+
+model WebhookLog {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+
+  // Event Info
+  source      String   // 'vyfakturuj' | 'other'
+  event       String   // 'invoice.paid' | 'invoice.updated' | etc.
+  payload     Json     // Raw payload
+
+  // Processing Result
+  status      String   // 'success' | 'error' | 'ignored'
+  error       String?  // Error message if failed
+  processedAt DateTime @default(now())
+
+  // Related entities (optional)
+  invoiceId   String?
+  customerId  String?
+
+  @@index([source])
+  @@index([event])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ========================================
+// VYFAKTURUJ 2.0AI - INVOICING MODELS
+// ========================================
+
+// Number Series - ciselne rady pro faktury
+model NumberSeries {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name          String        // e.g., "Faktury 2024", "Proformy"
+  documentType  DocumentType  // Which document type this series is for
+  prefix        String        // e.g., "FV", "PF", "ZF"
+  suffix        String?       // Optional suffix
+  pattern       String        // e.g., "{PREFIX}{YEAR}-{NUMBER:4}" => FV2024-0001
+  yearFormat    String        @default("YYYY") // YYYY or YY
+  numberPadding Int           @default(4)       // Number of digits (4 = 0001)
+
+  currentYear   Int           // Current year being tracked
+  currentNumber Int           @default(0) // Last used number in current year
+
+  isDefault     Boolean       @default(false)
+  isActive      Boolean       @default(true)
+
+  // Relations
+  invoices      Invoice[]
+  recurringInvoices RecurringInvoice[]
+
+  @@unique([documentType, isDefault])
+  @@index([documentType])
+  @@index([isActive])
+  @@map("number_series")
+}
+
+// Invoice Template - sablony faktur
+model InvoiceTemplate {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name        String
+  description String?
+  isDefault   Boolean @default(false)
+  isActive    Boolean @default(true)
+
+  // Visual settings
+  logoUrl           String?
+  primaryColor      String? @default("#1e40af") // Blue
+  secondaryColor    String? @default("#64748b") // Slate
+  accentColor       String? @default("#059669") // Emerald
+  fontFamily        String? @default("Inter")
+
+  // Layout options
+  showLogo          Boolean @default(true)
+  showQrCode        Boolean @default(true)
+  showBankDetails   Boolean @default(true)
+  showItemNumbers   Boolean @default(true)
+  showVatBreakdown  Boolean @default(true)
+  paperSize         String  @default("A4") // A4 | Letter
+
+  // Default texts
+  headerText        String?
+  footerText        String?
+  textBeforeItems   String?
+  textAfterItems    String?
+  paymentTermsText  String?
+  thankYouText      String?
+
+  // Default values
+  defaultVatRate    Int     @default(0)
+  defaultDaysDue    Int     @default(14)
+  defaultPaymentMethod String? @default("bank_transfer")
+
+  // CSS customization (advanced)
+  customCss         String?
+
+  // Relations
+  invoices Invoice[]
+  recurringInvoices RecurringInvoice[]
+
+  @@index([isDefault])
+  @@index([isActive])
+  @@map("invoice_templates")
+}
+
+// Expense - naklady
+model Expense {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Basic info
+  expenseNumber String         @unique
+  description   String
+
+  // Categorization
+  category      ExpenseCategory @default(OTHER)
+  subcategory   String?
+  tags          Json?           // string[]
+
+  // Amounts (stored in hellers/cents for precision)
+  amount        Int             // Net amount without VAT
+  vatRate       Int?            @default(0)
+  vatAmount     Int?            @default(0)
+  totalAmount   Int             // Total with VAT
+  currency      String          @default("CZK")
+
+  // Dates
+  expenseDate   DateTime
+  paidDate      DateTime?
+
+  // Status
+  status        ExpenseStatus   @default(PENDING)
+
+  // Supplier/Vendor
+  supplierName  String?
+  supplierIco   String?
+  supplierDic   String?
+
+  // Document reference
+  documentNumber String?        // External receipt/invoice number
+  documentUrl    String?        // Uploaded receipt/document
+  documentType   String?        // "receipt" | "invoice" | "other"
+
+  // Link to invoice (as deductible cost)
+  invoiceId     String?
+  invoice       Invoice?        @relation(fields: [invoiceId], references: [id])
+
+  // Link to order (if expense is related to order)
+  orderId       String?
+
+  // Payment details
+  paymentMethod String?
+  bankAccount   String?
+
+  // Notes
+  notes         String?
+  internalNote  String?
+
+  @@index([category])
+  @@index([status])
+  @@index([expenseDate])
+  @@index([invoiceId])
+  @@index([orderId])
+  @@map("expenses")
+}
+
+// Item Preset - prednastavene polozky faktur
+model ItemPreset {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name        String
+  description String?
+
+  // Item details
+  text        String          // Text displayed on invoice
+  unit        String          @default("ks") // ks, hod, den, etc.
+  unitPrice   Int             // in hellers
+  vatRate     Int             @default(0)
+
+  // Categorization
+  category    String?         // "performance" | "service" | "product" | "other"
+
+  // Usage tracking
+  usageCount  Int             @default(0)
+  lastUsedAt  DateTime?
+
+  isActive    Boolean         @default(true)
+  sortOrder   Int             @default(100)
+
+  @@index([category])
+  @@index([isActive])
+  @@index([sortOrder])
+  @@map("item_presets")
+}
+
+// Recurring Invoice - pravidelne faktury
+model RecurringInvoice {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name        String
+  description String?
+  isActive    Boolean @default(true)
+
+  // Customer
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id])
+
+  // Schedule
+  frequency       String    // "weekly" | "monthly" | "quarterly" | "yearly"
+  dayOfMonth      Int?      // 1-31 for monthly
+  dayOfWeek       Int?      // 0-6 for weekly (0 = Sunday)
+  monthOfYear     Int?      // 1-12 for yearly
+
+  startDate       DateTime
+  endDate         DateTime?
+  nextGenerateAt  DateTime
+  lastGeneratedAt DateTime?
+  generatedCount  Int       @default(0)
+
+  // Invoice settings
+  documentType    DocumentType @default(FAKTURA)
+  numberSeriesId  String?
+  numberSeries    NumberSeries? @relation(fields: [numberSeriesId], references: [id])
+  templateId      String?
+  template        InvoiceTemplate? @relation(fields: [templateId], references: [id])
+
+  // Default values
+  items           Json      // Invoice items template [{ text, quantity, unit, unitPrice, vatRate }]
+  subtotal        Int
+  vatRate         Int?      @default(0)
+  vatAmount       Int?      @default(0)
+  totalAmount     Int
+  daysDue         Int       @default(14)
+
+  // Texts
+  textBeforeItems String?
+  textAfterItems  String?
+  notes           String?
+
+  // Auto-send
+  autoSend        Boolean   @default(false)
+  emailRecipients Json?     // [{ email, name }]
+
+  // Generated invoices
+  invoices        Invoice[]
+
+  @@index([customerId])
+  @@index([isActive])
+  @@index([nextGenerateAt])
+  @@map("recurring_invoices")
+}
+
+// Payment - sledovani plateb
+model Payment {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // Link to invoice
+  invoiceId     String
+  invoice       Invoice @relation(fields: [invoiceId], references: [id])
+
+  // Payment details
+  amount        Int           // Amount paid in hellers
+  paymentDate   DateTime
+  paymentMethod String        // bank_transfer | cash | card | paypal | other
+
+  // Bank transaction info
+  variableSymbol  String?
+  transactionId   String?     // Bank transaction reference
+  bankReference   String?
+  bankAccount     String?     // Payer's bank account
+
+  // Notes
+  notes         String?
+
+  // Who recorded it
+  recordedBy    String?
+  recordedAt    DateTime      @default(now())
+
+  @@index([invoiceId])
+  @@index([paymentDate])
+  @@index([variableSymbol])
+  @@map("payments")
+}
+
+// InvoicingSettings - hlavni nastaveni fakturace (nahrazuje VyfakturujSettings)
+model InvoicingSettings {
+  id        String   @id @default("singleton")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // ========================================
+  // SUPPLIER INFORMATION (Dodavatel)
+  // ========================================
+  supplierName        String?
+  supplierIco         String?
+  supplierDic         String?
+  supplierStreet      String?
+  supplierCity        String?
+  supplierZip         String?
+  supplierCountry     String?   @default("CZ")
+  supplierEmail       String?
+  supplierPhone       String?
+  supplierWeb         String?
+  supplierLogoUrl     String?
+
+  // ========================================
+  // BANK ACCOUNTS
+  // ========================================
+  // Primary bank account
+  bankAccountNumber   String?   // Czech format: 123456789/0100
+  bankIban            String?   // IBAN format
+  bankBic             String?   // BIC/SWIFT
+  bankName            String?   // Bank name for display
+
+  // Additional bank accounts (JSON array)
+  additionalBankAccounts Json?  // [{ name, accountNumber, iban, bic, isDefault }]
+
+  // ========================================
+  // DEFAULT SETTINGS
+  // ========================================
+  defaultTemplateId     String?
+  defaultDaysDue        Int       @default(14)
+  defaultVatRate        Int       @default(0)
+  defaultPaymentMethod  String?   @default("bank_transfer")
+  defaultCurrency       String    @default("CZK")
+  defaultLanguage       String    @default("cs")
+
+  // ========================================
+  // VAT SETTINGS
+  // ========================================
+  isVatPayer            Boolean   @default(false)
+  vatRegistrationDate   DateTime?
+  vatRegistrationNumber String?   // DIČ (same as supplierDic usually)
+
+  // ========================================
+  // INVOICE TEXTS
+  // ========================================
+  textUnderSupplier     String?   // Text under supplier info
+  textInvoiceFooter     String?   // Footer on every invoice
+  defaultTextBeforeItems String?  // Default text before items table
+  defaultTextAfterItems  String?  // Default text after items table
+  thankYouText          String?   // Thank you message
+  paymentTermsText      String?   // Payment terms
+
+  // Text for non-VAT payers
+  nonVatPayerText       String?   @default("Nejsme plátci DPH.")
+
+  // ========================================
+  // REMINDER SETTINGS
+  // ========================================
+  enableReminders       Boolean   @default(false)
+  reminder1Days         Int       @default(7)   // Days after due date
+  reminder2Days         Int       @default(14)
+  reminder3Days         Int       @default(30)
+  reminderEmailSubject  String?
+  reminderEmailTemplate String?   // HTML template
+
+  // ========================================
+  // EMAIL SETTINGS (Invoice sending)
+  // ========================================
+  invoiceEmailSubject   String?   // Subject template: "Faktura {invoiceNumber}"
+  invoiceEmailTemplate  String?   // HTML template for invoice email
+  invoiceEmailCc        String?   // CC email addresses
+  invoiceEmailBcc       String?   // BCC email addresses
+
+  // ========================================
+  // TURNOVER TRACKING (for non-VAT payers)
+  // ========================================
+  annualTurnoverLimit   Int       @default(2000000) // 2M CZK limit
+  enableTurnoverWarning Boolean   @default(true)
+  turnoverWarningThreshold Int    @default(90) // Warn at 90%
+
+  // ========================================
+  // NUMBER SERIES
+  // ========================================
+  resetNumbersYearly    Boolean   @default(true)
+
+  // ========================================
+  // INTEGRATIONS (future)
+  // ========================================
+  webhookUrl            String?
+  webhookSecret         String?
+
+  // ========================================
+  // AI SETTINGS
+  // ========================================
+  enableAiSuggestions   Boolean   @default(true)
+  enablePaymentPrediction Boolean @default(true)
+  enableSmartReminders  Boolean   @default(false)
+
+  @@map("invoicing_settings")
+}

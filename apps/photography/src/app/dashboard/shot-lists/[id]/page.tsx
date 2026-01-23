@@ -1,0 +1,426 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import Link from 'next/link'
+import {
+  ArrowLeft, Edit, Trash2, ListChecks, Camera, Clock,
+  CheckCircle, Circle, Sparkles, Download, Printer
+} from 'lucide-react'
+import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
+import { Button } from '@/components/ui/Button'
+import { Badge } from '@/components/ui/Badge'
+import { Modal } from '@/components/ui/Modal'
+import toast from 'react-hot-toast'
+
+interface Shot {
+  id: string
+  description: string
+  priority: 'must-have' | 'nice-to-have' | 'optional'
+  subjects?: string[]
+  technicalNotes?: string
+  suggestedSettings?: {
+    aperture?: string
+    lens?: string
+    lighting?: string
+  }
+  composition?: string
+  timing?: string
+}
+
+interface Section {
+  name: string
+  timeSlot?: string
+  location?: string
+  shots: Shot[]
+  notes?: string
+}
+
+interface ShotList {
+  id: string
+  name: string
+  status: 'DRAFT' | 'FINALIZED' | 'COMPLETED'
+  eventType: string
+  aiGenerated: boolean
+  sections: Section[]
+  totalShots: number
+  mustHaveCount: number
+  estimatedTime: number | null
+  equipmentList: Array<{ item: string; reason: string }> | null
+  lightingPlan: { naturalLight: string[]; flashRequired: string[]; goldenHour?: string } | null
+  backupPlans: Array<{ scenario: string; solution: string }> | null
+  createdAt: string
+  package: {
+    id: string
+    title: string
+    client: {
+      name: string
+    }
+  } | null
+}
+
+const statusConfig = {
+  DRAFT: { label: 'Draft', color: 'gray' as const },
+  FINALIZED: { label: 'Finalized', color: 'blue' as const },
+  COMPLETED: { label: 'Completed', color: 'green' as const }
+}
+
+const priorityConfig = {
+  'must-have': { label: 'Must Have', color: 'red' as const },
+  'nice-to-have': { label: 'Nice to Have', color: 'yellow' as const },
+  'optional': { label: 'Optional', color: 'gray' as const }
+}
+
+export default function ShotListDetailPage() {
+  const params = useParams()
+  const router = useRouter()
+  const [shotList, setShotList] = useState<ShotList | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
+  const [completedShots, setCompletedShots] = useState<Set<string>>(new Set())
+
+  useEffect(() => {
+    fetchShotList()
+  }, [params.id])
+
+  const fetchShotList = async () => {
+    try {
+      const res = await fetch(`/api/shot-lists/${params.id}`)
+      if (!res.ok) throw new Error('Shot list not found')
+      const data = await res.json()
+      setShotList(data)
+    } catch (error) {
+      console.error('Failed to fetch shot list:', error)
+      toast.error('Shot list not found')
+      router.push('/dashboard/shot-lists')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleStatusChange = async (newStatus: string) => {
+    if (!shotList) return
+    setIsUpdatingStatus(true)
+    try {
+      const res = await fetch(`/api/shot-lists/${params.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      })
+      if (!res.ok) throw new Error('Failed to update status')
+      setShotList({ ...shotList, status: newStatus as ShotList['status'] })
+      toast.success('Status updated')
+    } catch (error) {
+      toast.error('Failed to update status')
+    } finally {
+      setIsUpdatingStatus(false)
+    }
+  }
+
+  const handleDelete = async () => {
+    setIsDeleting(true)
+    try {
+      const res = await fetch(`/api/shot-lists/${params.id}`, {
+        method: 'DELETE'
+      })
+      if (!res.ok) throw new Error('Failed to delete shot list')
+      toast.success('Shot list deleted')
+      router.push('/dashboard/shot-lists')
+    } catch (error) {
+      toast.error('Failed to delete shot list')
+    } finally {
+      setIsDeleting(false)
+      setShowDeleteModal(false)
+    }
+  }
+
+  const toggleShot = (shotId: string) => {
+    setCompletedShots(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(shotId)) {
+        newSet.delete(shotId)
+      } else {
+        newSet.add(shotId)
+      }
+      return newSet
+    })
+  }
+
+  const handlePrint = () => {
+    window.print()
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div>
+      </div>
+    )
+  }
+
+  if (!shotList) return null
+
+  const completedCount = completedShots.size
+  const progress = shotList.totalShots > 0 ? (completedCount / shotList.totalShots) * 100 : 0
+
+  return (
+    <div className="space-y-6 print:space-y-4">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 print:hidden">
+        <div>
+          <Link href="/dashboard/shot-lists" className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-2">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Shot Lists
+          </Link>
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-bold text-gray-900">{shotList.name}</h1>
+            <Badge variant={statusConfig[shotList.status].color}>
+              {statusConfig[shotList.status].label}
+            </Badge>
+            {shotList.aiGenerated && (
+              <Badge variant="info">
+                <Sparkles className="w-3 h-3 mr-1" />
+                AI Generated
+              </Badge>
+            )}
+          </div>
+          <p className="text-gray-600 mt-1">
+            {shotList.package?.client.name || 'Unassigned'} &bull; {shotList.eventType}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" onClick={handlePrint}>
+            <Printer className="w-4 h-4 mr-2" />
+            Print
+          </Button>
+          <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
+            <Trash2 className="w-4 h-4 mr-2" />
+            Delete
+          </Button>
+        </div>
+      </div>
+
+      {/* Print Header */}
+      <div className="hidden print:block">
+        <h1 className="text-2xl font-bold">{shotList.name}</h1>
+        <p className="text-gray-600">{shotList.package?.client.name} &bull; {shotList.eventType}</p>
+      </div>
+
+      {/* Status & Progress */}
+      <Card className="p-4 print:hidden">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-gray-600">Status:</span>
+            <select
+              value={shotList.status}
+              onChange={(e) => handleStatusChange(e.target.value)}
+              disabled={isUpdatingStatus}
+              className="px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+            >
+              <option value="DRAFT">Draft</option>
+              <option value="FINALIZED">Finalized</option>
+              <option value="COMPLETED">Completed</option>
+            </select>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="text-sm">
+              <span className="font-medium">{completedCount}</span>
+              <span className="text-gray-500"> / {shotList.totalShots} shots completed</span>
+            </div>
+            <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-amber-500 transition-all"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {/* Stats */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 print:grid-cols-4">
+        <Card className="p-4 text-center">
+          <p className="text-3xl font-bold text-gray-900">{shotList.totalShots}</p>
+          <p className="text-sm text-gray-600">Total Shots</p>
+        </Card>
+        <Card className="p-4 text-center">
+          <p className="text-3xl font-bold text-red-600">{shotList.mustHaveCount}</p>
+          <p className="text-sm text-gray-600">Must Have</p>
+        </Card>
+        <Card className="p-4 text-center">
+          <p className="text-3xl font-bold text-amber-600">
+            {shotList.estimatedTime ? Math.round(shotList.estimatedTime / 60) : '-'}
+          </p>
+          <p className="text-sm text-gray-600">Est. Hours</p>
+        </Card>
+        <Card className="p-4 text-center">
+          <p className="text-3xl font-bold text-gray-900">{shotList.sections.length}</p>
+          <p className="text-sm text-gray-600">Sections</p>
+        </Card>
+      </div>
+
+      {/* Shot List Sections */}
+      <div className="space-y-6">
+        {shotList.sections.map((section, sectionIdx) => (
+          <Card key={sectionIdx} className="print:break-inside-avoid">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>{section.name}</CardTitle>
+                  {section.timeSlot && (
+                    <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
+                      <Clock className="w-3 h-3" />
+                      {section.timeSlot}
+                    </p>
+                  )}
+                </div>
+                <Badge variant="default">{section.shots.length} shots</Badge>
+              </div>
+            </CardHeader>
+
+            <div className="space-y-2">
+              {section.shots.map((shot) => (
+                <div
+                  key={shot.id}
+                  className={`flex items-start gap-3 p-3 rounded-lg border transition-colors cursor-pointer ${
+                    completedShots.has(shot.id) ? 'bg-green-50 border-green-200' : 'hover:bg-gray-50'
+                  }`}
+                  onClick={() => toggleShot(shot.id)}
+                >
+                  <div className="pt-0.5 print:hidden">
+                    {completedShots.has(shot.id) ? (
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                    ) : (
+                      <Circle className="w-5 h-5 text-gray-300" />
+                    )}
+                  </div>
+                  <div className="hidden print:block w-4 h-4 border border-gray-400 rounded" />
+                  <div className="flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className={`font-medium ${completedShots.has(shot.id) ? 'line-through text-gray-500' : ''}`}>
+                        {shot.description}
+                      </p>
+                      <Badge variant={priorityConfig[shot.priority].color} size="sm">
+                        {priorityConfig[shot.priority].label}
+                      </Badge>
+                    </div>
+                    {shot.technicalNotes && (
+                      <p className="text-sm text-gray-600 mt-1">{shot.technicalNotes}</p>
+                    )}
+                    {shot.suggestedSettings && (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {shot.suggestedSettings.aperture && (
+                          <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+                            {shot.suggestedSettings.aperture}
+                          </span>
+                        )}
+                        {shot.suggestedSettings.lens && (
+                          <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+                            {shot.suggestedSettings.lens}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {section.notes && (
+              <div className="mt-4 p-3 bg-amber-50 rounded-lg">
+                <p className="text-sm text-amber-800">{section.notes}</p>
+              </div>
+            )}
+          </Card>
+        ))}
+      </div>
+
+      {/* Equipment & Tips */}
+      {(shotList.equipmentList || shotList.lightingPlan || shotList.backupPlans) && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 print:grid-cols-3">
+          {shotList.equipmentList && shotList.equipmentList.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Camera className="w-4 h-4" />
+                  Equipment
+                </CardTitle>
+              </CardHeader>
+              <ul className="space-y-2">
+                {shotList.equipmentList.map((item, idx) => (
+                  <li key={idx} className="text-sm">
+                    <span className="font-medium">{item.item}</span>
+                    <span className="text-gray-500"> - {item.reason}</span>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          )}
+
+          {shotList.lightingPlan && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Lighting Plan</CardTitle>
+              </CardHeader>
+              <div className="space-y-3 text-sm">
+                {shotList.lightingPlan.naturalLight.length > 0 && (
+                  <div>
+                    <p className="font-medium text-gray-700">Natural Light:</p>
+                    <p className="text-gray-600">{shotList.lightingPlan.naturalLight.join(', ')}</p>
+                  </div>
+                )}
+                {shotList.lightingPlan.flashRequired.length > 0 && (
+                  <div>
+                    <p className="font-medium text-gray-700">Flash Required:</p>
+                    <p className="text-gray-600">{shotList.lightingPlan.flashRequired.join(', ')}</p>
+                  </div>
+                )}
+                {shotList.lightingPlan.goldenHour && (
+                  <div>
+                    <p className="font-medium text-gray-700">Golden Hour:</p>
+                    <p className="text-gray-600">{shotList.lightingPlan.goldenHour}</p>
+                  </div>
+                )}
+              </div>
+            </Card>
+          )}
+
+          {shotList.backupPlans && shotList.backupPlans.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Backup Plans</CardTitle>
+              </CardHeader>
+              <ul className="space-y-3">
+                {shotList.backupPlans.map((plan, idx) => (
+                  <li key={idx} className="text-sm">
+                    <p className="font-medium text-gray-700">{plan.scenario}</p>
+                    <p className="text-gray-600">{plan.solution}</p>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          )}
+        </div>
+      )}
+
+      {/* Delete Modal */}
+      <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)} title="Delete Shot List">
+        <div className="space-y-4">
+          <p className="text-gray-600">
+            Are you sure you want to delete "{shotList.name}"?
+          </p>
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" onClick={() => setShowDeleteModal(false)}>
+              Cancel
+            </Button>
+            <Button variant="danger" onClick={handleDelete} isLoading={isDeleting}>
+              Delete Shot List
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    </div>
+  )
+}

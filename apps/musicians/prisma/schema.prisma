@@ -1,0 +1,493 @@
+// GigBook - Musicians Vertical Database Schema
+// Extends the shared-core schema with musicians-specific fields
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ========================================
+// EXTENDED ENUMS FOR MUSICIANS
+// ========================================
+
+enum Vertical {
+  PHOTOGRAPHY
+  MUSICIANS
+  FITNESS
+  EVENTS
+  PERFORMING_ARTS
+  TEAM_BUILDING
+  KIDS_ENTERTAINMENT
+}
+
+enum GigStatus {
+  INQUIRY      // Initial inquiry received
+  QUOTE_SENT   // Quote sent to client
+  CONFIRMED    // Gig confirmed by client
+  COMPLETED    // Gig has been performed
+  CANCELLED    // Gig cancelled
+}
+
+enum SetlistStatus {
+  DRAFT
+  FINALIZED
+  PERFORMED
+}
+
+// ========================================
+// GIG MODEL (replaces Performance)
+// ========================================
+
+model Gig {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Tenant isolation
+  tenantId  String
+  vertical  Vertical @default(MUSICIANS)
+
+  // Basic Info
+  title       String
+  slug        String   @unique
+  status      GigStatus @default(INQUIRY)
+  featured    Boolean  @default(false)
+
+  // Client Information
+  clientName     String?
+  clientEmail    String?
+  clientPhone    String?
+
+  // Event Details
+  eventType      String?  // 'wedding' | 'corporate' | 'party' | 'concert' | 'festival'
+  eventDate      DateTime?
+  eventDuration  Int?     // Minutes
+  venue          Json?    // { name, address, city, type: 'indoor' | 'outdoor' }
+  audienceSize   Int?
+  audienceAge    String?  // e.g., "25-45"
+
+  // Musicians-Specific Fields
+  repertoire     Json?    // Song[] - band's available songs
+  setlistSongs   String[] // Selected songs for this gig
+  bandMembers    Int?     // Number of performers
+  instruments    String[] // Instruments used
+  genres         String[] // Musical genres
+  setDuration    Int?     // Minutes per set
+  numberOfSets   Int?     // How many sets
+  breakDuration  Int?     // Minutes between sets
+
+  // Technical Requirements
+  stageRider        Json?    // Technical rider details
+  backlineNeeded    Boolean  @default(false)
+  soundcheckTime    DateTime?
+  soundSystemProvided Boolean @default(false)
+  hasOwnPA          Boolean  @default(true)
+
+  // Pricing
+  basePrice      Int?     // Base price in cents
+  travelCosts    Int?     // Travel costs in cents
+  totalPrice     Int?     // Total price including extras
+  deposit        Int?     // Deposit amount
+  depositPaid    Boolean  @default(false)
+
+  // Content
+  description    Json?    // Tiptap JSON
+  internalNotes  String?
+
+  // Media
+  featuredImageUrl String?
+  featuredImageAlt String?
+  galleryImages    Json?   // [{ url, alt, caption }]
+
+  // Relations
+  setlists   Setlist[]
+  extras     GigExtra[]
+  invoices   Invoice[]
+
+  @@index([tenantId])
+  @@index([status])
+  @@index([eventDate])
+  @@index([slug])
+  @@map("gigs")
+}
+
+// ========================================
+// SETLIST MODEL (replaces Game)
+// ========================================
+
+model Setlist {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Tenant isolation
+  tenantId  String
+  vertical  Vertical @default(MUSICIANS)
+
+  // Basic Info
+  name        String
+  status      SetlistStatus @default(DRAFT)
+
+  // Linked to Gig
+  gigId       String?
+  gig         Gig?     @relation(fields: [gigId], references: [id])
+
+  // Setlist Details
+  totalDuration  Int      // Total duration in minutes
+  mood           String?  // 'energetic' | 'romantic' | 'chill' | 'mixed'
+
+  // Songs (ordered list)
+  songs          Json     // Array of { title, artist, duration, key, bpm, notes, order }
+
+  // AI Generation Metadata
+  aiGenerated    Boolean  @default(false)
+  aiPrompt       String?
+  generatedAt    DateTime?
+
+  // Notes
+  notes          String?
+
+  @@index([tenantId])
+  @@index([gigId])
+  @@index([status])
+  @@map("setlists")
+}
+
+// ========================================
+// GIG EXTRA MODEL (replaces Service)
+// ========================================
+
+model GigExtra {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Tenant isolation
+  tenantId  String
+  vertical  Vertical @default(MUSICIANS)
+
+  // Linked to Gig
+  gigId     String
+  gig       Gig      @relation(fields: [gigId], references: [id], onDelete: Cascade)
+
+  // Extra Details
+  type        String   // 'dj_set' | 'sound_system' | 'lighting' | 'extra_musician' | 'other'
+  description String
+  price       Int      // Price in cents
+
+  // Quantity
+  quantity    Int      @default(1)
+
+  @@index([tenantId])
+  @@index([gigId])
+  @@map("gig_extras")
+}
+
+// ========================================
+// REPERTOIRE MODEL (Band's Song Database)
+// ========================================
+
+model RepertoireSong {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Tenant isolation
+  tenantId  String
+  vertical  Vertical @default(MUSICIANS)
+
+  // Song Details
+  title       String
+  artist      String?
+  genre       String?
+  mood        String?  // 'energetic' | 'romantic' | 'chill' | 'party'
+  duration    Int      // Duration in seconds
+
+  // Technical Details
+  key         String?  // e.g., "C major", "A minor"
+  bpm         Int?     // Beats per minute
+
+  // Performance Info
+  difficulty  String?  // 'easy' | 'medium' | 'hard'
+  instruments String[] // Instruments required
+  vocals      String?  // 'lead' | 'harmony' | 'none'
+
+  // Usage Tracking
+  timesPerformed Int   @default(0)
+  lastPerformed  DateTime?
+
+  // Tags
+  tags        String[] // Custom tags for filtering
+
+  // External Links
+  spotifyUrl  String?
+  youtubeUrl  String?
+  sheetMusicUrl String?
+
+  // Notes
+  notes       String?
+
+  @@index([tenantId])
+  @@index([genre])
+  @@index([mood])
+  @@map("repertoire_songs")
+}
+
+// ========================================
+// STAGE RIDER TEMPLATE MODEL
+// ========================================
+
+model StageRiderTemplate {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Tenant isolation
+  tenantId  String
+  vertical  Vertical @default(MUSICIANS)
+
+  // Template Details
+  name        String
+  description String?
+
+  // Rider Content
+  inputList      Json?  // [{ instrument, channels, notes }]
+  monitorSetup   Json?  // { monitors: number, mixType: 'stereo' | 'mono' }
+  backlineNeeds  Json?  // [{ item, specifications }]
+  stagePlot      String? // Description or URL to diagram
+  powerNeeds     String? // Power requirements
+
+  // Timing
+  soundcheckDuration Int? // Minutes needed for soundcheck
+  setupTime          Int? // Setup time in minutes
+  teardownTime       Int? // Teardown time in minutes
+
+  // Additional Requirements
+  greenRoomNeeds     String?
+  parkingNeeds       String?
+  otherRequirements  String?
+
+  // Usage
+  isDefault       Boolean @default(false)
+  usageCount      Int     @default(0)
+
+  @@index([tenantId])
+  @@index([isDefault])
+  @@map("stage_rider_templates")
+}
+
+// ========================================
+// TENANT MODEL (Multi-Tenancy)
+// ========================================
+
+model Tenant {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Basic Info
+  name      String
+  slug      String   @unique
+  vertical  Vertical
+
+  // Band/Artist Profile (for Musicians)
+  bandName     String?
+  bandBio      String?
+  bandGenres   String[] // Main genres
+  bandSize     Int?     // Number of members
+  logoUrl      String?
+
+  // Contact
+  email        String
+  phone        String?
+  website      String?
+
+  // Social Links
+  socialLinks  Json?    // { spotify, youtube, facebook, instagram }
+
+  // Settings
+  settings     Json?    // Vertical-specific settings
+
+  // Subscription
+  plan         String   @default("starter") // 'starter' | 'professional' | 'business'
+  planExpiry   DateTime?
+
+  // Status
+  isActive     Boolean  @default(true)
+
+  // Relations
+  users        User[]
+
+  @@index([slug])
+  @@index([vertical])
+  @@map("tenants")
+}
+
+// ========================================
+// USER MODEL (extends for multi-tenancy)
+// ========================================
+
+model User {
+  id            String    @id @default(cuid())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Auth
+  email         String    @unique
+  emailVerified DateTime?
+  password      String?
+
+  // Profile
+  name          String?
+  role          String    @default("admin") // 'admin' | 'member' | 'viewer'
+  avatar        String?
+
+  // Multi-tenant
+  tenantId      String
+  tenant        Tenant    @relation(fields: [tenantId], references: [id])
+
+  // Relations
+  accounts      Account[]
+  sessions      Session[]
+
+  @@index([tenantId])
+  @@index([email])
+  @@map("users")
+}
+
+// ========================================
+// CUSTOMER MODEL (shared across verticals)
+// ========================================
+
+model Customer {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Tenant isolation
+  tenantId  String
+
+  // Basic Info
+  email       String
+  firstName   String
+  lastName    String
+  phone       String?
+  company     String?
+
+  // Address
+  address     Json?  // { street, city, zip, country }
+
+  // Tags & Notes
+  tags        String[]
+  notes       String?
+
+  // Relations
+  invoices    Invoice[]
+
+  @@unique([tenantId, email])
+  @@index([tenantId])
+  @@index([email])
+  @@map("customers")
+}
+
+// ========================================
+// INVOICE MODEL (simplified for musicians)
+// ========================================
+
+model Invoice {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Tenant isolation
+  tenantId  String
+
+  // Invoice Details
+  invoiceNumber String   @unique
+  status        String   @default("draft") // 'draft' | 'sent' | 'paid' | 'overdue'
+
+  // Customer
+  customerId    String
+  customer      Customer @relation(fields: [customerId], references: [id])
+
+  // Linked Gig
+  gigId         String?
+  gig           Gig?     @relation(fields: [gigId], references: [id])
+
+  // Dates
+  issueDate     DateTime @default(now())
+  dueDate       DateTime
+  paidDate      DateTime?
+
+  // Amounts (in cents)
+  subtotal      Int
+  taxRate       Float    @default(0)
+  taxAmount     Int      @default(0)
+  totalAmount   Int
+  paidAmount    Int      @default(0)
+
+  // Line Items
+  items         Json     // [{ description, quantity, unitPrice, total }]
+
+  // Notes
+  notes         String?
+
+  // PDF
+  pdfUrl        String?
+
+  @@index([tenantId])
+  @@index([customerId])
+  @@index([gigId])
+  @@index([status])
+  @@index([invoiceNumber])
+  @@map("invoices")
+}
+
+// ========================================
+// NEXTAUTH MODELS
+// ========================================
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}

@@ -1,0 +1,402 @@
+// FitAdmin - Personal Trainers & Fitness Studios
+// Prisma schema for fitness vertical
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ============================================
+// TENANT & ORGANIZATION
+// ============================================
+
+model Tenant {
+  id              String   @id @default(cuid())
+  vertical        Vertical
+  name            String
+  slug            String   @unique
+  email           String?
+  phone           String?
+  website         String?
+  logo            String?
+  subscriptionTier String  @default("free") // free, pro, enterprise
+  aiCredits       Int      @default(100)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  users     User[]
+  clients   Client[]
+  sessions  Session[]
+  classes   Class[]
+  packages  Package[]
+  orders    Order[]
+  invoices  Invoice[]
+  aiLogs    AILog[]
+}
+
+enum Vertical {
+  MUSICIANS
+  PHOTOGRAPHY
+  FITNESS
+  EVENTS
+  PERFORMING_ARTS
+  TEAM_BUILDING
+  KIDS_ENTERTAINMENT
+}
+
+// ============================================
+// AUTHENTICATION
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  tenantId      String
+  tenant        Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          String    @default("user") // admin, trainer, user
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  accounts      Account[]
+  sessions      UserSession[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model UserSession {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ============================================
+// CLIENT MANAGEMENT (Fitness-specific)
+// ============================================
+
+model Client {
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  // Basic info
+  name      String
+  email     String
+  phone     String?
+  avatar    String?
+  dateOfBirth DateTime?
+  gender    String?
+
+  // Fitness-specific
+  goals           String[]  // weight_loss, muscle_gain, strength, endurance, flexibility
+  currentWeight   Float?    // kg
+  targetWeight    Float?    // kg
+  height          Float?    // cm
+  bodyMeasurements Json?    // { chest: 100, waist: 80, hips: 95, ... }
+  bodyFatPercent  Float?
+  fitnessLevel    String?   // beginner, intermediate, advanced
+  injuryHistory   String?   @db.Text
+  dietaryNotes    String?   @db.Text
+  medicalNotes    String?   @db.Text
+
+  // Membership
+  creditsRemaining Int      @default(0)
+  membershipType   String?  // monthly, yearly, package
+  membershipExpiry DateTime?
+
+  // Status
+  status      String   @default("active") // active, inactive, paused
+  tags        String[]
+  notes       String?  @db.Text
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  sessions    Session[]
+  orders      Order[]
+  invoices    Invoice[]
+  measurements ClientMeasurement[]
+  progressPhotos ProgressPhoto[]
+}
+
+model ClientMeasurement {
+  id          String   @id @default(cuid())
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  date        DateTime @default(now())
+  weight      Float?   // kg
+  bodyFat     Float?   // percentage
+  measurements Json?   // { chest, waist, hips, biceps, thighs, ... }
+  notes       String?
+
+  createdAt   DateTime @default(now())
+}
+
+model ProgressPhoto {
+  id        String   @id @default(cuid())
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  url       String
+  date      DateTime @default(now())
+  view      String   // front, back, side
+  notes     String?
+
+  createdAt DateTime @default(now())
+}
+
+// ============================================
+// TRAINING SESSIONS (1-on-1)
+// ============================================
+
+model Session {
+  id          String   @id @default(cuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  // Scheduling
+  scheduledAt DateTime
+  duration    Int      @default(60) // minutes
+  status      String   @default("scheduled") // scheduled, completed, cancelled, no_show
+
+  // Workout data
+  workoutPlan     Json?    // AI-generated plan
+  exercisesLogged Json[]   // Completed exercises
+  caloriesBurned  Int?
+  heartRateAvg    Int?
+  muscleGroups    String[] // chest, back, legs, etc.
+
+  // Feedback
+  clientFeedback  String?  @db.Text
+  trainerNotes    String?  @db.Text
+  intensity       String?  // low, moderate, high
+  clientRating    Int?     // 1-5
+
+  // Payment
+  price       Float?
+  paid        Boolean  @default(false)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ============================================
+// GROUP CLASSES
+// ============================================
+
+model Class {
+  id          String   @id @default(cuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?  @db.Text
+  type        String   // yoga, pilates, hiit, spin, etc.
+
+  // Scheduling
+  scheduledAt DateTime
+  duration    Int      // minutes
+  capacity    Int      @default(10)
+
+  // Details
+  instructor  String?
+  location    String?
+  price       Float
+
+  // Recurring
+  isRecurring Boolean  @default(false)
+  recurrence  String?  // weekly, biweekly, monthly
+
+  status      String   @default("scheduled") // scheduled, completed, cancelled
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  bookings    ClassBooking[]
+}
+
+model ClassBooking {
+  id        String   @id @default(cuid())
+  classId   String
+  class     Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  clientId  String
+  // Note: Client relation would reference Client model
+
+  status    String   @default("confirmed") // confirmed, waitlist, cancelled
+  checkedIn Boolean  @default(false)
+  paid      Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+}
+
+// ============================================
+// PACKAGES & CREDITS
+// ============================================
+
+model Package {
+  id          String   @id @default(cuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?  @db.Text
+  type        String   // sessions, classes, monthly
+
+  // Pricing
+  price       Float
+  credits     Int      // Number of sessions/classes
+  validityDays Int     // How long package is valid
+
+  // Features
+  features    String[]
+  isActive    Boolean  @default(true)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ============================================
+// ORDERS & INVOICING
+// ============================================
+
+model Order {
+  id          String   @id @default(cuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  orderNumber String   @unique
+  status      String   @default("pending") // pending, confirmed, completed, cancelled
+
+  // Items
+  items       Json[]   // [{ type, name, quantity, price }]
+
+  // Pricing
+  subtotal    Float
+  tax         Float    @default(0)
+  discount    Float    @default(0)
+  total       Float
+
+  // Payment
+  paymentMethod String?
+  paymentStatus String  @default("unpaid") // unpaid, partial, paid
+  paidAmount    Float   @default(0)
+
+  // Dates
+  orderDate   DateTime @default(now())
+  dueDate     DateTime?
+  paidDate    DateTime?
+
+  notes       String?  @db.Text
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  invoices    Invoice[]
+}
+
+model Invoice {
+  id            String   @id @default(cuid())
+  tenantId      String
+  tenant        Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  orderId       String?
+  order         Order?   @relation(fields: [orderId], references: [id])
+  clientId      String
+  client        Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  invoiceNumber String   @unique
+  status        String   @default("draft") // draft, sent, paid, overdue, cancelled
+
+  // Dates
+  issueDate     DateTime @default(now())
+  dueDate       DateTime
+  paidDate      DateTime?
+
+  // Amounts
+  subtotal      Float
+  tax           Float    @default(0)
+  total         Float
+
+  // Payment
+  paymentMethod String?
+
+  notes         String?  @db.Text
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// ============================================
+// AI LOGGING
+// ============================================
+
+model AILog {
+  id          String   @id @default(cuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  feature     String   // workout_generator, progress_predictor, nutrition_advisor, etc.
+  model       String   // gpt-4o, gpt-4o-mini
+
+  // Usage
+  promptTokens      Int
+  completionTokens  Int
+  totalTokens       Int
+  estimatedCost     Float
+
+  // Request/Response
+  input       Json
+  output      Json?
+
+  // Performance
+  latencyMs   Int?
+  success     Boolean  @default(true)
+  error       String?
+
+  createdAt   DateTime @default(now())
+}

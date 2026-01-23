@@ -1,0 +1,50 @@
+{
+  "name": "@vertigo/ai-core",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./client": {
+      "import": "./dist/client.mjs",
+      "require": "./dist/client.js",
+      "types": "./dist/client.d.ts"
+    },
+    "./prompts": {
+      "import": "./dist/prompts.mjs",
+      "require": "./dist/prompts.js",
+      "types": "./dist/prompts.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint src/",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist node_modules"
+  },
+  "dependencies": {
+    "openai": "^4.28.0",
+    "ai": "^3.0.0",
+    "zod": "^3.22.0",
+    "p-retry": "^6.2.0",
+    "lru-cache": "^10.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.2.0",
+    "eslint": "^8.56.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0"
+  }
+}

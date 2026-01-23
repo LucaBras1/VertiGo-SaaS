@@ -1,0 +1,580 @@
+// VertiGo SaaS - Multi-Tenant Database Schema
+// Supports 7 verticals: Musicians, Photography, Fitness, Events, Performing Arts, Team Building, Kids Entertainment
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+enum Vertical {
+  MUSICIANS          // GigBook
+  PHOTOGRAPHY        // ShootFlow
+  FITNESS            // FitAdmin
+  EVENTS             // EventPro
+  PERFORMING_ARTS    // StageManager
+  TEAM_BUILDING      // TeamForge
+  KIDS_ENTERTAINMENT // PartyPal
+}
+
+enum SubscriptionTier {
+  FREE
+  STARTER
+  PROFESSIONAL
+  BUSINESS
+  ENTERPRISE
+}
+
+enum OrderStatus {
+  INQUIRY
+  QUOTED
+  CONFIRMED
+  DEPOSIT_PAID
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
+  CARD
+  STRIPE
+  OTHER
+}
+
+// ============================================================================
+// TENANT & USER MANAGEMENT
+// ============================================================================
+
+model Tenant {
+  id                String           @id @default(cuid())
+  name              String
+  vertical          Vertical
+  subscriptionTier  SubscriptionTier @default(FREE)
+  subscriptionEnds  DateTime?
+
+  // Branding
+  logo              String?
+  primaryColor      String?
+  secondaryColor    String?
+  customDomain      String?          @unique
+
+  // Settings
+  currency          String           @default("EUR")
+  timezone          String           @default("Europe/Prague")
+  language          String           @default("en")
+
+  // AI Usage
+  aiCreditsUsed     Int              @default(0)
+  aiCreditsLimit    Int              @default(1000)
+
+  // Stripe
+  stripeCustomerId  String?          @unique
+  stripeSubscriptionId String?
+
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  // Relations
+  users             User[]
+  customers         Customer[]
+  performances      Performance[]
+  activities        Activity[]
+  services          Service[]
+  events            Event[]
+  orders            Order[]
+  invoices          Invoice[]
+  aiLogs            AILog[]
+
+  @@index([vertical])
+  @@index([subscriptionTier])
+}
+
+model User {
+  id                String   @id @default(cuid())
+  tenantId          String
+  email             String
+  name              String?
+  image             String?
+  role              String   @default("member") // owner, admin, member
+
+  // Auth
+  hashedPassword    String?
+  emailVerified     DateTime?
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  tenant            Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  sessions          Session[]
+  accounts          Account[]
+
+  @@unique([tenantId, email])
+  @@index([tenantId])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// ============================================================================
+// CUSTOMER (CRM)
+// ============================================================================
+
+model Customer {
+  id                String   @id @default(cuid())
+  tenantId          String
+
+  // Basic Info
+  name              String
+  email             String?
+  phone             String?
+  company           String?
+
+  // Address
+  street            String?
+  city              String?
+  postalCode        String?
+  country           String?
+
+  // Billing (for international invoicing)
+  vatId             String?  // DIČ
+  companyId         String?  // IČO
+  billingEmail      String?
+
+  // Notes
+  notes             String?  @db.Text
+  tags              String[]
+
+  // Vertical-Specific Fields (JSON for flexibility)
+  verticalData      Json?    @db.JsonB
+
+  // AI Features
+  aiSuggestions     Json?    @db.JsonB
+  aiProcessedAt     DateTime?
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  tenant            Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  orders            Order[]
+  events            Event[]
+
+  @@unique([tenantId, email])
+  @@index([tenantId])
+  @@index([tenantId, name])
+}
+
+// ============================================================================
+// PERFORMANCE (Main Offering - renamed per vertical)
+// Musicians: Gig, Photography: Package, Fitness: Session, Events: Show, etc.
+// ============================================================================
+
+model Performance {
+  id                String   @id @default(cuid())
+  tenantId          String
+
+  // Basic Info
+  name              String
+  description       String?  @db.Text
+  shortDescription  String?
+
+  // Pricing
+  basePrice         Decimal  @db.Decimal(10, 2)
+  currency          String   @default("EUR")
+
+  // Media
+  images            String[]
+  videos            String[]
+
+  // Status
+  isActive          Boolean  @default(true)
+  isFeatured        Boolean  @default(false)
+
+  // Vertical-Specific Fields
+  // Musicians: setlist, stage_rider, band_members
+  // Photography: shot_count, delivery_days, style
+  // Fitness: workout_plan, muscle_groups, difficulty
+  // Events: setup_time, safety_requirements, performer_count
+  // Performing Arts: cast_size, tech_requirements, duration
+  // Team Building: min/max participants, objectives
+  // Kids: age_range, max_children, theme
+  verticalData      Json?    @db.JsonB
+
+  // AI Features
+  aiSuggestions     Json?    @db.JsonB
+  aiProcessedAt     DateTime?
+
+  // SEO
+  slug              String?
+  metaTitle         String?
+  metaDescription   String?
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  tenant            Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  orderItems        OrderItem[]
+
+  @@unique([tenantId, slug])
+  @@index([tenantId])
+  @@index([tenantId, isActive])
+}
+
+// ============================================================================
+// ACTIVITY (Secondary Offering - games, classes, add-ons)
+// Musicians: Setlist item, Photography: Addon, Fitness: Class, etc.
+// ============================================================================
+
+model Activity {
+  id                String   @id @default(cuid())
+  tenantId          String
+
+  name              String
+  description       String?  @db.Text
+
+  // Pricing
+  price             Decimal? @db.Decimal(10, 2)
+  currency          String   @default("EUR")
+
+  // Duration
+  durationMinutes   Int?
+
+  // Status
+  isActive          Boolean  @default(true)
+
+  // Vertical-Specific Fields
+  verticalData      Json?    @db.JsonB
+
+  // AI Features
+  aiSuggestions     Json?    @db.JsonB
+  aiProcessedAt     DateTime?
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  tenant            Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  orderItems        OrderItem[]
+
+  @@index([tenantId])
+}
+
+// ============================================================================
+// SERVICE (Additional services - extras, rentals, travel)
+// ============================================================================
+
+model Service {
+  id                String   @id @default(cuid())
+  tenantId          String
+
+  name              String
+  description       String?  @db.Text
+
+  // Pricing
+  price             Decimal  @db.Decimal(10, 2)
+  currency          String   @default("EUR")
+  priceType         String   @default("fixed") // fixed, hourly, per_km
+
+  // Status
+  isActive          Boolean  @default(true)
+
+  // Vertical-Specific Fields
+  verticalData      Json?    @db.JsonB
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  tenant            Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  orderItems        OrderItem[]
+
+  @@index([tenantId])
+}
+
+// ============================================================================
+// EVENT (Scheduled occurrence - gig, session, party, show)
+// ============================================================================
+
+model Event {
+  id                String   @id @default(cuid())
+  tenantId          String
+  customerId        String?
+  orderId           String?
+
+  // Scheduling
+  title             String
+  startDate         DateTime
+  endDate           DateTime?
+  isAllDay          Boolean  @default(false)
+
+  // Location
+  venue             String?
+  address           String?
+  city              String?
+  coordinates       Json?    // {lat, lng}
+
+  // Status
+  status            String   @default("tentative") // tentative, confirmed, cancelled
+
+  // Notes
+  notes             String?  @db.Text
+  internalNotes     String?  @db.Text
+
+  // Vertical-Specific Fields
+  // Musicians: load_in_time, soundcheck_time, set_times
+  // Photography: timeline, locations, contact_person
+  // Fitness: recurring_pattern, capacity, waitlist
+  // Events: weather_backup, vendor_contacts
+  // Performing Arts: tech_call, house_open
+  // Team Building: briefing_time, debrief_time
+  // Kids: parent_contact, allergies, special_needs
+  verticalData      Json?    @db.JsonB
+
+  // AI Features
+  aiSuggestions     Json?    @db.JsonB
+
+  // Calendar Integration
+  googleEventId     String?
+  outlookEventId    String?
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  tenant            Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customer          Customer? @relation(fields: [customerId], references: [id])
+  order             Order?   @relation(fields: [orderId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, startDate])
+  @@index([customerId])
+}
+
+// ============================================================================
+// ORDER & INVOICING
+// ============================================================================
+
+model Order {
+  id                String      @id @default(cuid())
+  tenantId          String
+  customerId        String?
+
+  // Order Number
+  orderNumber       String
+
+  // Status
+  status            OrderStatus @default(INQUIRY)
+
+  // Dates
+  eventDate         DateTime?
+  validUntil        DateTime?
+
+  // Pricing
+  subtotal          Decimal     @db.Decimal(10, 2)
+  discount          Decimal     @default(0) @db.Decimal(10, 2)
+  tax               Decimal     @default(0) @db.Decimal(10, 2)
+  total             Decimal     @db.Decimal(10, 2)
+  currency          String      @default("EUR")
+
+  // Payment
+  depositAmount     Decimal?    @db.Decimal(10, 2)
+  depositPaid       Boolean     @default(false)
+  depositPaidAt     DateTime?
+
+  // Notes
+  customerNotes     String?     @db.Text
+  internalNotes     String?     @db.Text
+
+  // Vertical-Specific Fields
+  verticalData      Json?       @db.JsonB
+
+  // AI Features
+  aiQuoteSuggestion Json?       @db.JsonB
+  aiProcessedAt     DateTime?
+
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  tenant            Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customer          Customer?   @relation(fields: [customerId], references: [id])
+  items             OrderItem[]
+  invoices          Invoice[]
+  events            Event[]
+
+  @@unique([tenantId, orderNumber])
+  @@index([tenantId])
+  @@index([tenantId, status])
+  @@index([customerId])
+}
+
+model OrderItem {
+  id                String       @id @default(cuid())
+  orderId           String
+
+  // Item Type
+  itemType          String       // performance, activity, service, custom
+  performanceId     String?
+  activityId        String?
+  serviceId         String?
+
+  // Custom Item (for one-off items)
+  customName        String?
+  customDescription String?
+
+  // Pricing
+  quantity          Int          @default(1)
+  unitPrice         Decimal      @db.Decimal(10, 2)
+  discount          Decimal      @default(0) @db.Decimal(10, 2)
+  total             Decimal      @db.Decimal(10, 2)
+
+  // Notes
+  notes             String?
+
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  order             Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  performance       Performance? @relation(fields: [performanceId], references: [id])
+  activity          Activity?    @relation(fields: [activityId], references: [id])
+  service           Service?     @relation(fields: [serviceId], references: [id])
+
+  @@index([orderId])
+}
+
+model Invoice {
+  id                String        @id @default(cuid())
+  tenantId          String
+  orderId           String?
+
+  // Invoice Number
+  invoiceNumber     String
+
+  // Status
+  status            InvoiceStatus @default(DRAFT)
+
+  // Dates
+  issueDate         DateTime      @default(now())
+  dueDate           DateTime
+  paidAt            DateTime?
+
+  // Amounts
+  subtotal          Decimal       @db.Decimal(10, 2)
+  tax               Decimal       @default(0) @db.Decimal(10, 2)
+  total             Decimal       @db.Decimal(10, 2)
+  currency          String        @default("EUR")
+
+  // Payment
+  paymentMethod     PaymentMethod?
+  paymentReference  String?
+
+  // Billing Details (snapshot at invoice time)
+  billingName       String
+  billingEmail      String?
+  billingAddress    String?
+  billingVatId      String?
+  billingCompanyId  String?
+
+  // PDF
+  pdfUrl            String?
+
+  // Notes
+  notes             String?       @db.Text
+
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  tenant            Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  order             Order?        @relation(fields: [orderId], references: [id])
+
+  @@unique([tenantId, invoiceNumber])
+  @@index([tenantId])
+  @@index([tenantId, status])
+}
+
+// ============================================================================
+// AI TRACKING
+// ============================================================================
+
+model AILog {
+  id                String   @id @default(cuid())
+  tenantId          String
+
+  // Request Info
+  feature           String   // quote_generator, content_factory, etc.
+  model             String   // gpt-4o, gpt-4o-mini, claude-sonnet
+
+  // Usage
+  inputTokens       Int
+  outputTokens      Int
+  totalTokens       Int
+  estimatedCost     Decimal  @db.Decimal(10, 6)
+
+  // Performance
+  latencyMs         Int
+
+  // Cache
+  cacheHit          Boolean  @default(false)
+
+  // Request/Response (optional, for debugging)
+  requestHash       String?
+
+  createdAt         DateTime @default(now())
+
+  tenant            Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, feature])
+  @@index([createdAt])
+}
+
+// ============================================================================
+// VERIFICATION TOKEN (for auth)
+// ============================================================================
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}

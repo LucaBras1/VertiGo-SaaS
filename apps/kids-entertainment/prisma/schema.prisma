@@ -1,0 +1,707 @@
+// PartyPal - Kids Entertainment Booking System
+// Adapted from VertiGo Shared Core
+// Entity Mapping: Performance→Package, Game→Activity, Service→Extra, Event→Party
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ========================================
+// ENUMS
+// ========================================
+
+enum DocumentType {
+  FAKTURA
+  PROFORMA
+  ZALOHOVA
+  VYZVA_K_PLATBE
+  OPRAVNY_DOKLAD
+  PRIJMOVY_DOKLAD
+  DANOVY_DOKLAD
+  CENOVA_NABIDKA
+  OBJEDNAVKA
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  VIEWED
+  PAID
+  PARTIALLY_PAID
+  OVERDUE
+  CANCELLED
+  DISPUTED
+}
+
+enum AgeGroup {
+  TODDLER_3_5      // 3-5 years
+  KIDS_6_9         // 6-9 years
+  TWEENS_10_12     // 10-12 years
+  TEENS_13_PLUS    // 13+ years
+}
+
+enum EnergyLevel {
+  CALM
+  MODERATE
+  HIGH
+  VERY_HIGH
+}
+
+enum SafetyRating {
+  VERY_SAFE
+  SAFE
+  REQUIRES_SUPERVISION
+  ADULT_ONLY
+}
+
+// ========================================
+// PACKAGES (was Performance)
+// ========================================
+
+model Package {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Basic Info
+  title    String
+  slug     String  @unique
+  category String  // 'full_party' | 'entertainment' | 'workshop' | 'show'
+  status   String  @default("active")
+  featured Boolean @default(false)
+  order    Int     @default(100)
+
+  // Content
+  subtitle    String?
+  excerpt     String?
+  description Json?
+
+  // PartyPal Specific Fields
+  ageGroupMin     Int?     // Minimum age (e.g., 3)
+  ageGroupMax     Int?     // Maximum age (e.g., 5)
+  ageGroups       String[] // Multiple age groups: ["TODDLER_3_5", "KIDS_6_9"]
+  maxChildren     Int?     // Maximum number of children
+  duration        Int      // Duration in minutes
+
+  // Theme & Character
+  themeName         String? // "Frozen", "Superhero", "Princess", "Dinosaur"
+  includesCharacter Boolean @default(false)
+  characterName     String? // "Elsa", "Spider-Man", "Cinderella"
+  characterCostume  String? // Description of costume quality
+
+  // Inclusions
+  includesCake       Boolean @default(false)
+  includesGoodybags  Boolean @default(false)
+  includesDecoration Boolean @default(false)
+  includesPhotos     Boolean @default(false)
+  includesCertificate Boolean @default(false)
+
+  // Safety
+  safetyNotes     String?
+  allergens       String[] // Common allergens involved
+  indoorOutdoor   String?  // "indoor" | "outdoor" | "both"
+
+  // Requirements
+  spaceRequired       String? // "3x3m minimum"
+  electricityRequired Boolean @default(false)
+  waterRequired       Boolean @default(false)
+  otherRequirements   String?
+
+  // Pricing
+  price        Int? // Base price in smallest currency unit (cents)
+  pricePerChild Int? // Additional price per child beyond base
+
+  // Media
+  featuredImageUrl String
+  featuredImageAlt String
+  galleryImages    Json?
+  videoUrl         String?
+
+  // SEO
+  seo Json?
+
+  // Relations
+  parties     Party[]
+  orderItems  OrderItem[]
+  activities  PackageActivity[] // Many-to-many with Activity
+
+  @@index([status])
+  @@index([category])
+  @@index([slug])
+}
+
+// ========================================
+// ACTIVITIES (was Game)
+// ========================================
+
+model Activity {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Basic Info
+  title    String
+  slug     String  @unique
+  category String  // 'skill_game' | 'creative' | 'active' | 'educational' | 'performance'
+  status   String  @default("active")
+  featured Boolean @default(false)
+  order    Int     @default(100)
+
+  // Content
+  subtitle    String?
+  excerpt     String?
+  description Json?
+
+  // PartyPal Specific Fields
+  duration         Int      // Duration in minutes
+  ageAppropriate   String[] // ["TODDLER_3_5", "KIDS_6_9"]
+  minChildren      Int?     // Minimum participants
+  maxChildren      Int?     // Maximum participants
+
+  // Safety
+  safetyRating      String   @default("SAFE") // VERY_SAFE | SAFE | REQUIRES_SUPERVISION | ADULT_ONLY
+  safetyNotes       String?
+  allergensInvolved String[] // ["latex", "food_coloring", "gluten"]
+  choking_hazard    Boolean  @default(false)
+
+  // Activity Characteristics
+  energyLevel      String?  // "CALM" | "MODERATE" | "HIGH" | "VERY_HIGH"
+  indoorOutdoor    String?  // "indoor" | "outdoor" | "both"
+  materials        String[] // Required materials
+  setupTime        Int?     // Setup time in minutes
+
+  // Educational Value
+  skillsDeveloped  String[] // ["creativity", "teamwork", "motor_skills"]
+  educationalValue String?
+
+  // Pricing
+  price Int?
+
+  // Media
+  featuredImageUrl String
+  featuredImageAlt String
+  galleryImages    Json?
+
+  // SEO
+  seo Json?
+
+  // Relations
+  parties    Party[]
+  orderItems OrderItem[]
+  packages   PackageActivity[]
+
+  @@index([status])
+  @@index([slug])
+  @@index([category])
+}
+
+// ========================================
+// PACKAGE-ACTIVITY RELATIONSHIP (Many-to-Many)
+// ========================================
+
+model PackageActivity {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  packageId  String
+  package    Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  activityId String
+  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  order      Int      @default(0) // Order in the package
+  duration   Int?     // Duration override for this package
+  isOptional Boolean  @default(false)
+  notes      String?
+
+  @@unique([packageId, activityId])
+  @@index([packageId])
+  @@index([activityId])
+}
+
+// ========================================
+// EXTRAS (was Service)
+// ========================================
+
+model Extra {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Basic Info
+  title    String
+  slug     String  @unique
+  category String  // 'costume' | 'decoration' | 'food' | 'photo' | 'other'
+  status   String  @default("active")
+  order    Int     @default(100)
+
+  // Content
+  excerpt     String?
+  description Json?
+
+  // PartyPal Specific
+  allergens   String[] // Allergens for food extras
+  ageRestrictions String? // Age restrictions if any
+
+  // Pricing
+  priceFrom Int?
+  priceUnit String? // 'per_child' | 'per_set' | 'per_hour'
+
+  // Media
+  featuredImageUrl String?
+  featuredImageAlt String?
+
+  // SEO
+  seo Json?
+
+  // Relations
+  orderItems OrderItem[]
+
+  @@index([status])
+  @@index([slug])
+}
+
+// ========================================
+// PARTIES (was Event)
+// ========================================
+
+model Party {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations to packages/activities
+  packageId  String?
+  package    Package?  @relation(fields: [packageId], references: [id])
+  activityId String?
+  activity   Activity? @relation(fields: [activityId], references: [id])
+
+  // Party Details
+  date     DateTime
+  endDate  DateTime?
+  venue    Json // { name, address, city, type: 'home' | 'venue' | 'outdoor' }
+
+  // Child Information
+  childName       String?
+  childAge        Int?
+  childBirthday   DateTime?
+  childGender     String? // "boy" | "girl" | "other" | "prefer_not_to_say"
+  childInterests  String[] // ["dinosaurs", "princesses", "space"]
+
+  // Party Details
+  guestCount      Int?
+  ageRange        Json? // { min: 3, max: 5 }
+  theme           String? // Requested theme
+  specialRequests String?
+
+  // Safety & Health
+  allergies           String[] // List of allergies among guests
+  dietaryRestrictions String[] // Dietary restrictions
+  specialNeeds        String? // Special accommodations needed
+  emergencyContact    Json? // { name, phone, relation }
+
+  // Parent Information
+  parentName  String?
+  parentPhone String?
+  parentEmail String?
+
+  // Status
+  status   String  @default("confirmed") // 'inquiry' | 'confirmed' | 'completed' | 'cancelled'
+  isPublic Boolean @default(false) // Show in public gallery
+
+  // Photo Moments (AI-suggested times to take photos)
+  photoMoments Json? // [{ time: "14:30", activity: "cake cutting", reason: "peak excitement" }]
+
+  // Post-party
+  photosUrl       String? // Link to photo gallery
+  feedbackRating  Int? // 1-5 stars
+  feedbackComment String?
+
+  // Additional Info
+  ticketUrl String?
+  notes     String?
+
+  // Linked from Order
+  orders Order[]
+
+  @@index([date])
+  @@index([packageId])
+  @@index([activityId])
+  @@index([status])
+}
+
+// ========================================
+// CUSTOMERS (Parents/Organizations)
+// ========================================
+
+model Customer {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Basic Info
+  email     String  @unique
+  firstName String
+  lastName  String
+  phone     String?
+
+  // Organization (for corporate bookings)
+  organization     String?
+  organizationType String? // 'school' | 'daycare' | 'corporation' | 'other'
+
+  // Address
+  address Json?
+
+  // Billing Info
+  billingInfo Json?
+
+  // PartyPal Specific
+  children Json? // [{ name, birthday, interests, allergies }]
+
+  // Preferences
+  preferredThemes    String[] // Themes they've booked before
+  communicationPrefs Json? // { sms: true, email: true, whatsapp: false }
+
+  // CRM
+  tags  Json?
+  notes String?
+
+  // GDPR
+  gdprConsent Json?
+
+  // Analytics
+  totalPartiesBooked Int       @default(0)
+  lastPartyDate      DateTime?
+  lifetimeValue      Int       @default(0) // Total spent
+
+  // Relations
+  orders   Order[]
+  invoices Invoice[]
+
+  @@index([email])
+}
+
+// ========================================
+// ORDERS
+// ========================================
+
+model Order {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orderNumber String    @unique
+  customerId  String?
+  customer    Customer? @relation(fields: [customerId], references: [id])
+  source      String    @default("website") // 'website' | 'phone' | 'email' | 'referral'
+  status      String    @default("new") // 'new' | 'confirmed' | 'completed' | 'cancelled'
+
+  // Party Details
+  partyName       String? // e.g., "Emma's 5th Birthday"
+  dates           Json
+  venue           Json
+  arrivalTime     String?
+  preparationTime Int?
+  partyDuration   Int?
+
+  // Items
+  items OrderItem[]
+
+  // PartyPal Specific
+  childInfo Json? // { name, age, interests, allergies }
+  guestCount Int?
+  specialRequests String?
+  allergyNotes String?
+
+  // Pricing
+  pricing Json?
+
+  // Payment
+  paymentMethod  String?
+  paymentDueDate DateTime?
+  invoiceEmail   String?
+
+  // Contacts
+  contacts Json?
+
+  // Documents
+  documents Json?
+
+  // Linked Party
+  linkedPartyId String?
+  linkedParty   Party?  @relation(fields: [linkedPartyId], references: [id])
+
+  // Relations
+  invoices Invoice[]
+
+  @@index([customerId])
+  @@index([status])
+  @@index([orderNumber])
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  // Item can be Package, Activity, or Extra
+  packageId  String?
+  package    Package?  @relation(fields: [packageId], references: [id])
+  activityId String?
+  activity   Activity? @relation(fields: [activityId], references: [id])
+  extraId    String?
+  extra      Extra?    @relation(fields: [extraId], references: [id])
+
+  // Schedule
+  date      String
+  startTime String?
+  endTime   String?
+
+  // Pricing
+  price Int     @default(0)
+  notes String?
+
+  @@index([orderId])
+  @@index([packageId])
+  @@index([activityId])
+  @@index([extraId])
+}
+
+// ========================================
+// INVOICING (Simplified from core)
+// ========================================
+
+model Invoice {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  invoiceNumber String        @unique
+  documentType  DocumentType  @default(FAKTURA)
+  invoiceStatus InvoiceStatus @default(DRAFT)
+  status        String        @default("draft")
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+  orderId    String?
+  order      Order?   @relation(fields: [orderId], references: [id])
+
+  issueDate DateTime @default(now())
+  dueDate   DateTime
+  paidDate  DateTime?
+
+  items       Json
+  subtotal    Int
+  vatRate     Int?    @default(0)
+  vatAmount   Int?    @default(0)
+  totalAmount Int
+  paidAmount  Int     @default(0)
+
+  currency    String  @default("CZK")
+  pdfUrl      String?
+  notes       String?
+
+  @@index([customerId])
+  @@index([orderId])
+  @@index([status])
+  @@index([invoiceNumber])
+}
+
+// ========================================
+// SETTINGS
+// ========================================
+
+model Settings {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  siteName        String  @default("PartyPal")
+  siteDescription String?
+  contactEmail    String?
+  contactPhone    String?
+  address         Json?
+
+  // Branding
+  primaryColor   String @default("#EC4899") // Fun Pink
+  secondaryColor String @default("#FACC15") // Playful Yellow
+  logoUrl        String?
+
+  // Business Info
+  companyName    String?
+  companyIco     String?
+  companyDic     String?
+  bankAccount    String?
+
+  // PartyPal Specific Settings
+  defaultPartyDuration      Int     @default(180) // 3 hours
+  maxGuestsDefault          Int     @default(15)
+  advanceBookingDays        Int     @default(14) // Minimum days in advance
+  cancellationPolicyDays    Int     @default(7)
+  depositPercentage         Int     @default(30)
+
+  // Safety Settings
+  requireAllergyDisclosure  Boolean @default(true)
+  requireEmergencyContact   Boolean @default(true)
+  backgroundCheckRequired   Boolean @default(true)
+  insuranceInfo             Json?
+
+  // AI Settings
+  enableAgeOptimizer        Boolean @default(true)
+  enableSafetyChecker       Boolean @default(true)
+  enableThemeSuggester      Boolean @default(true)
+  enableParentComms         Boolean @default(true)
+  enablePhotoPredictor      Boolean @default(true)
+
+  // Email Templates
+  emailTemplates Json?
+
+  @@map("settings")
+}
+
+// ========================================
+// STAFF / ENTERTAINERS
+// ========================================
+
+model Entertainer {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  firstName String
+  lastName  String
+  stageName String? // Performance name
+  role      String  // 'animator' | 'magician' | 'musician' | 'face_painter'
+  order     Int     @default(100)
+
+  bio      Json?
+  photoUrl String?
+  photoAlt String?
+
+  // Contact
+  email String?
+  phone String?
+
+  // Skills & Specializations
+  specializations String[] // ["magic", "balloon_art", "face_painting"]
+  ageGroups       String[] // Age groups they work best with
+  languages       String[] // Languages spoken
+
+  // Safety & Compliance
+  backgroundCheckDate   DateTime?
+  backgroundCheckStatus String? // "pending" | "approved" | "expired"
+  firstAidCertified     Boolean @default(false)
+  firstAidExpiryDate    DateTime?
+  insuranceNumber       String?
+  insuranceExpiryDate   DateTime?
+
+  // Availability
+  isActive Boolean @default(true)
+
+  @@index([order])
+  @@index([isActive])
+}
+
+// ========================================
+// SAFETY CHECKLISTS
+// ========================================
+
+model SafetyChecklist {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  partyId  String?  @unique
+  orderId  String?  @unique
+
+  // Pre-party checks
+  allergyReview      Boolean @default(false)
+  emergencyContacts  Boolean @default(false)
+  venueAssessment    Boolean @default(false)
+  equipmentCheck     Boolean @default(false)
+  staffBriefing      Boolean @default(false)
+
+  // During party
+  headcountVerified  Boolean @default(false)
+  allergiesConfirmed Boolean @default(false)
+
+  // Post-party
+  incidentReport     Boolean @default(false)
+  feedbackCollected  Boolean @default(false)
+
+  notes Json? // Detailed notes for each check
+
+  completedBy String?
+  completedAt DateTime?
+
+  @@index([partyId])
+  @@index([orderId])
+}
+
+// ========================================
+// AUTHENTICATION (NextAuth.js)
+// ========================================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          String    @default("admin")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
