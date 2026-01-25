@@ -27,6 +27,7 @@ VertiGo is a comprehensive SaaS framework designed for service-based businesses 
 - **CRM** - Customer relationship management
 - **Invoicing** - Order and invoice management
 - **Rich Text Editor** - TipTap-powered content editing
+- **Global Billing Platform** - Multi-currency payments, bank integration, crypto support
 
 ### AI Capabilities
 - **AI Booking Concierge** - Natural language booking widget
@@ -45,6 +46,8 @@ VertiGo is a comprehensive SaaS framework designed for service-based businesses 
 | Authentication | NextAuth.js |
 | Styling | Tailwind CSS + Radix UI |
 | AI | OpenAI GPT-4o |
+| Payments | Stripe, PayPal, GoPay, Coinbase Commerce |
+| Banking | Fio, Plaid, Nordigen (Open Banking) |
 | Monorepo | Turborepo + pnpm |
 | Validation | Zod |
 | Rich Text | TipTap |
@@ -64,6 +67,7 @@ VertiGo-SaaS/
 │   └── kids-entertainment/        # PartyPal - Kids entertainment
 ├── packages/
 │   ├── ai-core/                   # AI utilities & OpenAI integration
+│   ├── billing/                   # Global billing & payments platform
 │   ├── database/                  # Prisma schema & utilities
 │   ├── ui/                        # Shared React components
 │   └── config/                    # Shared configurations
@@ -122,6 +126,16 @@ NEXTAUTH_URL="http://localhost:3000"
 
 # OpenAI
 OPENAI_API_KEY="sk-..."
+
+# Billing & Payments (optional)
+STRIPE_SECRET_KEY="sk_..."
+STRIPE_WEBHOOK_SECRET="whsec_..."
+PAYPAL_CLIENT_ID="..."
+PAYPAL_CLIENT_SECRET="..."
+FIO_API_TOKEN="..."
+PLAID_CLIENT_ID="..."
+PLAID_SECRET="..."
+COINBASE_COMMERCE_API_KEY="..."
 ```
 
 ## Development
@@ -209,6 +223,37 @@ Shared component library:
 - `ConversationalBooking` - NLU booking widget
 - Common UI primitives (Button, Card, etc.)
 
+### @vertigo/billing
+
+Global billing and payments platform with:
+- **Invoice Management** - Multi-currency invoicing with auto-numbering
+- **Payment Processing** - Stripe, PayPal, GoPay, Adyen integration
+- **Bank Integration** - Fio, Wise, Revolut, Plaid, Nordigen (Open Banking)
+- **Crypto Payments** - Bitcoin, Ethereum, USDC via Coinbase Commerce
+- **AI Payment Matcher** - Intelligent transaction-invoice matching (85%+ accuracy)
+- **Expense Management** - Receipt OCR and categorization
+- **Multi-Currency** - 18+ currencies with real-time exchange rates
+
+```typescript
+import { InvoiceService, PaymentService } from '@vertigo/billing'
+
+// Create invoice
+const invoice = await InvoiceService.createInvoice({
+  tenantId: 'tenant-123',
+  customerId: 'customer-456',
+  items: [{ description: 'Service', amount: 1000, currency: 'USD' }]
+})
+
+// Process payment
+const payment = await PaymentService.processPayment({
+  invoiceId: invoice.id,
+  gateway: 'stripe',
+  method: 'card'
+})
+```
+
+See [Billing Integration Guide](./BILLING_INTEGRATION_COMPLETE.md) for detailed documentation.
+
 ## Deployment
 
 Each vertical deploys to its own Vercel project:
@@ -251,7 +296,10 @@ docker-compose exec db psql -U postgres -d vertigo
 ## Roadmap
 
 - [ ] Complete all 7 vertical applications
-- [ ] Stripe subscription integration
+- [x] Stripe payment integration (@vertigo/billing)
+- [x] Multi-currency invoicing support
+- [x] Bank integration (Fio, Plaid, Open Banking)
+- [x] Crypto payments (Coinbase Commerce)
 - [ ] Unified admin dashboard theme
 - [ ] E2E tests with Playwright
 - [ ] Mobile app (React Native)

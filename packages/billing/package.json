@@ -1,0 +1,66 @@
+{
+  "name": "@vertigo/billing",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types/index.mjs",
+      "require": "./dist/types/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./services": {
+      "import": "./dist/services/index.mjs",
+      "require": "./dist/services/index.js",
+      "types": "./dist/services/index.d.ts"
+    },
+    "./integrations": {
+      "import": "./dist/integrations/index.mjs",
+      "require": "./dist/integrations/index.js",
+      "types": "./dist/integrations/index.d.ts"
+    },
+    "./ai": {
+      "import": "./dist/ai/index.mjs",
+      "require": "./dist/ai/index.js",
+      "types": "./dist/ai/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint src/",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist node_modules"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.10.0",
+    "stripe": "^14.0.0",
+    "@paypal/checkout-server-sdk": "^1.0.3",
+    "plaid": "^20.0.0",
+    "coinbase-commerce-node": "^1.0.4",
+    "qrcode": "^1.5.3",
+    "dinero.js": "^2.0.0-alpha.14",
+    "date-fns": "^3.0.0",
+    "ioredis": "^5.3.0",
+    "zod": "^3.22.0",
+    "axios": "^1.6.0",
+    "openai": "^4.28.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/qrcode": "^1.5.5",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.2.0",
+    "eslint": "^8.56.0"
+  }
+}

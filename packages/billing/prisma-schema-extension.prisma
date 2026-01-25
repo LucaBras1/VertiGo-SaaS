@@ -1,0 +1,439 @@
+// ============================================================================
+// BILLING EXTENSION - Add to packages/database/prisma/schema.prisma
+// ============================================================================
+
+// ============================================================================
+// ENUMS - Add to existing enums section
+// ============================================================================
+
+enum BankProvider {
+  FIO
+  WISE
+  REVOLUT
+  PLAID
+  NORDIGEN
+  MANUAL
+}
+
+enum TransactionType {
+  DEBIT
+  CREDIT
+}
+
+enum ExpenseCategory {
+  OFFICE_SUPPLIES
+  EQUIPMENT
+  TRAVEL
+  MEALS
+  ENTERTAINMENT
+  MARKETING
+  SOFTWARE
+  SUBSCRIPTIONS
+  UTILITIES
+  RENT
+  INSURANCE
+  PROFESSIONAL_SERVICES
+  TRAINING
+  OTHER
+}
+
+enum ExpenseStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+  REIMBURSED
+}
+
+// ============================================================================
+// CURRENCY & EXCHANGE RATES
+// ============================================================================
+
+model Currency {
+  id              String   @id @default(cuid())
+  code            String   @unique // CZK, EUR, USD, BTC, etc.
+  name            String
+  symbol          String
+  decimals        Int      @default(2)
+  isCrypto        Boolean  @default(false)
+  isStablecoin    Boolean  @default(false)
+  isActive        Boolean  @default(true)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  exchangeRatesFrom ExchangeRate[] @relation("FromCurrency")
+  exchangeRatesTo   ExchangeRate[] @relation("ToCurrency")
+
+  @@index([code])
+}
+
+model ExchangeRate {
+  id              String   @id @default(cuid())
+  fromCurrencyId  String
+  toCurrencyId    String
+  rate            Decimal  @db.Decimal(20, 10)
+  source          String   // ECB, CNB, OpenExchange, Coinbase, Manual
+  timestamp       DateTime
+
+  fromCurrency    Currency @relation("FromCurrency", fields: [fromCurrencyId], references: [id])
+  toCurrency      Currency @relation("ToCurrency", fields: [toCurrencyId], references: [id])
+
+  @@unique([fromCurrencyId, toCurrencyId, timestamp])
+  @@index([timestamp])
+}
+
+// ============================================================================
+// BANK ACCOUNTS & TRANSACTIONS
+// ============================================================================
+
+model BankAccount {
+  id                String       @id @default(cuid())
+  tenantId          String
+
+  // Account details
+  accountName       String
+  accountNumber     String
+  bankCode          String?
+  iban              String?
+  swift             String?
+
+  // Provider
+  provider          BankProvider
+  providerAccountId String?
+
+  // Currency & balance
+  currency          String       @default("EUR")
+  balance           Decimal?     @db.Decimal(12, 2)
+  balanceUpdatedAt  DateTime?
+
+  // Sync settings
+  autoSync          Boolean      @default(false)
+  lastSyncAt        DateTime?
+  syncFrequency     String       @default("MANUAL") // MANUAL, HOURLY, DAILY, WEEKLY
+
+  // Encrypted credentials (JSON)
+  credentials       Json?        @db.JsonB
+
+  // Status
+  isActive          Boolean      @default(true)
+
+  // Metadata
+  metadata          Json?        @db.JsonB
+
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  tenant            Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  transactions      BankTransaction[]
+
+  @@index([tenantId])
+  @@index([provider])
+}
+
+model BankTransaction {
+  id                  String          @id @default(cuid())
+  bankAccountId       String
+  tenantId            String
+
+  // Transaction details
+  transactionId       String          // Bank's transaction ID
+  date                DateTime
+  amount              Decimal         @db.Decimal(12, 2)
+  currency            String
+
+  // Type
+  type                TransactionType
+
+  // Counterparty
+  counterpartyName    String?
+  counterpartyAccount String?
+  counterpartyBankCode String?
+
+  // Description
+  description         String?         @db.Text
+  note                String?         @db.Text
+  variableSymbol      String?
+  constantSymbol      String?
+  specificSymbol      String?
+
+  // Reference
+  reference           String?
+
+  // Matching
+  isMatched           Boolean         @default(false)
+  matchedInvoiceId    String?
+  matchedPaymentId    String?
+  matchConfidence     Decimal?        @db.Decimal(3, 2) // 0.00 to 1.00
+
+  // AI suggestions
+  aiSuggestions       Json?           @db.JsonB
+
+  // Metadata
+  metadata            Json?           @db.JsonB
+
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+
+  bankAccount         BankAccount     @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
+  tenant              Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  matchedInvoice      Invoice?        @relation(fields: [matchedInvoiceId], references: [id])
+
+  @@unique([bankAccountId, transactionId])
+  @@index([tenantId])
+  @@index([date])
+  @@index([isMatched])
+}
+
+// ============================================================================
+// INVOICE PAYMENTS (Enhanced)
+// ============================================================================
+
+model InvoicePayment {
+  id                String   @id @default(cuid())
+  tenantId          String
+  invoiceId         String
+
+  // Payment details
+  amount            Decimal  @db.Decimal(10, 2)
+  currency          String
+  method            PaymentMethod
+  status            String   @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED, CANCELLED, REFUNDED
+
+  // Gateway info
+  gatewayProvider   String?
+  gatewayPaymentId  String?
+  gatewayFee        Decimal? @db.Decimal(10, 2)
+
+  // Transaction details
+  transactionId     String?
+  reference         String?
+
+  // Dates
+  processedAt       DateTime?
+  completedAt       DateTime?
+
+  // Metadata
+  metadata          Json?    @db.JsonB
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  tenant            Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  invoice           Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([invoiceId])
+  @@index([status])
+}
+
+// ============================================================================
+// PAYMENT GATEWAY CONFIGURATION
+// ============================================================================
+
+model PaymentGatewayConfig {
+  id                String   @id @default(cuid())
+  tenantId          String
+
+  // Provider
+  provider          String   // STRIPE, PAYPAL, GOPAY, ADYEN, SQUARE
+
+  // Config (encrypted)
+  config            Json     @db.JsonB
+
+  // Status
+  isActive          Boolean  @default(true)
+  isTest            Boolean  @default(false)
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  tenant            Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, provider])
+  @@index([tenantId])
+}
+
+// ============================================================================
+// CRYPTO PAYMENTS
+// ============================================================================
+
+model CryptoWallet {
+  id                String   @id @default(cuid())
+  tenantId          String
+
+  // Wallet details
+  currency          String   // BTC, ETH, USDC, USDT
+  address           String
+  network           String?  // mainnet, testnet, polygon, etc.
+
+  // Provider
+  provider          String   // COINBASE_COMMERCE, BTCPAY_SERVER, CIRCLE
+
+  // Status
+  isActive          Boolean  @default(true)
+
+  // Metadata
+  metadata          Json?    @db.JsonB
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  tenant            Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  payments          CryptoPayment[]
+
+  @@unique([tenantId, currency, address])
+  @@index([tenantId])
+}
+
+model CryptoPayment {
+  id                String   @id @default(cuid())
+  walletId          String
+  invoiceId         String?
+
+  // Payment details
+  amount            String   // Crypto amounts as strings for precision
+  currency          String
+  txHash            String?  // Transaction hash
+  confirmations     Int      @default(0)
+
+  // Status
+  status            String   @default("PENDING") // PENDING, CONFIRMED, COMPLETED, FAILED
+
+  // Dates
+  detectedAt        DateTime?
+  confirmedAt       DateTime?
+
+  // Metadata
+  metadata          Json?    @db.JsonB
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  wallet            CryptoWallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  invoice           Invoice?     @relation(fields: [invoiceId], references: [id])
+
+  @@index([walletId])
+  @@index([status])
+}
+
+// ============================================================================
+// EXPENSES
+// ============================================================================
+
+model ExpenseCategory {
+  id                String   @id @default(cuid())
+  tenantId          String
+  name              String
+  description       String?
+  isDefault         Boolean  @default(false)
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  tenant            Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  expenses          Expense[]
+
+  @@unique([tenantId, name])
+  @@index([tenantId])
+}
+
+model Expense {
+  id                String          @id @default(cuid())
+  tenantId          String
+  categoryId        String
+
+  // Basic info
+  description       String
+  amount            Decimal         @db.Decimal(10, 2)
+  currency          String
+
+  // Date
+  date              DateTime
+
+  // Vendor
+  vendor            String?
+
+  // Receipt
+  receiptUrl        String?
+  receiptOcrData    Json?           @db.JsonB
+
+  // Tax
+  taxAmount         Decimal?        @db.Decimal(10, 2)
+  isTaxDeductible   Boolean         @default(false)
+
+  // Status
+  status            ExpenseStatus
+
+  // Approval
+  approvedBy        String?
+  approvedAt        DateTime?
+  rejectedReason    String?
+
+  // Reimbursement
+  reimbursedAt      DateTime?
+  reimbursedAmount  Decimal?        @db.Decimal(10, 2)
+
+  // Notes
+  notes             String?         @db.Text
+
+  // Metadata
+  metadata          Json?           @db.JsonB
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  tenant            Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  category          ExpenseCategory @relation(fields: [categoryId], references: [id])
+
+  @@index([tenantId])
+  @@index([status])
+  @@index([date])
+}
+
+// ============================================================================
+// RECURRING INVOICES
+// ============================================================================
+
+model RecurringInvoiceTemplate {
+  id                String   @id @default(cuid())
+  tenantId          String
+
+  // Recurrence
+  frequency         String   // WEEKLY, BIWEEKLY, MONTHLY, QUARTERLY, YEARLY
+  nextInvoiceDate   DateTime
+  isActive          Boolean  @default(true)
+
+  // Invoice template (JSON)
+  invoiceTemplate   Json     @db.JsonB
+
+  // Metadata
+  metadata          Json?    @db.JsonB
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  tenant            Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([nextInvoiceDate])
+}
+
+// ============================================================================
+// UPDATE EXISTING MODELS - Add these relations
+// ============================================================================
+
+// Add to Tenant model:
+// bankAccounts              BankAccount[]
+// bankTransactions          BankTransaction[]
+// invoicePayments           InvoicePayment[]
+// paymentGatewayConfigs     PaymentGatewayConfig[]
+// cryptoWallets             CryptoWallet[]
+// expenseCategories         ExpenseCategory[]
+// expenses                  Expense[]
+// recurringInvoiceTemplates RecurringInvoiceTemplate[]
+
+// Add to Invoice model:
+// payments                  InvoicePayment[]
+// bankTransactions          BankTransaction[]
+// cryptoPayments            CryptoPayment[]

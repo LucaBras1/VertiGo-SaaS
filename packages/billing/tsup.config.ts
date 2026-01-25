@@ -1,0 +1,19 @@
+import { defineConfig } from 'tsup';
+
+export default defineConfig({
+  entry: {
+    index: 'src/index.ts',
+    'types/index': 'src/types/index.ts',
+    'services/index': 'src/services/index.ts',
+    'integrations/index': 'src/integrations/index.ts',
+    'ai/index': 'src/ai/index.ts',
+  },
+  format: ['cjs', 'esm'],
+  dts: true,
+  splitting: false,
+  sourcemap: true,
+  clean: true,
+  treeshake: true,
+  minify: false,
+  external: ['@prisma/client', 'openai', 'stripe'],
+});

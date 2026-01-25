@@ -24,6 +24,7 @@
     "@prisma/client": "^6.19.0",
     "@tanstack/react-query": "^5.90.9",
     "@vertigo/ai-core": "workspace:*",
+    "@vertigo/billing": "workspace:*",
     "@vertigo/database": "workspace:*",
     "@vertigo/ui": "workspace:*",
     "bcryptjs": "^3.0.3",
