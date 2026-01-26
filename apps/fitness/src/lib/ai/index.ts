@@ -4,6 +4,14 @@
  * Export all AI-powered features for fitness vertical
  */
 
+// OpenAI Client utilities
+export {
+  isOpenAIAvailable,
+  generateCompletion,
+  generateStructuredCompletion,
+} from './openai-client'
+
+// Workout Generator
 export {
   generateWorkout,
   WorkoutGeneratorInputSchema,

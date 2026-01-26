@@ -11,6 +11,7 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Modal } from '@/components/ui/Modal'
+import { AIGalleryCurationModal } from '@/components/modals/AIGalleryCurationModal'
 import toast from 'react-hot-toast'
 
 interface Gallery {
@@ -64,8 +65,8 @@ export default function GalleryDetailPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showShareModal, setShowShareModal] = useState(false)
+  const [showCurationModal, setShowCurationModal] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
-  const [isCurating, setIsCurating] = useState(false)
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
 
   useEffect(() => {
@@ -106,21 +107,22 @@ export default function GalleryDetailPage() {
     }
   }
 
-  const handleAICurate = async () => {
-    setIsCurating(true)
+  const handleCurationComplete = async (result: { selected: { imageId: string; score: number; category: string; isHighlight: boolean }[] }) => {
     try {
-      const res = await fetch('/api/ai/gallery/curate', {
-        method: 'POST',
+      // Update gallery photos with curation results
+      const res = await fetch(`/api/galleries/${params.id}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ galleryId: params.id })
+        body: JSON.stringify({
+          aiCurated: true,
+          curationResult: result
+        })
       })
-      if (!res.ok) throw new Error('Failed to curate')
-      toast.success('AI curation started')
+      if (!res.ok) throw new Error('Failed to apply curation')
+      toast.success('AI curation applied successfully!')
       fetchGallery()
     } catch (error) {
-      toast.error('Failed to start AI curation')
-    } finally {
-      setIsCurating(false)
+      toast.error('Failed to apply curation')
     }
   }
 
@@ -185,6 +187,12 @@ export default function GalleryDetailPage() {
           <p className="text-gray-600 mt-1">{gallery.shoot.package.client.name}</p>
         </div>
         <div className="flex items-center gap-2">
+          <Link href={`/dashboard/galleries/${params.id}/edit`}>
+            <Button variant="secondary">
+              <Edit className="w-4 h-4 mr-2" />
+              Edit
+            </Button>
+          </Link>
           <Button variant="secondary" onClick={() => setShowShareModal(true)}>
             <Share2 className="w-4 h-4 mr-2" />
             Share
@@ -213,8 +221,8 @@ export default function GalleryDetailPage() {
             </select>
           </div>
           <div className="flex items-center gap-2">
-            {!gallery.aiCurated && (
-              <Button onClick={handleAICurate} isLoading={isCurating}>
+            {!gallery.aiCurated && gallery.photos.length > 0 && (
+              <Button onClick={() => setShowCurationModal(true)}>
                 <Sparkles className="w-4 h-4 mr-2" />
                 AI Curate
               </Button>
@@ -425,6 +433,20 @@ export default function GalleryDetailPage() {
           </div>
         </div>
       </Modal>
+
+      {/* AI Curation Modal */}
+      <AIGalleryCurationModal
+        isOpen={showCurationModal}
+        onClose={() => setShowCurationModal(false)}
+        onComplete={handleCurationComplete}
+        galleryId={gallery.id}
+        images={gallery.photos.map(p => ({
+          id: p.id,
+          url: p.url,
+          filename: p.filename
+        }))}
+        eventType={gallery.shoot?.package?.eventType || 'wedding'}
+      />
     </div>
   )
 }

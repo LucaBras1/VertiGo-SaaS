@@ -1,105 +1,90 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Plus, Search, Music, Clock, Tag, TrendingUp } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Plus, Search, Music, Clock, TrendingUp } from 'lucide-react'
 import { formatDuration } from '@/lib/utils'
+import toast from 'react-hot-toast'
 
-// Mock data
-const mockSongs = [
-  {
-    id: '1',
-    title: 'Thinking Out Loud',
-    artist: 'Ed Sheeran',
-    genre: 'Pop',
-    mood: 'romantic',
-    duration: 281,
-    key: 'D',
-    bpm: 79,
-    timesPerformed: 45,
-    tags: ['wedding', 'slow dance'],
-  },
-  {
-    id: '2',
-    title: 'Uptown Funk',
-    artist: 'Bruno Mars',
-    genre: 'Funk',
-    mood: 'energetic',
-    duration: 270,
-    key: 'Dm',
-    bpm: 115,
-    timesPerformed: 38,
-    tags: ['party', 'dance'],
-  },
-  {
-    id: '3',
-    title: 'Perfect',
-    artist: 'Ed Sheeran',
-    genre: 'Pop',
-    mood: 'romantic',
-    duration: 263,
-    key: 'Ab',
-    bpm: 95,
-    timesPerformed: 52,
-    tags: ['wedding', 'first dance'],
-  },
-  {
-    id: '4',
-    title: 'Shape of You',
-    artist: 'Ed Sheeran',
-    genre: 'Pop',
-    mood: 'party',
-    duration: 234,
-    key: 'C#m',
-    bpm: 96,
-    timesPerformed: 41,
-    tags: ['dance', 'upbeat'],
-  },
-  {
-    id: '5',
-    title: 'Can\'t Stop the Feeling',
-    artist: 'Justin Timberlake',
-    genre: 'Pop',
-    mood: 'party',
-    duration: 236,
-    key: 'C',
-    bpm: 113,
-    timesPerformed: 36,
-    tags: ['party', 'feel-good'],
-  },
-]
+interface Song {
+  id: string
+  title: string
+  artist?: string
+  genre?: string
+  mood?: string
+  duration: number
+  key?: string
+  bpm?: number
+  timesPerformed: number
+}
 
-const moodColors = {
-  romantic: 'bg-pink-100 text-pink-700',
-  energetic: 'bg-orange-100 text-orange-700',
-  party: 'bg-purple-100 text-purple-700',
-  chill: 'bg-blue-100 text-blue-700',
+const moodConfig: Record<string, { label: string; variant: 'default' | 'danger' | 'warning' | 'info' }> = {
+  romantic: { label: 'Romantická', variant: 'danger' },
+  energetic: { label: 'Energická', variant: 'warning' },
+  party: { label: 'Párty', variant: 'info' },
+  chill: { label: 'Klidná', variant: 'default' },
 }
 
 export default function RepertoirePage() {
+  const [songs, setSongs] = useState<Song[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [moodFilter, setMoodFilter] = useState('all')
 
-  const filteredSongs = mockSongs.filter((song) => {
+  useEffect(() => {
+    fetchSongs()
+  }, [])
+
+  const fetchSongs = async () => {
+    try {
+      const response = await fetch('/api/repertoire')
+      if (response.ok) {
+        const data = await response.json()
+        setSongs(data.songs || [])
+      }
+    } catch (error) {
+      toast.error('Nepodařilo se načíst repertoár')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const filteredSongs = songs.filter((song) => {
     const matchesSearch =
       song.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      song.artist.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      song.genre.toLowerCase().includes(searchQuery.toLowerCase())
+      song.artist?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      song.genre?.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesMood = moodFilter === 'all' || song.mood === moodFilter
     return matchesSearch && matchesMood
   })
+
+  const stats = {
+    total: songs.length,
+    mostPerformed: songs.length > 0 ? songs.sort((a, b) => b.timesPerformed - a.timesPerformed)[0]?.title : '-',
+    totalDuration: Math.floor(songs.reduce((sum, s) => sum + s.duration, 0) / 60),
+    genres: new Set(songs.map(s => s.genre).filter(Boolean)).size,
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Repertoire</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Repertoár</h1>
           <p className="text-gray-600 mt-1">
-            Manage your song catalog and performance history
+            Správa vašeho katalogu písní
           </p>
         </div>
         <div className="flex gap-3">
@@ -109,7 +94,7 @@ export default function RepertoirePage() {
           <Button asChild>
             <Link href="/dashboard/repertoire/new">
               <Plus className="w-4 h-4 mr-2" />
-              Add Song
+              Přidat píseň
             </Link>
           </Button>
         </div>
@@ -121,7 +106,7 @@ export default function RepertoirePage() {
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <Input
-              placeholder="Search by song, artist, or genre..."
+              placeholder="Hledat podle názvu, interpreta nebo žánru..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -132,11 +117,11 @@ export default function RepertoirePage() {
             onChange={(e) => setMoodFilter(e.target.value)}
             className="px-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
-            <option value="all">All Moods</option>
-            <option value="romantic">Romantic</option>
-            <option value="energetic">Energetic</option>
-            <option value="party">Party</option>
-            <option value="chill">Chill</option>
+            <option value="all">Všechny nálady</option>
+            <option value="romantic">Romantická</option>
+            <option value="energetic">Energická</option>
+            <option value="party">Párty</option>
+            <option value="chill">Klidná</option>
           </select>
         </div>
       </Card>
@@ -144,28 +129,20 @@ export default function RepertoirePage() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="p-4">
-          <div className="text-sm text-gray-600">Total Songs</div>
-          <div className="text-2xl font-bold text-gray-900 mt-1">
-            {mockSongs.length}
-          </div>
+          <div className="text-sm text-gray-600">Celkem písní</div>
+          <div className="text-2xl font-bold text-gray-900 mt-1">{stats.total}</div>
         </Card>
         <Card className="p-4">
-          <div className="text-sm text-gray-600">Most Performed</div>
-          <div className="text-xl font-bold text-primary-600 mt-1 truncate">
-            {mockSongs.sort((a, b) => b.timesPerformed - a.timesPerformed)[0]?.title}
-          </div>
+          <div className="text-sm text-gray-600">Nejhranější</div>
+          <div className="text-xl font-bold text-primary-600 mt-1 truncate">{stats.mostPerformed}</div>
         </Card>
         <Card className="p-4">
-          <div className="text-sm text-gray-600">Total Duration</div>
-          <div className="text-2xl font-bold text-gray-900 mt-1">
-            {Math.floor(mockSongs.reduce((sum, s) => sum + s.duration, 0) / 60)} min
-          </div>
+          <div className="text-sm text-gray-600">Celková délka</div>
+          <div className="text-2xl font-bold text-gray-900 mt-1">{stats.totalDuration} min</div>
         </Card>
         <Card className="p-4">
-          <div className="text-sm text-gray-600">Genres</div>
-          <div className="text-2xl font-bold text-gray-900 mt-1">
-            {new Set(mockSongs.map((s) => s.genre)).size}
-          </div>
+          <div className="text-sm text-gray-600">Žánry</div>
+          <div className="text-2xl font-bold text-gray-900 mt-1">{stats.genres}</div>
         </Card>
       </div>
 
@@ -175,24 +152,12 @@ export default function RepertoirePage() {
           <table className="w-full">
             <thead className="border-b bg-gray-50">
               <tr>
-                <th className="text-left p-4 text-sm font-semibold text-gray-900">
-                  Song
-                </th>
-                <th className="text-left p-4 text-sm font-semibold text-gray-900 hidden md:table-cell">
-                  Genre
-                </th>
-                <th className="text-left p-4 text-sm font-semibold text-gray-900">
-                  Mood
-                </th>
-                <th className="text-left p-4 text-sm font-semibold text-gray-900 hidden lg:table-cell">
-                  Key / BPM
-                </th>
-                <th className="text-left p-4 text-sm font-semibold text-gray-900 hidden sm:table-cell">
-                  Duration
-                </th>
-                <th className="text-left p-4 text-sm font-semibold text-gray-900">
-                  Performed
-                </th>
+                <th className="text-left p-4 text-sm font-semibold text-gray-900">Píseň</th>
+                <th className="text-left p-4 text-sm font-semibold text-gray-900 hidden md:table-cell">Žánr</th>
+                <th className="text-left p-4 text-sm font-semibold text-gray-900">Nálada</th>
+                <th className="text-left p-4 text-sm font-semibold text-gray-900 hidden lg:table-cell">Tónina / BPM</th>
+                <th className="text-left p-4 text-sm font-semibold text-gray-900 hidden sm:table-cell">Délka</th>
+                <th className="text-left p-4 text-sm font-semibold text-gray-900">Odehráno</th>
               </tr>
             </thead>
             <tbody className="divide-y">
@@ -201,57 +166,55 @@ export default function RepertoirePage() {
                   <td colSpan={6} className="p-12 text-center">
                     <Music className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                      No songs found
+                      Žádné písně nenalezeny
                     </h3>
                     <p className="text-gray-600 mb-6">
                       {searchQuery || moodFilter !== 'all'
-                        ? 'Try adjusting your filters'
-                        : 'Add your first song to get started'}
+                        ? 'Zkuste upravit filtry'
+                        : 'Přidejte první píseň'}
                     </p>
                   </td>
                 </tr>
               ) : (
-                filteredSongs.map((song) => (
-                  <tr
-                    key={song.id}
-                    className="hover:bg-gray-50 cursor-pointer transition"
-                  >
-                    <td className="p-4">
-                      <div>
-                        <div className="font-semibold text-gray-900">
-                          {song.title}
+                filteredSongs.map((song) => {
+                  const mood = moodConfig[song.mood || ''] || moodConfig.chill
+                  return (
+                    <tr
+                      key={song.id}
+                      className="hover:bg-gray-50 cursor-pointer transition"
+                      onClick={() => window.location.href = `/dashboard/repertoire/${song.id}`}
+                    >
+                      <td className="p-4">
+                        <div>
+                          <div className="font-semibold text-gray-900">{song.title}</div>
+                          <div className="text-sm text-gray-600">{song.artist || '-'}</div>
                         </div>
-                        <div className="text-sm text-gray-600">{song.artist}</div>
-                      </div>
-                    </td>
-                    <td className="p-4 text-sm text-gray-600 hidden md:table-cell">
-                      {song.genre}
-                    </td>
-                    <td className="p-4">
-                      <span
-                        className={`px-2 py-1 text-xs font-medium rounded capitalize ${
-                          moodColors[song.mood as keyof typeof moodColors]
-                        }`}
-                      >
-                        {song.mood}
-                      </span>
-                    </td>
-                    <td className="p-4 text-sm text-gray-600 hidden lg:table-cell">
-                      {song.key} • {song.bpm} BPM
-                    </td>
-                    <td className="p-4 text-sm text-gray-600 hidden sm:table-cell">
-                      {formatDuration(song.duration)}
-                    </td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-2 text-sm">
-                        <TrendingUp className="w-4 h-4 text-primary-600" />
-                        <span className="font-semibold text-gray-900">
-                          {song.timesPerformed}
-                        </span>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                      <td className="p-4 text-sm text-gray-600 hidden md:table-cell">
+                        {song.genre || '-'}
+                      </td>
+                      <td className="p-4">
+                        {song.mood ? (
+                          <Badge variant={mood.variant}>{mood.label}</Badge>
+                        ) : (
+                          <span className="text-gray-400">-</span>
+                        )}
+                      </td>
+                      <td className="p-4 text-sm text-gray-600 hidden lg:table-cell">
+                        {song.key || '-'} {song.bpm ? `• ${song.bpm} BPM` : ''}
+                      </td>
+                      <td className="p-4 text-sm text-gray-600 hidden sm:table-cell">
+                        {formatDuration(song.duration)}
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2 text-sm">
+                          <TrendingUp className="w-4 h-4 text-primary-600" />
+                          <span className="font-semibold text-gray-900">{song.timesPerformed}</span>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })
               )}
             </tbody>
           </table>

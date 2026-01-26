@@ -2,7 +2,8 @@ import { hash } from 'bcryptjs'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
-import { Vertical } from '@prisma/client'
+import { Vertical } from '@/generated/prisma'
+import { sendWelcomeEmail } from '@/lib/email'
 
 const signupSchema = z.object({
   name: z.string().min(2),
@@ -70,6 +71,18 @@ export async function POST(req: Request) {
 
       return { tenant, user }
     })
+
+    // Send welcome email
+    try {
+      const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3006'
+      await sendWelcomeEmail({
+        to: email,
+        name: name,
+        loginUrl: `${baseUrl}/auth/signin`,
+      })
+    } catch (emailError) {
+      console.error('Failed to send welcome email:', emailError)
+    }
 
     return NextResponse.json({
       message: 'Registrace úspěšná',

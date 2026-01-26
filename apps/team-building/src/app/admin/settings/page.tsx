@@ -5,25 +5,45 @@
 
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import { Save, Settings as SettingsIcon, Mail, Phone, MapPin, Globe } from 'lucide-react'
+import { Save, Settings as SettingsIcon, Mail, Globe, Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 export default function SettingsPage() {
   const [isSaving, setIsSaving] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [settings, setSettings] = useState({
-    siteTitle: 'TeamForge - Team Building',
-    siteDescription: 'Profesionální teambuilding programy a workshopy',
-    contactEmail: 'info@teamforge.cz',
-    contactPhone: '+420 123 456 789',
-    companyName: 'TeamForge s.r.o.',
-    companyAddress: 'Ulice 123, 160 00 Praha 6',
-    companyIco: '12345678',
-    companyDic: 'CZ12345678',
-    companyBankAccount: '123456789/0100',
+    siteTitle: '',
+    siteDescription: '',
+    contactEmail: '',
+    contactPhone: '',
+    companyName: '',
+    companyAddress: '',
+    companyIco: '',
+    companyDic: '',
+    companyBankAccount: '',
   })
+
+  // Load settings on mount
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const response = await fetch('/api/settings')
+        if (response.ok) {
+          const data = await response.json()
+          setSettings(data)
+        }
+      } catch (error) {
+        console.error('Error loading settings:', error)
+        toast.error('Nepodařilo se načíst nastavení')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    loadSettings()
+  }, [])
 
   const handleChange = (field: string, value: string) => {
     setSettings((prev) => ({
@@ -35,8 +55,16 @@ export default function SettingsPage() {
   const handleSave = async () => {
     setIsSaving(true)
     try {
-      // TODO: Implement settings save API
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      const response = await fetch('/api/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settings),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to save settings')
+      }
+
       toast.success('Nastavení byla úspěšně uložena')
     } catch (error) {
       console.error('Error saving settings:', error)
@@ -44,6 +72,14 @@ export default function SettingsPage() {
     } finally {
       setIsSaving(false)
     }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="w-8 h-8 animate-spin text-brand-primary" />
+      </div>
+    )
   }
 
   return (

@@ -11,6 +11,7 @@
  */
 
 import { z } from 'zod'
+import { generateCompletion, isOpenAIAvailable } from './openai-client'
 
 // Input schema
 export const GigPriceInputSchema = z.object({
@@ -130,16 +131,41 @@ export async function calculateGigPrice(
 ): Promise<GigPricing> {
   const validatedInput = GigPriceInputSchema.parse(input)
 
-  // Build prompts
-  const systemPrompt = buildPricingSystemPrompt()
-  const userPrompt = buildPricingUserPrompt(validatedInput)
+  // Use rule-based calculation for core pricing
+  const pricing = calculatePricingTiers(validatedInput)
 
-  // TODO: Integrate with @vertigo/ai-core for market data analysis
-  // const ai = createAIClient({ apiKey: process.env.OPENAI_API_KEY })
-  // const response = await ai.chatStructured(...)
+  // Optionally enhance with AI insights
+  if (isOpenAIAvailable()) {
+    try {
+      const systemPrompt = buildPricingSystemPrompt()
+      const userPrompt = buildPricingUserPrompt(validatedInput)
 
-  // For now, use rule-based pricing
-  return calculatePricingTiers(validatedInput)
+      const aiInsights = await generateCompletion(
+        systemPrompt,
+        userPrompt + `\n\nBased on these calculated prices:
+- Economy: ${pricing.economy.totalPrice} ${pricing.currency}
+- Standard: ${pricing.standard.totalPrice} ${pricing.currency}
+- Premium: ${pricing.premium.totalPrice} ${pricing.currency}
+
+Provide brief market positioning insights and negotiation tips (2-3 sentences each).`,
+        {
+          temperature: 0.7,
+          maxTokens: 500,
+        }
+      )
+
+      if (aiInsights) {
+        // Append AI insights to recommendations
+        pricing.recommendations.push(`AI Insight: ${aiInsights}`)
+        console.log('[GigPriceAI] Enhanced pricing with OpenAI insights')
+      }
+    } catch (error) {
+      console.error('[GigPriceAI] Failed to get AI insights:', error)
+      // Continue with rule-based pricing
+    }
+  }
+
+  return pricing
 }
 
 function buildPricingSystemPrompt(): string {

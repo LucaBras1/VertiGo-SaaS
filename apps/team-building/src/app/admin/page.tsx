@@ -1,5 +1,6 @@
 /**
  * Admin Dashboard Home
+ * Displays real data from database
  */
 
 import Link from 'next/link'
@@ -12,29 +13,131 @@ import {
   Clock,
   AlertCircle,
 } from 'lucide-react'
+import { prisma } from '@/lib/db'
 
-export default function AdminDashboard() {
-  // In a real app, fetch these stats from the database
-  const stats = [
+// Revalidate every 60 seconds
+export const revalidate = 60
+
+async function getDashboardStats() {
+  const now = new Date()
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+  const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+  const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0)
+  const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000)
+
+  // Fetch all stats in parallel
+  const [
+    totalPrograms,
+    programsThisMonth,
+    totalActivities,
+    activitiesThisWeek,
+    upcomingSessions,
+    revenueThisMonth,
+    revenueLastMonth,
+  ] = await Promise.all([
+    // Total programs
+    prisma.program.count({ where: { status: 'active' } }),
+    // Programs created this month
+    prisma.program.count({
+      where: {
+        createdAt: { gte: startOfMonth },
+      },
+    }),
+    // Total active activities
+    prisma.activity.count({ where: { status: 'active' } }),
+    // Activities created this week
+    prisma.activity.count({
+      where: {
+        createdAt: { gte: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000) },
+      },
+    }),
+    // Upcoming sessions in next 30 days
+    prisma.session.count({
+      where: {
+        date: { gte: now, lte: thirtyDaysFromNow },
+        status: { in: ['confirmed', 'tentative'] },
+      },
+    }),
+    // Revenue this month (from paid invoices)
+    prisma.invoice.aggregate({
+      where: {
+        status: 'paid',
+        paidDate: { gte: startOfMonth },
+      },
+      _sum: { totalAmount: true },
+    }),
+    // Revenue last month
+    prisma.invoice.aggregate({
+      where: {
+        status: 'paid',
+        paidDate: { gte: startOfLastMonth, lte: endOfLastMonth },
+      },
+      _sum: { totalAmount: true },
+    }),
+  ])
+
+  const currentRevenue = revenueThisMonth._sum.totalAmount || 0
+  const lastMonthRevenue = revenueLastMonth._sum.totalAmount || 0
+  const revenueChange = lastMonthRevenue > 0
+    ? Math.round(((currentRevenue - lastMonthRevenue) / lastMonthRevenue) * 100)
+    : 0
+
+  return {
+    totalPrograms,
+    programsThisMonth,
+    totalActivities,
+    activitiesThisWeek,
+    upcomingSessions,
+    currentRevenue: currentRevenue / 100, // Convert from hellers to CZK
+    revenueChange,
+  }
+}
+
+async function getUpcomingSessions() {
+  const now = new Date()
+  const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000)
+
+  return prisma.session.findMany({
+    where: {
+      date: { gte: now, lte: thirtyDaysFromNow },
+      status: { in: ['confirmed', 'tentative'] },
+    },
+    orderBy: { date: 'asc' },
+    take: 5,
+    include: {
+      program: {
+        select: { title: true },
+      },
+    },
+  })
+}
+
+export default async function AdminDashboard() {
+  const [stats, upcomingSessions] = await Promise.all([
+    getDashboardStats(),
+    getUpcomingSessions(),
+  ])
+
+  const statCards = [
     {
       name: 'Total Programs',
-      value: '12',
-      change: '+2 this month',
+      value: stats.totalPrograms.toString(),
+      change: stats.programsThisMonth > 0 ? `+${stats.programsThisMonth} this month` : 'No new this month',
       icon: Users,
       color: 'text-blue-600',
       bgColor: 'bg-blue-100',
     },
     {
       name: 'Active Activities',
-      value: '48',
-      change: '+5 this week',
+      value: stats.totalActivities.toString(),
+      change: stats.activitiesThisWeek > 0 ? `+${stats.activitiesThisWeek} this week` : 'No new this week',
       icon: Activity,
       color: 'text-emerald-600',
       bgColor: 'bg-emerald-100',
     },
     {
       name: 'Upcoming Sessions',
-      value: '8',
+      value: stats.upcomingSessions.toString(),
       change: 'Next 30 days',
       icon: Calendar,
       color: 'text-purple-600',
@@ -42,35 +145,13 @@ export default function AdminDashboard() {
     },
     {
       name: 'Revenue (This Month)',
-      value: '€24,500',
-      change: '+12% from last month',
+      value: `${stats.currentRevenue.toLocaleString('cs-CZ')} Kč`,
+      change: stats.revenueChange !== 0
+        ? `${stats.revenueChange > 0 ? '+' : ''}${stats.revenueChange}% from last month`
+        : 'Same as last month',
       icon: TrendingUp,
       color: 'text-orange-600',
       bgColor: 'bg-orange-100',
-    },
-  ]
-
-  const recentSessions = [
-    {
-      id: '1',
-      company: 'Acme Corp',
-      date: '2025-01-25',
-      status: 'confirmed',
-      teamSize: 25,
-    },
-    {
-      id: '2',
-      company: 'Tech Solutions',
-      date: '2025-01-28',
-      status: 'tentative',
-      teamSize: 15,
-    },
-    {
-      id: '3',
-      company: 'Global Industries',
-      date: '2025-02-02',
-      status: 'confirmed',
-      teamSize: 40,
     },
   ]
 
@@ -97,7 +178,7 @@ export default function AdminDashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat) => {
+        {statCards.map((stat) => {
           const Icon = stat.icon
           return (
             <div key={stat.name} className="card">
@@ -159,39 +240,46 @@ export default function AdminDashboard() {
           </Link>
         </div>
         <div className="space-y-4">
-          {recentSessions.map((session) => (
-            <div
-              key={session.id}
-              className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              <div className="flex items-center gap-4">
-                {getStatusIcon(session.status)}
-                <div>
-                  <p className="font-semibold text-gray-900">{session.company}</p>
-                  <p className="text-sm text-gray-600">
-                    {new Date(session.date).toLocaleDateString('en-US', {
-                      weekday: 'short',
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric',
-                    })}
-                  </p>
+          {upcomingSessions.length === 0 ? (
+            <p className="text-gray-500 text-center py-8">No upcoming sessions in the next 30 days</p>
+          ) : (
+            upcomingSessions.map((session) => (
+              <div
+                key={session.id}
+                className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                <div className="flex items-center gap-4">
+                  {getStatusIcon(session.status)}
+                  <div>
+                    <p className="font-semibold text-gray-900">
+                      {session.companyName || session.teamName || 'Unnamed Session'}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      {new Date(session.date).toLocaleDateString('en-US', {
+                        weekday: 'short',
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                      })}
+                      {session.program && ` • ${session.program.title}`}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-600">{session.teamSize || '?'} participants</p>
+                  <span
+                    className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                      session.status === 'confirmed'
+                        ? 'bg-emerald-100 text-emerald-700'
+                        : 'bg-yellow-100 text-yellow-700'
+                    }`}
+                  >
+                    {session.status}
+                  </span>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="text-sm text-gray-600">{session.teamSize} participants</p>
-                <span
-                  className={`text-xs font-semibold px-2 py-1 rounded-full ${
-                    session.status === 'confirmed'
-                      ? 'bg-emerald-100 text-emerald-700'
-                      : 'bg-yellow-100 text-yellow-700'
-                  }`}
-                >
-                  {session.status}
-                </span>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
 

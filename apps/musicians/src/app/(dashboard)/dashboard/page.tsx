@@ -1,95 +1,161 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Calendar, Music, DollarSign, TrendingUp, Plus, Sparkles } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Calendar, Music, DollarSign, TrendingUp, Plus, Sparkles, FileText, Users } from 'lucide-react'
 import Link from 'next/link'
+import { formatCurrency, formatDate } from '@/lib/utils'
+
+interface DashboardStats {
+  upcomingGigs: number
+  pendingQuotes: number
+  monthlyRevenue: number
+  totalClients: number
+}
+
+interface Gig {
+  id: string
+  title: string
+  eventDate: string
+  startTime?: string
+  venueName?: string
+  status: string
+  agreedPrice?: number
+}
 
 export default function DashboardPage() {
-  // Mock data - will be replaced with real data from API
-  const stats = [
+  const [stats, setStats] = useState<DashboardStats>({
+    upcomingGigs: 0,
+    pendingQuotes: 0,
+    monthlyRevenue: 0,
+    totalClients: 0,
+  })
+  const [upcomingGigs, setUpcomingGigs] = useState<Gig[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    fetchDashboardData()
+  }, [])
+
+  const fetchDashboardData = async () => {
+    try {
+      const [gigsRes, clientsRes, invoicesRes] = await Promise.all([
+        fetch('/api/gigs'),
+        fetch('/api/clients'),
+        fetch('/api/invoices'),
+      ])
+
+      const gigsData = gigsRes.ok ? await gigsRes.json() : { gigs: [] }
+      const clientsData = clientsRes.ok ? await clientsRes.json() : { clients: [] }
+      const invoicesData = invoicesRes.ok ? await invoicesRes.json() : { invoices: [] }
+
+      const gigs = gigsData.gigs || []
+      const clients = clientsData.clients || []
+      const invoices = invoicesData.invoices || []
+
+      // Calculate stats
+      const now = new Date()
+      const upcoming = gigs.filter((g: Gig) => new Date(g.eventDate) >= now && g.status !== 'CANCELLED')
+      const pending = gigs.filter((g: Gig) => g.status === 'INQUIRY' || g.status === 'QUOTE_SENT')
+
+      // Monthly revenue from paid invoices
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+      const monthlyPaid = invoices
+        .filter((inv: any) => inv.status === 'paid' && new Date(inv.paidDate) >= monthStart)
+        .reduce((sum: number, inv: any) => sum + inv.totalAmount, 0)
+
+      setStats({
+        upcomingGigs: upcoming.length,
+        pendingQuotes: pending.length,
+        monthlyRevenue: monthlyPaid,
+        totalClients: clients.length,
+      })
+
+      // Get next 3 upcoming gigs
+      setUpcomingGigs(
+        upcoming
+          .sort((a: Gig, b: Gig) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime())
+          .slice(0, 3)
+      )
+    } catch (error) {
+      console.error('Failed to fetch dashboard data')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const statsCards = [
     {
-      title: 'Upcoming Gigs',
-      value: '12',
-      change: '+3 this week',
+      title: 'Nadcházející gigy',
+      value: stats.upcomingGigs.toString(),
+      change: 'potvrzené zakázky',
       icon: Calendar,
       color: 'text-primary-600',
       bgColor: 'bg-primary-100',
     },
     {
-      title: 'Active Quotes',
-      value: '5',
-      change: '2 pending response',
+      title: 'Čekající nabídky',
+      value: stats.pendingQuotes.toString(),
+      change: 'k vyřízení',
       icon: Music,
       color: 'text-secondary-600',
       bgColor: 'bg-secondary-100',
     },
     {
-      title: 'Monthly Revenue',
-      value: '125,000 CZK',
-      change: '+18% from last month',
+      title: 'Měsíční příjem',
+      value: formatCurrency(stats.monthlyRevenue / 100),
+      change: 'tento měsíc',
       icon: DollarSign,
       color: 'text-green-600',
       bgColor: 'bg-green-100',
     },
     {
-      title: 'Quote Conversion',
-      value: '67%',
-      change: '+5% improvement',
-      icon: TrendingUp,
+      title: 'Celkem klientů',
+      value: stats.totalClients.toString(),
+      change: 'v databázi',
+      icon: Users,
       color: 'text-purple-600',
       bgColor: 'bg-purple-100',
     },
   ]
 
-  const upcomingGigs = [
-    {
-      id: '1',
-      title: 'Wedding - Smith & Johnson',
-      date: '2026-02-15',
-      time: '18:00',
-      venue: 'Grand Hotel Prague',
-      status: 'confirmed',
-      price: 45000,
-    },
-    {
-      id: '2',
-      title: 'Corporate Event - Tech Corp',
-      date: '2026-02-20',
-      time: '19:30',
-      venue: 'Conference Center Brno',
-      status: 'confirmed',
-      price: 38000,
-    },
-    {
-      id: '3',
-      title: 'Private Party',
-      date: '2026-02-28',
-      time: '20:00',
-      venue: 'Villa Richter',
-      status: 'pending',
-      price: 35000,
-    },
-  ]
-
   const aiSuggestions = [
     {
-      title: 'Update your repertoire',
-      description: 'Add new songs to increase booking potential',
-      action: 'Add Songs',
+      title: 'Aktualizujte repertoár',
+      description: 'Přidejte nové písně pro více zakázek',
+      action: 'Přidat písně',
       href: '/dashboard/repertoire',
     },
     {
-      title: 'Generate setlist for upcoming wedding',
-      description: 'Smith & Johnson wedding on Feb 15',
-      action: 'Generate',
-      href: '/dashboard/setlists/new',
+      title: 'Vygenerujte setlist',
+      description: 'AI vytvoří optimální playlist',
+      action: 'Generovat',
+      href: '/dashboard/setlists/generate',
     },
     {
-      title: 'Send overdue invoice reminder',
-      description: '1 invoice is 7 days overdue',
-      action: 'View',
+      title: 'Zkontrolujte faktury',
+      description: 'Sledujte stav plateb',
+      action: 'Zobrazit',
       href: '/dashboard/invoices',
     },
   ]
+
+  const statusConfig: Record<string, { label: string; variant: 'default' | 'warning' | 'success' }> = {
+    INQUIRY: { label: 'Poptávka', variant: 'default' },
+    QUOTE_SENT: { label: 'Nabídka', variant: 'warning' },
+    CONFIRMED: { label: 'Potvrzeno', variant: 'success' },
+    COMPLETED: { label: 'Dokončeno', variant: 'default' },
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-8">
@@ -98,20 +164,20 @@ export default function DashboardPage() {
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
           <p className="text-gray-600 mt-1">
-            Welcome back! Here's what's happening with your gigs.
+            Vítejte zpět! Zde je přehled vašich zakázek.
           </p>
         </div>
         <div className="flex gap-3">
           <Button variant="outline" asChild>
             <Link href="/dashboard/gigs/new">
               <Plus className="w-4 h-4 mr-2" />
-              New Gig
+              Nový gig
             </Link>
           </Button>
           <Button asChild>
-            <Link href="/dashboard/setlists/new">
+            <Link href="/dashboard/setlists/generate">
               <Sparkles className="w-4 h-4 mr-2" />
-              Generate Setlist
+              Generovat setlist
             </Link>
           </Button>
         </div>
@@ -119,7 +185,7 @@ export default function DashboardPage() {
 
       {/* Stats grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat) => {
+        {statsCards.map((stat) => {
           const Icon = stat.icon
           return (
             <Card key={stat.title}>
@@ -147,47 +213,59 @@ export default function DashboardPage() {
         <Card className="lg:col-span-2">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Upcoming Gigs</CardTitle>
+              <CardTitle>Nadcházející gigy</CardTitle>
               <Button variant="ghost" size="sm" asChild>
-                <Link href="/dashboard/gigs">View All</Link>
+                <Link href="/dashboard/gigs">Zobrazit vše</Link>
               </Button>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {upcomingGigs.map((gig) => (
-                <Link
-                  key={gig.id}
-                  href={`/dashboard/gigs/${gig.id}`}
-                  className="block p-4 border rounded-lg hover:border-primary-300 hover:bg-primary-50/50 transition"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900">{gig.title}</h4>
-                      <p className="text-sm text-gray-600 mt-1">{gig.venue}</p>
-                      <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
-                        <span>{new Date(gig.date).toLocaleDateString('cs-CZ')}</span>
-                        <span>{gig.time}</span>
+            {upcomingGigs.length === 0 ? (
+              <div className="text-center py-8">
+                <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-600">Žádné nadcházející gigy</p>
+                <Button variant="outline" className="mt-4" asChild>
+                  <Link href="/dashboard/gigs/new">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Vytvořit gig
+                  </Link>
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {upcomingGigs.map((gig) => {
+                  const status = statusConfig[gig.status] || statusConfig.INQUIRY
+                  return (
+                    <Link
+                      key={gig.id}
+                      href={`/dashboard/gigs/${gig.id}`}
+                      className="block p-4 border rounded-lg hover:border-primary-300 hover:bg-primary-50/50 transition"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-gray-900">{gig.title}</h4>
+                          {gig.venueName && (
+                            <p className="text-sm text-gray-600 mt-1">{gig.venueName}</p>
+                          )}
+                          <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
+                            <span>{formatDate(new Date(gig.eventDate))}</span>
+                            {gig.startTime && <span>{gig.startTime}</span>}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <Badge variant={status.variant}>{status.label}</Badge>
+                          {gig.agreedPrice && (
+                            <p className="text-sm font-semibold text-gray-900 mt-2">
+                              {formatCurrency(gig.agreedPrice / 100)}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <div className="text-right">
-                      <span
-                        className={`inline-block px-2 py-1 text-xs font-medium rounded ${
-                          gig.status === 'confirmed'
-                            ? 'bg-green-100 text-green-700'
-                            : 'bg-yellow-100 text-yellow-700'
-                        }`}
-                      >
-                        {gig.status}
-                      </span>
-                      <p className="text-sm font-semibold text-gray-900 mt-2">
-                        {gig.price.toLocaleString('cs-CZ')} CZK
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+                    </Link>
+                  )
+                })}
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -196,7 +274,7 @@ export default function DashboardPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-primary-600" />
-              AI Suggestions
+              Doporučení
             </CardTitle>
           </CardHeader>
           <CardContent>

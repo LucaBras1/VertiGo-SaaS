@@ -3,7 +3,7 @@
  */
 
 import Link from 'next/link'
-import { Users, Activity, Calendar, FileText, Settings, BarChart3 } from 'lucide-react'
+import { Users, Activity, Calendar, FileText, Settings, BarChart3, Brain, Target, ShoppingCart, Receipt, Package } from 'lucide-react'
 
 export default function AdminLayout({
   children,
@@ -16,7 +16,28 @@ export default function AdminLayout({
     { name: 'Activities', href: '/admin/activities', icon: Activity },
     { name: 'Sessions', href: '/admin/sessions', icon: Calendar },
     { name: 'Customers', href: '/admin/customers', icon: Users },
+    {
+      name: 'Sales',
+      href: '#',
+      icon: ShoppingCart,
+      isSection: true,
+      children: [
+        { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
+        { name: 'Invoices', href: '/admin/invoices', icon: Receipt },
+        { name: 'Extras', href: '/admin/extras', icon: Package },
+      ]
+    },
     { name: 'Reports', href: '/admin/reports', icon: FileText },
+    {
+      name: 'AI Tools',
+      href: '#',
+      icon: Brain,
+      isSection: true,
+      children: [
+        { name: 'Team Analysis', href: '/admin/ai/team-analysis', icon: Brain },
+        { name: 'Objective Matcher', href: '/admin/ai/objective-matcher', icon: Target },
+      ]
+    },
     { name: 'Settings', href: '/admin/settings', icon: Settings },
   ]
 
@@ -50,6 +71,34 @@ export default function AdminLayout({
           <nav className="p-4 space-y-1">
             {navigation.map((item) => {
               const Icon = item.icon
+
+              // Section with children
+              if ('isSection' in item && item.isSection && 'children' in item) {
+                return (
+                  <div key={item.name} className="pt-2">
+                    <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      {item.name}
+                    </div>
+                    <div className="space-y-1">
+                      {item.children?.map((child) => {
+                        const ChildIcon = child.icon
+                        return (
+                          <Link
+                            key={child.name}
+                            href={child.href}
+                            className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-brand-primary rounded-lg transition-colors group"
+                          >
+                            <ChildIcon className="w-5 h-5 group-hover:text-brand-primary" />
+                            <span className="font-medium">{child.name}</span>
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )
+              }
+
+              // Regular navigation item
               return (
                 <Link
                   key={item.name}

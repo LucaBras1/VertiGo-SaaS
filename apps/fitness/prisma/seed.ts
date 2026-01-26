@@ -1,4 +1,4 @@
-import { PrismaClient, Vertical } from '@prisma/client'
+import { PrismaClient, Vertical } from '../src/generated/prisma'
 import { hash } from 'bcryptjs'
 
 const prisma = new PrismaClient()

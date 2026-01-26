@@ -3,11 +3,11 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // ============================================
@@ -237,6 +237,7 @@ enum ShotListStatus {
 model Gallery {
   id             String        @id @default(cuid())
   tenantId       String
+  tenant         Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   shootId        String
   shoot          Shoot         @relation(fields: [shootId], references: [id], onDelete: Cascade)
 
@@ -260,6 +261,7 @@ model Gallery {
 
   photos         GalleryPhoto[]
 
+  @@index([tenantId])
   @@index([shootId])
   @@index([publicUrl])
 }

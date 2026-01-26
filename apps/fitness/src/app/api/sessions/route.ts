@@ -3,6 +3,9 @@ import { getServerSession } from 'next-auth'
 import { z } from 'zod'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { sendSessionReminderEmail } from '@/lib/email'
+import { format } from 'date-fns'
+import { cs } from 'date-fns/locale'
 
 const sessionCreateSchema = z.object({
   clientId: z.string().min(1, 'Vyberte klienta'),
@@ -122,6 +125,27 @@ export async function POST(req: Request) {
         },
       },
     })
+
+    // Send confirmation email to client
+    try {
+      const scheduledDate = new Date(data.scheduledAt)
+      const tenant = await prisma.tenant.findUnique({
+        where: { id: session.user.tenantId },
+      })
+
+      await sendSessionReminderEmail({
+        to: client.email,
+        clientName: client.name,
+        trainerName: tenant?.name || 'Váš trenér',
+        sessionDate: format(scheduledDate, 'd. MMMM yyyy', { locale: cs }),
+        sessionTime: format(scheduledDate, 'HH:mm'),
+        duration: data.duration,
+        location: undefined,
+      })
+    } catch (emailError) {
+      // Log email error but don't fail the request
+      console.error('Failed to send session confirmation email:', emailError)
+    }
 
     return NextResponse.json(newSession, { status: 201 })
   } catch (error) {

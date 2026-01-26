@@ -8,6 +8,7 @@
  */
 
 import { z } from 'zod'
+import { generateStructuredCompletion, isOpenAIAvailable } from './openai-client'
 
 // Input schema
 export const StageRiderInputSchema = z.object({
@@ -65,7 +66,7 @@ export const StageRiderSchema = z.object({
   // Stage Requirements
   stage: z.object({
     minimumSize: z.string(), // e.g., "6m x 4m"
-    ceiling Height: z.string().optional(),
+    ceilingHeight: z.string().optional(),
     powerOutlets: z.string(),
     notes: z.string().optional(),
   }),
@@ -122,11 +123,37 @@ export async function generateStageRider(
   const systemPrompt = buildStageRiderSystemPrompt()
   const userPrompt = buildStageRiderUserPrompt(validatedInput)
 
-  // TODO: Integrate with @vertigo/ai-core
-  // const ai = createAIClient({ apiKey: process.env.OPENAI_API_KEY })
-  // const response = await ai.chatStructured(...)
+  // Try to use OpenAI if available
+  if (isOpenAIAvailable()) {
+    try {
+      const aiResponse = await generateStructuredCompletion<StageRider>(
+        systemPrompt,
+        userPrompt + '\n\nIMPORTANT: Respond with valid JSON matching the stage rider schema. Include all sections.',
+        {
+          temperature: 0.5, // Lower temperature for more consistent technical specs
+          maxTokens: 2500,
+          model: 'gpt-4o-mini',
+        }
+      )
 
-  // For now, return generated rider
+      if (aiResponse) {
+        // Validate AI response and merge with context
+        const validatedRider = StageRiderSchema.parse({
+          ...aiResponse,
+          bandName: validatedInput.bandName,
+          riderDate: new Date().toISOString().split('T')[0],
+          contactPerson: context.contactInfo,
+        })
+        console.log('[StageRiderAI] Generated rider using OpenAI')
+        return validatedRider
+      }
+    } catch (error) {
+      console.error('[StageRiderAI] OpenAI generation failed, falling back to template:', error)
+    }
+  }
+
+  // Fallback to template-based generation
+  console.log('[StageRiderAI] Using template-based generation')
   return generateStageRiderContent(validatedInput, context)
 }
 
@@ -275,7 +302,7 @@ function generateStageRiderContent(input: StageRiderInput, context: any): StageR
 
     stage: {
       minimumSize: calculateStageSize(input.bandSize),
-      'ceiling Height': input.venueType === 'outdoor' ? 'N/A' : '3m minimum',
+      'ceilingHeight': input.venueType === 'outdoor' ? 'N/A' : '3m minimum',
       powerOutlets: `${Math.ceil(input.instruments.length / 2)} x 230V outlets (grounded)`,
       notes: input.venueType === 'outdoor' ? 'Covered stage required in case of rain' : undefined,
     },
@@ -329,11 +356,26 @@ function calculateStageSize(bandSize: number): string {
 }
 
 /**
- * Export stage rider as PDF (placeholder)
+ * Export stage rider as PDF
+ * @param rider - The stage rider data to export
+ * @returns Promise<Buffer> - PDF buffer that can be converted to Blob client-side
  */
-export async function exportStageRiderPDF(rider: StageRider): Promise<Blob> {
-  // TODO: Implement PDF generation using @react-pdf/renderer
-  throw new Error('PDF export not yet implemented')
+export async function exportStageRiderPDF(rider: StageRider): Promise<Buffer> {
+  // Dynamic import to avoid SSR issues
+  const { renderToBuffer } = await import('@react-pdf/renderer')
+  const { StageRiderPDF } = await import('../pdf/stage-rider-pdf')
+  const React = await import('react')
+
+  const riderData = {
+    ...rider,
+    generatedDate: new Date().toISOString(),
+  }
+
+  const pdfBuffer = await renderToBuffer(
+    React.createElement(StageRiderPDF, { data: riderData })
+  )
+
+  return pdfBuffer
 }
 
 /**
@@ -371,7 +413,7 @@ ${rider.backline.length > 0 ? rider.backline.map(b => `- ${b.item}: ${b.specific
 
 STAGE REQUIREMENTS
 - Minimum Size: ${rider.stage.minimumSize}
-${rider.stage['ceiling Height'] ? `- Ceiling Height: ${rider.stage['ceiling Height']}` : ''}
+${rider.stage['ceilingHeight'] ? `- Ceiling Height: ${rider.stage['ceilingHeight']}` : ''}
 - Power: ${rider.stage.powerOutlets}
 ${rider.stage.notes ? `- Notes: ${rider.stage.notes}` : ''}
 

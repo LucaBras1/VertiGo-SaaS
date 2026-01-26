@@ -16,7 +16,7 @@
     "@auth/prisma-adapter": "^2.11.1",
     "@headlessui/react": "^2.2.9",
     "@hookform/resolvers": "^3.9.0",
-    "@prisma/client": "^6.19.0",
+    "@prisma/client": "^7.0.0",
     "@tanstack/react-query": "^5.90.9",
     "@vertigo/ai-core": "workspace:*",
     "@vertigo/database": "workspace:*",
@@ -25,6 +25,8 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.1",
     "lucide-react": "^0.453.0",
     "next": "^14.2.15",
     "next-auth": "^4.24.13",
@@ -32,6 +34,7 @@
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.0",
     "react-hot-toast": "^2.6.0",
+    "recharts": "^2.10.3",
     "tailwind-merge": "^2.6.0",
     "zod": "^3.23.8",
     "zustand": "^5.0.8"
@@ -47,7 +50,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.15",
     "postcss": "^8",
-    "prisma": "^6.19.0",
+    "prisma": "^7.0.0",
     "tailwindcss": "^3.4.14",
     "typescript": "^5"
   }

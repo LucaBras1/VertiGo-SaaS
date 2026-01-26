@@ -1,0 +1,872 @@
+// FitAdmin - Personal Trainers & Fitness Studios
+// Prisma schema for fitness vertical
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum Vertical {
+  MUSICIANS
+  PHOTOGRAPHY
+  FITNESS
+  EVENTS
+  PERFORMING_ARTS
+  TEAM_BUILDING
+  KIDS_ENTERTAINMENT
+}
+
+// Billing enums
+enum BankProvider {
+  FIO
+  WISE
+  REVOLUT
+  PLAID
+  NORDIGEN
+  MANUAL
+}
+
+enum TransactionType {
+  DEBIT
+  CREDIT
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  CARD
+  CASH
+  PAYPAL
+  STRIPE
+  GOPAY
+  CRYPTO
+}
+
+enum ExpenseStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+  REIMBURSED
+}
+
+// ============================================
+// TENANT & ORGANIZATION
+// ============================================
+
+model Tenant {
+  id               String   @id @default(cuid())
+  vertical         Vertical
+  name             String
+  slug             String   @unique
+  email            String?
+  phone            String?
+  website          String?
+  logo             String?
+  subscriptionTier String   @default("free") // free, pro, enterprise
+  aiCredits        Int      @default(100)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  users    User[]
+  clients  Client[]
+  sessions Session[]
+  classes  Class[]
+  packages Package[]
+  orders   Order[]
+  invoices Invoice[]
+  aiLogs   AILog[]
+
+  // Billing relations
+  bankAccounts              BankAccount[]
+  bankTransactions          BankTransaction[]
+  invoicePayments           InvoicePayment[]
+  paymentGatewayConfigs     PaymentGatewayConfig[]
+  cryptoWallets             CryptoWallet[]
+  expenseCategories         ExpenseCategory[]
+  expenses                  Expense[]
+  recurringInvoiceTemplates RecurringInvoiceTemplate[]
+
+  @@map("tenants")
+}
+
+// ============================================
+// AUTHENTICATION
+// ============================================
+
+model User {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          String    @default("user") // admin, trainer, user
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  accounts Account[]
+  sessions UserSession[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model UserSession {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  email     String
+  token     String   @unique
+  expires   DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@map("password_reset_tokens")
+}
+
+// ============================================
+// CLIENT MANAGEMENT (Fitness-specific)
+// ============================================
+
+model Client {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  // Basic info
+  name        String
+  email       String
+  phone       String?
+  avatar      String?
+  dateOfBirth DateTime?
+  gender      String?
+
+  // Fitness-specific
+  goals            String[] // weight_loss, muscle_gain, strength, endurance, flexibility
+  currentWeight    Float? // kg
+  targetWeight     Float? // kg
+  height           Float? // cm
+  bodyMeasurements Json? // { chest: 100, waist: 80, hips: 95, ... }
+  bodyFatPercent   Float?
+  fitnessLevel     String? // beginner, intermediate, advanced
+  injuryHistory    String?  @db.Text
+  dietaryNotes     String?  @db.Text
+  medicalNotes     String?  @db.Text
+
+  // Membership
+  creditsRemaining Int       @default(0)
+  membershipType   String? // monthly, yearly, package
+  membershipExpiry DateTime?
+
+  // Status
+  status String   @default("active") // active, inactive, paused
+  tags   String[]
+  notes  String?  @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  sessions       Session[]
+  orders         Order[]
+  invoices       Invoice[]
+  measurements   ClientMeasurement[]
+  progressPhotos ProgressPhoto[]
+
+  @@map("clients")
+}
+
+model ClientMeasurement {
+  id       String @id @default(cuid())
+  clientId String
+  client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  date         DateTime @default(now())
+  weight       Float? // kg
+  bodyFat      Float? // percentage
+  measurements Json? // { chest, waist, hips, biceps, thighs, ... }
+  notes        String?
+
+  createdAt DateTime @default(now())
+
+  @@map("client_measurements")
+}
+
+model ProgressPhoto {
+  id       String @id @default(cuid())
+  clientId String
+  client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  url   String
+  date  DateTime @default(now())
+  view  String // front, back, side
+  notes String?
+
+  createdAt DateTime @default(now())
+
+  @@map("progress_photos")
+}
+
+// ============================================
+// TRAINING SESSIONS (1-on-1)
+// ============================================
+
+model Session {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  clientId String
+  client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  // Scheduling
+  scheduledAt DateTime
+  duration    Int      @default(60) // minutes
+  status      String   @default("scheduled") // scheduled, completed, cancelled, no_show
+
+  // Workout data
+  workoutPlan     Json? // AI-generated plan
+  exercisesLogged Json[] // Completed exercises
+  caloriesBurned  Int?
+  heartRateAvg    Int?
+  muscleGroups    String[] // chest, back, legs, etc.
+
+  // Feedback
+  clientFeedback String? @db.Text
+  trainerNotes   String? @db.Text
+  intensity      String? // low, moderate, high
+  clientRating   Int? // 1-5
+
+  // Payment
+  price Float?
+  paid  Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("sessions")
+}
+
+// ============================================
+// GROUP CLASSES
+// ============================================
+
+model Class {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String? @db.Text
+  type        String // yoga, pilates, hiit, spin, etc.
+
+  // Scheduling
+  scheduledAt DateTime
+  duration    Int // minutes
+  capacity    Int      @default(10)
+
+  // Details
+  instructor String?
+  location   String?
+  price      Float
+
+  // Recurring
+  isRecurring Boolean @default(false)
+  recurrence  String? // weekly, biweekly, monthly
+
+  status String @default("scheduled") // scheduled, completed, cancelled
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  bookings ClassBooking[]
+
+  @@map("classes")
+}
+
+model ClassBooking {
+  id       String @id @default(cuid())
+  classId  String
+  class    Class  @relation(fields: [classId], references: [id], onDelete: Cascade)
+  clientId String
+  // Note: Client relation would reference Client model
+
+  status    String  @default("confirmed") // confirmed, waitlist, cancelled
+  checkedIn Boolean @default(false)
+  paid      Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@map("class_bookings")
+}
+
+// ============================================
+// PACKAGES & CREDITS
+// ============================================
+
+model Package {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String? @db.Text
+  type        String // sessions, classes, monthly
+
+  // Pricing
+  price        Float
+  credits      Int // Number of sessions/classes
+  validityDays Int // How long package is valid
+
+  // Features
+  features String[]
+  isActive Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("packages")
+}
+
+// ============================================
+// ORDERS & INVOICING
+// ============================================
+
+model Order {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  clientId String
+  client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  orderNumber String @unique
+  status      String @default("pending") // pending, confirmed, completed, cancelled
+
+  // Items
+  items Json[] // [{ type, name, quantity, price }]
+
+  // Pricing
+  subtotal Float
+  tax      Float @default(0)
+  discount Float @default(0)
+  total    Float
+
+  // Payment
+  paymentMethod String?
+  paymentStatus String  @default("unpaid") // unpaid, partial, paid
+  paidAmount    Float   @default(0)
+
+  // Dates
+  orderDate DateTime  @default(now())
+  dueDate   DateTime?
+  paidDate  DateTime?
+
+  notes String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  invoices Invoice[]
+
+  @@map("orders")
+}
+
+model Invoice {
+  id       String  @id @default(cuid())
+  tenantId String
+  tenant   Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  orderId  String?
+  order    Order?  @relation(fields: [orderId], references: [id])
+  clientId String
+  client   Client  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  invoiceNumber String @unique
+  status        String @default("draft") // draft, sent, paid, overdue, cancelled
+
+  // Dates
+  issueDate DateTime  @default(now())
+  dueDate   DateTime
+  paidDate  DateTime?
+
+  // Amounts
+  subtotal Float
+  tax      Float @default(0)
+  total    Float
+
+  // Payment
+  paymentMethod String?
+
+  notes String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Billing relations
+  payments         InvoicePayment[]
+  bankTransactions BankTransaction[]
+  cryptoPayments   CryptoPayment[]
+
+  @@map("invoices")
+}
+
+// ============================================
+// AI LOGGING
+// ============================================
+
+model AILog {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  feature String // workout_generator, progress_predictor, nutrition_advisor, etc.
+  model   String // gpt-4o, gpt-4o-mini
+
+  // Usage
+  promptTokens     Int
+  completionTokens Int
+  totalTokens      Int
+  estimatedCost    Float
+
+  // Request/Response
+  input  Json
+  output Json?
+
+  // Performance
+  latencyMs Int?
+  success   Boolean @default(true)
+  error     String?
+
+  createdAt DateTime @default(now())
+
+  @@map("ai_logs")
+}
+
+// ============================================
+// BILLING MODELS - CURRENCY & EXCHANGE
+// ============================================
+
+model Currency {
+  id           String  @id @default(cuid())
+  code         String  @unique // CZK, EUR, USD, BTC, etc.
+  name         String
+  symbol       String
+  decimals     Int     @default(2)
+  isCrypto     Boolean @default(false)
+  isStablecoin Boolean @default(false)
+  isActive     Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  exchangeRatesFrom ExchangeRate[] @relation("FromCurrency")
+  exchangeRatesTo   ExchangeRate[] @relation("ToCurrency")
+
+  @@index([code])
+  @@map("currencies")
+}
+
+model ExchangeRate {
+  id             String   @id @default(cuid())
+  fromCurrencyId String
+  toCurrencyId   String
+  rate           Decimal  @db.Decimal(20, 10)
+  source         String // ECB, CNB, OpenExchange, Coinbase, Manual
+  timestamp      DateTime
+
+  fromCurrency Currency @relation("FromCurrency", fields: [fromCurrencyId], references: [id])
+  toCurrency   Currency @relation("ToCurrency", fields: [toCurrencyId], references: [id])
+
+  @@unique([fromCurrencyId, toCurrencyId, timestamp])
+  @@index([timestamp])
+  @@map("exchange_rates")
+}
+
+// ============================================
+// BILLING MODELS - BANK ACCOUNTS
+// ============================================
+
+model BankAccount {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  // Account details
+  accountName   String
+  accountNumber String
+  bankCode      String?
+  iban          String?
+  swift         String?
+
+  // Provider
+  provider          BankProvider
+  providerAccountId String?
+
+  // Currency & balance
+  currency         String    @default("EUR")
+  balance          Decimal?  @db.Decimal(12, 2)
+  balanceUpdatedAt DateTime?
+
+  // Sync settings
+  autoSync      Boolean   @default(false)
+  lastSyncAt    DateTime?
+  syncFrequency String    @default("MANUAL") // MANUAL, HOURLY, DAILY, WEEKLY
+
+  // Encrypted credentials (JSON)
+  credentials Json? @db.JsonB
+
+  // Status
+  isActive Boolean @default(true)
+
+  // Metadata
+  metadata Json? @db.JsonB
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  transactions BankTransaction[]
+
+  @@index([tenantId])
+  @@index([provider])
+  @@map("bank_accounts")
+}
+
+model BankTransaction {
+  id            String      @id @default(cuid())
+  bankAccountId String
+  bankAccount   BankAccount @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
+  tenantId      String
+  tenant        Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  // Transaction details
+  transactionId String // Bank's transaction ID
+  date          DateTime
+  amount        Decimal  @db.Decimal(12, 2)
+  currency      String
+
+  // Type
+  type TransactionType
+
+  // Counterparty
+  counterpartyName     String?
+  counterpartyAccount  String?
+  counterpartyBankCode String?
+
+  // Description
+  description    String? @db.Text
+  note           String? @db.Text
+  variableSymbol String?
+  constantSymbol String?
+  specificSymbol String?
+
+  // Reference
+  reference String?
+
+  // Matching
+  isMatched        Boolean  @default(false)
+  matchedInvoiceId String?
+  matchedInvoice   Invoice? @relation(fields: [matchedInvoiceId], references: [id])
+  matchedPaymentId String?
+  matchConfidence  Decimal? @db.Decimal(3, 2) // 0.00 to 1.00
+
+  // AI suggestions
+  aiSuggestions Json? @db.JsonB
+
+  // Metadata
+  metadata Json? @db.JsonB
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([bankAccountId, transactionId])
+  @@index([tenantId])
+  @@index([date])
+  @@index([isMatched])
+  @@map("bank_transactions")
+}
+
+// ============================================
+// BILLING MODELS - INVOICE PAYMENTS
+// ============================================
+
+model InvoicePayment {
+  id        String  @id @default(cuid())
+  tenantId  String
+  tenant    Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  invoiceId String
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  // Payment details
+  amount   Decimal       @db.Decimal(10, 2)
+  currency String
+  method   PaymentMethod
+  status   String        @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED, CANCELLED, REFUNDED
+
+  // Gateway info
+  gatewayProvider  String?
+  gatewayPaymentId String?
+  gatewayFee       Decimal? @db.Decimal(10, 2)
+
+  // Transaction details
+  transactionId String?
+  reference     String?
+
+  // Dates
+  processedAt DateTime?
+  completedAt DateTime?
+
+  // Metadata
+  metadata Json? @db.JsonB
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tenantId])
+  @@index([invoiceId])
+  @@index([status])
+  @@map("invoice_payments")
+}
+
+// ============================================
+// BILLING MODELS - PAYMENT GATEWAY
+// ============================================
+
+model PaymentGatewayConfig {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  // Provider
+  provider String // STRIPE, PAYPAL, GOPAY, ADYEN, SQUARE
+
+  // Config (encrypted)
+  config Json @db.JsonB
+
+  // Status
+  isActive Boolean @default(true)
+  isTest   Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([tenantId, provider])
+  @@index([tenantId])
+  @@map("payment_gateway_configs")
+}
+
+// ============================================
+// BILLING MODELS - CRYPTO PAYMENTS
+// ============================================
+
+model CryptoWallet {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  // Wallet details
+  currency String // BTC, ETH, USDC, USDT
+  address  String
+  network  String? // mainnet, testnet, polygon, etc.
+
+  // Provider
+  provider String // COINBASE_COMMERCE, BTCPAY_SERVER, CIRCLE
+
+  // Status
+  isActive Boolean @default(true)
+
+  // Metadata
+  metadata Json? @db.JsonB
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  payments CryptoPayment[]
+
+  @@unique([tenantId, currency, address])
+  @@index([tenantId])
+  @@map("crypto_wallets")
+}
+
+model CryptoPayment {
+  id        String       @id @default(cuid())
+  walletId  String
+  wallet    CryptoWallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  invoiceId String?
+  invoice   Invoice?     @relation(fields: [invoiceId], references: [id])
+
+  // Payment details
+  amount        String // Crypto amounts as strings for precision
+  currency      String
+  txHash        String? // Transaction hash
+  confirmations Int     @default(0)
+
+  // Status
+  status String @default("PENDING") // PENDING, CONFIRMED, COMPLETED, FAILED
+
+  // Dates
+  detectedAt  DateTime?
+  confirmedAt DateTime?
+
+  // Metadata
+  metadata Json? @db.JsonB
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([walletId])
+  @@index([status])
+  @@map("crypto_payments")
+}
+
+// ============================================
+// BILLING MODELS - EXPENSES
+// ============================================
+
+model ExpenseCategory {
+  id          String  @id @default(cuid())
+  tenantId    String
+  tenant      Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  isDefault   Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  expenses Expense[]
+
+  @@unique([tenantId, name])
+  @@index([tenantId])
+  @@map("expense_categories")
+}
+
+model Expense {
+  id         String          @id @default(cuid())
+  tenantId   String
+  tenant     Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  categoryId String
+  category   ExpenseCategory @relation(fields: [categoryId], references: [id])
+
+  // Basic info
+  description String
+  amount      Decimal @db.Decimal(10, 2)
+  currency    String
+
+  // Date
+  date DateTime
+
+  // Vendor
+  vendor String?
+
+  // Receipt
+  receiptUrl     String?
+  receiptOcrData Json?   @db.JsonB
+
+  // Tax
+  taxAmount       Decimal? @db.Decimal(10, 2)
+  isTaxDeductible Boolean  @default(false)
+
+  // Status
+  status ExpenseStatus
+
+  // Approval
+  approvedBy     String?
+  approvedAt     DateTime?
+  rejectedReason String?
+
+  // Reimbursement
+  reimbursedAt     DateTime?
+  reimbursedAmount Decimal?  @db.Decimal(10, 2)
+
+  // Notes
+  notes String? @db.Text
+
+  // Metadata
+  metadata Json? @db.JsonB
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tenantId])
+  @@index([status])
+  @@index([date])
+  @@map("expenses")
+}
+
+// ============================================
+// BILLING MODELS - RECURRING INVOICES
+// ============================================
+
+model RecurringInvoiceTemplate {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  // Recurrence
+  frequency       String // WEEKLY, BIWEEKLY, MONTHLY, QUARTERLY, YEARLY
+  nextInvoiceDate DateTime
+  isActive        Boolean  @default(true)
+
+  // Invoice template (JSON)
+  invoiceTemplate Json @db.JsonB
+
+  // Metadata
+  metadata Json? @db.JsonB
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tenantId])
+  @@index([nextInvoiceDate])
+  @@map("recurring_invoice_templates")
+}

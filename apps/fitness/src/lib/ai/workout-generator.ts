@@ -10,6 +10,7 @@
  */
 
 import { z } from 'zod'
+import { isOpenAIAvailable, generateStructuredCompletion } from './openai-client'
 
 // Input schema
 export const WorkoutGeneratorInputSchema = z.object({
@@ -124,11 +125,28 @@ export async function generateWorkout(
   const systemPrompt = buildSystemPrompt()
   const userPrompt = buildUserPrompt(validatedInput)
 
-  // TODO: Integrate with @vertigo/ai-core
-  // const ai = createAIClient({ apiKey: process.env.OPENAI_API_KEY })
-  // const response = await ai.chatStructured(...)
+  // Try OpenAI if available
+  if (isOpenAIAvailable()) {
+    try {
+      console.log('[WorkoutAI] Generating workout with OpenAI...')
 
-  // Return template workout for development
+      const aiResponse = await generateStructuredCompletion<WorkoutPlan>(
+        systemPrompt,
+        userPrompt + '\n\nIMPORTANT: Respond with valid JSON matching this structure: { warmup: [], mainWorkout: [], cooldown: [], summary: {}, notes: {} }',
+        { temperature: 0.7, maxTokens: 3000 }
+      )
+
+      if (aiResponse) {
+        // Validate AI response against schema
+        return WorkoutPlanSchema.parse(aiResponse)
+      }
+    } catch (error) {
+      console.error('[WorkoutAI] OpenAI generation failed, falling back to template:', error)
+    }
+  }
+
+  // Fallback to template workout
+  console.log('[WorkoutAI] Using template workout')
   return generateTemplateWorkout(validatedInput)
 }
 

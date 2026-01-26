@@ -10,6 +10,7 @@
  */
 
 import { z } from 'zod'
+import { generateStructuredCompletion, isOpenAIAvailable } from './openai-client'
 
 // Input schema
 export const SetlistGeneratorInputSchema = z.object({
@@ -79,18 +80,32 @@ export async function generateSetlist(
   const systemPrompt = buildSystemPrompt()
   const userPrompt = buildUserPrompt(validatedInput)
 
-  // Call AI (placeholder - will integrate with @vertigo/ai-core)
-  // const ai = createAIClient({ apiKey: process.env.OPENAI_API_KEY })
-  // const response = await ai.chatStructured(
-  //   [
-  //     { role: 'system', content: systemPrompt },
-  //     { role: 'user', content: userPrompt }
-  //   ],
-  //   SetlistSchema,
-  //   { tenantId: context.tenantId, vertical: 'musicians' }
-  // )
+  // Try to use OpenAI if available
+  if (isOpenAIAvailable()) {
+    try {
+      const aiResponse = await generateStructuredCompletion<Setlist>(
+        systemPrompt,
+        userPrompt + '\n\nIMPORTANT: Respond with valid JSON matching the setlist schema.',
+        {
+          temperature: 0.7,
+          maxTokens: 3000,
+          model: 'gpt-4o-mini',
+        }
+      )
 
-  // For now, return mock data
+      if (aiResponse) {
+        // Validate AI response against schema
+        const validatedSetlist = SetlistSchema.parse(aiResponse)
+        console.log('[SetlistAI] Generated setlist using OpenAI')
+        return validatedSetlist
+      }
+    } catch (error) {
+      console.error('[SetlistAI] OpenAI generation failed, falling back to mock:', error)
+    }
+  }
+
+  // Fallback to mock data if OpenAI is unavailable or fails
+  console.log('[SetlistAI] Using mock data')
   return generateMockSetlist(validatedInput)
 }
 

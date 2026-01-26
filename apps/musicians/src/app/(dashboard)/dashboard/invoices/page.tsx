@@ -1,123 +1,111 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
 import {
   Plus,
   Search,
   FileText,
-  DollarSign,
   Calendar,
   AlertCircle,
   CheckCircle,
   Clock,
 } from 'lucide-react'
+import { formatCurrency, formatDate } from '@/lib/utils'
+import toast from 'react-hot-toast'
 
-// Mock data
-const mockInvoices = [
-  {
-    id: 'INV-001',
-    gigTitle: 'Wedding - Smith & Johnson',
-    clientName: 'Emma Smith',
-    amount: 45000,
-    status: 'paid',
-    dueDate: '2026-02-15',
-    paidDate: '2026-02-10',
-    issueDate: '2026-01-20',
-  },
-  {
-    id: 'INV-002',
-    gigTitle: 'Corporate Event - Tech Corp',
-    clientName: 'Tech Corp Ltd.',
-    amount: 38000,
-    status: 'pending',
-    dueDate: '2026-02-20',
-    paidDate: null,
-    issueDate: '2026-01-22',
-  },
-  {
-    id: 'INV-003',
-    gigTitle: 'Private Birthday Party',
-    clientName: 'John Doe',
-    amount: 35000,
-    status: 'overdue',
-    dueDate: '2026-01-25',
-    paidDate: null,
-    issueDate: '2026-01-10',
-  },
-  {
-    id: 'INV-004',
-    gigTitle: 'Jazz Club Performance',
-    clientName: 'Jazz Republic',
-    amount: 32000,
-    status: 'draft',
-    dueDate: '2026-03-05',
-    paidDate: null,
-    issueDate: '2026-01-23',
-  },
-]
+interface Invoice {
+  id: string
+  invoiceNumber: string
+  status: string
+  totalAmount: number
+  issueDate: string
+  dueDate: string
+  paidDate?: string
+  customer: {
+    firstName: string
+    lastName: string
+    company?: string
+  }
+  gig?: {
+    title: string
+  }
+}
 
-const statusConfig = {
-  draft: {
-    label: 'Draft',
-    color: 'bg-gray-100 text-gray-700',
-    icon: FileText,
-  },
-  pending: {
-    label: 'Pending',
-    color: 'bg-yellow-100 text-yellow-700',
-    icon: Clock,
-  },
-  paid: {
-    label: 'Paid',
-    color: 'bg-green-100 text-green-700',
-    icon: CheckCircle,
-  },
-  overdue: {
-    label: 'Overdue',
-    color: 'bg-red-100 text-red-700',
-    icon: AlertCircle,
-  },
+const statusConfig: Record<string, { label: string; variant: 'default' | 'warning' | 'success' | 'danger'; icon: typeof FileText }> = {
+  draft: { label: 'Koncept', variant: 'default', icon: FileText },
+  sent: { label: 'Odesláno', variant: 'warning', icon: Clock },
+  paid: { label: 'Zaplaceno', variant: 'success', icon: CheckCircle },
+  overdue: { label: 'Po splatnosti', variant: 'danger', icon: AlertCircle },
 }
 
 export default function InvoicesPage() {
+  const [invoices, setInvoices] = useState<Invoice[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
 
-  const filteredInvoices = mockInvoices.filter((invoice) => {
+  useEffect(() => {
+    fetchInvoices()
+  }, [])
+
+  const fetchInvoices = async () => {
+    try {
+      const response = await fetch('/api/invoices')
+      if (response.ok) {
+        const data = await response.json()
+        setInvoices(data.invoices || [])
+      }
+    } catch (error) {
+      toast.error('Nepodařilo se načíst faktury')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const filteredInvoices = invoices.filter((invoice) => {
+    const clientName = `${invoice.customer.firstName} ${invoice.customer.lastName}`.toLowerCase()
     const matchesSearch =
-      invoice.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      invoice.gigTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      invoice.clientName.toLowerCase().includes(searchQuery.toLowerCase())
+      invoice.invoiceNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      clientName.includes(searchQuery.toLowerCase()) ||
+      invoice.gig?.title.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesStatus = statusFilter === 'all' || invoice.status === statusFilter
     return matchesSearch && matchesStatus
   })
 
-  const totalRevenue = mockInvoices
-    .filter((inv) => inv.status === 'paid')
-    .reduce((sum, inv) => sum + inv.amount, 0)
+  const stats = {
+    total: invoices.length,
+    paid: invoices.filter(inv => inv.status === 'paid').reduce((sum, inv) => sum + inv.totalAmount, 0),
+    pending: invoices.filter(inv => inv.status === 'sent' || inv.status === 'overdue').reduce((sum, inv) => sum + inv.totalAmount, 0),
+    overdue: invoices.filter(inv => inv.status === 'overdue').length,
+  }
 
-  const pendingAmount = mockInvoices
-    .filter((inv) => inv.status === 'pending' || inv.status === 'overdue')
-    .reduce((sum, inv) => sum + inv.amount, 0)
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Invoices</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Faktury</h1>
           <p className="text-gray-600 mt-1">
-            Manage invoices and track payments
+            Správa faktur a sledování plateb
           </p>
         </div>
         <Button asChild>
           <Link href="/dashboard/invoices/new">
             <Plus className="w-4 h-4 mr-2" />
-            New Invoice
+            Nová faktura
           </Link>
         </Button>
       </div>
@@ -128,7 +116,7 @@ export default function InvoicesPage() {
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <Input
-              placeholder="Search invoices..."
+              placeholder="Hledat faktury..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -139,11 +127,11 @@ export default function InvoicesPage() {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="px-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
-            <option value="all">All Status</option>
-            <option value="draft">Draft</option>
-            <option value="pending">Pending</option>
-            <option value="paid">Paid</option>
-            <option value="overdue">Overdue</option>
+            <option value="all">Všechny stavy</option>
+            <option value="draft">Koncept</option>
+            <option value="sent">Odesláno</option>
+            <option value="paid">Zaplaceno</option>
+            <option value="overdue">Po splatnosti</option>
           </select>
         </div>
       </Card>
@@ -151,28 +139,24 @@ export default function InvoicesPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="p-4">
-          <div className="text-sm text-gray-600">Total Invoices</div>
-          <div className="text-2xl font-bold text-gray-900 mt-1">
-            {mockInvoices.length}
-          </div>
+          <div className="text-sm text-gray-600">Celkem faktur</div>
+          <div className="text-2xl font-bold text-gray-900 mt-1">{stats.total}</div>
         </Card>
         <Card className="p-4">
-          <div className="text-sm text-gray-600">Paid</div>
+          <div className="text-sm text-gray-600">Zaplaceno</div>
           <div className="text-2xl font-bold text-green-600 mt-1">
-            {totalRevenue.toLocaleString('cs-CZ')} CZK
+            {formatCurrency(stats.paid / 100)}
           </div>
         </Card>
         <Card className="p-4">
-          <div className="text-sm text-gray-600">Pending</div>
+          <div className="text-sm text-gray-600">Čeká</div>
           <div className="text-2xl font-bold text-yellow-600 mt-1">
-            {pendingAmount.toLocaleString('cs-CZ')} CZK
+            {formatCurrency(stats.pending / 100)}
           </div>
         </Card>
         <Card className="p-4">
-          <div className="text-sm text-gray-600">Overdue</div>
-          <div className="text-2xl font-bold text-red-600 mt-1">
-            {mockInvoices.filter((inv) => inv.status === 'overdue').length}
-          </div>
+          <div className="text-sm text-gray-600">Po splatnosti</div>
+          <div className="text-2xl font-bold text-red-600 mt-1">{stats.overdue}</div>
         </Card>
       </div>
 
@@ -182,27 +166,26 @@ export default function InvoicesPage() {
           <Card className="p-12 text-center">
             <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              No invoices found
+              Žádné faktury nenalezeny
             </h3>
             <p className="text-gray-600 mb-6">
               {searchQuery || statusFilter !== 'all'
-                ? 'Try adjusting your filters'
-                : 'Create your first invoice to get started'}
+                ? 'Zkuste upravit filtry'
+                : 'Vytvořte první fakturu'}
             </p>
             {!searchQuery && statusFilter === 'all' && (
               <Button asChild>
                 <Link href="/dashboard/invoices/new">
                   <Plus className="w-4 h-4 mr-2" />
-                  Create First Invoice
+                  Vytvořit první fakturu
                 </Link>
               </Button>
             )}
           </Card>
         ) : (
           filteredInvoices.map((invoice) => {
-            const statusInfo =
-              statusConfig[invoice.status as keyof typeof statusConfig]
-            const StatusIcon = statusInfo.icon
+            const status = statusConfig[invoice.status] || statusConfig.draft
+            const StatusIcon = status.icon
 
             return (
               <Link key={invoice.id} href={`/dashboard/invoices/${invoice.id}`}>
@@ -211,38 +194,31 @@ export default function InvoicesPage() {
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <h3 className="text-lg font-semibold text-gray-900">
-                          {invoice.id}
+                          {invoice.invoiceNumber}
                         </h3>
-                        <span
-                          className={`flex items-center gap-1 px-2 py-1 text-xs font-medium rounded ${statusInfo.color}`}
-                        >
-                          <StatusIcon className="w-3 h-3" />
-                          {statusInfo.label}
-                        </span>
+                        <Badge variant={status.variant}>
+                          <StatusIcon className="w-3 h-3 mr-1" />
+                          {status.label}
+                        </Badge>
                       </div>
 
                       <div className="text-sm text-gray-600 mb-3">
-                        {invoice.gigTitle}
+                        {invoice.gig?.title || `${invoice.customer.firstName} ${invoice.customer.lastName}`}
                       </div>
 
                       <div className="grid sm:grid-cols-3 gap-3 text-sm text-gray-600">
                         <div className="flex items-center gap-2">
                           <Calendar className="w-4 h-4" />
-                          <span>
-                            Due: {new Date(invoice.dueDate).toLocaleDateString('cs-CZ')}
-                          </span>
+                          <span>Splatnost: {formatDate(new Date(invoice.dueDate))}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <FileText className="w-4 h-4" />
-                          <span>{invoice.clientName}</span>
+                          <span>{invoice.customer.firstName} {invoice.customer.lastName}</span>
                         </div>
                         {invoice.paidDate && (
                           <div className="flex items-center gap-2 text-green-600">
                             <CheckCircle className="w-4 h-4" />
-                            <span>
-                              Paid:{' '}
-                              {new Date(invoice.paidDate).toLocaleDateString('cs-CZ')}
-                            </span>
+                            <span>Zaplaceno: {formatDate(new Date(invoice.paidDate))}</span>
                           </div>
                         )}
                       </div>
@@ -250,7 +226,7 @@ export default function InvoicesPage() {
 
                     <div className="text-right">
                       <div className="text-2xl font-bold text-gray-900">
-                        {invoice.amount.toLocaleString('cs-CZ')} CZK
+                        {formatCurrency(invoice.totalAmount / 100)}
                       </div>
                     </div>
                   </div>

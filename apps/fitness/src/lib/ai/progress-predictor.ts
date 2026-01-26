@@ -9,6 +9,7 @@
  */
 
 import { z } from 'zod'
+import { isOpenAIAvailable, generateStructuredCompletion } from './openai-client'
 
 // Input schema
 export const ProgressPredictorInputSchema = z.object({
@@ -114,11 +115,27 @@ export async function predictProgress(
   const systemPrompt = buildSystemPrompt()
   const userPrompt = buildUserPrompt(validatedInput)
 
-  // TODO: Integrate with @vertigo/ai-core
-  // const ai = createAIClient({ apiKey: process.env.OPENAI_API_KEY })
-  // const response = await ai.chatStructured(...)
+  // Try OpenAI if available
+  if (isOpenAIAvailable()) {
+    try {
+      console.log('[ProgressAI] Predicting with OpenAI...')
 
-  // Return template prediction for development
+      const aiResponse = await generateStructuredCompletion<ProgressPrediction>(
+        systemPrompt,
+        userPrompt + '\n\nIMPORTANT: Respond with valid JSON matching the ProgressPrediction schema with prediction, milestones, analysis, recommendations, riskFactors, and motivation.',
+        { temperature: 0.6, maxTokens: 2500 }
+      )
+
+      if (aiResponse) {
+        return ProgressPredictionSchema.parse(aiResponse)
+      }
+    } catch (error) {
+      console.error('[ProgressAI] OpenAI prediction failed, falling back to template:', error)
+    }
+  }
+
+  // Fallback to template prediction
+  console.log('[ProgressAI] Using template prediction')
   return generateTemplatePrediction(validatedInput)
 }
 

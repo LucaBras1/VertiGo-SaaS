@@ -6,6 +6,7 @@
  */
 
 import { z } from 'zod'
+import { isOpenAIAvailable, generateStructuredCompletion } from './openai-client'
 
 // Input schema
 export const NutritionAdvisorInputSchema = z.object({
@@ -135,6 +136,29 @@ export type NutritionAdvisorInput = z.infer<typeof NutritionAdvisorInputSchema>
 export type NutritionAdvice = z.infer<typeof NutritionAdviceSchema>
 
 /**
+ * Build system prompt for nutrition advice
+ */
+function buildNutritionSystemPrompt(): string {
+  return `You are a certified sports nutritionist providing evidence-based nutrition guidance for fitness clients.
+
+KEY PRINCIPLES:
+1. Use Mifflin-St Jeor for BMR calculation
+2. Apply activity multipliers for TDEE
+3. Recommend 1.6-2.2g protein per kg bodyweight for active individuals
+4. Suggest sustainable calorie deficits (500 kcal) for fat loss
+5. Recommend modest surpluses (200-300 kcal) for muscle gain
+
+ALWAYS include:
+- Energy requirements (BMR, TDEE, target calories)
+- Macronutrient breakdown with grams and percentages
+- Hydration recommendations
+- Meal timing suggestions
+- Practical tips
+
+IMPORTANT: Include a disclaimer that this is general guidance, not medical advice.`
+}
+
+/**
  * Generate nutrition advice
  */
 export async function generateNutritionAdvice(
@@ -143,9 +167,34 @@ export async function generateNutritionAdvice(
 ): Promise<NutritionAdvice> {
   const validatedInput = NutritionAdvisorInputSchema.parse(input)
 
-  // TODO: Integrate with @vertigo/ai-core
-  // For now, use calculation-based approach
+  // Try OpenAI for personalized advice
+  if (isOpenAIAvailable()) {
+    try {
+      console.log('[NutritionAI] Generating advice with OpenAI...')
 
+      const systemPrompt = buildNutritionSystemPrompt()
+      const userPrompt = `Generate nutrition advice for this client:
+${JSON.stringify(validatedInput, null, 2)}
+
+Provide comprehensive advice including energyRequirements, macronutrients, hydration, mealPlanning, supplementation, practicaltips, tracking, and disclaimer.
+Respond with valid JSON.`
+
+      const aiResponse = await generateStructuredCompletion<NutritionAdvice>(
+        systemPrompt,
+        userPrompt,
+        { temperature: 0.5, maxTokens: 2500 }
+      )
+
+      if (aiResponse) {
+        return NutritionAdviceSchema.parse(aiResponse)
+      }
+    } catch (error) {
+      console.error('[NutritionAI] OpenAI generation failed, falling back to calculation-based:', error)
+    }
+  }
+
+  // Fallback to calculation-based approach
+  console.log('[NutritionAI] Using calculation-based advice')
   return calculateNutritionAdvice(validatedInput)
 }
 

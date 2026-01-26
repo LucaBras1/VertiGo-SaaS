@@ -6,6 +6,7 @@
  */
 
 import { z } from 'zod'
+import { isOpenAIAvailable, generateStructuredCompletion } from './openai-client'
 
 // Input schema
 export const ChurnDetectorInputSchema = z.object({
@@ -114,6 +115,29 @@ export type ChurnDetectorInput = z.infer<typeof ChurnDetectorInputSchema>
 export type ChurnPrediction = z.infer<typeof ChurnPredictionSchema>
 
 /**
+ * Build system prompt for churn detection
+ */
+function buildChurnSystemPrompt(): string {
+  return `You are an expert fitness client retention analyst.
+Analyze behavioral patterns to predict client churn risk and provide retention strategies.
+
+KEY METRICS:
+- Attendance patterns (most predictive)
+- Engagement levels
+- Progress toward goals
+- Financial status
+
+RISK SCORING:
+- 0-25: Very Low risk
+- 26-45: Low risk
+- 46-65: Medium risk
+- 66-80: High risk
+- 81-100: Critical risk
+
+Always provide actionable retention strategies with specific timing.`
+}
+
+/**
  * Predict client churn risk
  */
 export async function detectChurnRisk(
@@ -122,9 +146,34 @@ export async function detectChurnRisk(
 ): Promise<ChurnPrediction> {
   const validatedInput = ChurnDetectorInputSchema.parse(input)
 
-  // TODO: Integrate with @vertigo/ai-core for ML-based prediction
-  // For now, use rule-based scoring system
+  // Try OpenAI for enhanced predictions
+  if (isOpenAIAvailable()) {
+    try {
+      console.log('[ChurnAI] Analyzing with OpenAI...')
 
+      const systemPrompt = buildChurnSystemPrompt()
+      const userPrompt = `Analyze churn risk for this client data:
+${JSON.stringify(validatedInput, null, 2)}
+
+Provide detailed analysis including riskAssessment, riskFactors, behavioralPatterns, retentionStrategies, automatedActions, insights, and timeline.
+Respond with valid JSON.`
+
+      const aiResponse = await generateStructuredCompletion<ChurnPrediction>(
+        systemPrompt,
+        userPrompt,
+        { temperature: 0.5, maxTokens: 2000 }
+      )
+
+      if (aiResponse) {
+        return ChurnPredictionSchema.parse(aiResponse)
+      }
+    } catch (error) {
+      console.error('[ChurnAI] OpenAI analysis failed, falling back to rule-based:', error)
+    }
+  }
+
+  // Fallback to rule-based scoring
+  console.log('[ChurnAI] Using rule-based scoring')
   return calculateChurnRisk(validatedInput)
 }
 

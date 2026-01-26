@@ -184,6 +184,12 @@ export default function InvoiceDetailPage() {
               Send Invoice
             </Button>
           )}
+          <Link href={`/dashboard/invoices/${params.id}/edit`}>
+            <Button variant="secondary">
+              <Edit className="w-4 h-4 mr-2" />
+              Edit
+            </Button>
+          </Link>
           <Button variant="secondary">
             <Download className="w-4 h-4 mr-2" />
             Download PDF

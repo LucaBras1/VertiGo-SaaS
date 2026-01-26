@@ -191,6 +191,12 @@ export default function ShotListDetailPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Link href={`/dashboard/shot-lists/${params.id}/edit`}>
+            <Button variant="secondary">
+              <Edit className="w-4 h-4 mr-2" />
+              Edit
+            </Button>
+          </Link>
           <Button variant="ghost" onClick={handlePrint}>
             <Printer className="w-4 h-4 mr-2" />
             Print

@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
+import { sendInvoiceEmail } from '@/lib/email';
+import { format } from 'date-fns';
+import { cs } from 'date-fns/locale';
 
 export async function GET(req: NextRequest) {
   try {
@@ -92,6 +95,23 @@ export async function POST(req: NextRequest) {
         order: true,
       },
     });
+
+    // Send invoice email to client if status is 'sent'
+    if (invoice.client?.email) {
+      try {
+        const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3006'
+        await sendInvoiceEmail({
+          to: invoice.client.email,
+          clientName: invoice.client.name,
+          invoiceNumber: invoice.invoiceNumber,
+          amount: `${invoice.total.toLocaleString('cs-CZ')} Kč`,
+          dueDate: format(new Date(invoice.dueDate), 'd. MMMM yyyy', { locale: cs }),
+          invoiceUrl: `${baseUrl}/dashboard/invoices/${invoice.id}`,
+        });
+      } catch (emailError) {
+        console.error('Failed to send invoice email:', emailError);
+      }
+    }
 
     return NextResponse.json({ invoice }, { status: 201 });
   } catch (error) {
