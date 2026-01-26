@@ -131,24 +131,24 @@ export function ConversationalBooking({
       {Object.keys(bookingData).length > 0 && !isComplete && (
         <div className="border-b px-4 py-2">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            {bookingData.date && (
+            {bookingData.date ? (
               <span className="flex items-center gap-1 rounded-full bg-green-100 px-2 py-1 text-green-700">
                 <Calendar className="h-3 w-3" />
                 {bookingData.date as string}
               </span>
-            )}
-            {bookingData.time && (
+            ) : null}
+            {bookingData.time ? (
               <span className="flex items-center gap-1 rounded-full bg-blue-100 px-2 py-1 text-blue-700">
                 <Clock className="h-3 w-3" />
                 {bookingData.time as string}
               </span>
-            )}
-            {bookingData.location && (
+            ) : null}
+            {bookingData.location ? (
               <span className="flex items-center gap-1 rounded-full bg-purple-100 px-2 py-1 text-purple-700">
                 <MapPin className="h-3 w-3" />
                 {(bookingData.location as string).slice(0, 20)}...
               </span>
-            )}
+            ) : null}
           </div>
         </div>
       )}
@@ -229,26 +229,26 @@ export function ConversationalBooking({
               </p>
 
               <div className="mt-4 space-y-2 text-left">
-                {bookingData.date && (
+                {bookingData.date ? (
                   <div className="flex items-center gap-2 text-sm">
                     <Calendar className="h-4 w-4 text-green-600" />
                     <span>{bookingData.date as string}</span>
                   </div>
-                )}
-                {bookingData.time && (
+                ) : null}
+                {bookingData.time ? (
                   <div className="flex items-center gap-2 text-sm">
                     <Clock className="h-4 w-4 text-green-600" />
                     <span>{bookingData.time as string}</span>
                   </div>
-                )}
-                {bookingData.estimatedPrice && (
+                ) : null}
+                {bookingData.estimatedPrice ? (
                   <div className="flex items-center gap-2 text-sm">
                     <DollarSign className="h-4 w-4 text-green-600" />
                     <span>
                       Estimated: {formatCurrency(bookingData.estimatedPrice as number)}
                     </span>
                   </div>
-                )}
+                ) : null}
               </div>
             </motion.div>
           )}
