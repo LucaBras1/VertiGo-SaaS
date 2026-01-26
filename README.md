@@ -59,13 +59,13 @@ VertiGo is a comprehensive SaaS framework designed for service-based businesses 
 |----------|------------|
 | Framework | Next.js 14 (App Router) |
 | Language | TypeScript (strict mode) |
-| Database | PostgreSQL + Prisma ORM |
+| Database | PostgreSQL + Prisma 7 ORM |
 | Authentication | NextAuth.js |
 | Styling | Tailwind CSS + Radix UI |
 | AI | OpenAI GPT-4o |
 | Payments | Stripe, PayPal, GoPay, Coinbase Commerce |
 | Banking | Fio, Plaid, Nordigen (Open Banking) |
-| Monorepo | Turborepo + pnpm |
+| Monorepo | Turborepo 2.x + pnpm |
 | Validation | Zod |
 | Rich Text | TipTap |
 | Deployment | Vercel |
@@ -335,6 +335,7 @@ docker-compose exec db psql -U postgres -d vertigo
   - [x] Added Billing to navigation
 - [x] TeamForge - Admin panel with AI features (80%)
 - [x] ShootFlow - Core dashboard features (75%)
+- [x] Prisma 7 upgrade (all apps + packages)
 
 ### In Progress
 - [ ] Complete Kids Entertainment (PartyPal) - 65%
