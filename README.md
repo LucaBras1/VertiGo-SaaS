@@ -10,13 +10,13 @@ VertiGo is a comprehensive SaaS framework designed for service-based businesses 
 
 | Vertical | Product | Target Market | Status |
 |----------|---------|---------------|--------|
-| Photography | **ShootFlow** | Wedding & event photographers | In Development |
-| Musicians | **GigBook** | Bands, DJs, solo musicians | 75% Complete |
-| Fitness | **FitAdmin** | Personal trainers, studios | 80% Complete |
-| Events | **EventPro** | Event entertainment providers | In Development |
+| Fitness | **FitAdmin** | Personal trainers, studios | 90% Complete |
+| Musicians | **GigBook** | Bands, DJs, solo musicians | 90% Complete |
+| Team Building | **TeamForge** | Corporate team building | 80% Complete |
+| Photography | **ShootFlow** | Wedding & event photographers | 75% Complete |
+| Kids Entertainment | **PartyPal** | Kids party entertainers | 65% Complete |
+| Events | **EventPro** | Event entertainment providers | 40% Complete |
 | Performing Arts | **StageManager** | Theaters, circus, performers | Planned |
-| Team Building | **TeamForge** | Corporate team building | 70% Complete |
-| Kids Entertainment | **PartyPal** | Kids party entertainers | 60% Complete |
 
 ## Features
 
@@ -29,7 +29,24 @@ VertiGo is a comprehensive SaaS framework designed for service-based businesses 
 - **Rich Text Editor** - TipTap-powered content editing
 - **Global Billing Platform** - Multi-currency payments, bank integration, crypto support
 
-### AI Capabilities
+### AI Capabilities (per Vertical)
+
+**FitAdmin (Fitness)**
+- Workout Generator - AI-generated personalized training plans
+- Nutrition Advisor - Diet recommendations based on goals
+- Progress Predictor - ML-based fitness progress forecasting
+- Churn Detector - Client retention risk analysis
+
+**GigBook (Musicians)**
+- Gig Price Calculator - Dynamic pricing based on event parameters
+- Setlist Generator - AI-curated song lists for events
+- Stage Rider Generator - Automated technical requirements
+
+**TeamForge (Team Building)**
+- Activity Recommender - AI-matched team activities
+- Program Builder - Custom program generation
+
+### Core AI Features
 - **AI Booking Concierge** - Natural language booking widget
 - **AI Quote Generator** - Intelligent 3-tier pricing suggestions
 - **AI Communication Hub** - Smart email drafting & sentiment analysis
@@ -58,13 +75,21 @@ VertiGo is a comprehensive SaaS framework designed for service-based businesses 
 ```
 VertiGo-SaaS/
 ├── apps/                          # Vertical applications
-│   ├── musicians/                 # GigBook - Musicians platform
-│   ├── photography/               # ShootFlow - Photography platform
-│   ├── fitness/                   # FitAdmin - Fitness platform
-│   ├── events/                    # EventPro - Events platform
-│   ├── performing-arts/           # StageManager - Performing arts
-│   ├── team-building/             # TeamForge - Team building
-│   └── kids-entertainment/        # PartyPal - Kids entertainment
+│   ├── fitness/                   # FitAdmin - Fitness platform (90%)
+│   │   └── dashboard/             # clients, classes, sessions, progress,
+│   │                              # payments, invoices, packages, settings
+│   ├── musicians/                 # GigBook - Musicians platform (90%)
+│   │   └── dashboard/             # clients, gigs, invoices, repertoire,
+│   │                              # setlists, billing, settings
+│   ├── team-building/             # TeamForge - Team building (80%)
+│   │   └── admin/                 # activities, programs, sessions, orders,
+│   │                              # invoices, customers, reports, ai, settings
+│   ├── photography/               # ShootFlow - Photography platform (75%)
+│   │   └── dashboard/             # clients, shoots, galleries, shot-lists,
+│   │                              # invoices, packages, settings
+│   ├── kids-entertainment/        # PartyPal - Kids entertainment (65%)
+│   ├── events/                    # EventPro - Events platform (40%)
+│   └── performing-arts/           # StageManager - Performing arts (Planned)
 ├── packages/
 │   ├── ai-core/                   # AI utilities & OpenAI integration
 │   ├── billing/                   # Global billing & payments platform
@@ -94,7 +119,7 @@ VertiGo-SaaS/
 
 ```bash
 # Clone the repository
-git clone https://github.com/MuzMa/VertiGo-SaaS.git
+git clone https://github.com/LucaBras1/VertiGo-SaaS.git
 cd VertiGo-SaaS
 
 # Install dependencies
@@ -295,15 +320,27 @@ docker-compose exec db psql -U postgres -d vertigo
 
 ## Roadmap
 
-- [ ] Complete all 7 vertical applications
+### Completed
 - [x] Stripe payment integration (@vertigo/billing)
 - [x] Multi-currency invoicing support
 - [x] Bank integration (Fio, Plaid, Open Banking)
 - [x] Crypto payments (Coinbase Commerce)
+- [x] FitAdmin - Full dashboard with AI features (90%)
+- [x] GigBook - Full dashboard with AI features (90%)
+- [x] TeamForge - Admin panel with AI features (80%)
+- [x] ShootFlow - Core dashboard features (75%)
+
+### In Progress
+- [ ] Complete Kids Entertainment (PartyPal) - 65%
+- [ ] Complete Events (EventPro) - 40%
+- [ ] Performing Arts (StageManager) - Planning phase
 - [ ] Unified admin dashboard theme
+
+### Planned
 - [ ] E2E tests with Playwright
 - [ ] Mobile app (React Native)
 - [ ] White-label capabilities
+- [ ] Advanced analytics dashboard
 
 ## Contributing
 
