@@ -279,9 +279,9 @@ vi.mock('openai', () => ({
   default: vi.fn(() => mockOpenAIClient),
 }))
 
-// Mock openai-client module
-vi.mock('@/lib/ai/openai-client', async () => {
-  const actual = await vi.importActual('@/lib/ai/openai-client')
+// Mock openai-client module - use relative path for Vitest compatibility
+vi.mock('../../src/lib/ai/openai-client', async () => {
+  const actual = await vi.importActual('../../src/lib/ai/openai-client')
   return {
     ...actual,
     isOpenAIAvailable: vi.fn().mockReturnValue(false), // Default to mock mode
@@ -290,15 +290,15 @@ vi.mock('@/lib/ai/openai-client', async () => {
   }
 })
 
+// Import mocked module for type safety
+import * as openaiClient from '../../src/lib/ai/openai-client'
+
 // Helper to enable/disable OpenAI mocks
 export const enableOpenAIMocks = (responses: Record<string, any> = {}) => {
-  const { isOpenAIAvailable, generateStructuredCompletion } = vi.mocked(
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    require('@/lib/ai/openai-client')
-  )
+  const mockedModule = vi.mocked(openaiClient)
 
-  isOpenAIAvailable.mockReturnValue(true)
-  generateStructuredCompletion.mockImplementation(async (system, user) => {
+  mockedModule.isOpenAIAvailable.mockReturnValue(true)
+  mockedModule.generateStructuredCompletion.mockImplementation(async (_system, user) => {
     // Return appropriate mock based on prompt
     if (user.includes('workout')) return responses.workout || mockWorkoutPlan
     if (user.includes('churn')) return responses.churn || mockChurnPrediction
@@ -309,11 +309,8 @@ export const enableOpenAIMocks = (responses: Record<string, any> = {}) => {
 }
 
 export const disableOpenAIMocks = () => {
-  const { isOpenAIAvailable, generateStructuredCompletion } = vi.mocked(
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    require('@/lib/ai/openai-client')
-  )
+  const mockedModule = vi.mocked(openaiClient)
 
-  isOpenAIAvailable.mockReturnValue(false)
-  generateStructuredCompletion.mockResolvedValue(null)
+  mockedModule.isOpenAIAvailable.mockReturnValue(false)
+  mockedModule.generateStructuredCompletion.mockResolvedValue(null)
 }

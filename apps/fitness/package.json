@@ -69,6 +69,6 @@
     "tsx": "^4.21.0",
     "typescript": "^5",
     "vitest": "^2.1.8",
-    "vitest-mock-extended": "^2.0.3"
+    "vitest-mock-extended": "^3.1.0"
   }
 }
