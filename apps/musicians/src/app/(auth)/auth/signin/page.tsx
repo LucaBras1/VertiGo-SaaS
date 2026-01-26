@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -10,6 +11,8 @@ import { Music } from 'lucide-react'
 
 export default function SignInPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard'
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -20,15 +23,24 @@ export default function SignInPage() {
     setIsLoading(true)
     setError('')
 
-    // Mock authentication - replace with NextAuth
-    setTimeout(() => {
-      if (email && password) {
-        router.push('/dashboard')
-      } else {
-        setError('Invalid credentials')
+    try {
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      })
+
+      if (result?.error) {
+        setError('Invalid email or password')
         setIsLoading(false)
+      } else {
+        router.push(callbackUrl)
+        router.refresh()
       }
-    }, 1000)
+    } catch {
+      setError('An error occurred. Please try again.')
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -84,14 +96,7 @@ export default function SignInPage() {
                 />
               </div>
 
-              <div className="flex items-center justify-between text-sm">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-                  />
-                  <span className="text-gray-600">Remember me</span>
-                </label>
+              <div className="flex items-center justify-end text-sm">
                 <Link
                   href="/auth/forgot-password"
                   className="text-primary-600 hover:text-primary-700"

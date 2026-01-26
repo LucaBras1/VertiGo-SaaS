@@ -1,19 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import { generateSetlist, SetlistGeneratorInputSchema } from '@/lib/ai/setlist-generator'
 import { z } from 'zod'
 
 export async function POST(request: NextRequest) {
   try {
+    // Get session and validate
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.tenantId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const body = await request.json()
 
     // Validate input
     const input = SetlistGeneratorInputSchema.parse(body)
 
-    // TODO: Get tenantId from session
-    const tenantId = 'mock-tenant-id'
-
-    // Generate setlist
-    const setlist = await generateSetlist(input, { tenantId })
+    // Generate setlist with real tenantId
+    const setlist = await generateSetlist(input, { tenantId: session.user.tenantId })
 
     return NextResponse.json({
       success: true,

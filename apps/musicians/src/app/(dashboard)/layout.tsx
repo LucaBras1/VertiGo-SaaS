@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useSession, signOut } from 'next-auth/react'
 import {
   Music,
   Calendar,
@@ -13,6 +14,7 @@ import {
   LogOut,
   Menu,
   X,
+  CreditCard,
 } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
@@ -24,6 +26,7 @@ const navigation = [
   { name: 'Repertoire', href: '/dashboard/repertoire', icon: Sparkles },
   { name: 'Clients', href: '/dashboard/clients', icon: Users },
   { name: 'Invoices', href: '/dashboard/invoices', icon: FileText },
+  { name: 'Billing', href: '/dashboard/billing', icon: CreditCard },
 ]
 
 export default function DashboardLayout({
@@ -33,6 +36,15 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { data: session } = useSession()
+
+  // Get user initials for avatar
+  const userInitials = session?.user?.name
+    ?.split(' ')
+    .map(n => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2) || 'U'
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -99,10 +111,7 @@ export default function DashboardLayout({
           </Link>
           <button
             className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-            onClick={() => {
-              // Handle logout
-              console.log('Logout')
-            }}
+            onClick={() => signOut({ callbackUrl: '/auth/signin' })}
           >
             <LogOut className="w-5 h-5" />
             <span>Sign Out</span>
@@ -122,14 +131,14 @@ export default function DashboardLayout({
           </button>
 
           <div className="flex items-center gap-4 ml-auto">
-            {/* User menu - placeholder */}
+            {/* User menu */}
             <div className="flex items-center gap-3">
               <div className="text-right hidden sm:block">
-                <p className="text-sm font-medium text-gray-900">John Doe</p>
-                <p className="text-xs text-gray-500">john@example.com</p>
+                <p className="text-sm font-medium text-gray-900">{session?.user?.name || 'User'}</p>
+                <p className="text-xs text-gray-500">{session?.user?.email || ''}</p>
               </div>
               <div className="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center text-white font-semibold">
-                JD
+                {userInitials}
               </div>
             </div>
           </div>

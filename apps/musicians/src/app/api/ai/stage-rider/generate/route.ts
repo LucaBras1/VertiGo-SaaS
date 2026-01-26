@@ -1,21 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { prisma } from '@/lib/db'
 import { generateStageRider, StageRiderInputSchema } from '@/lib/ai/stage-rider-generator'
 import { z } from 'zod'
 
 export async function POST(request: NextRequest) {
   try {
+    // Get session and validate
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.tenantId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const body = await request.json()
 
     // Validate input
     const input = StageRiderInputSchema.parse(body)
 
-    // TODO: Get tenantId and contact info from session
+    // Fetch tenant for contact info
+    const tenant = await prisma.tenant.findUnique({
+      where: { id: session.user.tenantId },
+      select: {
+        name: true,
+        email: true,
+        phone: true,
+        bandName: true,
+      },
+    })
+
+    // Build context with real data
     const context = {
-      tenantId: 'mock-tenant-id',
+      tenantId: session.user.tenantId,
       contactInfo: {
-        name: 'John Doe',
-        phone: '+420 123 456 789',
-        email: 'contact@band.com',
+        name: tenant?.bandName || tenant?.name || session.user.name || '',
+        phone: tenant?.phone || '',
+        email: tenant?.email || session.user.email || '',
       },
     }
 

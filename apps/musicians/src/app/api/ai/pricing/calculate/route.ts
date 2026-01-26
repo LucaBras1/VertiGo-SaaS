@@ -1,16 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import { calculateGigPrice, GigPriceInputSchema } from '@/lib/ai/gig-price-calculator'
 import { z } from 'zod'
 
 export async function POST(request: NextRequest) {
   try {
+    // Get session and validate
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.tenantId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const body = await request.json()
 
     // Validate input
     const input = GigPriceInputSchema.parse(body)
 
-    // TODO: Get tenantId from session
-    const context = { tenantId: 'mock-tenant-id' }
+    // Calculate pricing with real tenantId
+    const context = { tenantId: session.user.tenantId }
 
     // Calculate pricing
     const pricing = await calculateGigPrice(input, context)

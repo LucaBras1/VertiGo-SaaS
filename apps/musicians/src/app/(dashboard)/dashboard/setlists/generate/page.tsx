@@ -59,10 +59,7 @@ export default function GenerateSetlistPage() {
 
       const result = await response.json()
 
-      // In real app, save to database and redirect to detail page
-      console.log('Generated setlist:', result.data)
-
-      // For now, redirect to setlists list
+      // Redirect to setlists list (in real app, could save to DB and redirect to detail page)
       router.push('/dashboard/setlists')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate setlist')
