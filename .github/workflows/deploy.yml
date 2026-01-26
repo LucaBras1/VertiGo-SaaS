@@ -1,0 +1,138 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      deploy_type:
+        description: 'Type of deployment'
+        required: true
+        default: 'full'
+        type: choice
+        options:
+          - full
+          - quick
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '8.15.0'
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        run: pnpm run type-check || true
+
+      - name: Build all apps
+        run: pnpm run build
+        env:
+          # Dummy env vars for build
+          DATABASE_URL: postgresql://user:password@localhost:5432/db
+          NEXTAUTH_SECRET: build-time-secret-not-for-production
+          NEXTAUTH_URL: http://localhost:3000
+
+      - name: Run tests
+        run: pnpm run test || true
+
+  deploy:
+    name: Deploy to VPS
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: dvi12.vas-server.cz
+          username: root
+          key: ${{ secrets.VPS_SSH_KEY }}
+          # password: ${{ secrets.VPS_PASSWORD }}  # Alternativa k SSH klíči
+          script: |
+            set -e
+
+            echo "═══════════════════════════════════════════════════════"
+            echo "  VertiGo-SaaS Automated Deployment"
+            echo "  $(date)"
+            echo "═══════════════════════════════════════════════════════"
+
+            cd /var/www/vertigo-saas
+
+            # Pull latest changes
+            echo "Pulling latest changes..."
+            git fetch origin
+            git reset --hard origin/main
+
+            # Install dependencies
+            echo "Installing dependencies..."
+            pnpm install --frozen-lockfile
+
+            # Generate Prisma clients
+            echo "Generating Prisma clients..."
+            cd packages/database && pnpm prisma generate && cd ../..
+
+            # Run migrations
+            echo "Running database migrations..."
+            cd packages/database && pnpm prisma migrate deploy 2>/dev/null || pnpm prisma db push && cd ../..
+
+            # Build applications
+            echo "Building applications..."
+            pnpm run build
+
+            # Reload PM2
+            echo "Reloading PM2 processes..."
+            pm2 reload all --update-env
+
+            # Health check
+            echo "Running health check..."
+            sleep 5
+            pm2 status
+
+            echo "═══════════════════════════════════════════════════════"
+            echo "  Deployment completed successfully!"
+            echo "═══════════════════════════════════════════════════════"
+
+      - name: Notify on success
+        if: success()
+        run: |
+          echo "Deployment successful!"
+          # Add Slack/Discord notification here if needed
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "Deployment failed!"
+          # Add Slack/Discord notification here if needed

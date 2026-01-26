@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3006",
+    "dev": "next dev -p 3008",
     "build": "next build",
-    "start": "next start -p 3006",
+    "start": "next start -p 3008",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
     "prisma:studio": "prisma studio",
@@ -16,7 +16,7 @@
     "@auth/prisma-adapter": "^2.11.1",
     "@headlessui/react": "^2.2.9",
     "@hookform/resolvers": "^3.9.0",
-    "@prisma/client": "^6.19.0",
+    "@prisma/client": "^7.0.0",
     "@tanstack/react-query": "^5.90.9",
     "@vertigo/ai-core": "workspace:*",
     "@vertigo/ui": "workspace:*",
@@ -43,6 +43,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.15",
     "postcss": "^8",
+    "prisma": "^7.0.0",
     "tailwindcss": "^3.4.14",
     "typescript": "^5"
   }
