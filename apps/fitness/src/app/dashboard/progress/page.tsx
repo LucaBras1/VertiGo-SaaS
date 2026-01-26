@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { TrendingUp, Search, User, Scale, Ruler, Target, Calendar } from 'lucide-react'
+import { TrendingUp, Search, User, Scale, Ruler, Target, Calendar, Plus } from 'lucide-react'
+import { MeasurementFormModal } from '@/components/progress/MeasurementFormModal'
 import { format, parseISO } from 'date-fns'
 import { cs } from 'date-fns/locale'
 import toast from 'react-hot-toast'
@@ -44,6 +45,7 @@ export default function ProgressPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [selectedClient, setSelectedClient] = useState<Client | null>(null)
+  const [showMeasurementModal, setShowMeasurementModal] = useState(false)
 
   useEffect(() => {
     fetchClients()
@@ -169,14 +171,23 @@ export default function ProgressPage() {
               <div className="space-y-6">
                 {/* Client stats */}
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
-                      <User className="h-8 w-8 text-primary-600" />
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
+                        <User className="h-8 w-8 text-primary-600" />
+                      </div>
+                      <div>
+                        <h2 className="text-xl font-bold text-gray-900">{selectedClient.name}</h2>
+                        <p className="text-gray-500">{selectedClient.email}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h2 className="text-xl font-bold text-gray-900">{selectedClient.name}</h2>
-                      <p className="text-gray-500">{selectedClient.email}</p>
-                    </div>
+                    <button
+                      onClick={() => setShowMeasurementModal(true)}
+                      className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                    >
+                      <Plus className="h-4 w-4" />
+                      Přidat měření
+                    </button>
                   </div>
 
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -345,6 +356,16 @@ export default function ProgressPage() {
           </div>
         </div>
       </div>
+
+      {selectedClient && (
+        <MeasurementFormModal
+          isOpen={showMeasurementModal}
+          onClose={() => setShowMeasurementModal(false)}
+          onSuccess={fetchClients}
+          clientId={selectedClient.id}
+          clientName={selectedClient.name}
+        />
+      )}
     </>
   )
 }
