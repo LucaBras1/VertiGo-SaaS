@@ -10,7 +10,7 @@
  * - ShootFlow (photography)    → shootflow.muzx.cz    → 3003
  * - TeamForge (team-building)  → teamforge.muzx.cz    → 3009
  * - EventPro (events)          → eventpro.muzx.cz     → 3005
- * - PartyPal (kids-entertainment) → partypal.muzx.cz  → 3002
+ * - PartyPal (kids-entertainment) → partypal.muzx.cz  → 3010
  * - StageManager (performing-arts) → stagemanager.muzx.cz → 3008 (budoucnost)
  */
 
@@ -132,10 +132,10 @@ module.exports = {
       name: 'partypal',
       cwd: '/var/www/vertigo-saas/apps/kids-entertainment',
       script: 'node_modules/.bin/next',
-      args: 'start -p 3002',
+      args: 'start -p 3010',
       env: {
         NODE_ENV: 'production',
-        PORT: 3002
+        PORT: 3010
       },
       instances: 1,
       exec_mode: 'fork',

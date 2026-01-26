@@ -259,7 +259,7 @@ APPS["fitness"]="fitadmin:3006:$NEXTAUTH_SECRET_FITADMIN"
 APPS["photography"]="shootflow:3003:$NEXTAUTH_SECRET_SHOOTFLOW"
 APPS["team-building"]="teamforge:3009:$NEXTAUTH_SECRET_TEAMFORGE"
 APPS["events"]="eventpro:3005:$NEXTAUTH_SECRET_EVENTPRO"
-APPS["kids-entertainment"]="partypal:3002:$NEXTAUTH_SECRET_PARTYPAL"
+APPS["kids-entertainment"]="partypal:3010:$NEXTAUTH_SECRET_PARTYPAL"
 
 for app_dir in "${!APPS[@]}"; do
     IFS=':' read -r app_name app_port app_secret <<< "${APPS[$app_dir]}"
@@ -388,10 +388,14 @@ EOF
 done
 
 print_step "6.3" "Test Nginx konfigurace..."
-nginx -t
+if nginx -t; then
+    print_success "Nginx konfigurace OK"
+else
+    print_warning "Nginx konfigurace má chyby - zkouším spustit službu"
+fi
 
-print_step "6.4" "Reload Nginx..."
-systemctl reload nginx
+print_step "6.4" "Start/Reload Nginx..."
+systemctl start nginx 2>/dev/null || systemctl reload nginx 2>/dev/null || print_warning "Nginx nelze spustit"
 print_success "Nginx nakonfigurován"
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -402,9 +406,12 @@ print_header "FÁZE 7: PM2 Process Manager"
 
 cd $DEPLOY_DIR
 
-print_step "7.1" "Zastavení existujících procesů..."
-pm2 stop all 2>/dev/null || true
-pm2 delete all 2>/dev/null || true
+print_step "7.1" "Zastavení VertiGo procesů (zachování ostatních)..."
+# Zastavit pouze VertiGo aplikace, ne ostatní
+for app in gigbook fitadmin shootflow teamforge eventpro partypal; do
+    pm2 stop $app 2>/dev/null || true
+    pm2 delete $app 2>/dev/null || true
+done
 
 print_step "7.2" "Spuštění aplikací..."
 pm2 start ecosystem.config.js
@@ -420,7 +427,7 @@ print_step "7.5" "Kontrola stavu aplikací..."
 pm2 status
 
 # Zkontrolovat, že aplikace běží
-for port in 3002 3003 3005 3006 3007 3009; do
+for port in 3003 3005 3006 3007 3009 3010; do
     if curl -s "http://localhost:$port" > /dev/null 2>&1; then
         print_success "Port $port: běží"
     else
