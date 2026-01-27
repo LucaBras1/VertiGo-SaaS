@@ -178,6 +178,26 @@ export type CalendarEventSync = $Result.DefaultSelection<Prisma.$CalendarEventSy
  * 
  */
 export type CalendarFeedToken = $Result.DefaultSelection<Prisma.$CalendarFeedTokenPayload>
+/**
+ * Model Badge
+ * 
+ */
+export type Badge = $Result.DefaultSelection<Prisma.$BadgePayload>
+/**
+ * Model ClientBadge
+ * 
+ */
+export type ClientBadge = $Result.DefaultSelection<Prisma.$ClientBadgePayload>
+/**
+ * Model WorkoutTemplate
+ * 
+ */
+export type WorkoutTemplate = $Result.DefaultSelection<Prisma.$WorkoutTemplatePayload>
+/**
+ * Model ScheduleTemplate
+ * 
+ */
+export type ScheduleTemplate = $Result.DefaultSelection<Prisma.$ScheduleTemplatePayload>
 
 /**
  * Enums
@@ -707,6 +727,46 @@ export class PrismaClient<
     * ```
     */
   get calendarFeedToken(): Prisma.CalendarFeedTokenDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.badge`: Exposes CRUD operations for the **Badge** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Badges
+    * const badges = await prisma.badge.findMany()
+    * ```
+    */
+  get badge(): Prisma.BadgeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.clientBadge`: Exposes CRUD operations for the **ClientBadge** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ClientBadges
+    * const clientBadges = await prisma.clientBadge.findMany()
+    * ```
+    */
+  get clientBadge(): Prisma.ClientBadgeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.workoutTemplate`: Exposes CRUD operations for the **WorkoutTemplate** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WorkoutTemplates
+    * const workoutTemplates = await prisma.workoutTemplate.findMany()
+    * ```
+    */
+  get workoutTemplate(): Prisma.WorkoutTemplateDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.scheduleTemplate`: Exposes CRUD operations for the **ScheduleTemplate** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ScheduleTemplates
+    * const scheduleTemplates = await prisma.scheduleTemplate.findMany()
+    * ```
+    */
+  get scheduleTemplate(): Prisma.ScheduleTemplateDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1173,7 +1233,11 @@ export namespace Prisma {
     NotificationLog: 'NotificationLog',
     CalendarIntegration: 'CalendarIntegration',
     CalendarEventSync: 'CalendarEventSync',
-    CalendarFeedToken: 'CalendarFeedToken'
+    CalendarFeedToken: 'CalendarFeedToken',
+    Badge: 'Badge',
+    ClientBadge: 'ClientBadge',
+    WorkoutTemplate: 'WorkoutTemplate',
+    ScheduleTemplate: 'ScheduleTemplate'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1189,7 +1253,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "tenant" | "user" | "account" | "userSession" | "verificationToken" | "passwordResetToken" | "client" | "clientMeasurement" | "progressPhoto" | "session" | "class" | "classBooking" | "package" | "order" | "invoice" | "aILog" | "currency" | "exchangeRate" | "bankAccount" | "bankTransaction" | "invoicePayment" | "paymentGatewayConfig" | "cryptoWallet" | "cryptoPayment" | "expenseCategory" | "expense" | "recurringInvoiceTemplate" | "pushSubscription" | "notificationPreference" | "notificationLog" | "calendarIntegration" | "calendarEventSync" | "calendarFeedToken"
+      modelProps: "tenant" | "user" | "account" | "userSession" | "verificationToken" | "passwordResetToken" | "client" | "clientMeasurement" | "progressPhoto" | "session" | "class" | "classBooking" | "package" | "order" | "invoice" | "aILog" | "currency" | "exchangeRate" | "bankAccount" | "bankTransaction" | "invoicePayment" | "paymentGatewayConfig" | "cryptoWallet" | "cryptoPayment" | "expenseCategory" | "expense" | "recurringInvoiceTemplate" | "pushSubscription" | "notificationPreference" | "notificationLog" | "calendarIntegration" | "calendarEventSync" | "calendarFeedToken" | "badge" | "clientBadge" | "workoutTemplate" | "scheduleTemplate"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3635,6 +3699,302 @@ export namespace Prisma {
           }
         }
       }
+      Badge: {
+        payload: Prisma.$BadgePayload<ExtArgs>
+        fields: Prisma.BadgeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BadgeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BadgePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BadgeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BadgePayload>
+          }
+          findFirst: {
+            args: Prisma.BadgeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BadgePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BadgeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BadgePayload>
+          }
+          findMany: {
+            args: Prisma.BadgeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BadgePayload>[]
+          }
+          create: {
+            args: Prisma.BadgeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BadgePayload>
+          }
+          createMany: {
+            args: Prisma.BadgeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BadgeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BadgePayload>[]
+          }
+          delete: {
+            args: Prisma.BadgeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BadgePayload>
+          }
+          update: {
+            args: Prisma.BadgeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BadgePayload>
+          }
+          deleteMany: {
+            args: Prisma.BadgeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BadgeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.BadgeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BadgePayload>[]
+          }
+          upsert: {
+            args: Prisma.BadgeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BadgePayload>
+          }
+          aggregate: {
+            args: Prisma.BadgeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBadge>
+          }
+          groupBy: {
+            args: Prisma.BadgeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BadgeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BadgeCountArgs<ExtArgs>
+            result: $Utils.Optional<BadgeCountAggregateOutputType> | number
+          }
+        }
+      }
+      ClientBadge: {
+        payload: Prisma.$ClientBadgePayload<ExtArgs>
+        fields: Prisma.ClientBadgeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ClientBadgeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientBadgePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ClientBadgeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientBadgePayload>
+          }
+          findFirst: {
+            args: Prisma.ClientBadgeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientBadgePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ClientBadgeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientBadgePayload>
+          }
+          findMany: {
+            args: Prisma.ClientBadgeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientBadgePayload>[]
+          }
+          create: {
+            args: Prisma.ClientBadgeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientBadgePayload>
+          }
+          createMany: {
+            args: Prisma.ClientBadgeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ClientBadgeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientBadgePayload>[]
+          }
+          delete: {
+            args: Prisma.ClientBadgeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientBadgePayload>
+          }
+          update: {
+            args: Prisma.ClientBadgeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientBadgePayload>
+          }
+          deleteMany: {
+            args: Prisma.ClientBadgeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ClientBadgeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ClientBadgeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientBadgePayload>[]
+          }
+          upsert: {
+            args: Prisma.ClientBadgeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientBadgePayload>
+          }
+          aggregate: {
+            args: Prisma.ClientBadgeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateClientBadge>
+          }
+          groupBy: {
+            args: Prisma.ClientBadgeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ClientBadgeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ClientBadgeCountArgs<ExtArgs>
+            result: $Utils.Optional<ClientBadgeCountAggregateOutputType> | number
+          }
+        }
+      }
+      WorkoutTemplate: {
+        payload: Prisma.$WorkoutTemplatePayload<ExtArgs>
+        fields: Prisma.WorkoutTemplateFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WorkoutTemplateFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkoutTemplatePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WorkoutTemplateFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkoutTemplatePayload>
+          }
+          findFirst: {
+            args: Prisma.WorkoutTemplateFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkoutTemplatePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WorkoutTemplateFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkoutTemplatePayload>
+          }
+          findMany: {
+            args: Prisma.WorkoutTemplateFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkoutTemplatePayload>[]
+          }
+          create: {
+            args: Prisma.WorkoutTemplateCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkoutTemplatePayload>
+          }
+          createMany: {
+            args: Prisma.WorkoutTemplateCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WorkoutTemplateCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkoutTemplatePayload>[]
+          }
+          delete: {
+            args: Prisma.WorkoutTemplateDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkoutTemplatePayload>
+          }
+          update: {
+            args: Prisma.WorkoutTemplateUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkoutTemplatePayload>
+          }
+          deleteMany: {
+            args: Prisma.WorkoutTemplateDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WorkoutTemplateUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WorkoutTemplateUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkoutTemplatePayload>[]
+          }
+          upsert: {
+            args: Prisma.WorkoutTemplateUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkoutTemplatePayload>
+          }
+          aggregate: {
+            args: Prisma.WorkoutTemplateAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWorkoutTemplate>
+          }
+          groupBy: {
+            args: Prisma.WorkoutTemplateGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WorkoutTemplateGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WorkoutTemplateCountArgs<ExtArgs>
+            result: $Utils.Optional<WorkoutTemplateCountAggregateOutputType> | number
+          }
+        }
+      }
+      ScheduleTemplate: {
+        payload: Prisma.$ScheduleTemplatePayload<ExtArgs>
+        fields: Prisma.ScheduleTemplateFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ScheduleTemplateFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleTemplatePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ScheduleTemplateFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleTemplatePayload>
+          }
+          findFirst: {
+            args: Prisma.ScheduleTemplateFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleTemplatePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ScheduleTemplateFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleTemplatePayload>
+          }
+          findMany: {
+            args: Prisma.ScheduleTemplateFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleTemplatePayload>[]
+          }
+          create: {
+            args: Prisma.ScheduleTemplateCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleTemplatePayload>
+          }
+          createMany: {
+            args: Prisma.ScheduleTemplateCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ScheduleTemplateCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleTemplatePayload>[]
+          }
+          delete: {
+            args: Prisma.ScheduleTemplateDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleTemplatePayload>
+          }
+          update: {
+            args: Prisma.ScheduleTemplateUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleTemplatePayload>
+          }
+          deleteMany: {
+            args: Prisma.ScheduleTemplateDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ScheduleTemplateUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ScheduleTemplateUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleTemplatePayload>[]
+          }
+          upsert: {
+            args: Prisma.ScheduleTemplateUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ScheduleTemplatePayload>
+          }
+          aggregate: {
+            args: Prisma.ScheduleTemplateAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateScheduleTemplate>
+          }
+          groupBy: {
+            args: Prisma.ScheduleTemplateGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ScheduleTemplateGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ScheduleTemplateCountArgs<ExtArgs>
+            result: $Utils.Optional<ScheduleTemplateCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3776,6 +4136,10 @@ export namespace Prisma {
     calendarIntegration?: CalendarIntegrationOmit
     calendarEventSync?: CalendarEventSyncOmit
     calendarFeedToken?: CalendarFeedTokenOmit
+    badge?: BadgeOmit
+    clientBadge?: ClientBadgeOmit
+    workoutTemplate?: WorkoutTemplateOmit
+    scheduleTemplate?: ScheduleTemplateOmit
   }
 
   /* Types for Logging */
@@ -3872,6 +4236,9 @@ export namespace Prisma {
     expenseCategories: number
     expenses: number
     recurringInvoiceTemplates: number
+    badges: number
+    workoutTemplates: number
+    scheduleTemplates: number
   }
 
   export type TenantCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3891,6 +4258,9 @@ export namespace Prisma {
     expenseCategories?: boolean | TenantCountOutputTypeCountExpenseCategoriesArgs
     expenses?: boolean | TenantCountOutputTypeCountExpensesArgs
     recurringInvoiceTemplates?: boolean | TenantCountOutputTypeCountRecurringInvoiceTemplatesArgs
+    badges?: boolean | TenantCountOutputTypeCountBadgesArgs
+    workoutTemplates?: boolean | TenantCountOutputTypeCountWorkoutTemplatesArgs
+    scheduleTemplates?: boolean | TenantCountOutputTypeCountScheduleTemplatesArgs
   }
 
   // Custom InputTypes
@@ -4016,6 +4386,27 @@ export namespace Prisma {
     where?: RecurringInvoiceTemplateWhereInput
   }
 
+  /**
+   * TenantCountOutputType without action
+   */
+  export type TenantCountOutputTypeCountBadgesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BadgeWhereInput
+  }
+
+  /**
+   * TenantCountOutputType without action
+   */
+  export type TenantCountOutputTypeCountWorkoutTemplatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkoutTemplateWhereInput
+  }
+
+  /**
+   * TenantCountOutputType without action
+   */
+  export type TenantCountOutputTypeCountScheduleTemplatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ScheduleTemplateWhereInput
+  }
+
 
   /**
    * Count Type UserCountOutputType
@@ -4067,6 +4458,7 @@ export namespace Prisma {
     invoices: number
     measurements: number
     progressPhotos: number
+    badges: number
   }
 
   export type ClientCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4075,6 +4467,7 @@ export namespace Prisma {
     invoices?: boolean | ClientCountOutputTypeCountInvoicesArgs
     measurements?: boolean | ClientCountOutputTypeCountMeasurementsArgs
     progressPhotos?: boolean | ClientCountOutputTypeCountProgressPhotosArgs
+    badges?: boolean | ClientCountOutputTypeCountBadgesArgs
   }
 
   // Custom InputTypes
@@ -4121,6 +4514,13 @@ export namespace Prisma {
    */
   export type ClientCountOutputTypeCountProgressPhotosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ProgressPhotoWhereInput
+  }
+
+  /**
+   * ClientCountOutputType without action
+   */
+  export type ClientCountOutputTypeCountBadgesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClientBadgeWhereInput
   }
 
 
@@ -4400,6 +4800,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type BadgeCountOutputType
+   */
+
+  export type BadgeCountOutputType = {
+    clientBadges: number
+  }
+
+  export type BadgeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    clientBadges?: boolean | BadgeCountOutputTypeCountClientBadgesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * BadgeCountOutputType without action
+   */
+  export type BadgeCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BadgeCountOutputType
+     */
+    select?: BadgeCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * BadgeCountOutputType without action
+   */
+  export type BadgeCountOutputTypeCountClientBadgesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClientBadgeWhereInput
+  }
+
+
+  /**
    * Models
    */
 
@@ -4673,6 +5104,9 @@ export namespace Prisma {
     expenseCategories?: boolean | Tenant$expenseCategoriesArgs<ExtArgs>
     expenses?: boolean | Tenant$expensesArgs<ExtArgs>
     recurringInvoiceTemplates?: boolean | Tenant$recurringInvoiceTemplatesArgs<ExtArgs>
+    badges?: boolean | Tenant$badgesArgs<ExtArgs>
+    workoutTemplates?: boolean | Tenant$workoutTemplatesArgs<ExtArgs>
+    scheduleTemplates?: boolean | Tenant$scheduleTemplatesArgs<ExtArgs>
     _count?: boolean | TenantCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tenant"]>
 
@@ -4739,6 +5173,9 @@ export namespace Prisma {
     expenseCategories?: boolean | Tenant$expenseCategoriesArgs<ExtArgs>
     expenses?: boolean | Tenant$expensesArgs<ExtArgs>
     recurringInvoiceTemplates?: boolean | Tenant$recurringInvoiceTemplatesArgs<ExtArgs>
+    badges?: boolean | Tenant$badgesArgs<ExtArgs>
+    workoutTemplates?: boolean | Tenant$workoutTemplatesArgs<ExtArgs>
+    scheduleTemplates?: boolean | Tenant$scheduleTemplatesArgs<ExtArgs>
     _count?: boolean | TenantCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TenantIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -4763,6 +5200,9 @@ export namespace Prisma {
       expenseCategories: Prisma.$ExpenseCategoryPayload<ExtArgs>[]
       expenses: Prisma.$ExpensePayload<ExtArgs>[]
       recurringInvoiceTemplates: Prisma.$RecurringInvoiceTemplatePayload<ExtArgs>[]
+      badges: Prisma.$BadgePayload<ExtArgs>[]
+      workoutTemplates: Prisma.$WorkoutTemplatePayload<ExtArgs>[]
+      scheduleTemplates: Prisma.$ScheduleTemplatePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5187,6 +5627,9 @@ export namespace Prisma {
     expenseCategories<T extends Tenant$expenseCategoriesArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$expenseCategoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExpenseCategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     expenses<T extends Tenant$expensesArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$expensesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExpensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     recurringInvoiceTemplates<T extends Tenant$recurringInvoiceTemplatesArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$recurringInvoiceTemplatesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecurringInvoiceTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    badges<T extends Tenant$badgesArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$badgesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    workoutTemplates<T extends Tenant$workoutTemplatesArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$workoutTemplatesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkoutTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    scheduleTemplates<T extends Tenant$scheduleTemplatesArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$scheduleTemplatesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5997,6 +6440,78 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: RecurringInvoiceTemplateScalarFieldEnum | RecurringInvoiceTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * Tenant.badges
+   */
+  export type Tenant$badgesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Badge
+     */
+    omit?: BadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+    where?: BadgeWhereInput
+    orderBy?: BadgeOrderByWithRelationInput | BadgeOrderByWithRelationInput[]
+    cursor?: BadgeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BadgeScalarFieldEnum | BadgeScalarFieldEnum[]
+  }
+
+  /**
+   * Tenant.workoutTemplates
+   */
+  export type Tenant$workoutTemplatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutTemplate
+     */
+    select?: WorkoutTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutTemplate
+     */
+    omit?: WorkoutTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutTemplateInclude<ExtArgs> | null
+    where?: WorkoutTemplateWhereInput
+    orderBy?: WorkoutTemplateOrderByWithRelationInput | WorkoutTemplateOrderByWithRelationInput[]
+    cursor?: WorkoutTemplateWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WorkoutTemplateScalarFieldEnum | WorkoutTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * Tenant.scheduleTemplates
+   */
+  export type Tenant$scheduleTemplatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
+    where?: ScheduleTemplateWhereInput
+    orderBy?: ScheduleTemplateOrderByWithRelationInput | ScheduleTemplateOrderByWithRelationInput[]
+    cursor?: ScheduleTemplateWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ScheduleTemplateScalarFieldEnum | ScheduleTemplateScalarFieldEnum[]
   }
 
   /**
@@ -11767,6 +12282,7 @@ export namespace Prisma {
     invoices?: boolean | Client$invoicesArgs<ExtArgs>
     measurements?: boolean | Client$measurementsArgs<ExtArgs>
     progressPhotos?: boolean | Client$progressPhotosArgs<ExtArgs>
+    badges?: boolean | Client$badgesArgs<ExtArgs>
     _count?: boolean | ClientCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["client"]>
 
@@ -11867,6 +12383,7 @@ export namespace Prisma {
     invoices?: boolean | Client$invoicesArgs<ExtArgs>
     measurements?: boolean | Client$measurementsArgs<ExtArgs>
     progressPhotos?: boolean | Client$progressPhotosArgs<ExtArgs>
+    badges?: boolean | Client$badgesArgs<ExtArgs>
     _count?: boolean | ClientCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ClientIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11885,6 +12402,7 @@ export namespace Prisma {
       invoices: Prisma.$InvoicePayload<ExtArgs>[]
       measurements: Prisma.$ClientMeasurementPayload<ExtArgs>[]
       progressPhotos: Prisma.$ProgressPhotoPayload<ExtArgs>[]
+      badges: Prisma.$ClientBadgePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -12313,6 +12831,7 @@ export namespace Prisma {
     invoices<T extends Client$invoicesArgs<ExtArgs> = {}>(args?: Subset<T, Client$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     measurements<T extends Client$measurementsArgs<ExtArgs> = {}>(args?: Subset<T, Client$measurementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientMeasurementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     progressPhotos<T extends Client$progressPhotosArgs<ExtArgs> = {}>(args?: Subset<T, Client$progressPhotosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProgressPhotoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    badges<T extends Client$badgesArgs<ExtArgs> = {}>(args?: Subset<T, Client$badgesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientBadgePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -12881,6 +13400,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ProgressPhotoScalarFieldEnum | ProgressPhotoScalarFieldEnum[]
+  }
+
+  /**
+   * Client.badges
+   */
+  export type Client$badgesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientBadge
+     */
+    select?: ClientBadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientBadge
+     */
+    omit?: ClientBadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientBadgeInclude<ExtArgs> | null
+    where?: ClientBadgeWhereInput
+    orderBy?: ClientBadgeOrderByWithRelationInput | ClientBadgeOrderByWithRelationInput[]
+    cursor?: ClientBadgeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ClientBadgeScalarFieldEnum | ClientBadgeScalarFieldEnum[]
   }
 
   /**
@@ -43715,6 +44258,4528 @@ export namespace Prisma {
 
 
   /**
+   * Model Badge
+   */
+
+  export type AggregateBadge = {
+    _count: BadgeCountAggregateOutputType | null
+    _min: BadgeMinAggregateOutputType | null
+    _max: BadgeMaxAggregateOutputType | null
+  }
+
+  export type BadgeMinAggregateOutputType = {
+    id: string | null
+    tenantId: string | null
+    name: string | null
+    description: string | null
+    icon: string | null
+    color: string | null
+    category: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BadgeMaxAggregateOutputType = {
+    id: string | null
+    tenantId: string | null
+    name: string | null
+    description: string | null
+    icon: string | null
+    color: string | null
+    category: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BadgeCountAggregateOutputType = {
+    id: number
+    tenantId: number
+    name: number
+    description: number
+    icon: number
+    color: number
+    category: number
+    criteria: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type BadgeMinAggregateInputType = {
+    id?: true
+    tenantId?: true
+    name?: true
+    description?: true
+    icon?: true
+    color?: true
+    category?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BadgeMaxAggregateInputType = {
+    id?: true
+    tenantId?: true
+    name?: true
+    description?: true
+    icon?: true
+    color?: true
+    category?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BadgeCountAggregateInputType = {
+    id?: true
+    tenantId?: true
+    name?: true
+    description?: true
+    icon?: true
+    color?: true
+    category?: true
+    criteria?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type BadgeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Badge to aggregate.
+     */
+    where?: BadgeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Badges to fetch.
+     */
+    orderBy?: BadgeOrderByWithRelationInput | BadgeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BadgeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Badges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Badges.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Badges
+    **/
+    _count?: true | BadgeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BadgeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BadgeMaxAggregateInputType
+  }
+
+  export type GetBadgeAggregateType<T extends BadgeAggregateArgs> = {
+        [P in keyof T & keyof AggregateBadge]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBadge[P]>
+      : GetScalarType<T[P], AggregateBadge[P]>
+  }
+
+
+
+
+  export type BadgeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BadgeWhereInput
+    orderBy?: BadgeOrderByWithAggregationInput | BadgeOrderByWithAggregationInput[]
+    by: BadgeScalarFieldEnum[] | BadgeScalarFieldEnum
+    having?: BadgeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BadgeCountAggregateInputType | true
+    _min?: BadgeMinAggregateInputType
+    _max?: BadgeMaxAggregateInputType
+  }
+
+  export type BadgeGroupByOutputType = {
+    id: string
+    tenantId: string
+    name: string
+    description: string
+    icon: string
+    color: string
+    category: string
+    criteria: JsonValue
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: BadgeCountAggregateOutputType | null
+    _min: BadgeMinAggregateOutputType | null
+    _max: BadgeMaxAggregateOutputType | null
+  }
+
+  type GetBadgeGroupByPayload<T extends BadgeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BadgeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BadgeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BadgeGroupByOutputType[P]>
+            : GetScalarType<T[P], BadgeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BadgeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    name?: boolean
+    description?: boolean
+    icon?: boolean
+    color?: boolean
+    category?: boolean
+    criteria?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    clientBadges?: boolean | Badge$clientBadgesArgs<ExtArgs>
+    _count?: boolean | BadgeCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["badge"]>
+
+  export type BadgeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    name?: boolean
+    description?: boolean
+    icon?: boolean
+    color?: boolean
+    category?: boolean
+    criteria?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["badge"]>
+
+  export type BadgeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    name?: boolean
+    description?: boolean
+    icon?: boolean
+    color?: boolean
+    category?: boolean
+    criteria?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["badge"]>
+
+  export type BadgeSelectScalar = {
+    id?: boolean
+    tenantId?: boolean
+    name?: boolean
+    description?: boolean
+    icon?: boolean
+    color?: boolean
+    category?: boolean
+    criteria?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type BadgeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tenantId" | "name" | "description" | "icon" | "color" | "category" | "criteria" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["badge"]>
+  export type BadgeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+    clientBadges?: boolean | Badge$clientBadgesArgs<ExtArgs>
+    _count?: boolean | BadgeCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type BadgeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }
+  export type BadgeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }
+
+  export type $BadgePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Badge"
+    objects: {
+      tenant: Prisma.$TenantPayload<ExtArgs>
+      clientBadges: Prisma.$ClientBadgePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      tenantId: string
+      name: string
+      description: string
+      icon: string
+      color: string
+      category: string
+      criteria: Prisma.JsonValue
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["badge"]>
+    composites: {}
+  }
+
+  type BadgeGetPayload<S extends boolean | null | undefined | BadgeDefaultArgs> = $Result.GetResult<Prisma.$BadgePayload, S>
+
+  type BadgeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<BadgeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: BadgeCountAggregateInputType | true
+    }
+
+  export interface BadgeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Badge'], meta: { name: 'Badge' } }
+    /**
+     * Find zero or one Badge that matches the filter.
+     * @param {BadgeFindUniqueArgs} args - Arguments to find a Badge
+     * @example
+     * // Get one Badge
+     * const badge = await prisma.badge.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BadgeFindUniqueArgs>(args: SelectSubset<T, BadgeFindUniqueArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Badge that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {BadgeFindUniqueOrThrowArgs} args - Arguments to find a Badge
+     * @example
+     * // Get one Badge
+     * const badge = await prisma.badge.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BadgeFindUniqueOrThrowArgs>(args: SelectSubset<T, BadgeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Badge that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BadgeFindFirstArgs} args - Arguments to find a Badge
+     * @example
+     * // Get one Badge
+     * const badge = await prisma.badge.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BadgeFindFirstArgs>(args?: SelectSubset<T, BadgeFindFirstArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Badge that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BadgeFindFirstOrThrowArgs} args - Arguments to find a Badge
+     * @example
+     * // Get one Badge
+     * const badge = await prisma.badge.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BadgeFindFirstOrThrowArgs>(args?: SelectSubset<T, BadgeFindFirstOrThrowArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Badges that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BadgeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Badges
+     * const badges = await prisma.badge.findMany()
+     * 
+     * // Get first 10 Badges
+     * const badges = await prisma.badge.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const badgeWithIdOnly = await prisma.badge.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends BadgeFindManyArgs>(args?: SelectSubset<T, BadgeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Badge.
+     * @param {BadgeCreateArgs} args - Arguments to create a Badge.
+     * @example
+     * // Create one Badge
+     * const Badge = await prisma.badge.create({
+     *   data: {
+     *     // ... data to create a Badge
+     *   }
+     * })
+     * 
+     */
+    create<T extends BadgeCreateArgs>(args: SelectSubset<T, BadgeCreateArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Badges.
+     * @param {BadgeCreateManyArgs} args - Arguments to create many Badges.
+     * @example
+     * // Create many Badges
+     * const badge = await prisma.badge.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BadgeCreateManyArgs>(args?: SelectSubset<T, BadgeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Badges and returns the data saved in the database.
+     * @param {BadgeCreateManyAndReturnArgs} args - Arguments to create many Badges.
+     * @example
+     * // Create many Badges
+     * const badge = await prisma.badge.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Badges and only return the `id`
+     * const badgeWithIdOnly = await prisma.badge.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BadgeCreateManyAndReturnArgs>(args?: SelectSubset<T, BadgeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Badge.
+     * @param {BadgeDeleteArgs} args - Arguments to delete one Badge.
+     * @example
+     * // Delete one Badge
+     * const Badge = await prisma.badge.delete({
+     *   where: {
+     *     // ... filter to delete one Badge
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BadgeDeleteArgs>(args: SelectSubset<T, BadgeDeleteArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Badge.
+     * @param {BadgeUpdateArgs} args - Arguments to update one Badge.
+     * @example
+     * // Update one Badge
+     * const badge = await prisma.badge.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BadgeUpdateArgs>(args: SelectSubset<T, BadgeUpdateArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Badges.
+     * @param {BadgeDeleteManyArgs} args - Arguments to filter Badges to delete.
+     * @example
+     * // Delete a few Badges
+     * const { count } = await prisma.badge.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BadgeDeleteManyArgs>(args?: SelectSubset<T, BadgeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Badges.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BadgeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Badges
+     * const badge = await prisma.badge.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BadgeUpdateManyArgs>(args: SelectSubset<T, BadgeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Badges and returns the data updated in the database.
+     * @param {BadgeUpdateManyAndReturnArgs} args - Arguments to update many Badges.
+     * @example
+     * // Update many Badges
+     * const badge = await prisma.badge.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Badges and only return the `id`
+     * const badgeWithIdOnly = await prisma.badge.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends BadgeUpdateManyAndReturnArgs>(args: SelectSubset<T, BadgeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Badge.
+     * @param {BadgeUpsertArgs} args - Arguments to update or create a Badge.
+     * @example
+     * // Update or create a Badge
+     * const badge = await prisma.badge.upsert({
+     *   create: {
+     *     // ... data to create a Badge
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Badge we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BadgeUpsertArgs>(args: SelectSubset<T, BadgeUpsertArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Badges.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BadgeCountArgs} args - Arguments to filter Badges to count.
+     * @example
+     * // Count the number of Badges
+     * const count = await prisma.badge.count({
+     *   where: {
+     *     // ... the filter for the Badges we want to count
+     *   }
+     * })
+    **/
+    count<T extends BadgeCountArgs>(
+      args?: Subset<T, BadgeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BadgeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Badge.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BadgeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BadgeAggregateArgs>(args: Subset<T, BadgeAggregateArgs>): Prisma.PrismaPromise<GetBadgeAggregateType<T>>
+
+    /**
+     * Group by Badge.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BadgeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BadgeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BadgeGroupByArgs['orderBy'] }
+        : { orderBy?: BadgeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BadgeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBadgeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Badge model
+   */
+  readonly fields: BadgeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Badge.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BadgeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    clientBadges<T extends Badge$clientBadgesArgs<ExtArgs> = {}>(args?: Subset<T, Badge$clientBadgesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientBadgePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Badge model
+   */
+  interface BadgeFieldRefs {
+    readonly id: FieldRef<"Badge", 'String'>
+    readonly tenantId: FieldRef<"Badge", 'String'>
+    readonly name: FieldRef<"Badge", 'String'>
+    readonly description: FieldRef<"Badge", 'String'>
+    readonly icon: FieldRef<"Badge", 'String'>
+    readonly color: FieldRef<"Badge", 'String'>
+    readonly category: FieldRef<"Badge", 'String'>
+    readonly criteria: FieldRef<"Badge", 'Json'>
+    readonly isActive: FieldRef<"Badge", 'Boolean'>
+    readonly createdAt: FieldRef<"Badge", 'DateTime'>
+    readonly updatedAt: FieldRef<"Badge", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Badge findUnique
+   */
+  export type BadgeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Badge
+     */
+    omit?: BadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+    /**
+     * Filter, which Badge to fetch.
+     */
+    where: BadgeWhereUniqueInput
+  }
+
+  /**
+   * Badge findUniqueOrThrow
+   */
+  export type BadgeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Badge
+     */
+    omit?: BadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+    /**
+     * Filter, which Badge to fetch.
+     */
+    where: BadgeWhereUniqueInput
+  }
+
+  /**
+   * Badge findFirst
+   */
+  export type BadgeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Badge
+     */
+    omit?: BadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+    /**
+     * Filter, which Badge to fetch.
+     */
+    where?: BadgeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Badges to fetch.
+     */
+    orderBy?: BadgeOrderByWithRelationInput | BadgeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Badges.
+     */
+    cursor?: BadgeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Badges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Badges.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Badges.
+     */
+    distinct?: BadgeScalarFieldEnum | BadgeScalarFieldEnum[]
+  }
+
+  /**
+   * Badge findFirstOrThrow
+   */
+  export type BadgeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Badge
+     */
+    omit?: BadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+    /**
+     * Filter, which Badge to fetch.
+     */
+    where?: BadgeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Badges to fetch.
+     */
+    orderBy?: BadgeOrderByWithRelationInput | BadgeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Badges.
+     */
+    cursor?: BadgeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Badges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Badges.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Badges.
+     */
+    distinct?: BadgeScalarFieldEnum | BadgeScalarFieldEnum[]
+  }
+
+  /**
+   * Badge findMany
+   */
+  export type BadgeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Badge
+     */
+    omit?: BadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+    /**
+     * Filter, which Badges to fetch.
+     */
+    where?: BadgeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Badges to fetch.
+     */
+    orderBy?: BadgeOrderByWithRelationInput | BadgeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Badges.
+     */
+    cursor?: BadgeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Badges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Badges.
+     */
+    skip?: number
+    distinct?: BadgeScalarFieldEnum | BadgeScalarFieldEnum[]
+  }
+
+  /**
+   * Badge create
+   */
+  export type BadgeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Badge
+     */
+    omit?: BadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Badge.
+     */
+    data: XOR<BadgeCreateInput, BadgeUncheckedCreateInput>
+  }
+
+  /**
+   * Badge createMany
+   */
+  export type BadgeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Badges.
+     */
+    data: BadgeCreateManyInput | BadgeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Badge createManyAndReturn
+   */
+  export type BadgeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Badge
+     */
+    omit?: BadgeOmit<ExtArgs> | null
+    /**
+     * The data used to create many Badges.
+     */
+    data: BadgeCreateManyInput | BadgeCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Badge update
+   */
+  export type BadgeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Badge
+     */
+    omit?: BadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Badge.
+     */
+    data: XOR<BadgeUpdateInput, BadgeUncheckedUpdateInput>
+    /**
+     * Choose, which Badge to update.
+     */
+    where: BadgeWhereUniqueInput
+  }
+
+  /**
+   * Badge updateMany
+   */
+  export type BadgeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Badges.
+     */
+    data: XOR<BadgeUpdateManyMutationInput, BadgeUncheckedUpdateManyInput>
+    /**
+     * Filter which Badges to update
+     */
+    where?: BadgeWhereInput
+    /**
+     * Limit how many Badges to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Badge updateManyAndReturn
+   */
+  export type BadgeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Badge
+     */
+    omit?: BadgeOmit<ExtArgs> | null
+    /**
+     * The data used to update Badges.
+     */
+    data: XOR<BadgeUpdateManyMutationInput, BadgeUncheckedUpdateManyInput>
+    /**
+     * Filter which Badges to update
+     */
+    where?: BadgeWhereInput
+    /**
+     * Limit how many Badges to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Badge upsert
+   */
+  export type BadgeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Badge
+     */
+    omit?: BadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Badge to update in case it exists.
+     */
+    where: BadgeWhereUniqueInput
+    /**
+     * In case the Badge found by the `where` argument doesn't exist, create a new Badge with this data.
+     */
+    create: XOR<BadgeCreateInput, BadgeUncheckedCreateInput>
+    /**
+     * In case the Badge was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BadgeUpdateInput, BadgeUncheckedUpdateInput>
+  }
+
+  /**
+   * Badge delete
+   */
+  export type BadgeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Badge
+     */
+    omit?: BadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+    /**
+     * Filter which Badge to delete.
+     */
+    where: BadgeWhereUniqueInput
+  }
+
+  /**
+   * Badge deleteMany
+   */
+  export type BadgeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Badges to delete
+     */
+    where?: BadgeWhereInput
+    /**
+     * Limit how many Badges to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Badge.clientBadges
+   */
+  export type Badge$clientBadgesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientBadge
+     */
+    select?: ClientBadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientBadge
+     */
+    omit?: ClientBadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientBadgeInclude<ExtArgs> | null
+    where?: ClientBadgeWhereInput
+    orderBy?: ClientBadgeOrderByWithRelationInput | ClientBadgeOrderByWithRelationInput[]
+    cursor?: ClientBadgeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ClientBadgeScalarFieldEnum | ClientBadgeScalarFieldEnum[]
+  }
+
+  /**
+   * Badge without action
+   */
+  export type BadgeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Badge
+     */
+    select?: BadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Badge
+     */
+    omit?: BadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BadgeInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ClientBadge
+   */
+
+  export type AggregateClientBadge = {
+    _count: ClientBadgeCountAggregateOutputType | null
+    _min: ClientBadgeMinAggregateOutputType | null
+    _max: ClientBadgeMaxAggregateOutputType | null
+  }
+
+  export type ClientBadgeMinAggregateOutputType = {
+    id: string | null
+    clientId: string | null
+    badgeId: string | null
+    earnedAt: Date | null
+    notified: boolean | null
+  }
+
+  export type ClientBadgeMaxAggregateOutputType = {
+    id: string | null
+    clientId: string | null
+    badgeId: string | null
+    earnedAt: Date | null
+    notified: boolean | null
+  }
+
+  export type ClientBadgeCountAggregateOutputType = {
+    id: number
+    clientId: number
+    badgeId: number
+    earnedAt: number
+    notified: number
+    _all: number
+  }
+
+
+  export type ClientBadgeMinAggregateInputType = {
+    id?: true
+    clientId?: true
+    badgeId?: true
+    earnedAt?: true
+    notified?: true
+  }
+
+  export type ClientBadgeMaxAggregateInputType = {
+    id?: true
+    clientId?: true
+    badgeId?: true
+    earnedAt?: true
+    notified?: true
+  }
+
+  export type ClientBadgeCountAggregateInputType = {
+    id?: true
+    clientId?: true
+    badgeId?: true
+    earnedAt?: true
+    notified?: true
+    _all?: true
+  }
+
+  export type ClientBadgeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ClientBadge to aggregate.
+     */
+    where?: ClientBadgeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClientBadges to fetch.
+     */
+    orderBy?: ClientBadgeOrderByWithRelationInput | ClientBadgeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ClientBadgeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClientBadges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClientBadges.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ClientBadges
+    **/
+    _count?: true | ClientBadgeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ClientBadgeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ClientBadgeMaxAggregateInputType
+  }
+
+  export type GetClientBadgeAggregateType<T extends ClientBadgeAggregateArgs> = {
+        [P in keyof T & keyof AggregateClientBadge]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateClientBadge[P]>
+      : GetScalarType<T[P], AggregateClientBadge[P]>
+  }
+
+
+
+
+  export type ClientBadgeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClientBadgeWhereInput
+    orderBy?: ClientBadgeOrderByWithAggregationInput | ClientBadgeOrderByWithAggregationInput[]
+    by: ClientBadgeScalarFieldEnum[] | ClientBadgeScalarFieldEnum
+    having?: ClientBadgeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ClientBadgeCountAggregateInputType | true
+    _min?: ClientBadgeMinAggregateInputType
+    _max?: ClientBadgeMaxAggregateInputType
+  }
+
+  export type ClientBadgeGroupByOutputType = {
+    id: string
+    clientId: string
+    badgeId: string
+    earnedAt: Date
+    notified: boolean
+    _count: ClientBadgeCountAggregateOutputType | null
+    _min: ClientBadgeMinAggregateOutputType | null
+    _max: ClientBadgeMaxAggregateOutputType | null
+  }
+
+  type GetClientBadgeGroupByPayload<T extends ClientBadgeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ClientBadgeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ClientBadgeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ClientBadgeGroupByOutputType[P]>
+            : GetScalarType<T[P], ClientBadgeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ClientBadgeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    clientId?: boolean
+    badgeId?: boolean
+    earnedAt?: boolean
+    notified?: boolean
+    client?: boolean | ClientDefaultArgs<ExtArgs>
+    badge?: boolean | BadgeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clientBadge"]>
+
+  export type ClientBadgeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    clientId?: boolean
+    badgeId?: boolean
+    earnedAt?: boolean
+    notified?: boolean
+    client?: boolean | ClientDefaultArgs<ExtArgs>
+    badge?: boolean | BadgeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clientBadge"]>
+
+  export type ClientBadgeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    clientId?: boolean
+    badgeId?: boolean
+    earnedAt?: boolean
+    notified?: boolean
+    client?: boolean | ClientDefaultArgs<ExtArgs>
+    badge?: boolean | BadgeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clientBadge"]>
+
+  export type ClientBadgeSelectScalar = {
+    id?: boolean
+    clientId?: boolean
+    badgeId?: boolean
+    earnedAt?: boolean
+    notified?: boolean
+  }
+
+  export type ClientBadgeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clientId" | "badgeId" | "earnedAt" | "notified", ExtArgs["result"]["clientBadge"]>
+  export type ClientBadgeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    client?: boolean | ClientDefaultArgs<ExtArgs>
+    badge?: boolean | BadgeDefaultArgs<ExtArgs>
+  }
+  export type ClientBadgeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    client?: boolean | ClientDefaultArgs<ExtArgs>
+    badge?: boolean | BadgeDefaultArgs<ExtArgs>
+  }
+  export type ClientBadgeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    client?: boolean | ClientDefaultArgs<ExtArgs>
+    badge?: boolean | BadgeDefaultArgs<ExtArgs>
+  }
+
+  export type $ClientBadgePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ClientBadge"
+    objects: {
+      client: Prisma.$ClientPayload<ExtArgs>
+      badge: Prisma.$BadgePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      clientId: string
+      badgeId: string
+      earnedAt: Date
+      notified: boolean
+    }, ExtArgs["result"]["clientBadge"]>
+    composites: {}
+  }
+
+  type ClientBadgeGetPayload<S extends boolean | null | undefined | ClientBadgeDefaultArgs> = $Result.GetResult<Prisma.$ClientBadgePayload, S>
+
+  type ClientBadgeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ClientBadgeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ClientBadgeCountAggregateInputType | true
+    }
+
+  export interface ClientBadgeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ClientBadge'], meta: { name: 'ClientBadge' } }
+    /**
+     * Find zero or one ClientBadge that matches the filter.
+     * @param {ClientBadgeFindUniqueArgs} args - Arguments to find a ClientBadge
+     * @example
+     * // Get one ClientBadge
+     * const clientBadge = await prisma.clientBadge.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ClientBadgeFindUniqueArgs>(args: SelectSubset<T, ClientBadgeFindUniqueArgs<ExtArgs>>): Prisma__ClientBadgeClient<$Result.GetResult<Prisma.$ClientBadgePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ClientBadge that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ClientBadgeFindUniqueOrThrowArgs} args - Arguments to find a ClientBadge
+     * @example
+     * // Get one ClientBadge
+     * const clientBadge = await prisma.clientBadge.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ClientBadgeFindUniqueOrThrowArgs>(args: SelectSubset<T, ClientBadgeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ClientBadgeClient<$Result.GetResult<Prisma.$ClientBadgePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ClientBadge that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClientBadgeFindFirstArgs} args - Arguments to find a ClientBadge
+     * @example
+     * // Get one ClientBadge
+     * const clientBadge = await prisma.clientBadge.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ClientBadgeFindFirstArgs>(args?: SelectSubset<T, ClientBadgeFindFirstArgs<ExtArgs>>): Prisma__ClientBadgeClient<$Result.GetResult<Prisma.$ClientBadgePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ClientBadge that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClientBadgeFindFirstOrThrowArgs} args - Arguments to find a ClientBadge
+     * @example
+     * // Get one ClientBadge
+     * const clientBadge = await prisma.clientBadge.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ClientBadgeFindFirstOrThrowArgs>(args?: SelectSubset<T, ClientBadgeFindFirstOrThrowArgs<ExtArgs>>): Prisma__ClientBadgeClient<$Result.GetResult<Prisma.$ClientBadgePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ClientBadges that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClientBadgeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ClientBadges
+     * const clientBadges = await prisma.clientBadge.findMany()
+     * 
+     * // Get first 10 ClientBadges
+     * const clientBadges = await prisma.clientBadge.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const clientBadgeWithIdOnly = await prisma.clientBadge.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ClientBadgeFindManyArgs>(args?: SelectSubset<T, ClientBadgeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientBadgePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ClientBadge.
+     * @param {ClientBadgeCreateArgs} args - Arguments to create a ClientBadge.
+     * @example
+     * // Create one ClientBadge
+     * const ClientBadge = await prisma.clientBadge.create({
+     *   data: {
+     *     // ... data to create a ClientBadge
+     *   }
+     * })
+     * 
+     */
+    create<T extends ClientBadgeCreateArgs>(args: SelectSubset<T, ClientBadgeCreateArgs<ExtArgs>>): Prisma__ClientBadgeClient<$Result.GetResult<Prisma.$ClientBadgePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ClientBadges.
+     * @param {ClientBadgeCreateManyArgs} args - Arguments to create many ClientBadges.
+     * @example
+     * // Create many ClientBadges
+     * const clientBadge = await prisma.clientBadge.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ClientBadgeCreateManyArgs>(args?: SelectSubset<T, ClientBadgeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ClientBadges and returns the data saved in the database.
+     * @param {ClientBadgeCreateManyAndReturnArgs} args - Arguments to create many ClientBadges.
+     * @example
+     * // Create many ClientBadges
+     * const clientBadge = await prisma.clientBadge.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ClientBadges and only return the `id`
+     * const clientBadgeWithIdOnly = await prisma.clientBadge.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ClientBadgeCreateManyAndReturnArgs>(args?: SelectSubset<T, ClientBadgeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientBadgePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ClientBadge.
+     * @param {ClientBadgeDeleteArgs} args - Arguments to delete one ClientBadge.
+     * @example
+     * // Delete one ClientBadge
+     * const ClientBadge = await prisma.clientBadge.delete({
+     *   where: {
+     *     // ... filter to delete one ClientBadge
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ClientBadgeDeleteArgs>(args: SelectSubset<T, ClientBadgeDeleteArgs<ExtArgs>>): Prisma__ClientBadgeClient<$Result.GetResult<Prisma.$ClientBadgePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ClientBadge.
+     * @param {ClientBadgeUpdateArgs} args - Arguments to update one ClientBadge.
+     * @example
+     * // Update one ClientBadge
+     * const clientBadge = await prisma.clientBadge.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ClientBadgeUpdateArgs>(args: SelectSubset<T, ClientBadgeUpdateArgs<ExtArgs>>): Prisma__ClientBadgeClient<$Result.GetResult<Prisma.$ClientBadgePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ClientBadges.
+     * @param {ClientBadgeDeleteManyArgs} args - Arguments to filter ClientBadges to delete.
+     * @example
+     * // Delete a few ClientBadges
+     * const { count } = await prisma.clientBadge.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ClientBadgeDeleteManyArgs>(args?: SelectSubset<T, ClientBadgeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ClientBadges.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClientBadgeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ClientBadges
+     * const clientBadge = await prisma.clientBadge.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ClientBadgeUpdateManyArgs>(args: SelectSubset<T, ClientBadgeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ClientBadges and returns the data updated in the database.
+     * @param {ClientBadgeUpdateManyAndReturnArgs} args - Arguments to update many ClientBadges.
+     * @example
+     * // Update many ClientBadges
+     * const clientBadge = await prisma.clientBadge.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ClientBadges and only return the `id`
+     * const clientBadgeWithIdOnly = await prisma.clientBadge.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ClientBadgeUpdateManyAndReturnArgs>(args: SelectSubset<T, ClientBadgeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientBadgePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ClientBadge.
+     * @param {ClientBadgeUpsertArgs} args - Arguments to update or create a ClientBadge.
+     * @example
+     * // Update or create a ClientBadge
+     * const clientBadge = await prisma.clientBadge.upsert({
+     *   create: {
+     *     // ... data to create a ClientBadge
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ClientBadge we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ClientBadgeUpsertArgs>(args: SelectSubset<T, ClientBadgeUpsertArgs<ExtArgs>>): Prisma__ClientBadgeClient<$Result.GetResult<Prisma.$ClientBadgePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ClientBadges.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClientBadgeCountArgs} args - Arguments to filter ClientBadges to count.
+     * @example
+     * // Count the number of ClientBadges
+     * const count = await prisma.clientBadge.count({
+     *   where: {
+     *     // ... the filter for the ClientBadges we want to count
+     *   }
+     * })
+    **/
+    count<T extends ClientBadgeCountArgs>(
+      args?: Subset<T, ClientBadgeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ClientBadgeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ClientBadge.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClientBadgeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ClientBadgeAggregateArgs>(args: Subset<T, ClientBadgeAggregateArgs>): Prisma.PrismaPromise<GetClientBadgeAggregateType<T>>
+
+    /**
+     * Group by ClientBadge.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClientBadgeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ClientBadgeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ClientBadgeGroupByArgs['orderBy'] }
+        : { orderBy?: ClientBadgeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ClientBadgeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetClientBadgeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ClientBadge model
+   */
+  readonly fields: ClientBadgeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ClientBadge.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ClientBadgeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    client<T extends ClientDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClientDefaultArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    badge<T extends BadgeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BadgeDefaultArgs<ExtArgs>>): Prisma__BadgeClient<$Result.GetResult<Prisma.$BadgePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ClientBadge model
+   */
+  interface ClientBadgeFieldRefs {
+    readonly id: FieldRef<"ClientBadge", 'String'>
+    readonly clientId: FieldRef<"ClientBadge", 'String'>
+    readonly badgeId: FieldRef<"ClientBadge", 'String'>
+    readonly earnedAt: FieldRef<"ClientBadge", 'DateTime'>
+    readonly notified: FieldRef<"ClientBadge", 'Boolean'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ClientBadge findUnique
+   */
+  export type ClientBadgeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientBadge
+     */
+    select?: ClientBadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientBadge
+     */
+    omit?: ClientBadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientBadgeInclude<ExtArgs> | null
+    /**
+     * Filter, which ClientBadge to fetch.
+     */
+    where: ClientBadgeWhereUniqueInput
+  }
+
+  /**
+   * ClientBadge findUniqueOrThrow
+   */
+  export type ClientBadgeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientBadge
+     */
+    select?: ClientBadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientBadge
+     */
+    omit?: ClientBadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientBadgeInclude<ExtArgs> | null
+    /**
+     * Filter, which ClientBadge to fetch.
+     */
+    where: ClientBadgeWhereUniqueInput
+  }
+
+  /**
+   * ClientBadge findFirst
+   */
+  export type ClientBadgeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientBadge
+     */
+    select?: ClientBadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientBadge
+     */
+    omit?: ClientBadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientBadgeInclude<ExtArgs> | null
+    /**
+     * Filter, which ClientBadge to fetch.
+     */
+    where?: ClientBadgeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClientBadges to fetch.
+     */
+    orderBy?: ClientBadgeOrderByWithRelationInput | ClientBadgeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ClientBadges.
+     */
+    cursor?: ClientBadgeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClientBadges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClientBadges.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ClientBadges.
+     */
+    distinct?: ClientBadgeScalarFieldEnum | ClientBadgeScalarFieldEnum[]
+  }
+
+  /**
+   * ClientBadge findFirstOrThrow
+   */
+  export type ClientBadgeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientBadge
+     */
+    select?: ClientBadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientBadge
+     */
+    omit?: ClientBadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientBadgeInclude<ExtArgs> | null
+    /**
+     * Filter, which ClientBadge to fetch.
+     */
+    where?: ClientBadgeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClientBadges to fetch.
+     */
+    orderBy?: ClientBadgeOrderByWithRelationInput | ClientBadgeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ClientBadges.
+     */
+    cursor?: ClientBadgeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClientBadges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClientBadges.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ClientBadges.
+     */
+    distinct?: ClientBadgeScalarFieldEnum | ClientBadgeScalarFieldEnum[]
+  }
+
+  /**
+   * ClientBadge findMany
+   */
+  export type ClientBadgeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientBadge
+     */
+    select?: ClientBadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientBadge
+     */
+    omit?: ClientBadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientBadgeInclude<ExtArgs> | null
+    /**
+     * Filter, which ClientBadges to fetch.
+     */
+    where?: ClientBadgeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClientBadges to fetch.
+     */
+    orderBy?: ClientBadgeOrderByWithRelationInput | ClientBadgeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ClientBadges.
+     */
+    cursor?: ClientBadgeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClientBadges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClientBadges.
+     */
+    skip?: number
+    distinct?: ClientBadgeScalarFieldEnum | ClientBadgeScalarFieldEnum[]
+  }
+
+  /**
+   * ClientBadge create
+   */
+  export type ClientBadgeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientBadge
+     */
+    select?: ClientBadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientBadge
+     */
+    omit?: ClientBadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientBadgeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ClientBadge.
+     */
+    data: XOR<ClientBadgeCreateInput, ClientBadgeUncheckedCreateInput>
+  }
+
+  /**
+   * ClientBadge createMany
+   */
+  export type ClientBadgeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ClientBadges.
+     */
+    data: ClientBadgeCreateManyInput | ClientBadgeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ClientBadge createManyAndReturn
+   */
+  export type ClientBadgeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientBadge
+     */
+    select?: ClientBadgeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientBadge
+     */
+    omit?: ClientBadgeOmit<ExtArgs> | null
+    /**
+     * The data used to create many ClientBadges.
+     */
+    data: ClientBadgeCreateManyInput | ClientBadgeCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientBadgeIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ClientBadge update
+   */
+  export type ClientBadgeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientBadge
+     */
+    select?: ClientBadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientBadge
+     */
+    omit?: ClientBadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientBadgeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ClientBadge.
+     */
+    data: XOR<ClientBadgeUpdateInput, ClientBadgeUncheckedUpdateInput>
+    /**
+     * Choose, which ClientBadge to update.
+     */
+    where: ClientBadgeWhereUniqueInput
+  }
+
+  /**
+   * ClientBadge updateMany
+   */
+  export type ClientBadgeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ClientBadges.
+     */
+    data: XOR<ClientBadgeUpdateManyMutationInput, ClientBadgeUncheckedUpdateManyInput>
+    /**
+     * Filter which ClientBadges to update
+     */
+    where?: ClientBadgeWhereInput
+    /**
+     * Limit how many ClientBadges to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ClientBadge updateManyAndReturn
+   */
+  export type ClientBadgeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientBadge
+     */
+    select?: ClientBadgeSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientBadge
+     */
+    omit?: ClientBadgeOmit<ExtArgs> | null
+    /**
+     * The data used to update ClientBadges.
+     */
+    data: XOR<ClientBadgeUpdateManyMutationInput, ClientBadgeUncheckedUpdateManyInput>
+    /**
+     * Filter which ClientBadges to update
+     */
+    where?: ClientBadgeWhereInput
+    /**
+     * Limit how many ClientBadges to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientBadgeIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ClientBadge upsert
+   */
+  export type ClientBadgeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientBadge
+     */
+    select?: ClientBadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientBadge
+     */
+    omit?: ClientBadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientBadgeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ClientBadge to update in case it exists.
+     */
+    where: ClientBadgeWhereUniqueInput
+    /**
+     * In case the ClientBadge found by the `where` argument doesn't exist, create a new ClientBadge with this data.
+     */
+    create: XOR<ClientBadgeCreateInput, ClientBadgeUncheckedCreateInput>
+    /**
+     * In case the ClientBadge was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ClientBadgeUpdateInput, ClientBadgeUncheckedUpdateInput>
+  }
+
+  /**
+   * ClientBadge delete
+   */
+  export type ClientBadgeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientBadge
+     */
+    select?: ClientBadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientBadge
+     */
+    omit?: ClientBadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientBadgeInclude<ExtArgs> | null
+    /**
+     * Filter which ClientBadge to delete.
+     */
+    where: ClientBadgeWhereUniqueInput
+  }
+
+  /**
+   * ClientBadge deleteMany
+   */
+  export type ClientBadgeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ClientBadges to delete
+     */
+    where?: ClientBadgeWhereInput
+    /**
+     * Limit how many ClientBadges to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ClientBadge without action
+   */
+  export type ClientBadgeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientBadge
+     */
+    select?: ClientBadgeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientBadge
+     */
+    omit?: ClientBadgeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientBadgeInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model WorkoutTemplate
+   */
+
+  export type AggregateWorkoutTemplate = {
+    _count: WorkoutTemplateCountAggregateOutputType | null
+    _avg: WorkoutTemplateAvgAggregateOutputType | null
+    _sum: WorkoutTemplateSumAggregateOutputType | null
+    _min: WorkoutTemplateMinAggregateOutputType | null
+    _max: WorkoutTemplateMaxAggregateOutputType | null
+  }
+
+  export type WorkoutTemplateAvgAggregateOutputType = {
+    duration: number | null
+    usageCount: number | null
+  }
+
+  export type WorkoutTemplateSumAggregateOutputType = {
+    duration: number | null
+    usageCount: number | null
+  }
+
+  export type WorkoutTemplateMinAggregateOutputType = {
+    id: string | null
+    tenantId: string | null
+    name: string | null
+    description: string | null
+    category: string | null
+    difficulty: string | null
+    duration: number | null
+    isPublic: boolean | null
+    usageCount: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WorkoutTemplateMaxAggregateOutputType = {
+    id: string | null
+    tenantId: string | null
+    name: string | null
+    description: string | null
+    category: string | null
+    difficulty: string | null
+    duration: number | null
+    isPublic: boolean | null
+    usageCount: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WorkoutTemplateCountAggregateOutputType = {
+    id: number
+    tenantId: number
+    name: number
+    description: number
+    category: number
+    difficulty: number
+    duration: number
+    exercises: number
+    muscleGroups: number
+    equipment: number
+    isPublic: number
+    usageCount: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type WorkoutTemplateAvgAggregateInputType = {
+    duration?: true
+    usageCount?: true
+  }
+
+  export type WorkoutTemplateSumAggregateInputType = {
+    duration?: true
+    usageCount?: true
+  }
+
+  export type WorkoutTemplateMinAggregateInputType = {
+    id?: true
+    tenantId?: true
+    name?: true
+    description?: true
+    category?: true
+    difficulty?: true
+    duration?: true
+    isPublic?: true
+    usageCount?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WorkoutTemplateMaxAggregateInputType = {
+    id?: true
+    tenantId?: true
+    name?: true
+    description?: true
+    category?: true
+    difficulty?: true
+    duration?: true
+    isPublic?: true
+    usageCount?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WorkoutTemplateCountAggregateInputType = {
+    id?: true
+    tenantId?: true
+    name?: true
+    description?: true
+    category?: true
+    difficulty?: true
+    duration?: true
+    exercises?: true
+    muscleGroups?: true
+    equipment?: true
+    isPublic?: true
+    usageCount?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type WorkoutTemplateAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkoutTemplate to aggregate.
+     */
+    where?: WorkoutTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkoutTemplates to fetch.
+     */
+    orderBy?: WorkoutTemplateOrderByWithRelationInput | WorkoutTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WorkoutTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkoutTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkoutTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WorkoutTemplates
+    **/
+    _count?: true | WorkoutTemplateCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: WorkoutTemplateAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: WorkoutTemplateSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WorkoutTemplateMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WorkoutTemplateMaxAggregateInputType
+  }
+
+  export type GetWorkoutTemplateAggregateType<T extends WorkoutTemplateAggregateArgs> = {
+        [P in keyof T & keyof AggregateWorkoutTemplate]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWorkoutTemplate[P]>
+      : GetScalarType<T[P], AggregateWorkoutTemplate[P]>
+  }
+
+
+
+
+  export type WorkoutTemplateGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkoutTemplateWhereInput
+    orderBy?: WorkoutTemplateOrderByWithAggregationInput | WorkoutTemplateOrderByWithAggregationInput[]
+    by: WorkoutTemplateScalarFieldEnum[] | WorkoutTemplateScalarFieldEnum
+    having?: WorkoutTemplateScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WorkoutTemplateCountAggregateInputType | true
+    _avg?: WorkoutTemplateAvgAggregateInputType
+    _sum?: WorkoutTemplateSumAggregateInputType
+    _min?: WorkoutTemplateMinAggregateInputType
+    _max?: WorkoutTemplateMaxAggregateInputType
+  }
+
+  export type WorkoutTemplateGroupByOutputType = {
+    id: string
+    tenantId: string
+    name: string
+    description: string | null
+    category: string
+    difficulty: string
+    duration: number
+    exercises: JsonValue[]
+    muscleGroups: string[]
+    equipment: string[]
+    isPublic: boolean
+    usageCount: number
+    createdAt: Date
+    updatedAt: Date
+    _count: WorkoutTemplateCountAggregateOutputType | null
+    _avg: WorkoutTemplateAvgAggregateOutputType | null
+    _sum: WorkoutTemplateSumAggregateOutputType | null
+    _min: WorkoutTemplateMinAggregateOutputType | null
+    _max: WorkoutTemplateMaxAggregateOutputType | null
+  }
+
+  type GetWorkoutTemplateGroupByPayload<T extends WorkoutTemplateGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WorkoutTemplateGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WorkoutTemplateGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WorkoutTemplateGroupByOutputType[P]>
+            : GetScalarType<T[P], WorkoutTemplateGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WorkoutTemplateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    name?: boolean
+    description?: boolean
+    category?: boolean
+    difficulty?: boolean
+    duration?: boolean
+    exercises?: boolean
+    muscleGroups?: boolean
+    equipment?: boolean
+    isPublic?: boolean
+    usageCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workoutTemplate"]>
+
+  export type WorkoutTemplateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    name?: boolean
+    description?: boolean
+    category?: boolean
+    difficulty?: boolean
+    duration?: boolean
+    exercises?: boolean
+    muscleGroups?: boolean
+    equipment?: boolean
+    isPublic?: boolean
+    usageCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workoutTemplate"]>
+
+  export type WorkoutTemplateSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    name?: boolean
+    description?: boolean
+    category?: boolean
+    difficulty?: boolean
+    duration?: boolean
+    exercises?: boolean
+    muscleGroups?: boolean
+    equipment?: boolean
+    isPublic?: boolean
+    usageCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workoutTemplate"]>
+
+  export type WorkoutTemplateSelectScalar = {
+    id?: boolean
+    tenantId?: boolean
+    name?: boolean
+    description?: boolean
+    category?: boolean
+    difficulty?: boolean
+    duration?: boolean
+    exercises?: boolean
+    muscleGroups?: boolean
+    equipment?: boolean
+    isPublic?: boolean
+    usageCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type WorkoutTemplateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tenantId" | "name" | "description" | "category" | "difficulty" | "duration" | "exercises" | "muscleGroups" | "equipment" | "isPublic" | "usageCount" | "createdAt" | "updatedAt", ExtArgs["result"]["workoutTemplate"]>
+  export type WorkoutTemplateInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }
+  export type WorkoutTemplateIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }
+  export type WorkoutTemplateIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }
+
+  export type $WorkoutTemplatePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WorkoutTemplate"
+    objects: {
+      tenant: Prisma.$TenantPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      tenantId: string
+      name: string
+      description: string | null
+      category: string
+      difficulty: string
+      duration: number
+      exercises: Prisma.JsonValue[]
+      muscleGroups: string[]
+      equipment: string[]
+      isPublic: boolean
+      usageCount: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["workoutTemplate"]>
+    composites: {}
+  }
+
+  type WorkoutTemplateGetPayload<S extends boolean | null | undefined | WorkoutTemplateDefaultArgs> = $Result.GetResult<Prisma.$WorkoutTemplatePayload, S>
+
+  type WorkoutTemplateCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WorkoutTemplateFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WorkoutTemplateCountAggregateInputType | true
+    }
+
+  export interface WorkoutTemplateDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WorkoutTemplate'], meta: { name: 'WorkoutTemplate' } }
+    /**
+     * Find zero or one WorkoutTemplate that matches the filter.
+     * @param {WorkoutTemplateFindUniqueArgs} args - Arguments to find a WorkoutTemplate
+     * @example
+     * // Get one WorkoutTemplate
+     * const workoutTemplate = await prisma.workoutTemplate.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WorkoutTemplateFindUniqueArgs>(args: SelectSubset<T, WorkoutTemplateFindUniqueArgs<ExtArgs>>): Prisma__WorkoutTemplateClient<$Result.GetResult<Prisma.$WorkoutTemplatePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WorkoutTemplate that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WorkoutTemplateFindUniqueOrThrowArgs} args - Arguments to find a WorkoutTemplate
+     * @example
+     * // Get one WorkoutTemplate
+     * const workoutTemplate = await prisma.workoutTemplate.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WorkoutTemplateFindUniqueOrThrowArgs>(args: SelectSubset<T, WorkoutTemplateFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WorkoutTemplateClient<$Result.GetResult<Prisma.$WorkoutTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkoutTemplate that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkoutTemplateFindFirstArgs} args - Arguments to find a WorkoutTemplate
+     * @example
+     * // Get one WorkoutTemplate
+     * const workoutTemplate = await prisma.workoutTemplate.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WorkoutTemplateFindFirstArgs>(args?: SelectSubset<T, WorkoutTemplateFindFirstArgs<ExtArgs>>): Prisma__WorkoutTemplateClient<$Result.GetResult<Prisma.$WorkoutTemplatePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkoutTemplate that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkoutTemplateFindFirstOrThrowArgs} args - Arguments to find a WorkoutTemplate
+     * @example
+     * // Get one WorkoutTemplate
+     * const workoutTemplate = await prisma.workoutTemplate.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WorkoutTemplateFindFirstOrThrowArgs>(args?: SelectSubset<T, WorkoutTemplateFindFirstOrThrowArgs<ExtArgs>>): Prisma__WorkoutTemplateClient<$Result.GetResult<Prisma.$WorkoutTemplatePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WorkoutTemplates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkoutTemplateFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WorkoutTemplates
+     * const workoutTemplates = await prisma.workoutTemplate.findMany()
+     * 
+     * // Get first 10 WorkoutTemplates
+     * const workoutTemplates = await prisma.workoutTemplate.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const workoutTemplateWithIdOnly = await prisma.workoutTemplate.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WorkoutTemplateFindManyArgs>(args?: SelectSubset<T, WorkoutTemplateFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkoutTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WorkoutTemplate.
+     * @param {WorkoutTemplateCreateArgs} args - Arguments to create a WorkoutTemplate.
+     * @example
+     * // Create one WorkoutTemplate
+     * const WorkoutTemplate = await prisma.workoutTemplate.create({
+     *   data: {
+     *     // ... data to create a WorkoutTemplate
+     *   }
+     * })
+     * 
+     */
+    create<T extends WorkoutTemplateCreateArgs>(args: SelectSubset<T, WorkoutTemplateCreateArgs<ExtArgs>>): Prisma__WorkoutTemplateClient<$Result.GetResult<Prisma.$WorkoutTemplatePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WorkoutTemplates.
+     * @param {WorkoutTemplateCreateManyArgs} args - Arguments to create many WorkoutTemplates.
+     * @example
+     * // Create many WorkoutTemplates
+     * const workoutTemplate = await prisma.workoutTemplate.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WorkoutTemplateCreateManyArgs>(args?: SelectSubset<T, WorkoutTemplateCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WorkoutTemplates and returns the data saved in the database.
+     * @param {WorkoutTemplateCreateManyAndReturnArgs} args - Arguments to create many WorkoutTemplates.
+     * @example
+     * // Create many WorkoutTemplates
+     * const workoutTemplate = await prisma.workoutTemplate.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WorkoutTemplates and only return the `id`
+     * const workoutTemplateWithIdOnly = await prisma.workoutTemplate.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WorkoutTemplateCreateManyAndReturnArgs>(args?: SelectSubset<T, WorkoutTemplateCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkoutTemplatePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WorkoutTemplate.
+     * @param {WorkoutTemplateDeleteArgs} args - Arguments to delete one WorkoutTemplate.
+     * @example
+     * // Delete one WorkoutTemplate
+     * const WorkoutTemplate = await prisma.workoutTemplate.delete({
+     *   where: {
+     *     // ... filter to delete one WorkoutTemplate
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WorkoutTemplateDeleteArgs>(args: SelectSubset<T, WorkoutTemplateDeleteArgs<ExtArgs>>): Prisma__WorkoutTemplateClient<$Result.GetResult<Prisma.$WorkoutTemplatePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WorkoutTemplate.
+     * @param {WorkoutTemplateUpdateArgs} args - Arguments to update one WorkoutTemplate.
+     * @example
+     * // Update one WorkoutTemplate
+     * const workoutTemplate = await prisma.workoutTemplate.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WorkoutTemplateUpdateArgs>(args: SelectSubset<T, WorkoutTemplateUpdateArgs<ExtArgs>>): Prisma__WorkoutTemplateClient<$Result.GetResult<Prisma.$WorkoutTemplatePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WorkoutTemplates.
+     * @param {WorkoutTemplateDeleteManyArgs} args - Arguments to filter WorkoutTemplates to delete.
+     * @example
+     * // Delete a few WorkoutTemplates
+     * const { count } = await prisma.workoutTemplate.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WorkoutTemplateDeleteManyArgs>(args?: SelectSubset<T, WorkoutTemplateDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkoutTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkoutTemplateUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WorkoutTemplates
+     * const workoutTemplate = await prisma.workoutTemplate.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WorkoutTemplateUpdateManyArgs>(args: SelectSubset<T, WorkoutTemplateUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkoutTemplates and returns the data updated in the database.
+     * @param {WorkoutTemplateUpdateManyAndReturnArgs} args - Arguments to update many WorkoutTemplates.
+     * @example
+     * // Update many WorkoutTemplates
+     * const workoutTemplate = await prisma.workoutTemplate.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WorkoutTemplates and only return the `id`
+     * const workoutTemplateWithIdOnly = await prisma.workoutTemplate.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WorkoutTemplateUpdateManyAndReturnArgs>(args: SelectSubset<T, WorkoutTemplateUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkoutTemplatePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WorkoutTemplate.
+     * @param {WorkoutTemplateUpsertArgs} args - Arguments to update or create a WorkoutTemplate.
+     * @example
+     * // Update or create a WorkoutTemplate
+     * const workoutTemplate = await prisma.workoutTemplate.upsert({
+     *   create: {
+     *     // ... data to create a WorkoutTemplate
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WorkoutTemplate we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WorkoutTemplateUpsertArgs>(args: SelectSubset<T, WorkoutTemplateUpsertArgs<ExtArgs>>): Prisma__WorkoutTemplateClient<$Result.GetResult<Prisma.$WorkoutTemplatePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WorkoutTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkoutTemplateCountArgs} args - Arguments to filter WorkoutTemplates to count.
+     * @example
+     * // Count the number of WorkoutTemplates
+     * const count = await prisma.workoutTemplate.count({
+     *   where: {
+     *     // ... the filter for the WorkoutTemplates we want to count
+     *   }
+     * })
+    **/
+    count<T extends WorkoutTemplateCountArgs>(
+      args?: Subset<T, WorkoutTemplateCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WorkoutTemplateCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WorkoutTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkoutTemplateAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WorkoutTemplateAggregateArgs>(args: Subset<T, WorkoutTemplateAggregateArgs>): Prisma.PrismaPromise<GetWorkoutTemplateAggregateType<T>>
+
+    /**
+     * Group by WorkoutTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkoutTemplateGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WorkoutTemplateGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WorkoutTemplateGroupByArgs['orderBy'] }
+        : { orderBy?: WorkoutTemplateGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WorkoutTemplateGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkoutTemplateGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WorkoutTemplate model
+   */
+  readonly fields: WorkoutTemplateFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WorkoutTemplate.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WorkoutTemplateClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WorkoutTemplate model
+   */
+  interface WorkoutTemplateFieldRefs {
+    readonly id: FieldRef<"WorkoutTemplate", 'String'>
+    readonly tenantId: FieldRef<"WorkoutTemplate", 'String'>
+    readonly name: FieldRef<"WorkoutTemplate", 'String'>
+    readonly description: FieldRef<"WorkoutTemplate", 'String'>
+    readonly category: FieldRef<"WorkoutTemplate", 'String'>
+    readonly difficulty: FieldRef<"WorkoutTemplate", 'String'>
+    readonly duration: FieldRef<"WorkoutTemplate", 'Int'>
+    readonly exercises: FieldRef<"WorkoutTemplate", 'Json[]'>
+    readonly muscleGroups: FieldRef<"WorkoutTemplate", 'String[]'>
+    readonly equipment: FieldRef<"WorkoutTemplate", 'String[]'>
+    readonly isPublic: FieldRef<"WorkoutTemplate", 'Boolean'>
+    readonly usageCount: FieldRef<"WorkoutTemplate", 'Int'>
+    readonly createdAt: FieldRef<"WorkoutTemplate", 'DateTime'>
+    readonly updatedAt: FieldRef<"WorkoutTemplate", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WorkoutTemplate findUnique
+   */
+  export type WorkoutTemplateFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutTemplate
+     */
+    select?: WorkoutTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutTemplate
+     */
+    omit?: WorkoutTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkoutTemplate to fetch.
+     */
+    where: WorkoutTemplateWhereUniqueInput
+  }
+
+  /**
+   * WorkoutTemplate findUniqueOrThrow
+   */
+  export type WorkoutTemplateFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutTemplate
+     */
+    select?: WorkoutTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutTemplate
+     */
+    omit?: WorkoutTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkoutTemplate to fetch.
+     */
+    where: WorkoutTemplateWhereUniqueInput
+  }
+
+  /**
+   * WorkoutTemplate findFirst
+   */
+  export type WorkoutTemplateFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutTemplate
+     */
+    select?: WorkoutTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutTemplate
+     */
+    omit?: WorkoutTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkoutTemplate to fetch.
+     */
+    where?: WorkoutTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkoutTemplates to fetch.
+     */
+    orderBy?: WorkoutTemplateOrderByWithRelationInput | WorkoutTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkoutTemplates.
+     */
+    cursor?: WorkoutTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkoutTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkoutTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkoutTemplates.
+     */
+    distinct?: WorkoutTemplateScalarFieldEnum | WorkoutTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * WorkoutTemplate findFirstOrThrow
+   */
+  export type WorkoutTemplateFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutTemplate
+     */
+    select?: WorkoutTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutTemplate
+     */
+    omit?: WorkoutTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkoutTemplate to fetch.
+     */
+    where?: WorkoutTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkoutTemplates to fetch.
+     */
+    orderBy?: WorkoutTemplateOrderByWithRelationInput | WorkoutTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkoutTemplates.
+     */
+    cursor?: WorkoutTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkoutTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkoutTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkoutTemplates.
+     */
+    distinct?: WorkoutTemplateScalarFieldEnum | WorkoutTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * WorkoutTemplate findMany
+   */
+  export type WorkoutTemplateFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutTemplate
+     */
+    select?: WorkoutTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutTemplate
+     */
+    omit?: WorkoutTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkoutTemplates to fetch.
+     */
+    where?: WorkoutTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkoutTemplates to fetch.
+     */
+    orderBy?: WorkoutTemplateOrderByWithRelationInput | WorkoutTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WorkoutTemplates.
+     */
+    cursor?: WorkoutTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkoutTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkoutTemplates.
+     */
+    skip?: number
+    distinct?: WorkoutTemplateScalarFieldEnum | WorkoutTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * WorkoutTemplate create
+   */
+  export type WorkoutTemplateCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutTemplate
+     */
+    select?: WorkoutTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutTemplate
+     */
+    omit?: WorkoutTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutTemplateInclude<ExtArgs> | null
+    /**
+     * The data needed to create a WorkoutTemplate.
+     */
+    data: XOR<WorkoutTemplateCreateInput, WorkoutTemplateUncheckedCreateInput>
+  }
+
+  /**
+   * WorkoutTemplate createMany
+   */
+  export type WorkoutTemplateCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WorkoutTemplates.
+     */
+    data: WorkoutTemplateCreateManyInput | WorkoutTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkoutTemplate createManyAndReturn
+   */
+  export type WorkoutTemplateCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutTemplate
+     */
+    select?: WorkoutTemplateSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutTemplate
+     */
+    omit?: WorkoutTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to create many WorkoutTemplates.
+     */
+    data: WorkoutTemplateCreateManyInput | WorkoutTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutTemplateIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WorkoutTemplate update
+   */
+  export type WorkoutTemplateUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutTemplate
+     */
+    select?: WorkoutTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutTemplate
+     */
+    omit?: WorkoutTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutTemplateInclude<ExtArgs> | null
+    /**
+     * The data needed to update a WorkoutTemplate.
+     */
+    data: XOR<WorkoutTemplateUpdateInput, WorkoutTemplateUncheckedUpdateInput>
+    /**
+     * Choose, which WorkoutTemplate to update.
+     */
+    where: WorkoutTemplateWhereUniqueInput
+  }
+
+  /**
+   * WorkoutTemplate updateMany
+   */
+  export type WorkoutTemplateUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WorkoutTemplates.
+     */
+    data: XOR<WorkoutTemplateUpdateManyMutationInput, WorkoutTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkoutTemplates to update
+     */
+    where?: WorkoutTemplateWhereInput
+    /**
+     * Limit how many WorkoutTemplates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkoutTemplate updateManyAndReturn
+   */
+  export type WorkoutTemplateUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutTemplate
+     */
+    select?: WorkoutTemplateSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutTemplate
+     */
+    omit?: WorkoutTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to update WorkoutTemplates.
+     */
+    data: XOR<WorkoutTemplateUpdateManyMutationInput, WorkoutTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkoutTemplates to update
+     */
+    where?: WorkoutTemplateWhereInput
+    /**
+     * Limit how many WorkoutTemplates to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutTemplateIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WorkoutTemplate upsert
+   */
+  export type WorkoutTemplateUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutTemplate
+     */
+    select?: WorkoutTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutTemplate
+     */
+    omit?: WorkoutTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutTemplateInclude<ExtArgs> | null
+    /**
+     * The filter to search for the WorkoutTemplate to update in case it exists.
+     */
+    where: WorkoutTemplateWhereUniqueInput
+    /**
+     * In case the WorkoutTemplate found by the `where` argument doesn't exist, create a new WorkoutTemplate with this data.
+     */
+    create: XOR<WorkoutTemplateCreateInput, WorkoutTemplateUncheckedCreateInput>
+    /**
+     * In case the WorkoutTemplate was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WorkoutTemplateUpdateInput, WorkoutTemplateUncheckedUpdateInput>
+  }
+
+  /**
+   * WorkoutTemplate delete
+   */
+  export type WorkoutTemplateDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutTemplate
+     */
+    select?: WorkoutTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutTemplate
+     */
+    omit?: WorkoutTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutTemplateInclude<ExtArgs> | null
+    /**
+     * Filter which WorkoutTemplate to delete.
+     */
+    where: WorkoutTemplateWhereUniqueInput
+  }
+
+  /**
+   * WorkoutTemplate deleteMany
+   */
+  export type WorkoutTemplateDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkoutTemplates to delete
+     */
+    where?: WorkoutTemplateWhereInput
+    /**
+     * Limit how many WorkoutTemplates to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkoutTemplate without action
+   */
+  export type WorkoutTemplateDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkoutTemplate
+     */
+    select?: WorkoutTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkoutTemplate
+     */
+    omit?: WorkoutTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkoutTemplateInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ScheduleTemplate
+   */
+
+  export type AggregateScheduleTemplate = {
+    _count: ScheduleTemplateCountAggregateOutputType | null
+    _min: ScheduleTemplateMinAggregateOutputType | null
+    _max: ScheduleTemplateMaxAggregateOutputType | null
+  }
+
+  export type ScheduleTemplateMinAggregateOutputType = {
+    id: string | null
+    tenantId: string | null
+    name: string | null
+    description: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ScheduleTemplateMaxAggregateOutputType = {
+    id: string | null
+    tenantId: string | null
+    name: string | null
+    description: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ScheduleTemplateCountAggregateOutputType = {
+    id: number
+    tenantId: number
+    name: number
+    description: number
+    slots: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ScheduleTemplateMinAggregateInputType = {
+    id?: true
+    tenantId?: true
+    name?: true
+    description?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ScheduleTemplateMaxAggregateInputType = {
+    id?: true
+    tenantId?: true
+    name?: true
+    description?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ScheduleTemplateCountAggregateInputType = {
+    id?: true
+    tenantId?: true
+    name?: true
+    description?: true
+    slots?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ScheduleTemplateAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ScheduleTemplate to aggregate.
+     */
+    where?: ScheduleTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ScheduleTemplates to fetch.
+     */
+    orderBy?: ScheduleTemplateOrderByWithRelationInput | ScheduleTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ScheduleTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ScheduleTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ScheduleTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ScheduleTemplates
+    **/
+    _count?: true | ScheduleTemplateCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ScheduleTemplateMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ScheduleTemplateMaxAggregateInputType
+  }
+
+  export type GetScheduleTemplateAggregateType<T extends ScheduleTemplateAggregateArgs> = {
+        [P in keyof T & keyof AggregateScheduleTemplate]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateScheduleTemplate[P]>
+      : GetScalarType<T[P], AggregateScheduleTemplate[P]>
+  }
+
+
+
+
+  export type ScheduleTemplateGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ScheduleTemplateWhereInput
+    orderBy?: ScheduleTemplateOrderByWithAggregationInput | ScheduleTemplateOrderByWithAggregationInput[]
+    by: ScheduleTemplateScalarFieldEnum[] | ScheduleTemplateScalarFieldEnum
+    having?: ScheduleTemplateScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ScheduleTemplateCountAggregateInputType | true
+    _min?: ScheduleTemplateMinAggregateInputType
+    _max?: ScheduleTemplateMaxAggregateInputType
+  }
+
+  export type ScheduleTemplateGroupByOutputType = {
+    id: string
+    tenantId: string
+    name: string
+    description: string | null
+    slots: JsonValue[]
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: ScheduleTemplateCountAggregateOutputType | null
+    _min: ScheduleTemplateMinAggregateOutputType | null
+    _max: ScheduleTemplateMaxAggregateOutputType | null
+  }
+
+  type GetScheduleTemplateGroupByPayload<T extends ScheduleTemplateGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ScheduleTemplateGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ScheduleTemplateGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ScheduleTemplateGroupByOutputType[P]>
+            : GetScalarType<T[P], ScheduleTemplateGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ScheduleTemplateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    name?: boolean
+    description?: boolean
+    slots?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["scheduleTemplate"]>
+
+  export type ScheduleTemplateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    name?: boolean
+    description?: boolean
+    slots?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["scheduleTemplate"]>
+
+  export type ScheduleTemplateSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tenantId?: boolean
+    name?: boolean
+    description?: boolean
+    slots?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["scheduleTemplate"]>
+
+  export type ScheduleTemplateSelectScalar = {
+    id?: boolean
+    tenantId?: boolean
+    name?: boolean
+    description?: boolean
+    slots?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ScheduleTemplateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tenantId" | "name" | "description" | "slots" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["scheduleTemplate"]>
+  export type ScheduleTemplateInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }
+  export type ScheduleTemplateIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }
+  export type ScheduleTemplateIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
+  }
+
+  export type $ScheduleTemplatePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ScheduleTemplate"
+    objects: {
+      tenant: Prisma.$TenantPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      tenantId: string
+      name: string
+      description: string | null
+      slots: Prisma.JsonValue[]
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["scheduleTemplate"]>
+    composites: {}
+  }
+
+  type ScheduleTemplateGetPayload<S extends boolean | null | undefined | ScheduleTemplateDefaultArgs> = $Result.GetResult<Prisma.$ScheduleTemplatePayload, S>
+
+  type ScheduleTemplateCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ScheduleTemplateFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ScheduleTemplateCountAggregateInputType | true
+    }
+
+  export interface ScheduleTemplateDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ScheduleTemplate'], meta: { name: 'ScheduleTemplate' } }
+    /**
+     * Find zero or one ScheduleTemplate that matches the filter.
+     * @param {ScheduleTemplateFindUniqueArgs} args - Arguments to find a ScheduleTemplate
+     * @example
+     * // Get one ScheduleTemplate
+     * const scheduleTemplate = await prisma.scheduleTemplate.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ScheduleTemplateFindUniqueArgs>(args: SelectSubset<T, ScheduleTemplateFindUniqueArgs<ExtArgs>>): Prisma__ScheduleTemplateClient<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ScheduleTemplate that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ScheduleTemplateFindUniqueOrThrowArgs} args - Arguments to find a ScheduleTemplate
+     * @example
+     * // Get one ScheduleTemplate
+     * const scheduleTemplate = await prisma.scheduleTemplate.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ScheduleTemplateFindUniqueOrThrowArgs>(args: SelectSubset<T, ScheduleTemplateFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ScheduleTemplateClient<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ScheduleTemplate that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduleTemplateFindFirstArgs} args - Arguments to find a ScheduleTemplate
+     * @example
+     * // Get one ScheduleTemplate
+     * const scheduleTemplate = await prisma.scheduleTemplate.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ScheduleTemplateFindFirstArgs>(args?: SelectSubset<T, ScheduleTemplateFindFirstArgs<ExtArgs>>): Prisma__ScheduleTemplateClient<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ScheduleTemplate that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduleTemplateFindFirstOrThrowArgs} args - Arguments to find a ScheduleTemplate
+     * @example
+     * // Get one ScheduleTemplate
+     * const scheduleTemplate = await prisma.scheduleTemplate.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ScheduleTemplateFindFirstOrThrowArgs>(args?: SelectSubset<T, ScheduleTemplateFindFirstOrThrowArgs<ExtArgs>>): Prisma__ScheduleTemplateClient<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ScheduleTemplates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduleTemplateFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ScheduleTemplates
+     * const scheduleTemplates = await prisma.scheduleTemplate.findMany()
+     * 
+     * // Get first 10 ScheduleTemplates
+     * const scheduleTemplates = await prisma.scheduleTemplate.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const scheduleTemplateWithIdOnly = await prisma.scheduleTemplate.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ScheduleTemplateFindManyArgs>(args?: SelectSubset<T, ScheduleTemplateFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ScheduleTemplate.
+     * @param {ScheduleTemplateCreateArgs} args - Arguments to create a ScheduleTemplate.
+     * @example
+     * // Create one ScheduleTemplate
+     * const ScheduleTemplate = await prisma.scheduleTemplate.create({
+     *   data: {
+     *     // ... data to create a ScheduleTemplate
+     *   }
+     * })
+     * 
+     */
+    create<T extends ScheduleTemplateCreateArgs>(args: SelectSubset<T, ScheduleTemplateCreateArgs<ExtArgs>>): Prisma__ScheduleTemplateClient<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ScheduleTemplates.
+     * @param {ScheduleTemplateCreateManyArgs} args - Arguments to create many ScheduleTemplates.
+     * @example
+     * // Create many ScheduleTemplates
+     * const scheduleTemplate = await prisma.scheduleTemplate.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ScheduleTemplateCreateManyArgs>(args?: SelectSubset<T, ScheduleTemplateCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ScheduleTemplates and returns the data saved in the database.
+     * @param {ScheduleTemplateCreateManyAndReturnArgs} args - Arguments to create many ScheduleTemplates.
+     * @example
+     * // Create many ScheduleTemplates
+     * const scheduleTemplate = await prisma.scheduleTemplate.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ScheduleTemplates and only return the `id`
+     * const scheduleTemplateWithIdOnly = await prisma.scheduleTemplate.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ScheduleTemplateCreateManyAndReturnArgs>(args?: SelectSubset<T, ScheduleTemplateCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ScheduleTemplate.
+     * @param {ScheduleTemplateDeleteArgs} args - Arguments to delete one ScheduleTemplate.
+     * @example
+     * // Delete one ScheduleTemplate
+     * const ScheduleTemplate = await prisma.scheduleTemplate.delete({
+     *   where: {
+     *     // ... filter to delete one ScheduleTemplate
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ScheduleTemplateDeleteArgs>(args: SelectSubset<T, ScheduleTemplateDeleteArgs<ExtArgs>>): Prisma__ScheduleTemplateClient<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ScheduleTemplate.
+     * @param {ScheduleTemplateUpdateArgs} args - Arguments to update one ScheduleTemplate.
+     * @example
+     * // Update one ScheduleTemplate
+     * const scheduleTemplate = await prisma.scheduleTemplate.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ScheduleTemplateUpdateArgs>(args: SelectSubset<T, ScheduleTemplateUpdateArgs<ExtArgs>>): Prisma__ScheduleTemplateClient<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ScheduleTemplates.
+     * @param {ScheduleTemplateDeleteManyArgs} args - Arguments to filter ScheduleTemplates to delete.
+     * @example
+     * // Delete a few ScheduleTemplates
+     * const { count } = await prisma.scheduleTemplate.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ScheduleTemplateDeleteManyArgs>(args?: SelectSubset<T, ScheduleTemplateDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ScheduleTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduleTemplateUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ScheduleTemplates
+     * const scheduleTemplate = await prisma.scheduleTemplate.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ScheduleTemplateUpdateManyArgs>(args: SelectSubset<T, ScheduleTemplateUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ScheduleTemplates and returns the data updated in the database.
+     * @param {ScheduleTemplateUpdateManyAndReturnArgs} args - Arguments to update many ScheduleTemplates.
+     * @example
+     * // Update many ScheduleTemplates
+     * const scheduleTemplate = await prisma.scheduleTemplate.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ScheduleTemplates and only return the `id`
+     * const scheduleTemplateWithIdOnly = await prisma.scheduleTemplate.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ScheduleTemplateUpdateManyAndReturnArgs>(args: SelectSubset<T, ScheduleTemplateUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ScheduleTemplate.
+     * @param {ScheduleTemplateUpsertArgs} args - Arguments to update or create a ScheduleTemplate.
+     * @example
+     * // Update or create a ScheduleTemplate
+     * const scheduleTemplate = await prisma.scheduleTemplate.upsert({
+     *   create: {
+     *     // ... data to create a ScheduleTemplate
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ScheduleTemplate we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ScheduleTemplateUpsertArgs>(args: SelectSubset<T, ScheduleTemplateUpsertArgs<ExtArgs>>): Prisma__ScheduleTemplateClient<$Result.GetResult<Prisma.$ScheduleTemplatePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ScheduleTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduleTemplateCountArgs} args - Arguments to filter ScheduleTemplates to count.
+     * @example
+     * // Count the number of ScheduleTemplates
+     * const count = await prisma.scheduleTemplate.count({
+     *   where: {
+     *     // ... the filter for the ScheduleTemplates we want to count
+     *   }
+     * })
+    **/
+    count<T extends ScheduleTemplateCountArgs>(
+      args?: Subset<T, ScheduleTemplateCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ScheduleTemplateCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ScheduleTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduleTemplateAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ScheduleTemplateAggregateArgs>(args: Subset<T, ScheduleTemplateAggregateArgs>): Prisma.PrismaPromise<GetScheduleTemplateAggregateType<T>>
+
+    /**
+     * Group by ScheduleTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ScheduleTemplateGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ScheduleTemplateGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ScheduleTemplateGroupByArgs['orderBy'] }
+        : { orderBy?: ScheduleTemplateGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ScheduleTemplateGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetScheduleTemplateGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ScheduleTemplate model
+   */
+  readonly fields: ScheduleTemplateFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ScheduleTemplate.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ScheduleTemplateClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ScheduleTemplate model
+   */
+  interface ScheduleTemplateFieldRefs {
+    readonly id: FieldRef<"ScheduleTemplate", 'String'>
+    readonly tenantId: FieldRef<"ScheduleTemplate", 'String'>
+    readonly name: FieldRef<"ScheduleTemplate", 'String'>
+    readonly description: FieldRef<"ScheduleTemplate", 'String'>
+    readonly slots: FieldRef<"ScheduleTemplate", 'Json[]'>
+    readonly isActive: FieldRef<"ScheduleTemplate", 'Boolean'>
+    readonly createdAt: FieldRef<"ScheduleTemplate", 'DateTime'>
+    readonly updatedAt: FieldRef<"ScheduleTemplate", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ScheduleTemplate findUnique
+   */
+  export type ScheduleTemplateFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which ScheduleTemplate to fetch.
+     */
+    where: ScheduleTemplateWhereUniqueInput
+  }
+
+  /**
+   * ScheduleTemplate findUniqueOrThrow
+   */
+  export type ScheduleTemplateFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which ScheduleTemplate to fetch.
+     */
+    where: ScheduleTemplateWhereUniqueInput
+  }
+
+  /**
+   * ScheduleTemplate findFirst
+   */
+  export type ScheduleTemplateFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which ScheduleTemplate to fetch.
+     */
+    where?: ScheduleTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ScheduleTemplates to fetch.
+     */
+    orderBy?: ScheduleTemplateOrderByWithRelationInput | ScheduleTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ScheduleTemplates.
+     */
+    cursor?: ScheduleTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ScheduleTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ScheduleTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ScheduleTemplates.
+     */
+    distinct?: ScheduleTemplateScalarFieldEnum | ScheduleTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * ScheduleTemplate findFirstOrThrow
+   */
+  export type ScheduleTemplateFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which ScheduleTemplate to fetch.
+     */
+    where?: ScheduleTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ScheduleTemplates to fetch.
+     */
+    orderBy?: ScheduleTemplateOrderByWithRelationInput | ScheduleTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ScheduleTemplates.
+     */
+    cursor?: ScheduleTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ScheduleTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ScheduleTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ScheduleTemplates.
+     */
+    distinct?: ScheduleTemplateScalarFieldEnum | ScheduleTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * ScheduleTemplate findMany
+   */
+  export type ScheduleTemplateFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which ScheduleTemplates to fetch.
+     */
+    where?: ScheduleTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ScheduleTemplates to fetch.
+     */
+    orderBy?: ScheduleTemplateOrderByWithRelationInput | ScheduleTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ScheduleTemplates.
+     */
+    cursor?: ScheduleTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ScheduleTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ScheduleTemplates.
+     */
+    skip?: number
+    distinct?: ScheduleTemplateScalarFieldEnum | ScheduleTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * ScheduleTemplate create
+   */
+  export type ScheduleTemplateCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ScheduleTemplate.
+     */
+    data: XOR<ScheduleTemplateCreateInput, ScheduleTemplateUncheckedCreateInput>
+  }
+
+  /**
+   * ScheduleTemplate createMany
+   */
+  export type ScheduleTemplateCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ScheduleTemplates.
+     */
+    data: ScheduleTemplateCreateManyInput | ScheduleTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ScheduleTemplate createManyAndReturn
+   */
+  export type ScheduleTemplateCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to create many ScheduleTemplates.
+     */
+    data: ScheduleTemplateCreateManyInput | ScheduleTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ScheduleTemplate update
+   */
+  export type ScheduleTemplateUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ScheduleTemplate.
+     */
+    data: XOR<ScheduleTemplateUpdateInput, ScheduleTemplateUncheckedUpdateInput>
+    /**
+     * Choose, which ScheduleTemplate to update.
+     */
+    where: ScheduleTemplateWhereUniqueInput
+  }
+
+  /**
+   * ScheduleTemplate updateMany
+   */
+  export type ScheduleTemplateUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ScheduleTemplates.
+     */
+    data: XOR<ScheduleTemplateUpdateManyMutationInput, ScheduleTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which ScheduleTemplates to update
+     */
+    where?: ScheduleTemplateWhereInput
+    /**
+     * Limit how many ScheduleTemplates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ScheduleTemplate updateManyAndReturn
+   */
+  export type ScheduleTemplateUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to update ScheduleTemplates.
+     */
+    data: XOR<ScheduleTemplateUpdateManyMutationInput, ScheduleTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which ScheduleTemplates to update
+     */
+    where?: ScheduleTemplateWhereInput
+    /**
+     * Limit how many ScheduleTemplates to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ScheduleTemplate upsert
+   */
+  export type ScheduleTemplateUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ScheduleTemplate to update in case it exists.
+     */
+    where: ScheduleTemplateWhereUniqueInput
+    /**
+     * In case the ScheduleTemplate found by the `where` argument doesn't exist, create a new ScheduleTemplate with this data.
+     */
+    create: XOR<ScheduleTemplateCreateInput, ScheduleTemplateUncheckedCreateInput>
+    /**
+     * In case the ScheduleTemplate was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ScheduleTemplateUpdateInput, ScheduleTemplateUncheckedUpdateInput>
+  }
+
+  /**
+   * ScheduleTemplate delete
+   */
+  export type ScheduleTemplateDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
+    /**
+     * Filter which ScheduleTemplate to delete.
+     */
+    where: ScheduleTemplateWhereUniqueInput
+  }
+
+  /**
+   * ScheduleTemplate deleteMany
+   */
+  export type ScheduleTemplateDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ScheduleTemplates to delete
+     */
+    where?: ScheduleTemplateWhereInput
+    /**
+     * Limit how many ScheduleTemplates to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ScheduleTemplate without action
+   */
+  export type ScheduleTemplateDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ScheduleTemplate
+     */
+    select?: ScheduleTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ScheduleTemplate
+     */
+    omit?: ScheduleTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ScheduleTemplateInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -44329,6 +49394,68 @@ export namespace Prisma {
   export type CalendarFeedTokenScalarFieldEnum = (typeof CalendarFeedTokenScalarFieldEnum)[keyof typeof CalendarFeedTokenScalarFieldEnum]
 
 
+  export const BadgeScalarFieldEnum: {
+    id: 'id',
+    tenantId: 'tenantId',
+    name: 'name',
+    description: 'description',
+    icon: 'icon',
+    color: 'color',
+    category: 'category',
+    criteria: 'criteria',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type BadgeScalarFieldEnum = (typeof BadgeScalarFieldEnum)[keyof typeof BadgeScalarFieldEnum]
+
+
+  export const ClientBadgeScalarFieldEnum: {
+    id: 'id',
+    clientId: 'clientId',
+    badgeId: 'badgeId',
+    earnedAt: 'earnedAt',
+    notified: 'notified'
+  };
+
+  export type ClientBadgeScalarFieldEnum = (typeof ClientBadgeScalarFieldEnum)[keyof typeof ClientBadgeScalarFieldEnum]
+
+
+  export const WorkoutTemplateScalarFieldEnum: {
+    id: 'id',
+    tenantId: 'tenantId',
+    name: 'name',
+    description: 'description',
+    category: 'category',
+    difficulty: 'difficulty',
+    duration: 'duration',
+    exercises: 'exercises',
+    muscleGroups: 'muscleGroups',
+    equipment: 'equipment',
+    isPublic: 'isPublic',
+    usageCount: 'usageCount',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WorkoutTemplateScalarFieldEnum = (typeof WorkoutTemplateScalarFieldEnum)[keyof typeof WorkoutTemplateScalarFieldEnum]
+
+
+  export const ScheduleTemplateScalarFieldEnum: {
+    id: 'id',
+    tenantId: 'tenantId',
+    name: 'name',
+    description: 'description',
+    slots: 'slots',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ScheduleTemplateScalarFieldEnum = (typeof ScheduleTemplateScalarFieldEnum)[keyof typeof ScheduleTemplateScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -44585,6 +49712,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryListRelationFilter
     expenses?: ExpenseListRelationFilter
     recurringInvoiceTemplates?: RecurringInvoiceTemplateListRelationFilter
+    badges?: BadgeListRelationFilter
+    workoutTemplates?: WorkoutTemplateListRelationFilter
+    scheduleTemplates?: ScheduleTemplateListRelationFilter
   }
 
   export type TenantOrderByWithRelationInput = {
@@ -44616,6 +49746,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryOrderByRelationAggregateInput
     expenses?: ExpenseOrderByRelationAggregateInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateOrderByRelationAggregateInput
+    badges?: BadgeOrderByRelationAggregateInput
+    workoutTemplates?: WorkoutTemplateOrderByRelationAggregateInput
+    scheduleTemplates?: ScheduleTemplateOrderByRelationAggregateInput
   }
 
   export type TenantWhereUniqueInput = Prisma.AtLeast<{
@@ -44650,6 +49783,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryListRelationFilter
     expenses?: ExpenseListRelationFilter
     recurringInvoiceTemplates?: RecurringInvoiceTemplateListRelationFilter
+    badges?: BadgeListRelationFilter
+    workoutTemplates?: WorkoutTemplateListRelationFilter
+    scheduleTemplates?: ScheduleTemplateListRelationFilter
   }, "id" | "slug">
 
   export type TenantOrderByWithAggregationInput = {
@@ -45050,6 +50186,7 @@ export namespace Prisma {
     invoices?: InvoiceListRelationFilter
     measurements?: ClientMeasurementListRelationFilter
     progressPhotos?: ProgressPhotoListRelationFilter
+    badges?: ClientBadgeListRelationFilter
   }
 
   export type ClientOrderByWithRelationInput = {
@@ -45085,6 +50222,7 @@ export namespace Prisma {
     invoices?: InvoiceOrderByRelationAggregateInput
     measurements?: ClientMeasurementOrderByRelationAggregateInput
     progressPhotos?: ProgressPhotoOrderByRelationAggregateInput
+    badges?: ClientBadgeOrderByRelationAggregateInput
   }
 
   export type ClientWhereUniqueInput = Prisma.AtLeast<{
@@ -45123,6 +50261,7 @@ export namespace Prisma {
     invoices?: InvoiceListRelationFilter
     measurements?: ClientMeasurementListRelationFilter
     progressPhotos?: ProgressPhotoListRelationFilter
+    badges?: ClientBadgeListRelationFilter
   }, "id">
 
   export type ClientOrderByWithAggregationInput = {
@@ -47709,6 +52848,325 @@ export namespace Prisma {
     expiresAt?: DateTimeNullableWithAggregatesFilter<"CalendarFeedToken"> | Date | string | null
   }
 
+  export type BadgeWhereInput = {
+    AND?: BadgeWhereInput | BadgeWhereInput[]
+    OR?: BadgeWhereInput[]
+    NOT?: BadgeWhereInput | BadgeWhereInput[]
+    id?: StringFilter<"Badge"> | string
+    tenantId?: StringFilter<"Badge"> | string
+    name?: StringFilter<"Badge"> | string
+    description?: StringFilter<"Badge"> | string
+    icon?: StringFilter<"Badge"> | string
+    color?: StringFilter<"Badge"> | string
+    category?: StringFilter<"Badge"> | string
+    criteria?: JsonFilter<"Badge">
+    isActive?: BoolFilter<"Badge"> | boolean
+    createdAt?: DateTimeFilter<"Badge"> | Date | string
+    updatedAt?: DateTimeFilter<"Badge"> | Date | string
+    tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
+    clientBadges?: ClientBadgeListRelationFilter
+  }
+
+  export type BadgeOrderByWithRelationInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    icon?: SortOrder
+    color?: SortOrder
+    category?: SortOrder
+    criteria?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    tenant?: TenantOrderByWithRelationInput
+    clientBadges?: ClientBadgeOrderByRelationAggregateInput
+  }
+
+  export type BadgeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: BadgeWhereInput | BadgeWhereInput[]
+    OR?: BadgeWhereInput[]
+    NOT?: BadgeWhereInput | BadgeWhereInput[]
+    tenantId?: StringFilter<"Badge"> | string
+    name?: StringFilter<"Badge"> | string
+    description?: StringFilter<"Badge"> | string
+    icon?: StringFilter<"Badge"> | string
+    color?: StringFilter<"Badge"> | string
+    category?: StringFilter<"Badge"> | string
+    criteria?: JsonFilter<"Badge">
+    isActive?: BoolFilter<"Badge"> | boolean
+    createdAt?: DateTimeFilter<"Badge"> | Date | string
+    updatedAt?: DateTimeFilter<"Badge"> | Date | string
+    tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
+    clientBadges?: ClientBadgeListRelationFilter
+  }, "id">
+
+  export type BadgeOrderByWithAggregationInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    icon?: SortOrder
+    color?: SortOrder
+    category?: SortOrder
+    criteria?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: BadgeCountOrderByAggregateInput
+    _max?: BadgeMaxOrderByAggregateInput
+    _min?: BadgeMinOrderByAggregateInput
+  }
+
+  export type BadgeScalarWhereWithAggregatesInput = {
+    AND?: BadgeScalarWhereWithAggregatesInput | BadgeScalarWhereWithAggregatesInput[]
+    OR?: BadgeScalarWhereWithAggregatesInput[]
+    NOT?: BadgeScalarWhereWithAggregatesInput | BadgeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Badge"> | string
+    tenantId?: StringWithAggregatesFilter<"Badge"> | string
+    name?: StringWithAggregatesFilter<"Badge"> | string
+    description?: StringWithAggregatesFilter<"Badge"> | string
+    icon?: StringWithAggregatesFilter<"Badge"> | string
+    color?: StringWithAggregatesFilter<"Badge"> | string
+    category?: StringWithAggregatesFilter<"Badge"> | string
+    criteria?: JsonWithAggregatesFilter<"Badge">
+    isActive?: BoolWithAggregatesFilter<"Badge"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"Badge"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Badge"> | Date | string
+  }
+
+  export type ClientBadgeWhereInput = {
+    AND?: ClientBadgeWhereInput | ClientBadgeWhereInput[]
+    OR?: ClientBadgeWhereInput[]
+    NOT?: ClientBadgeWhereInput | ClientBadgeWhereInput[]
+    id?: StringFilter<"ClientBadge"> | string
+    clientId?: StringFilter<"ClientBadge"> | string
+    badgeId?: StringFilter<"ClientBadge"> | string
+    earnedAt?: DateTimeFilter<"ClientBadge"> | Date | string
+    notified?: BoolFilter<"ClientBadge"> | boolean
+    client?: XOR<ClientScalarRelationFilter, ClientWhereInput>
+    badge?: XOR<BadgeScalarRelationFilter, BadgeWhereInput>
+  }
+
+  export type ClientBadgeOrderByWithRelationInput = {
+    id?: SortOrder
+    clientId?: SortOrder
+    badgeId?: SortOrder
+    earnedAt?: SortOrder
+    notified?: SortOrder
+    client?: ClientOrderByWithRelationInput
+    badge?: BadgeOrderByWithRelationInput
+  }
+
+  export type ClientBadgeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    clientId_badgeId?: ClientBadgeClientIdBadgeIdCompoundUniqueInput
+    AND?: ClientBadgeWhereInput | ClientBadgeWhereInput[]
+    OR?: ClientBadgeWhereInput[]
+    NOT?: ClientBadgeWhereInput | ClientBadgeWhereInput[]
+    clientId?: StringFilter<"ClientBadge"> | string
+    badgeId?: StringFilter<"ClientBadge"> | string
+    earnedAt?: DateTimeFilter<"ClientBadge"> | Date | string
+    notified?: BoolFilter<"ClientBadge"> | boolean
+    client?: XOR<ClientScalarRelationFilter, ClientWhereInput>
+    badge?: XOR<BadgeScalarRelationFilter, BadgeWhereInput>
+  }, "id" | "clientId_badgeId">
+
+  export type ClientBadgeOrderByWithAggregationInput = {
+    id?: SortOrder
+    clientId?: SortOrder
+    badgeId?: SortOrder
+    earnedAt?: SortOrder
+    notified?: SortOrder
+    _count?: ClientBadgeCountOrderByAggregateInput
+    _max?: ClientBadgeMaxOrderByAggregateInput
+    _min?: ClientBadgeMinOrderByAggregateInput
+  }
+
+  export type ClientBadgeScalarWhereWithAggregatesInput = {
+    AND?: ClientBadgeScalarWhereWithAggregatesInput | ClientBadgeScalarWhereWithAggregatesInput[]
+    OR?: ClientBadgeScalarWhereWithAggregatesInput[]
+    NOT?: ClientBadgeScalarWhereWithAggregatesInput | ClientBadgeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ClientBadge"> | string
+    clientId?: StringWithAggregatesFilter<"ClientBadge"> | string
+    badgeId?: StringWithAggregatesFilter<"ClientBadge"> | string
+    earnedAt?: DateTimeWithAggregatesFilter<"ClientBadge"> | Date | string
+    notified?: BoolWithAggregatesFilter<"ClientBadge"> | boolean
+  }
+
+  export type WorkoutTemplateWhereInput = {
+    AND?: WorkoutTemplateWhereInput | WorkoutTemplateWhereInput[]
+    OR?: WorkoutTemplateWhereInput[]
+    NOT?: WorkoutTemplateWhereInput | WorkoutTemplateWhereInput[]
+    id?: StringFilter<"WorkoutTemplate"> | string
+    tenantId?: StringFilter<"WorkoutTemplate"> | string
+    name?: StringFilter<"WorkoutTemplate"> | string
+    description?: StringNullableFilter<"WorkoutTemplate"> | string | null
+    category?: StringFilter<"WorkoutTemplate"> | string
+    difficulty?: StringFilter<"WorkoutTemplate"> | string
+    duration?: IntFilter<"WorkoutTemplate"> | number
+    exercises?: JsonNullableListFilter<"WorkoutTemplate">
+    muscleGroups?: StringNullableListFilter<"WorkoutTemplate">
+    equipment?: StringNullableListFilter<"WorkoutTemplate">
+    isPublic?: BoolFilter<"WorkoutTemplate"> | boolean
+    usageCount?: IntFilter<"WorkoutTemplate"> | number
+    createdAt?: DateTimeFilter<"WorkoutTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkoutTemplate"> | Date | string
+    tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
+  }
+
+  export type WorkoutTemplateOrderByWithRelationInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    category?: SortOrder
+    difficulty?: SortOrder
+    duration?: SortOrder
+    exercises?: SortOrder
+    muscleGroups?: SortOrder
+    equipment?: SortOrder
+    isPublic?: SortOrder
+    usageCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    tenant?: TenantOrderByWithRelationInput
+  }
+
+  export type WorkoutTemplateWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: WorkoutTemplateWhereInput | WorkoutTemplateWhereInput[]
+    OR?: WorkoutTemplateWhereInput[]
+    NOT?: WorkoutTemplateWhereInput | WorkoutTemplateWhereInput[]
+    tenantId?: StringFilter<"WorkoutTemplate"> | string
+    name?: StringFilter<"WorkoutTemplate"> | string
+    description?: StringNullableFilter<"WorkoutTemplate"> | string | null
+    category?: StringFilter<"WorkoutTemplate"> | string
+    difficulty?: StringFilter<"WorkoutTemplate"> | string
+    duration?: IntFilter<"WorkoutTemplate"> | number
+    exercises?: JsonNullableListFilter<"WorkoutTemplate">
+    muscleGroups?: StringNullableListFilter<"WorkoutTemplate">
+    equipment?: StringNullableListFilter<"WorkoutTemplate">
+    isPublic?: BoolFilter<"WorkoutTemplate"> | boolean
+    usageCount?: IntFilter<"WorkoutTemplate"> | number
+    createdAt?: DateTimeFilter<"WorkoutTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkoutTemplate"> | Date | string
+    tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
+  }, "id">
+
+  export type WorkoutTemplateOrderByWithAggregationInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    category?: SortOrder
+    difficulty?: SortOrder
+    duration?: SortOrder
+    exercises?: SortOrder
+    muscleGroups?: SortOrder
+    equipment?: SortOrder
+    isPublic?: SortOrder
+    usageCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: WorkoutTemplateCountOrderByAggregateInput
+    _avg?: WorkoutTemplateAvgOrderByAggregateInput
+    _max?: WorkoutTemplateMaxOrderByAggregateInput
+    _min?: WorkoutTemplateMinOrderByAggregateInput
+    _sum?: WorkoutTemplateSumOrderByAggregateInput
+  }
+
+  export type WorkoutTemplateScalarWhereWithAggregatesInput = {
+    AND?: WorkoutTemplateScalarWhereWithAggregatesInput | WorkoutTemplateScalarWhereWithAggregatesInput[]
+    OR?: WorkoutTemplateScalarWhereWithAggregatesInput[]
+    NOT?: WorkoutTemplateScalarWhereWithAggregatesInput | WorkoutTemplateScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WorkoutTemplate"> | string
+    tenantId?: StringWithAggregatesFilter<"WorkoutTemplate"> | string
+    name?: StringWithAggregatesFilter<"WorkoutTemplate"> | string
+    description?: StringNullableWithAggregatesFilter<"WorkoutTemplate"> | string | null
+    category?: StringWithAggregatesFilter<"WorkoutTemplate"> | string
+    difficulty?: StringWithAggregatesFilter<"WorkoutTemplate"> | string
+    duration?: IntWithAggregatesFilter<"WorkoutTemplate"> | number
+    exercises?: JsonNullableListFilter<"WorkoutTemplate">
+    muscleGroups?: StringNullableListFilter<"WorkoutTemplate">
+    equipment?: StringNullableListFilter<"WorkoutTemplate">
+    isPublic?: BoolWithAggregatesFilter<"WorkoutTemplate"> | boolean
+    usageCount?: IntWithAggregatesFilter<"WorkoutTemplate"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"WorkoutTemplate"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"WorkoutTemplate"> | Date | string
+  }
+
+  export type ScheduleTemplateWhereInput = {
+    AND?: ScheduleTemplateWhereInput | ScheduleTemplateWhereInput[]
+    OR?: ScheduleTemplateWhereInput[]
+    NOT?: ScheduleTemplateWhereInput | ScheduleTemplateWhereInput[]
+    id?: StringFilter<"ScheduleTemplate"> | string
+    tenantId?: StringFilter<"ScheduleTemplate"> | string
+    name?: StringFilter<"ScheduleTemplate"> | string
+    description?: StringNullableFilter<"ScheduleTemplate"> | string | null
+    slots?: JsonNullableListFilter<"ScheduleTemplate">
+    isActive?: BoolFilter<"ScheduleTemplate"> | boolean
+    createdAt?: DateTimeFilter<"ScheduleTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"ScheduleTemplate"> | Date | string
+    tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
+  }
+
+  export type ScheduleTemplateOrderByWithRelationInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    slots?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    tenant?: TenantOrderByWithRelationInput
+  }
+
+  export type ScheduleTemplateWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ScheduleTemplateWhereInput | ScheduleTemplateWhereInput[]
+    OR?: ScheduleTemplateWhereInput[]
+    NOT?: ScheduleTemplateWhereInput | ScheduleTemplateWhereInput[]
+    tenantId?: StringFilter<"ScheduleTemplate"> | string
+    name?: StringFilter<"ScheduleTemplate"> | string
+    description?: StringNullableFilter<"ScheduleTemplate"> | string | null
+    slots?: JsonNullableListFilter<"ScheduleTemplate">
+    isActive?: BoolFilter<"ScheduleTemplate"> | boolean
+    createdAt?: DateTimeFilter<"ScheduleTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"ScheduleTemplate"> | Date | string
+    tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
+  }, "id">
+
+  export type ScheduleTemplateOrderByWithAggregationInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    slots?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ScheduleTemplateCountOrderByAggregateInput
+    _max?: ScheduleTemplateMaxOrderByAggregateInput
+    _min?: ScheduleTemplateMinOrderByAggregateInput
+  }
+
+  export type ScheduleTemplateScalarWhereWithAggregatesInput = {
+    AND?: ScheduleTemplateScalarWhereWithAggregatesInput | ScheduleTemplateScalarWhereWithAggregatesInput[]
+    OR?: ScheduleTemplateScalarWhereWithAggregatesInput[]
+    NOT?: ScheduleTemplateScalarWhereWithAggregatesInput | ScheduleTemplateScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ScheduleTemplate"> | string
+    tenantId?: StringWithAggregatesFilter<"ScheduleTemplate"> | string
+    name?: StringWithAggregatesFilter<"ScheduleTemplate"> | string
+    description?: StringNullableWithAggregatesFilter<"ScheduleTemplate"> | string | null
+    slots?: JsonNullableListFilter<"ScheduleTemplate">
+    isActive?: BoolWithAggregatesFilter<"ScheduleTemplate"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"ScheduleTemplate"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ScheduleTemplate"> | Date | string
+  }
+
   export type TenantCreateInput = {
     id?: string
     vertical: $Enums.Vertical
@@ -47738,6 +53196,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryCreateNestedManyWithoutTenantInput
     expenses?: ExpenseCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateCreateNestedManyWithoutTenantInput
+    badges?: BadgeCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateInput = {
@@ -47769,6 +53230,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedCreateNestedManyWithoutTenantInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedCreateNestedManyWithoutTenantInput
+    badges?: BadgeUncheckedCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateUncheckedCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUpdateInput = {
@@ -47800,6 +53264,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateInput = {
@@ -47831,6 +53298,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUncheckedUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantCreateManyInput = {
@@ -48258,6 +53728,7 @@ export namespace Prisma {
     invoices?: InvoiceCreateNestedManyWithoutClientInput
     measurements?: ClientMeasurementCreateNestedManyWithoutClientInput
     progressPhotos?: ProgressPhotoCreateNestedManyWithoutClientInput
+    badges?: ClientBadgeCreateNestedManyWithoutClientInput
   }
 
   export type ClientUncheckedCreateInput = {
@@ -48292,6 +53763,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     measurements?: ClientMeasurementUncheckedCreateNestedManyWithoutClientInput
     progressPhotos?: ProgressPhotoUncheckedCreateNestedManyWithoutClientInput
+    badges?: ClientBadgeUncheckedCreateNestedManyWithoutClientInput
   }
 
   export type ClientUpdateInput = {
@@ -48326,6 +53798,7 @@ export namespace Prisma {
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
     measurements?: ClientMeasurementUpdateManyWithoutClientNestedInput
     progressPhotos?: ProgressPhotoUpdateManyWithoutClientNestedInput
+    badges?: ClientBadgeUpdateManyWithoutClientNestedInput
   }
 
   export type ClientUncheckedUpdateInput = {
@@ -48360,6 +53833,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     measurements?: ClientMeasurementUncheckedUpdateManyWithoutClientNestedInput
     progressPhotos?: ProgressPhotoUncheckedUpdateManyWithoutClientNestedInput
+    badges?: ClientBadgeUncheckedUpdateManyWithoutClientNestedInput
   }
 
   export type ClientCreateManyInput = {
@@ -51325,6 +56799,355 @@ export namespace Prisma {
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type BadgeCreateInput = {
+    id?: string
+    name: string
+    description: string
+    icon: string
+    color: string
+    category: string
+    criteria: JsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tenant: TenantCreateNestedOneWithoutBadgesInput
+    clientBadges?: ClientBadgeCreateNestedManyWithoutBadgeInput
+  }
+
+  export type BadgeUncheckedCreateInput = {
+    id?: string
+    tenantId: string
+    name: string
+    description: string
+    icon: string
+    color: string
+    category: string
+    criteria: JsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    clientBadges?: ClientBadgeUncheckedCreateNestedManyWithoutBadgeInput
+  }
+
+  export type BadgeUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    icon?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    criteria?: JsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneRequiredWithoutBadgesNestedInput
+    clientBadges?: ClientBadgeUpdateManyWithoutBadgeNestedInput
+  }
+
+  export type BadgeUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    icon?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    criteria?: JsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clientBadges?: ClientBadgeUncheckedUpdateManyWithoutBadgeNestedInput
+  }
+
+  export type BadgeCreateManyInput = {
+    id?: string
+    tenantId: string
+    name: string
+    description: string
+    icon: string
+    color: string
+    category: string
+    criteria: JsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BadgeUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    icon?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    criteria?: JsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BadgeUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    icon?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    criteria?: JsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClientBadgeCreateInput = {
+    id?: string
+    earnedAt?: Date | string
+    notified?: boolean
+    client: ClientCreateNestedOneWithoutBadgesInput
+    badge: BadgeCreateNestedOneWithoutClientBadgesInput
+  }
+
+  export type ClientBadgeUncheckedCreateInput = {
+    id?: string
+    clientId: string
+    badgeId: string
+    earnedAt?: Date | string
+    notified?: boolean
+  }
+
+  export type ClientBadgeUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    earnedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notified?: BoolFieldUpdateOperationsInput | boolean
+    client?: ClientUpdateOneRequiredWithoutBadgesNestedInput
+    badge?: BadgeUpdateOneRequiredWithoutClientBadgesNestedInput
+  }
+
+  export type ClientBadgeUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    badgeId?: StringFieldUpdateOperationsInput | string
+    earnedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notified?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type ClientBadgeCreateManyInput = {
+    id?: string
+    clientId: string
+    badgeId: string
+    earnedAt?: Date | string
+    notified?: boolean
+  }
+
+  export type ClientBadgeUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    earnedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notified?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type ClientBadgeUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    badgeId?: StringFieldUpdateOperationsInput | string
+    earnedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notified?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type WorkoutTemplateCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    category: string
+    difficulty: string
+    duration: number
+    exercises?: WorkoutTemplateCreateexercisesInput | InputJsonValue[]
+    muscleGroups?: WorkoutTemplateCreatemuscleGroupsInput | string[]
+    equipment?: WorkoutTemplateCreateequipmentInput | string[]
+    isPublic?: boolean
+    usageCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tenant: TenantCreateNestedOneWithoutWorkoutTemplatesInput
+  }
+
+  export type WorkoutTemplateUncheckedCreateInput = {
+    id?: string
+    tenantId: string
+    name: string
+    description?: string | null
+    category: string
+    difficulty: string
+    duration: number
+    exercises?: WorkoutTemplateCreateexercisesInput | InputJsonValue[]
+    muscleGroups?: WorkoutTemplateCreatemuscleGroupsInput | string[]
+    equipment?: WorkoutTemplateCreateequipmentInput | string[]
+    isPublic?: boolean
+    usageCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkoutTemplateUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    difficulty?: StringFieldUpdateOperationsInput | string
+    duration?: IntFieldUpdateOperationsInput | number
+    exercises?: WorkoutTemplateUpdateexercisesInput | InputJsonValue[]
+    muscleGroups?: WorkoutTemplateUpdatemuscleGroupsInput | string[]
+    equipment?: WorkoutTemplateUpdateequipmentInput | string[]
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    usageCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneRequiredWithoutWorkoutTemplatesNestedInput
+  }
+
+  export type WorkoutTemplateUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    difficulty?: StringFieldUpdateOperationsInput | string
+    duration?: IntFieldUpdateOperationsInput | number
+    exercises?: WorkoutTemplateUpdateexercisesInput | InputJsonValue[]
+    muscleGroups?: WorkoutTemplateUpdatemuscleGroupsInput | string[]
+    equipment?: WorkoutTemplateUpdateequipmentInput | string[]
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    usageCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkoutTemplateCreateManyInput = {
+    id?: string
+    tenantId: string
+    name: string
+    description?: string | null
+    category: string
+    difficulty: string
+    duration: number
+    exercises?: WorkoutTemplateCreateexercisesInput | InputJsonValue[]
+    muscleGroups?: WorkoutTemplateCreatemuscleGroupsInput | string[]
+    equipment?: WorkoutTemplateCreateequipmentInput | string[]
+    isPublic?: boolean
+    usageCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkoutTemplateUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    difficulty?: StringFieldUpdateOperationsInput | string
+    duration?: IntFieldUpdateOperationsInput | number
+    exercises?: WorkoutTemplateUpdateexercisesInput | InputJsonValue[]
+    muscleGroups?: WorkoutTemplateUpdatemuscleGroupsInput | string[]
+    equipment?: WorkoutTemplateUpdateequipmentInput | string[]
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    usageCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkoutTemplateUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    difficulty?: StringFieldUpdateOperationsInput | string
+    duration?: IntFieldUpdateOperationsInput | number
+    exercises?: WorkoutTemplateUpdateexercisesInput | InputJsonValue[]
+    muscleGroups?: WorkoutTemplateUpdatemuscleGroupsInput | string[]
+    equipment?: WorkoutTemplateUpdateequipmentInput | string[]
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    usageCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScheduleTemplateCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    slots?: ScheduleTemplateCreateslotsInput | InputJsonValue[]
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tenant: TenantCreateNestedOneWithoutScheduleTemplatesInput
+  }
+
+  export type ScheduleTemplateUncheckedCreateInput = {
+    id?: string
+    tenantId: string
+    name: string
+    description?: string | null
+    slots?: ScheduleTemplateCreateslotsInput | InputJsonValue[]
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ScheduleTemplateUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    slots?: ScheduleTemplateUpdateslotsInput | InputJsonValue[]
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneRequiredWithoutScheduleTemplatesNestedInput
+  }
+
+  export type ScheduleTemplateUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    slots?: ScheduleTemplateUpdateslotsInput | InputJsonValue[]
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScheduleTemplateCreateManyInput = {
+    id?: string
+    tenantId: string
+    name: string
+    description?: string | null
+    slots?: ScheduleTemplateCreateslotsInput | InputJsonValue[]
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ScheduleTemplateUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    slots?: ScheduleTemplateUpdateslotsInput | InputJsonValue[]
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScheduleTemplateUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    slots?: ScheduleTemplateUpdateslotsInput | InputJsonValue[]
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -51480,6 +57303,24 @@ export namespace Prisma {
     none?: RecurringInvoiceTemplateWhereInput
   }
 
+  export type BadgeListRelationFilter = {
+    every?: BadgeWhereInput
+    some?: BadgeWhereInput
+    none?: BadgeWhereInput
+  }
+
+  export type WorkoutTemplateListRelationFilter = {
+    every?: WorkoutTemplateWhereInput
+    some?: WorkoutTemplateWhereInput
+    none?: WorkoutTemplateWhereInput
+  }
+
+  export type ScheduleTemplateListRelationFilter = {
+    every?: ScheduleTemplateWhereInput
+    some?: ScheduleTemplateWhereInput
+    none?: ScheduleTemplateWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -51546,6 +57387,18 @@ export namespace Prisma {
   }
 
   export type RecurringInvoiceTemplateOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type BadgeOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type WorkoutTemplateOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ScheduleTemplateOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -51979,11 +57832,21 @@ export namespace Prisma {
     none?: ProgressPhotoWhereInput
   }
 
+  export type ClientBadgeListRelationFilter = {
+    every?: ClientBadgeWhereInput
+    some?: ClientBadgeWhereInput
+    none?: ClientBadgeWhereInput
+  }
+
   export type ClientMeasurementOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type ProgressPhotoOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ClientBadgeOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -53836,6 +59699,166 @@ export namespace Prisma {
     expiresAt?: SortOrder
   }
 
+  export type BadgeCountOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    icon?: SortOrder
+    color?: SortOrder
+    category?: SortOrder
+    criteria?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BadgeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    icon?: SortOrder
+    color?: SortOrder
+    category?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BadgeMinOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    icon?: SortOrder
+    color?: SortOrder
+    category?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BadgeScalarRelationFilter = {
+    is?: BadgeWhereInput
+    isNot?: BadgeWhereInput
+  }
+
+  export type ClientBadgeClientIdBadgeIdCompoundUniqueInput = {
+    clientId: string
+    badgeId: string
+  }
+
+  export type ClientBadgeCountOrderByAggregateInput = {
+    id?: SortOrder
+    clientId?: SortOrder
+    badgeId?: SortOrder
+    earnedAt?: SortOrder
+    notified?: SortOrder
+  }
+
+  export type ClientBadgeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    clientId?: SortOrder
+    badgeId?: SortOrder
+    earnedAt?: SortOrder
+    notified?: SortOrder
+  }
+
+  export type ClientBadgeMinOrderByAggregateInput = {
+    id?: SortOrder
+    clientId?: SortOrder
+    badgeId?: SortOrder
+    earnedAt?: SortOrder
+    notified?: SortOrder
+  }
+
+  export type WorkoutTemplateCountOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    category?: SortOrder
+    difficulty?: SortOrder
+    duration?: SortOrder
+    exercises?: SortOrder
+    muscleGroups?: SortOrder
+    equipment?: SortOrder
+    isPublic?: SortOrder
+    usageCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkoutTemplateAvgOrderByAggregateInput = {
+    duration?: SortOrder
+    usageCount?: SortOrder
+  }
+
+  export type WorkoutTemplateMaxOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    category?: SortOrder
+    difficulty?: SortOrder
+    duration?: SortOrder
+    isPublic?: SortOrder
+    usageCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkoutTemplateMinOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    category?: SortOrder
+    difficulty?: SortOrder
+    duration?: SortOrder
+    isPublic?: SortOrder
+    usageCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkoutTemplateSumOrderByAggregateInput = {
+    duration?: SortOrder
+    usageCount?: SortOrder
+  }
+
+  export type ScheduleTemplateCountOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    slots?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ScheduleTemplateMaxOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ScheduleTemplateMinOrderByAggregateInput = {
+    id?: SortOrder
+    tenantId?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
   export type UserCreateNestedManyWithoutTenantInput = {
     create?: XOR<UserCreateWithoutTenantInput, UserUncheckedCreateWithoutTenantInput> | UserCreateWithoutTenantInput[] | UserUncheckedCreateWithoutTenantInput[]
     connectOrCreate?: UserCreateOrConnectWithoutTenantInput | UserCreateOrConnectWithoutTenantInput[]
@@ -53948,6 +59971,27 @@ export namespace Prisma {
     connect?: RecurringInvoiceTemplateWhereUniqueInput | RecurringInvoiceTemplateWhereUniqueInput[]
   }
 
+  export type BadgeCreateNestedManyWithoutTenantInput = {
+    create?: XOR<BadgeCreateWithoutTenantInput, BadgeUncheckedCreateWithoutTenantInput> | BadgeCreateWithoutTenantInput[] | BadgeUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: BadgeCreateOrConnectWithoutTenantInput | BadgeCreateOrConnectWithoutTenantInput[]
+    createMany?: BadgeCreateManyTenantInputEnvelope
+    connect?: BadgeWhereUniqueInput | BadgeWhereUniqueInput[]
+  }
+
+  export type WorkoutTemplateCreateNestedManyWithoutTenantInput = {
+    create?: XOR<WorkoutTemplateCreateWithoutTenantInput, WorkoutTemplateUncheckedCreateWithoutTenantInput> | WorkoutTemplateCreateWithoutTenantInput[] | WorkoutTemplateUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: WorkoutTemplateCreateOrConnectWithoutTenantInput | WorkoutTemplateCreateOrConnectWithoutTenantInput[]
+    createMany?: WorkoutTemplateCreateManyTenantInputEnvelope
+    connect?: WorkoutTemplateWhereUniqueInput | WorkoutTemplateWhereUniqueInput[]
+  }
+
+  export type ScheduleTemplateCreateNestedManyWithoutTenantInput = {
+    create?: XOR<ScheduleTemplateCreateWithoutTenantInput, ScheduleTemplateUncheckedCreateWithoutTenantInput> | ScheduleTemplateCreateWithoutTenantInput[] | ScheduleTemplateUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: ScheduleTemplateCreateOrConnectWithoutTenantInput | ScheduleTemplateCreateOrConnectWithoutTenantInput[]
+    createMany?: ScheduleTemplateCreateManyTenantInputEnvelope
+    connect?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutTenantInput = {
     create?: XOR<UserCreateWithoutTenantInput, UserUncheckedCreateWithoutTenantInput> | UserCreateWithoutTenantInput[] | UserUncheckedCreateWithoutTenantInput[]
     connectOrCreate?: UserCreateOrConnectWithoutTenantInput | UserCreateOrConnectWithoutTenantInput[]
@@ -54058,6 +60102,27 @@ export namespace Prisma {
     connectOrCreate?: RecurringInvoiceTemplateCreateOrConnectWithoutTenantInput | RecurringInvoiceTemplateCreateOrConnectWithoutTenantInput[]
     createMany?: RecurringInvoiceTemplateCreateManyTenantInputEnvelope
     connect?: RecurringInvoiceTemplateWhereUniqueInput | RecurringInvoiceTemplateWhereUniqueInput[]
+  }
+
+  export type BadgeUncheckedCreateNestedManyWithoutTenantInput = {
+    create?: XOR<BadgeCreateWithoutTenantInput, BadgeUncheckedCreateWithoutTenantInput> | BadgeCreateWithoutTenantInput[] | BadgeUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: BadgeCreateOrConnectWithoutTenantInput | BadgeCreateOrConnectWithoutTenantInput[]
+    createMany?: BadgeCreateManyTenantInputEnvelope
+    connect?: BadgeWhereUniqueInput | BadgeWhereUniqueInput[]
+  }
+
+  export type WorkoutTemplateUncheckedCreateNestedManyWithoutTenantInput = {
+    create?: XOR<WorkoutTemplateCreateWithoutTenantInput, WorkoutTemplateUncheckedCreateWithoutTenantInput> | WorkoutTemplateCreateWithoutTenantInput[] | WorkoutTemplateUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: WorkoutTemplateCreateOrConnectWithoutTenantInput | WorkoutTemplateCreateOrConnectWithoutTenantInput[]
+    createMany?: WorkoutTemplateCreateManyTenantInputEnvelope
+    connect?: WorkoutTemplateWhereUniqueInput | WorkoutTemplateWhereUniqueInput[]
+  }
+
+  export type ScheduleTemplateUncheckedCreateNestedManyWithoutTenantInput = {
+    create?: XOR<ScheduleTemplateCreateWithoutTenantInput, ScheduleTemplateUncheckedCreateWithoutTenantInput> | ScheduleTemplateCreateWithoutTenantInput[] | ScheduleTemplateUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: ScheduleTemplateCreateOrConnectWithoutTenantInput | ScheduleTemplateCreateOrConnectWithoutTenantInput[]
+    createMany?: ScheduleTemplateCreateManyTenantInputEnvelope
+    connect?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -54308,6 +60373,48 @@ export namespace Prisma {
     deleteMany?: RecurringInvoiceTemplateScalarWhereInput | RecurringInvoiceTemplateScalarWhereInput[]
   }
 
+  export type BadgeUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<BadgeCreateWithoutTenantInput, BadgeUncheckedCreateWithoutTenantInput> | BadgeCreateWithoutTenantInput[] | BadgeUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: BadgeCreateOrConnectWithoutTenantInput | BadgeCreateOrConnectWithoutTenantInput[]
+    upsert?: BadgeUpsertWithWhereUniqueWithoutTenantInput | BadgeUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: BadgeCreateManyTenantInputEnvelope
+    set?: BadgeWhereUniqueInput | BadgeWhereUniqueInput[]
+    disconnect?: BadgeWhereUniqueInput | BadgeWhereUniqueInput[]
+    delete?: BadgeWhereUniqueInput | BadgeWhereUniqueInput[]
+    connect?: BadgeWhereUniqueInput | BadgeWhereUniqueInput[]
+    update?: BadgeUpdateWithWhereUniqueWithoutTenantInput | BadgeUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: BadgeUpdateManyWithWhereWithoutTenantInput | BadgeUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: BadgeScalarWhereInput | BadgeScalarWhereInput[]
+  }
+
+  export type WorkoutTemplateUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<WorkoutTemplateCreateWithoutTenantInput, WorkoutTemplateUncheckedCreateWithoutTenantInput> | WorkoutTemplateCreateWithoutTenantInput[] | WorkoutTemplateUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: WorkoutTemplateCreateOrConnectWithoutTenantInput | WorkoutTemplateCreateOrConnectWithoutTenantInput[]
+    upsert?: WorkoutTemplateUpsertWithWhereUniqueWithoutTenantInput | WorkoutTemplateUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: WorkoutTemplateCreateManyTenantInputEnvelope
+    set?: WorkoutTemplateWhereUniqueInput | WorkoutTemplateWhereUniqueInput[]
+    disconnect?: WorkoutTemplateWhereUniqueInput | WorkoutTemplateWhereUniqueInput[]
+    delete?: WorkoutTemplateWhereUniqueInput | WorkoutTemplateWhereUniqueInput[]
+    connect?: WorkoutTemplateWhereUniqueInput | WorkoutTemplateWhereUniqueInput[]
+    update?: WorkoutTemplateUpdateWithWhereUniqueWithoutTenantInput | WorkoutTemplateUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: WorkoutTemplateUpdateManyWithWhereWithoutTenantInput | WorkoutTemplateUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: WorkoutTemplateScalarWhereInput | WorkoutTemplateScalarWhereInput[]
+  }
+
+  export type ScheduleTemplateUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<ScheduleTemplateCreateWithoutTenantInput, ScheduleTemplateUncheckedCreateWithoutTenantInput> | ScheduleTemplateCreateWithoutTenantInput[] | ScheduleTemplateUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: ScheduleTemplateCreateOrConnectWithoutTenantInput | ScheduleTemplateCreateOrConnectWithoutTenantInput[]
+    upsert?: ScheduleTemplateUpsertWithWhereUniqueWithoutTenantInput | ScheduleTemplateUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: ScheduleTemplateCreateManyTenantInputEnvelope
+    set?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    disconnect?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    delete?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    connect?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    update?: ScheduleTemplateUpdateWithWhereUniqueWithoutTenantInput | ScheduleTemplateUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: ScheduleTemplateUpdateManyWithWhereWithoutTenantInput | ScheduleTemplateUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: ScheduleTemplateScalarWhereInput | ScheduleTemplateScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutTenantNestedInput = {
     create?: XOR<UserCreateWithoutTenantInput, UserUncheckedCreateWithoutTenantInput> | UserCreateWithoutTenantInput[] | UserUncheckedCreateWithoutTenantInput[]
     connectOrCreate?: UserCreateOrConnectWithoutTenantInput | UserCreateOrConnectWithoutTenantInput[]
@@ -54532,6 +60639,48 @@ export namespace Prisma {
     deleteMany?: RecurringInvoiceTemplateScalarWhereInput | RecurringInvoiceTemplateScalarWhereInput[]
   }
 
+  export type BadgeUncheckedUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<BadgeCreateWithoutTenantInput, BadgeUncheckedCreateWithoutTenantInput> | BadgeCreateWithoutTenantInput[] | BadgeUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: BadgeCreateOrConnectWithoutTenantInput | BadgeCreateOrConnectWithoutTenantInput[]
+    upsert?: BadgeUpsertWithWhereUniqueWithoutTenantInput | BadgeUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: BadgeCreateManyTenantInputEnvelope
+    set?: BadgeWhereUniqueInput | BadgeWhereUniqueInput[]
+    disconnect?: BadgeWhereUniqueInput | BadgeWhereUniqueInput[]
+    delete?: BadgeWhereUniqueInput | BadgeWhereUniqueInput[]
+    connect?: BadgeWhereUniqueInput | BadgeWhereUniqueInput[]
+    update?: BadgeUpdateWithWhereUniqueWithoutTenantInput | BadgeUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: BadgeUpdateManyWithWhereWithoutTenantInput | BadgeUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: BadgeScalarWhereInput | BadgeScalarWhereInput[]
+  }
+
+  export type WorkoutTemplateUncheckedUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<WorkoutTemplateCreateWithoutTenantInput, WorkoutTemplateUncheckedCreateWithoutTenantInput> | WorkoutTemplateCreateWithoutTenantInput[] | WorkoutTemplateUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: WorkoutTemplateCreateOrConnectWithoutTenantInput | WorkoutTemplateCreateOrConnectWithoutTenantInput[]
+    upsert?: WorkoutTemplateUpsertWithWhereUniqueWithoutTenantInput | WorkoutTemplateUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: WorkoutTemplateCreateManyTenantInputEnvelope
+    set?: WorkoutTemplateWhereUniqueInput | WorkoutTemplateWhereUniqueInput[]
+    disconnect?: WorkoutTemplateWhereUniqueInput | WorkoutTemplateWhereUniqueInput[]
+    delete?: WorkoutTemplateWhereUniqueInput | WorkoutTemplateWhereUniqueInput[]
+    connect?: WorkoutTemplateWhereUniqueInput | WorkoutTemplateWhereUniqueInput[]
+    update?: WorkoutTemplateUpdateWithWhereUniqueWithoutTenantInput | WorkoutTemplateUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: WorkoutTemplateUpdateManyWithWhereWithoutTenantInput | WorkoutTemplateUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: WorkoutTemplateScalarWhereInput | WorkoutTemplateScalarWhereInput[]
+  }
+
+  export type ScheduleTemplateUncheckedUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<ScheduleTemplateCreateWithoutTenantInput, ScheduleTemplateUncheckedCreateWithoutTenantInput> | ScheduleTemplateCreateWithoutTenantInput[] | ScheduleTemplateUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: ScheduleTemplateCreateOrConnectWithoutTenantInput | ScheduleTemplateCreateOrConnectWithoutTenantInput[]
+    upsert?: ScheduleTemplateUpsertWithWhereUniqueWithoutTenantInput | ScheduleTemplateUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: ScheduleTemplateCreateManyTenantInputEnvelope
+    set?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    disconnect?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    delete?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    connect?: ScheduleTemplateWhereUniqueInput | ScheduleTemplateWhereUniqueInput[]
+    update?: ScheduleTemplateUpdateWithWhereUniqueWithoutTenantInput | ScheduleTemplateUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: ScheduleTemplateUpdateManyWithWhereWithoutTenantInput | ScheduleTemplateUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: ScheduleTemplateScalarWhereInput | ScheduleTemplateScalarWhereInput[]
+  }
+
   export type TenantCreateNestedOneWithoutUsersInput = {
     create?: XOR<TenantCreateWithoutUsersInput, TenantUncheckedCreateWithoutUsersInput>
     connectOrCreate?: TenantCreateOrConnectWithoutUsersInput
@@ -54719,6 +60868,13 @@ export namespace Prisma {
     connect?: ProgressPhotoWhereUniqueInput | ProgressPhotoWhereUniqueInput[]
   }
 
+  export type ClientBadgeCreateNestedManyWithoutClientInput = {
+    create?: XOR<ClientBadgeCreateWithoutClientInput, ClientBadgeUncheckedCreateWithoutClientInput> | ClientBadgeCreateWithoutClientInput[] | ClientBadgeUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: ClientBadgeCreateOrConnectWithoutClientInput | ClientBadgeCreateOrConnectWithoutClientInput[]
+    createMany?: ClientBadgeCreateManyClientInputEnvelope
+    connect?: ClientBadgeWhereUniqueInput | ClientBadgeWhereUniqueInput[]
+  }
+
   export type SessionUncheckedCreateNestedManyWithoutClientInput = {
     create?: XOR<SessionCreateWithoutClientInput, SessionUncheckedCreateWithoutClientInput> | SessionCreateWithoutClientInput[] | SessionUncheckedCreateWithoutClientInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutClientInput | SessionCreateOrConnectWithoutClientInput[]
@@ -54752,6 +60908,13 @@ export namespace Prisma {
     connectOrCreate?: ProgressPhotoCreateOrConnectWithoutClientInput | ProgressPhotoCreateOrConnectWithoutClientInput[]
     createMany?: ProgressPhotoCreateManyClientInputEnvelope
     connect?: ProgressPhotoWhereUniqueInput | ProgressPhotoWhereUniqueInput[]
+  }
+
+  export type ClientBadgeUncheckedCreateNestedManyWithoutClientInput = {
+    create?: XOR<ClientBadgeCreateWithoutClientInput, ClientBadgeUncheckedCreateWithoutClientInput> | ClientBadgeCreateWithoutClientInput[] | ClientBadgeUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: ClientBadgeCreateOrConnectWithoutClientInput | ClientBadgeCreateOrConnectWithoutClientInput[]
+    createMany?: ClientBadgeCreateManyClientInputEnvelope
+    connect?: ClientBadgeWhereUniqueInput | ClientBadgeWhereUniqueInput[]
   }
 
   export type ClientUpdategoalsInput = {
@@ -54850,6 +61013,20 @@ export namespace Prisma {
     deleteMany?: ProgressPhotoScalarWhereInput | ProgressPhotoScalarWhereInput[]
   }
 
+  export type ClientBadgeUpdateManyWithoutClientNestedInput = {
+    create?: XOR<ClientBadgeCreateWithoutClientInput, ClientBadgeUncheckedCreateWithoutClientInput> | ClientBadgeCreateWithoutClientInput[] | ClientBadgeUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: ClientBadgeCreateOrConnectWithoutClientInput | ClientBadgeCreateOrConnectWithoutClientInput[]
+    upsert?: ClientBadgeUpsertWithWhereUniqueWithoutClientInput | ClientBadgeUpsertWithWhereUniqueWithoutClientInput[]
+    createMany?: ClientBadgeCreateManyClientInputEnvelope
+    set?: ClientBadgeWhereUniqueInput | ClientBadgeWhereUniqueInput[]
+    disconnect?: ClientBadgeWhereUniqueInput | ClientBadgeWhereUniqueInput[]
+    delete?: ClientBadgeWhereUniqueInput | ClientBadgeWhereUniqueInput[]
+    connect?: ClientBadgeWhereUniqueInput | ClientBadgeWhereUniqueInput[]
+    update?: ClientBadgeUpdateWithWhereUniqueWithoutClientInput | ClientBadgeUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: ClientBadgeUpdateManyWithWhereWithoutClientInput | ClientBadgeUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: ClientBadgeScalarWhereInput | ClientBadgeScalarWhereInput[]
+  }
+
   export type SessionUncheckedUpdateManyWithoutClientNestedInput = {
     create?: XOR<SessionCreateWithoutClientInput, SessionUncheckedCreateWithoutClientInput> | SessionCreateWithoutClientInput[] | SessionUncheckedCreateWithoutClientInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutClientInput | SessionCreateOrConnectWithoutClientInput[]
@@ -54918,6 +61095,20 @@ export namespace Prisma {
     update?: ProgressPhotoUpdateWithWhereUniqueWithoutClientInput | ProgressPhotoUpdateWithWhereUniqueWithoutClientInput[]
     updateMany?: ProgressPhotoUpdateManyWithWhereWithoutClientInput | ProgressPhotoUpdateManyWithWhereWithoutClientInput[]
     deleteMany?: ProgressPhotoScalarWhereInput | ProgressPhotoScalarWhereInput[]
+  }
+
+  export type ClientBadgeUncheckedUpdateManyWithoutClientNestedInput = {
+    create?: XOR<ClientBadgeCreateWithoutClientInput, ClientBadgeUncheckedCreateWithoutClientInput> | ClientBadgeCreateWithoutClientInput[] | ClientBadgeUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: ClientBadgeCreateOrConnectWithoutClientInput | ClientBadgeCreateOrConnectWithoutClientInput[]
+    upsert?: ClientBadgeUpsertWithWhereUniqueWithoutClientInput | ClientBadgeUpsertWithWhereUniqueWithoutClientInput[]
+    createMany?: ClientBadgeCreateManyClientInputEnvelope
+    set?: ClientBadgeWhereUniqueInput | ClientBadgeWhereUniqueInput[]
+    disconnect?: ClientBadgeWhereUniqueInput | ClientBadgeWhereUniqueInput[]
+    delete?: ClientBadgeWhereUniqueInput | ClientBadgeWhereUniqueInput[]
+    connect?: ClientBadgeWhereUniqueInput | ClientBadgeWhereUniqueInput[]
+    update?: ClientBadgeUpdateWithWhereUniqueWithoutClientInput | ClientBadgeUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: ClientBadgeUpdateManyWithWhereWithoutClientInput | ClientBadgeUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: ClientBadgeScalarWhereInput | ClientBadgeScalarWhereInput[]
   }
 
   export type ClientCreateNestedOneWithoutMeasurementsInput = {
@@ -55888,6 +62079,154 @@ export namespace Prisma {
     update?: XOR<XOR<CalendarIntegrationUpdateToOneWithWhereWithoutEventSyncsInput, CalendarIntegrationUpdateWithoutEventSyncsInput>, CalendarIntegrationUncheckedUpdateWithoutEventSyncsInput>
   }
 
+  export type TenantCreateNestedOneWithoutBadgesInput = {
+    create?: XOR<TenantCreateWithoutBadgesInput, TenantUncheckedCreateWithoutBadgesInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutBadgesInput
+    connect?: TenantWhereUniqueInput
+  }
+
+  export type ClientBadgeCreateNestedManyWithoutBadgeInput = {
+    create?: XOR<ClientBadgeCreateWithoutBadgeInput, ClientBadgeUncheckedCreateWithoutBadgeInput> | ClientBadgeCreateWithoutBadgeInput[] | ClientBadgeUncheckedCreateWithoutBadgeInput[]
+    connectOrCreate?: ClientBadgeCreateOrConnectWithoutBadgeInput | ClientBadgeCreateOrConnectWithoutBadgeInput[]
+    createMany?: ClientBadgeCreateManyBadgeInputEnvelope
+    connect?: ClientBadgeWhereUniqueInput | ClientBadgeWhereUniqueInput[]
+  }
+
+  export type ClientBadgeUncheckedCreateNestedManyWithoutBadgeInput = {
+    create?: XOR<ClientBadgeCreateWithoutBadgeInput, ClientBadgeUncheckedCreateWithoutBadgeInput> | ClientBadgeCreateWithoutBadgeInput[] | ClientBadgeUncheckedCreateWithoutBadgeInput[]
+    connectOrCreate?: ClientBadgeCreateOrConnectWithoutBadgeInput | ClientBadgeCreateOrConnectWithoutBadgeInput[]
+    createMany?: ClientBadgeCreateManyBadgeInputEnvelope
+    connect?: ClientBadgeWhereUniqueInput | ClientBadgeWhereUniqueInput[]
+  }
+
+  export type TenantUpdateOneRequiredWithoutBadgesNestedInput = {
+    create?: XOR<TenantCreateWithoutBadgesInput, TenantUncheckedCreateWithoutBadgesInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutBadgesInput
+    upsert?: TenantUpsertWithoutBadgesInput
+    connect?: TenantWhereUniqueInput
+    update?: XOR<XOR<TenantUpdateToOneWithWhereWithoutBadgesInput, TenantUpdateWithoutBadgesInput>, TenantUncheckedUpdateWithoutBadgesInput>
+  }
+
+  export type ClientBadgeUpdateManyWithoutBadgeNestedInput = {
+    create?: XOR<ClientBadgeCreateWithoutBadgeInput, ClientBadgeUncheckedCreateWithoutBadgeInput> | ClientBadgeCreateWithoutBadgeInput[] | ClientBadgeUncheckedCreateWithoutBadgeInput[]
+    connectOrCreate?: ClientBadgeCreateOrConnectWithoutBadgeInput | ClientBadgeCreateOrConnectWithoutBadgeInput[]
+    upsert?: ClientBadgeUpsertWithWhereUniqueWithoutBadgeInput | ClientBadgeUpsertWithWhereUniqueWithoutBadgeInput[]
+    createMany?: ClientBadgeCreateManyBadgeInputEnvelope
+    set?: ClientBadgeWhereUniqueInput | ClientBadgeWhereUniqueInput[]
+    disconnect?: ClientBadgeWhereUniqueInput | ClientBadgeWhereUniqueInput[]
+    delete?: ClientBadgeWhereUniqueInput | ClientBadgeWhereUniqueInput[]
+    connect?: ClientBadgeWhereUniqueInput | ClientBadgeWhereUniqueInput[]
+    update?: ClientBadgeUpdateWithWhereUniqueWithoutBadgeInput | ClientBadgeUpdateWithWhereUniqueWithoutBadgeInput[]
+    updateMany?: ClientBadgeUpdateManyWithWhereWithoutBadgeInput | ClientBadgeUpdateManyWithWhereWithoutBadgeInput[]
+    deleteMany?: ClientBadgeScalarWhereInput | ClientBadgeScalarWhereInput[]
+  }
+
+  export type ClientBadgeUncheckedUpdateManyWithoutBadgeNestedInput = {
+    create?: XOR<ClientBadgeCreateWithoutBadgeInput, ClientBadgeUncheckedCreateWithoutBadgeInput> | ClientBadgeCreateWithoutBadgeInput[] | ClientBadgeUncheckedCreateWithoutBadgeInput[]
+    connectOrCreate?: ClientBadgeCreateOrConnectWithoutBadgeInput | ClientBadgeCreateOrConnectWithoutBadgeInput[]
+    upsert?: ClientBadgeUpsertWithWhereUniqueWithoutBadgeInput | ClientBadgeUpsertWithWhereUniqueWithoutBadgeInput[]
+    createMany?: ClientBadgeCreateManyBadgeInputEnvelope
+    set?: ClientBadgeWhereUniqueInput | ClientBadgeWhereUniqueInput[]
+    disconnect?: ClientBadgeWhereUniqueInput | ClientBadgeWhereUniqueInput[]
+    delete?: ClientBadgeWhereUniqueInput | ClientBadgeWhereUniqueInput[]
+    connect?: ClientBadgeWhereUniqueInput | ClientBadgeWhereUniqueInput[]
+    update?: ClientBadgeUpdateWithWhereUniqueWithoutBadgeInput | ClientBadgeUpdateWithWhereUniqueWithoutBadgeInput[]
+    updateMany?: ClientBadgeUpdateManyWithWhereWithoutBadgeInput | ClientBadgeUpdateManyWithWhereWithoutBadgeInput[]
+    deleteMany?: ClientBadgeScalarWhereInput | ClientBadgeScalarWhereInput[]
+  }
+
+  export type ClientCreateNestedOneWithoutBadgesInput = {
+    create?: XOR<ClientCreateWithoutBadgesInput, ClientUncheckedCreateWithoutBadgesInput>
+    connectOrCreate?: ClientCreateOrConnectWithoutBadgesInput
+    connect?: ClientWhereUniqueInput
+  }
+
+  export type BadgeCreateNestedOneWithoutClientBadgesInput = {
+    create?: XOR<BadgeCreateWithoutClientBadgesInput, BadgeUncheckedCreateWithoutClientBadgesInput>
+    connectOrCreate?: BadgeCreateOrConnectWithoutClientBadgesInput
+    connect?: BadgeWhereUniqueInput
+  }
+
+  export type ClientUpdateOneRequiredWithoutBadgesNestedInput = {
+    create?: XOR<ClientCreateWithoutBadgesInput, ClientUncheckedCreateWithoutBadgesInput>
+    connectOrCreate?: ClientCreateOrConnectWithoutBadgesInput
+    upsert?: ClientUpsertWithoutBadgesInput
+    connect?: ClientWhereUniqueInput
+    update?: XOR<XOR<ClientUpdateToOneWithWhereWithoutBadgesInput, ClientUpdateWithoutBadgesInput>, ClientUncheckedUpdateWithoutBadgesInput>
+  }
+
+  export type BadgeUpdateOneRequiredWithoutClientBadgesNestedInput = {
+    create?: XOR<BadgeCreateWithoutClientBadgesInput, BadgeUncheckedCreateWithoutClientBadgesInput>
+    connectOrCreate?: BadgeCreateOrConnectWithoutClientBadgesInput
+    upsert?: BadgeUpsertWithoutClientBadgesInput
+    connect?: BadgeWhereUniqueInput
+    update?: XOR<XOR<BadgeUpdateToOneWithWhereWithoutClientBadgesInput, BadgeUpdateWithoutClientBadgesInput>, BadgeUncheckedUpdateWithoutClientBadgesInput>
+  }
+
+  export type WorkoutTemplateCreateexercisesInput = {
+    set: InputJsonValue[]
+  }
+
+  export type WorkoutTemplateCreatemuscleGroupsInput = {
+    set: string[]
+  }
+
+  export type WorkoutTemplateCreateequipmentInput = {
+    set: string[]
+  }
+
+  export type TenantCreateNestedOneWithoutWorkoutTemplatesInput = {
+    create?: XOR<TenantCreateWithoutWorkoutTemplatesInput, TenantUncheckedCreateWithoutWorkoutTemplatesInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutWorkoutTemplatesInput
+    connect?: TenantWhereUniqueInput
+  }
+
+  export type WorkoutTemplateUpdateexercisesInput = {
+    set?: InputJsonValue[]
+    push?: InputJsonValue | InputJsonValue[]
+  }
+
+  export type WorkoutTemplateUpdatemuscleGroupsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type WorkoutTemplateUpdateequipmentInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type TenantUpdateOneRequiredWithoutWorkoutTemplatesNestedInput = {
+    create?: XOR<TenantCreateWithoutWorkoutTemplatesInput, TenantUncheckedCreateWithoutWorkoutTemplatesInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutWorkoutTemplatesInput
+    upsert?: TenantUpsertWithoutWorkoutTemplatesInput
+    connect?: TenantWhereUniqueInput
+    update?: XOR<XOR<TenantUpdateToOneWithWhereWithoutWorkoutTemplatesInput, TenantUpdateWithoutWorkoutTemplatesInput>, TenantUncheckedUpdateWithoutWorkoutTemplatesInput>
+  }
+
+  export type ScheduleTemplateCreateslotsInput = {
+    set: InputJsonValue[]
+  }
+
+  export type TenantCreateNestedOneWithoutScheduleTemplatesInput = {
+    create?: XOR<TenantCreateWithoutScheduleTemplatesInput, TenantUncheckedCreateWithoutScheduleTemplatesInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutScheduleTemplatesInput
+    connect?: TenantWhereUniqueInput
+  }
+
+  export type ScheduleTemplateUpdateslotsInput = {
+    set?: InputJsonValue[]
+    push?: InputJsonValue | InputJsonValue[]
+  }
+
+  export type TenantUpdateOneRequiredWithoutScheduleTemplatesNestedInput = {
+    create?: XOR<TenantCreateWithoutScheduleTemplatesInput, TenantUncheckedCreateWithoutScheduleTemplatesInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutScheduleTemplatesInput
+    upsert?: TenantUpsertWithoutScheduleTemplatesInput
+    connect?: TenantWhereUniqueInput
+    update?: XOR<XOR<TenantUpdateToOneWithWhereWithoutScheduleTemplatesInput, TenantUpdateWithoutScheduleTemplatesInput>, TenantUncheckedUpdateWithoutScheduleTemplatesInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -56375,6 +62714,7 @@ export namespace Prisma {
     invoices?: InvoiceCreateNestedManyWithoutClientInput
     measurements?: ClientMeasurementCreateNestedManyWithoutClientInput
     progressPhotos?: ProgressPhotoCreateNestedManyWithoutClientInput
+    badges?: ClientBadgeCreateNestedManyWithoutClientInput
   }
 
   export type ClientUncheckedCreateWithoutTenantInput = {
@@ -56408,6 +62748,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     measurements?: ClientMeasurementUncheckedCreateNestedManyWithoutClientInput
     progressPhotos?: ProgressPhotoUncheckedCreateNestedManyWithoutClientInput
+    badges?: ClientBadgeUncheckedCreateNestedManyWithoutClientInput
   }
 
   export type ClientCreateOrConnectWithoutTenantInput = {
@@ -57060,6 +63401,116 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type BadgeCreateWithoutTenantInput = {
+    id?: string
+    name: string
+    description: string
+    icon: string
+    color: string
+    category: string
+    criteria: JsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    clientBadges?: ClientBadgeCreateNestedManyWithoutBadgeInput
+  }
+
+  export type BadgeUncheckedCreateWithoutTenantInput = {
+    id?: string
+    name: string
+    description: string
+    icon: string
+    color: string
+    category: string
+    criteria: JsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    clientBadges?: ClientBadgeUncheckedCreateNestedManyWithoutBadgeInput
+  }
+
+  export type BadgeCreateOrConnectWithoutTenantInput = {
+    where: BadgeWhereUniqueInput
+    create: XOR<BadgeCreateWithoutTenantInput, BadgeUncheckedCreateWithoutTenantInput>
+  }
+
+  export type BadgeCreateManyTenantInputEnvelope = {
+    data: BadgeCreateManyTenantInput | BadgeCreateManyTenantInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type WorkoutTemplateCreateWithoutTenantInput = {
+    id?: string
+    name: string
+    description?: string | null
+    category: string
+    difficulty: string
+    duration: number
+    exercises?: WorkoutTemplateCreateexercisesInput | InputJsonValue[]
+    muscleGroups?: WorkoutTemplateCreatemuscleGroupsInput | string[]
+    equipment?: WorkoutTemplateCreateequipmentInput | string[]
+    isPublic?: boolean
+    usageCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkoutTemplateUncheckedCreateWithoutTenantInput = {
+    id?: string
+    name: string
+    description?: string | null
+    category: string
+    difficulty: string
+    duration: number
+    exercises?: WorkoutTemplateCreateexercisesInput | InputJsonValue[]
+    muscleGroups?: WorkoutTemplateCreatemuscleGroupsInput | string[]
+    equipment?: WorkoutTemplateCreateequipmentInput | string[]
+    isPublic?: boolean
+    usageCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkoutTemplateCreateOrConnectWithoutTenantInput = {
+    where: WorkoutTemplateWhereUniqueInput
+    create: XOR<WorkoutTemplateCreateWithoutTenantInput, WorkoutTemplateUncheckedCreateWithoutTenantInput>
+  }
+
+  export type WorkoutTemplateCreateManyTenantInputEnvelope = {
+    data: WorkoutTemplateCreateManyTenantInput | WorkoutTemplateCreateManyTenantInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ScheduleTemplateCreateWithoutTenantInput = {
+    id?: string
+    name: string
+    description?: string | null
+    slots?: ScheduleTemplateCreateslotsInput | InputJsonValue[]
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ScheduleTemplateUncheckedCreateWithoutTenantInput = {
+    id?: string
+    name: string
+    description?: string | null
+    slots?: ScheduleTemplateCreateslotsInput | InputJsonValue[]
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ScheduleTemplateCreateOrConnectWithoutTenantInput = {
+    where: ScheduleTemplateWhereUniqueInput
+    create: XOR<ScheduleTemplateCreateWithoutTenantInput, ScheduleTemplateUncheckedCreateWithoutTenantInput>
+  }
+
+  export type ScheduleTemplateCreateManyTenantInputEnvelope = {
+    data: ScheduleTemplateCreateManyTenantInput | ScheduleTemplateCreateManyTenantInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithWhereUniqueWithoutTenantInput = {
     where: UserWhereUniqueInput
     update: XOR<UserUpdateWithoutTenantInput, UserUncheckedUpdateWithoutTenantInput>
@@ -57662,6 +64113,105 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"RecurringInvoiceTemplate"> | Date | string
   }
 
+  export type BadgeUpsertWithWhereUniqueWithoutTenantInput = {
+    where: BadgeWhereUniqueInput
+    update: XOR<BadgeUpdateWithoutTenantInput, BadgeUncheckedUpdateWithoutTenantInput>
+    create: XOR<BadgeCreateWithoutTenantInput, BadgeUncheckedCreateWithoutTenantInput>
+  }
+
+  export type BadgeUpdateWithWhereUniqueWithoutTenantInput = {
+    where: BadgeWhereUniqueInput
+    data: XOR<BadgeUpdateWithoutTenantInput, BadgeUncheckedUpdateWithoutTenantInput>
+  }
+
+  export type BadgeUpdateManyWithWhereWithoutTenantInput = {
+    where: BadgeScalarWhereInput
+    data: XOR<BadgeUpdateManyMutationInput, BadgeUncheckedUpdateManyWithoutTenantInput>
+  }
+
+  export type BadgeScalarWhereInput = {
+    AND?: BadgeScalarWhereInput | BadgeScalarWhereInput[]
+    OR?: BadgeScalarWhereInput[]
+    NOT?: BadgeScalarWhereInput | BadgeScalarWhereInput[]
+    id?: StringFilter<"Badge"> | string
+    tenantId?: StringFilter<"Badge"> | string
+    name?: StringFilter<"Badge"> | string
+    description?: StringFilter<"Badge"> | string
+    icon?: StringFilter<"Badge"> | string
+    color?: StringFilter<"Badge"> | string
+    category?: StringFilter<"Badge"> | string
+    criteria?: JsonFilter<"Badge">
+    isActive?: BoolFilter<"Badge"> | boolean
+    createdAt?: DateTimeFilter<"Badge"> | Date | string
+    updatedAt?: DateTimeFilter<"Badge"> | Date | string
+  }
+
+  export type WorkoutTemplateUpsertWithWhereUniqueWithoutTenantInput = {
+    where: WorkoutTemplateWhereUniqueInput
+    update: XOR<WorkoutTemplateUpdateWithoutTenantInput, WorkoutTemplateUncheckedUpdateWithoutTenantInput>
+    create: XOR<WorkoutTemplateCreateWithoutTenantInput, WorkoutTemplateUncheckedCreateWithoutTenantInput>
+  }
+
+  export type WorkoutTemplateUpdateWithWhereUniqueWithoutTenantInput = {
+    where: WorkoutTemplateWhereUniqueInput
+    data: XOR<WorkoutTemplateUpdateWithoutTenantInput, WorkoutTemplateUncheckedUpdateWithoutTenantInput>
+  }
+
+  export type WorkoutTemplateUpdateManyWithWhereWithoutTenantInput = {
+    where: WorkoutTemplateScalarWhereInput
+    data: XOR<WorkoutTemplateUpdateManyMutationInput, WorkoutTemplateUncheckedUpdateManyWithoutTenantInput>
+  }
+
+  export type WorkoutTemplateScalarWhereInput = {
+    AND?: WorkoutTemplateScalarWhereInput | WorkoutTemplateScalarWhereInput[]
+    OR?: WorkoutTemplateScalarWhereInput[]
+    NOT?: WorkoutTemplateScalarWhereInput | WorkoutTemplateScalarWhereInput[]
+    id?: StringFilter<"WorkoutTemplate"> | string
+    tenantId?: StringFilter<"WorkoutTemplate"> | string
+    name?: StringFilter<"WorkoutTemplate"> | string
+    description?: StringNullableFilter<"WorkoutTemplate"> | string | null
+    category?: StringFilter<"WorkoutTemplate"> | string
+    difficulty?: StringFilter<"WorkoutTemplate"> | string
+    duration?: IntFilter<"WorkoutTemplate"> | number
+    exercises?: JsonNullableListFilter<"WorkoutTemplate">
+    muscleGroups?: StringNullableListFilter<"WorkoutTemplate">
+    equipment?: StringNullableListFilter<"WorkoutTemplate">
+    isPublic?: BoolFilter<"WorkoutTemplate"> | boolean
+    usageCount?: IntFilter<"WorkoutTemplate"> | number
+    createdAt?: DateTimeFilter<"WorkoutTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkoutTemplate"> | Date | string
+  }
+
+  export type ScheduleTemplateUpsertWithWhereUniqueWithoutTenantInput = {
+    where: ScheduleTemplateWhereUniqueInput
+    update: XOR<ScheduleTemplateUpdateWithoutTenantInput, ScheduleTemplateUncheckedUpdateWithoutTenantInput>
+    create: XOR<ScheduleTemplateCreateWithoutTenantInput, ScheduleTemplateUncheckedCreateWithoutTenantInput>
+  }
+
+  export type ScheduleTemplateUpdateWithWhereUniqueWithoutTenantInput = {
+    where: ScheduleTemplateWhereUniqueInput
+    data: XOR<ScheduleTemplateUpdateWithoutTenantInput, ScheduleTemplateUncheckedUpdateWithoutTenantInput>
+  }
+
+  export type ScheduleTemplateUpdateManyWithWhereWithoutTenantInput = {
+    where: ScheduleTemplateScalarWhereInput
+    data: XOR<ScheduleTemplateUpdateManyMutationInput, ScheduleTemplateUncheckedUpdateManyWithoutTenantInput>
+  }
+
+  export type ScheduleTemplateScalarWhereInput = {
+    AND?: ScheduleTemplateScalarWhereInput | ScheduleTemplateScalarWhereInput[]
+    OR?: ScheduleTemplateScalarWhereInput[]
+    NOT?: ScheduleTemplateScalarWhereInput | ScheduleTemplateScalarWhereInput[]
+    id?: StringFilter<"ScheduleTemplate"> | string
+    tenantId?: StringFilter<"ScheduleTemplate"> | string
+    name?: StringFilter<"ScheduleTemplate"> | string
+    description?: StringNullableFilter<"ScheduleTemplate"> | string | null
+    slots?: JsonNullableListFilter<"ScheduleTemplate">
+    isActive?: BoolFilter<"ScheduleTemplate"> | boolean
+    createdAt?: DateTimeFilter<"ScheduleTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"ScheduleTemplate"> | Date | string
+  }
+
   export type TenantCreateWithoutUsersInput = {
     id?: string
     vertical: $Enums.Vertical
@@ -57690,6 +64240,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryCreateNestedManyWithoutTenantInput
     expenses?: ExpenseCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateCreateNestedManyWithoutTenantInput
+    badges?: BadgeCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutUsersInput = {
@@ -57720,6 +64273,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedCreateNestedManyWithoutTenantInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedCreateNestedManyWithoutTenantInput
+    badges?: BadgeUncheckedCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateUncheckedCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutUsersInput = {
@@ -57826,6 +64382,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutUsersInput = {
@@ -57856,6 +64415,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUncheckedUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type AccountUpsertWithWhereUniqueWithoutUserInput = {
@@ -58090,6 +64652,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryCreateNestedManyWithoutTenantInput
     expenses?: ExpenseCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateCreateNestedManyWithoutTenantInput
+    badges?: BadgeCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutClientsInput = {
@@ -58120,6 +64685,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedCreateNestedManyWithoutTenantInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedCreateNestedManyWithoutTenantInput
+    badges?: BadgeUncheckedCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateUncheckedCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutClientsInput = {
@@ -58343,6 +64911,30 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ClientBadgeCreateWithoutClientInput = {
+    id?: string
+    earnedAt?: Date | string
+    notified?: boolean
+    badge: BadgeCreateNestedOneWithoutClientBadgesInput
+  }
+
+  export type ClientBadgeUncheckedCreateWithoutClientInput = {
+    id?: string
+    badgeId: string
+    earnedAt?: Date | string
+    notified?: boolean
+  }
+
+  export type ClientBadgeCreateOrConnectWithoutClientInput = {
+    where: ClientBadgeWhereUniqueInput
+    create: XOR<ClientBadgeCreateWithoutClientInput, ClientBadgeUncheckedCreateWithoutClientInput>
+  }
+
+  export type ClientBadgeCreateManyClientInputEnvelope = {
+    data: ClientBadgeCreateManyClientInput | ClientBadgeCreateManyClientInput[]
+    skipDuplicates?: boolean
+  }
+
   export type TenantUpsertWithoutClientsInput = {
     update: XOR<TenantUpdateWithoutClientsInput, TenantUncheckedUpdateWithoutClientsInput>
     create: XOR<TenantCreateWithoutClientsInput, TenantUncheckedCreateWithoutClientsInput>
@@ -58382,6 +64974,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutClientsInput = {
@@ -58412,6 +65007,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUncheckedUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type SessionUpsertWithWhereUniqueWithoutClientInput = {
@@ -58521,6 +65119,33 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"ProgressPhoto"> | Date | string
   }
 
+  export type ClientBadgeUpsertWithWhereUniqueWithoutClientInput = {
+    where: ClientBadgeWhereUniqueInput
+    update: XOR<ClientBadgeUpdateWithoutClientInput, ClientBadgeUncheckedUpdateWithoutClientInput>
+    create: XOR<ClientBadgeCreateWithoutClientInput, ClientBadgeUncheckedCreateWithoutClientInput>
+  }
+
+  export type ClientBadgeUpdateWithWhereUniqueWithoutClientInput = {
+    where: ClientBadgeWhereUniqueInput
+    data: XOR<ClientBadgeUpdateWithoutClientInput, ClientBadgeUncheckedUpdateWithoutClientInput>
+  }
+
+  export type ClientBadgeUpdateManyWithWhereWithoutClientInput = {
+    where: ClientBadgeScalarWhereInput
+    data: XOR<ClientBadgeUpdateManyMutationInput, ClientBadgeUncheckedUpdateManyWithoutClientInput>
+  }
+
+  export type ClientBadgeScalarWhereInput = {
+    AND?: ClientBadgeScalarWhereInput | ClientBadgeScalarWhereInput[]
+    OR?: ClientBadgeScalarWhereInput[]
+    NOT?: ClientBadgeScalarWhereInput | ClientBadgeScalarWhereInput[]
+    id?: StringFilter<"ClientBadge"> | string
+    clientId?: StringFilter<"ClientBadge"> | string
+    badgeId?: StringFilter<"ClientBadge"> | string
+    earnedAt?: DateTimeFilter<"ClientBadge"> | Date | string
+    notified?: BoolFilter<"ClientBadge"> | boolean
+  }
+
   export type ClientCreateWithoutMeasurementsInput = {
     id?: string
     name: string
@@ -58552,6 +65177,7 @@ export namespace Prisma {
     orders?: OrderCreateNestedManyWithoutClientInput
     invoices?: InvoiceCreateNestedManyWithoutClientInput
     progressPhotos?: ProgressPhotoCreateNestedManyWithoutClientInput
+    badges?: ClientBadgeCreateNestedManyWithoutClientInput
   }
 
   export type ClientUncheckedCreateWithoutMeasurementsInput = {
@@ -58585,6 +65211,7 @@ export namespace Prisma {
     orders?: OrderUncheckedCreateNestedManyWithoutClientInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     progressPhotos?: ProgressPhotoUncheckedCreateNestedManyWithoutClientInput
+    badges?: ClientBadgeUncheckedCreateNestedManyWithoutClientInput
   }
 
   export type ClientCreateOrConnectWithoutMeasurementsInput = {
@@ -58634,6 +65261,7 @@ export namespace Prisma {
     orders?: OrderUpdateManyWithoutClientNestedInput
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
     progressPhotos?: ProgressPhotoUpdateManyWithoutClientNestedInput
+    badges?: ClientBadgeUpdateManyWithoutClientNestedInput
   }
 
   export type ClientUncheckedUpdateWithoutMeasurementsInput = {
@@ -58667,6 +65295,7 @@ export namespace Prisma {
     orders?: OrderUncheckedUpdateManyWithoutClientNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     progressPhotos?: ProgressPhotoUncheckedUpdateManyWithoutClientNestedInput
+    badges?: ClientBadgeUncheckedUpdateManyWithoutClientNestedInput
   }
 
   export type ClientCreateWithoutProgressPhotosInput = {
@@ -58700,6 +65329,7 @@ export namespace Prisma {
     orders?: OrderCreateNestedManyWithoutClientInput
     invoices?: InvoiceCreateNestedManyWithoutClientInput
     measurements?: ClientMeasurementCreateNestedManyWithoutClientInput
+    badges?: ClientBadgeCreateNestedManyWithoutClientInput
   }
 
   export type ClientUncheckedCreateWithoutProgressPhotosInput = {
@@ -58733,6 +65363,7 @@ export namespace Prisma {
     orders?: OrderUncheckedCreateNestedManyWithoutClientInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     measurements?: ClientMeasurementUncheckedCreateNestedManyWithoutClientInput
+    badges?: ClientBadgeUncheckedCreateNestedManyWithoutClientInput
   }
 
   export type ClientCreateOrConnectWithoutProgressPhotosInput = {
@@ -58782,6 +65413,7 @@ export namespace Prisma {
     orders?: OrderUpdateManyWithoutClientNestedInput
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
     measurements?: ClientMeasurementUpdateManyWithoutClientNestedInput
+    badges?: ClientBadgeUpdateManyWithoutClientNestedInput
   }
 
   export type ClientUncheckedUpdateWithoutProgressPhotosInput = {
@@ -58815,6 +65447,7 @@ export namespace Prisma {
     orders?: OrderUncheckedUpdateManyWithoutClientNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     measurements?: ClientMeasurementUncheckedUpdateManyWithoutClientNestedInput
+    badges?: ClientBadgeUncheckedUpdateManyWithoutClientNestedInput
   }
 
   export type TenantCreateWithoutSessionsInput = {
@@ -58845,6 +65478,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryCreateNestedManyWithoutTenantInput
     expenses?: ExpenseCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateCreateNestedManyWithoutTenantInput
+    badges?: BadgeCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutSessionsInput = {
@@ -58875,6 +65511,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedCreateNestedManyWithoutTenantInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedCreateNestedManyWithoutTenantInput
+    badges?: BadgeUncheckedCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateUncheckedCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutSessionsInput = {
@@ -58913,6 +65552,7 @@ export namespace Prisma {
     invoices?: InvoiceCreateNestedManyWithoutClientInput
     measurements?: ClientMeasurementCreateNestedManyWithoutClientInput
     progressPhotos?: ProgressPhotoCreateNestedManyWithoutClientInput
+    badges?: ClientBadgeCreateNestedManyWithoutClientInput
   }
 
   export type ClientUncheckedCreateWithoutSessionsInput = {
@@ -58946,6 +65586,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     measurements?: ClientMeasurementUncheckedCreateNestedManyWithoutClientInput
     progressPhotos?: ProgressPhotoUncheckedCreateNestedManyWithoutClientInput
+    badges?: ClientBadgeUncheckedCreateNestedManyWithoutClientInput
   }
 
   export type ClientCreateOrConnectWithoutSessionsInput = {
@@ -58992,6 +65633,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutSessionsInput = {
@@ -59022,6 +65666,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUncheckedUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type ClientUpsertWithoutSessionsInput = {
@@ -59066,6 +65713,7 @@ export namespace Prisma {
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
     measurements?: ClientMeasurementUpdateManyWithoutClientNestedInput
     progressPhotos?: ProgressPhotoUpdateManyWithoutClientNestedInput
+    badges?: ClientBadgeUpdateManyWithoutClientNestedInput
   }
 
   export type ClientUncheckedUpdateWithoutSessionsInput = {
@@ -59099,6 +65747,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     measurements?: ClientMeasurementUncheckedUpdateManyWithoutClientNestedInput
     progressPhotos?: ProgressPhotoUncheckedUpdateManyWithoutClientNestedInput
+    badges?: ClientBadgeUncheckedUpdateManyWithoutClientNestedInput
   }
 
   export type TenantCreateWithoutClassesInput = {
@@ -59129,6 +65778,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryCreateNestedManyWithoutTenantInput
     expenses?: ExpenseCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateCreateNestedManyWithoutTenantInput
+    badges?: BadgeCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutClassesInput = {
@@ -59159,6 +65811,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedCreateNestedManyWithoutTenantInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedCreateNestedManyWithoutTenantInput
+    badges?: BadgeUncheckedCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateUncheckedCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutClassesInput = {
@@ -59233,6 +65888,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutClassesInput = {
@@ -59263,6 +65921,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUncheckedUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type ClassBookingUpsertWithWhereUniqueWithoutClassInput = {
@@ -59414,6 +66075,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryCreateNestedManyWithoutTenantInput
     expenses?: ExpenseCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateCreateNestedManyWithoutTenantInput
+    badges?: BadgeCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutPackagesInput = {
@@ -59444,6 +66108,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedCreateNestedManyWithoutTenantInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedCreateNestedManyWithoutTenantInput
+    badges?: BadgeUncheckedCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateUncheckedCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutPackagesInput = {
@@ -59490,6 +66157,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutPackagesInput = {
@@ -59520,6 +66190,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUncheckedUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantCreateWithoutOrdersInput = {
@@ -59550,6 +66223,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryCreateNestedManyWithoutTenantInput
     expenses?: ExpenseCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateCreateNestedManyWithoutTenantInput
+    badges?: BadgeCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutOrdersInput = {
@@ -59580,6 +66256,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedCreateNestedManyWithoutTenantInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedCreateNestedManyWithoutTenantInput
+    badges?: BadgeUncheckedCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateUncheckedCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutOrdersInput = {
@@ -59618,6 +66297,7 @@ export namespace Prisma {
     invoices?: InvoiceCreateNestedManyWithoutClientInput
     measurements?: ClientMeasurementCreateNestedManyWithoutClientInput
     progressPhotos?: ProgressPhotoCreateNestedManyWithoutClientInput
+    badges?: ClientBadgeCreateNestedManyWithoutClientInput
   }
 
   export type ClientUncheckedCreateWithoutOrdersInput = {
@@ -59651,6 +66331,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
     measurements?: ClientMeasurementUncheckedCreateNestedManyWithoutClientInput
     progressPhotos?: ProgressPhotoUncheckedCreateNestedManyWithoutClientInput
+    badges?: ClientBadgeUncheckedCreateNestedManyWithoutClientInput
   }
 
   export type ClientCreateOrConnectWithoutOrdersInput = {
@@ -59749,6 +66430,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutOrdersInput = {
@@ -59779,6 +66463,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUncheckedUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type ClientUpsertWithoutOrdersInput = {
@@ -59823,6 +66510,7 @@ export namespace Prisma {
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
     measurements?: ClientMeasurementUpdateManyWithoutClientNestedInput
     progressPhotos?: ProgressPhotoUpdateManyWithoutClientNestedInput
+    badges?: ClientBadgeUpdateManyWithoutClientNestedInput
   }
 
   export type ClientUncheckedUpdateWithoutOrdersInput = {
@@ -59856,6 +66544,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     measurements?: ClientMeasurementUncheckedUpdateManyWithoutClientNestedInput
     progressPhotos?: ProgressPhotoUncheckedUpdateManyWithoutClientNestedInput
+    badges?: ClientBadgeUncheckedUpdateManyWithoutClientNestedInput
   }
 
   export type InvoiceUpsertWithWhereUniqueWithoutOrderInput = {
@@ -59902,6 +66591,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryCreateNestedManyWithoutTenantInput
     expenses?: ExpenseCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateCreateNestedManyWithoutTenantInput
+    badges?: BadgeCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutInvoicesInput = {
@@ -59932,6 +66624,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedCreateNestedManyWithoutTenantInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedCreateNestedManyWithoutTenantInput
+    badges?: BadgeUncheckedCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateUncheckedCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutInvoicesInput = {
@@ -60019,6 +66714,7 @@ export namespace Prisma {
     orders?: OrderCreateNestedManyWithoutClientInput
     measurements?: ClientMeasurementCreateNestedManyWithoutClientInput
     progressPhotos?: ProgressPhotoCreateNestedManyWithoutClientInput
+    badges?: ClientBadgeCreateNestedManyWithoutClientInput
   }
 
   export type ClientUncheckedCreateWithoutInvoicesInput = {
@@ -60052,6 +66748,7 @@ export namespace Prisma {
     orders?: OrderUncheckedCreateNestedManyWithoutClientInput
     measurements?: ClientMeasurementUncheckedCreateNestedManyWithoutClientInput
     progressPhotos?: ProgressPhotoUncheckedCreateNestedManyWithoutClientInput
+    badges?: ClientBadgeUncheckedCreateNestedManyWithoutClientInput
   }
 
   export type ClientCreateOrConnectWithoutInvoicesInput = {
@@ -60250,6 +66947,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutInvoicesInput = {
@@ -60280,6 +66980,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUncheckedUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type OrderUpsertWithoutInvoicesInput = {
@@ -60379,6 +67082,7 @@ export namespace Prisma {
     orders?: OrderUpdateManyWithoutClientNestedInput
     measurements?: ClientMeasurementUpdateManyWithoutClientNestedInput
     progressPhotos?: ProgressPhotoUpdateManyWithoutClientNestedInput
+    badges?: ClientBadgeUpdateManyWithoutClientNestedInput
   }
 
   export type ClientUncheckedUpdateWithoutInvoicesInput = {
@@ -60412,6 +67116,7 @@ export namespace Prisma {
     orders?: OrderUncheckedUpdateManyWithoutClientNestedInput
     measurements?: ClientMeasurementUncheckedUpdateManyWithoutClientNestedInput
     progressPhotos?: ProgressPhotoUncheckedUpdateManyWithoutClientNestedInput
+    badges?: ClientBadgeUncheckedUpdateManyWithoutClientNestedInput
   }
 
   export type InvoicePaymentUpsertWithWhereUniqueWithoutInvoiceInput = {
@@ -60509,6 +67214,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryCreateNestedManyWithoutTenantInput
     expenses?: ExpenseCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateCreateNestedManyWithoutTenantInput
+    badges?: BadgeCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutAiLogsInput = {
@@ -60539,6 +67247,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedCreateNestedManyWithoutTenantInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedCreateNestedManyWithoutTenantInput
+    badges?: BadgeUncheckedCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateUncheckedCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutAiLogsInput = {
@@ -60585,6 +67296,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutAiLogsInput = {
@@ -60615,6 +67329,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUncheckedUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type ExchangeRateCreateWithoutFromCurrencyInput = {
@@ -60885,6 +67602,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryCreateNestedManyWithoutTenantInput
     expenses?: ExpenseCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateCreateNestedManyWithoutTenantInput
+    badges?: BadgeCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutBankAccountsInput = {
@@ -60915,6 +67635,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedCreateNestedManyWithoutTenantInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedCreateNestedManyWithoutTenantInput
+    badges?: BadgeUncheckedCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateUncheckedCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutBankAccountsInput = {
@@ -61025,6 +67748,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutBankAccountsInput = {
@@ -61055,6 +67781,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUncheckedUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type BankTransactionUpsertWithWhereUniqueWithoutBankAccountInput = {
@@ -61152,6 +67881,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryCreateNestedManyWithoutTenantInput
     expenses?: ExpenseCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateCreateNestedManyWithoutTenantInput
+    badges?: BadgeCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutBankTransactionsInput = {
@@ -61182,6 +67914,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedCreateNestedManyWithoutTenantInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedCreateNestedManyWithoutTenantInput
+    badges?: BadgeUncheckedCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateUncheckedCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutBankTransactionsInput = {
@@ -61332,6 +68067,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutBankTransactionsInput = {
@@ -61362,6 +68100,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUncheckedUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type InvoiceUpsertWithoutBankTransactionsInput = {
@@ -61445,6 +68186,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryCreateNestedManyWithoutTenantInput
     expenses?: ExpenseCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateCreateNestedManyWithoutTenantInput
+    badges?: BadgeCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutInvoicePaymentsInput = {
@@ -61475,6 +68219,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedCreateNestedManyWithoutTenantInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedCreateNestedManyWithoutTenantInput
+    badges?: BadgeUncheckedCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateUncheckedCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutInvoicePaymentsInput = {
@@ -61568,6 +68315,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutInvoicePaymentsInput = {
@@ -61598,6 +68348,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUncheckedUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type InvoiceUpsertWithoutPaymentsInput = {
@@ -61681,6 +68434,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryCreateNestedManyWithoutTenantInput
     expenses?: ExpenseCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateCreateNestedManyWithoutTenantInput
+    badges?: BadgeCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutPaymentGatewayConfigsInput = {
@@ -61711,6 +68467,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedCreateNestedManyWithoutTenantInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedCreateNestedManyWithoutTenantInput
+    badges?: BadgeUncheckedCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateUncheckedCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutPaymentGatewayConfigsInput = {
@@ -61757,6 +68516,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutPaymentGatewayConfigsInput = {
@@ -61787,6 +68549,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUncheckedUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantCreateWithoutCryptoWalletsInput = {
@@ -61817,6 +68582,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryCreateNestedManyWithoutTenantInput
     expenses?: ExpenseCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateCreateNestedManyWithoutTenantInput
+    badges?: BadgeCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutCryptoWalletsInput = {
@@ -61847,6 +68615,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedCreateNestedManyWithoutTenantInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedCreateNestedManyWithoutTenantInput
+    badges?: BadgeUncheckedCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateUncheckedCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutCryptoWalletsInput = {
@@ -61933,6 +68704,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutCryptoWalletsInput = {
@@ -61963,6 +68737,9 @@ export namespace Prisma {
     expenseCategories?: ExpenseCategoryUncheckedUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUncheckedUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type CryptoPaymentUpsertWithWhereUniqueWithoutWalletInput = {
@@ -62177,6 +68954,9 @@ export namespace Prisma {
     cryptoWallets?: CryptoWalletCreateNestedManyWithoutTenantInput
     expenses?: ExpenseCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateCreateNestedManyWithoutTenantInput
+    badges?: BadgeCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutExpenseCategoriesInput = {
@@ -62207,6 +68987,9 @@ export namespace Prisma {
     cryptoWallets?: CryptoWalletUncheckedCreateNestedManyWithoutTenantInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedCreateNestedManyWithoutTenantInput
+    badges?: BadgeUncheckedCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateUncheckedCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutExpenseCategoriesInput = {
@@ -62311,6 +69094,9 @@ export namespace Prisma {
     cryptoWallets?: CryptoWalletUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutExpenseCategoriesInput = {
@@ -62341,6 +69127,9 @@ export namespace Prisma {
     cryptoWallets?: CryptoWalletUncheckedUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUncheckedUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type ExpenseUpsertWithWhereUniqueWithoutCategoryInput = {
@@ -62387,6 +69176,9 @@ export namespace Prisma {
     cryptoWallets?: CryptoWalletCreateNestedManyWithoutTenantInput
     expenseCategories?: ExpenseCategoryCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateCreateNestedManyWithoutTenantInput
+    badges?: BadgeCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutExpensesInput = {
@@ -62417,6 +69209,9 @@ export namespace Prisma {
     cryptoWallets?: CryptoWalletUncheckedCreateNestedManyWithoutTenantInput
     expenseCategories?: ExpenseCategoryUncheckedCreateNestedManyWithoutTenantInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedCreateNestedManyWithoutTenantInput
+    badges?: BadgeUncheckedCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateUncheckedCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutExpensesInput = {
@@ -62488,6 +69283,9 @@ export namespace Prisma {
     cryptoWallets?: CryptoWalletUpdateManyWithoutTenantNestedInput
     expenseCategories?: ExpenseCategoryUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutExpensesInput = {
@@ -62518,6 +69316,9 @@ export namespace Prisma {
     cryptoWallets?: CryptoWalletUncheckedUpdateManyWithoutTenantNestedInput
     expenseCategories?: ExpenseCategoryUncheckedUpdateManyWithoutTenantNestedInput
     recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUncheckedUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type ExpenseCategoryUpsertWithoutExpensesInput = {
@@ -62579,6 +69380,9 @@ export namespace Prisma {
     cryptoWallets?: CryptoWalletCreateNestedManyWithoutTenantInput
     expenseCategories?: ExpenseCategoryCreateNestedManyWithoutTenantInput
     expenses?: ExpenseCreateNestedManyWithoutTenantInput
+    badges?: BadgeCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutRecurringInvoiceTemplatesInput = {
@@ -62609,6 +69413,9 @@ export namespace Prisma {
     cryptoWallets?: CryptoWalletUncheckedCreateNestedManyWithoutTenantInput
     expenseCategories?: ExpenseCategoryUncheckedCreateNestedManyWithoutTenantInput
     expenses?: ExpenseUncheckedCreateNestedManyWithoutTenantInput
+    badges?: BadgeUncheckedCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateUncheckedCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutRecurringInvoiceTemplatesInput = {
@@ -62655,6 +69462,9 @@ export namespace Prisma {
     cryptoWallets?: CryptoWalletUpdateManyWithoutTenantNestedInput
     expenseCategories?: ExpenseCategoryUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutRecurringInvoiceTemplatesInput = {
@@ -62685,6 +69495,9 @@ export namespace Prisma {
     cryptoWallets?: CryptoWalletUncheckedUpdateManyWithoutTenantNestedInput
     expenseCategories?: ExpenseCategoryUncheckedUpdateManyWithoutTenantNestedInput
     expenses?: ExpenseUncheckedUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUncheckedUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type CalendarEventSyncCreateWithoutIntegrationInput = {
@@ -62826,6 +69639,714 @@ export namespace Prisma {
     lastSyncAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TenantCreateWithoutBadgesInput = {
+    id?: string
+    vertical: $Enums.Vertical
+    name: string
+    slug: string
+    email?: string | null
+    phone?: string | null
+    website?: string | null
+    logo?: string | null
+    subscriptionTier?: string
+    aiCredits?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutTenantInput
+    clients?: ClientCreateNestedManyWithoutTenantInput
+    sessions?: SessionCreateNestedManyWithoutTenantInput
+    classes?: ClassCreateNestedManyWithoutTenantInput
+    packages?: PackageCreateNestedManyWithoutTenantInput
+    orders?: OrderCreateNestedManyWithoutTenantInput
+    invoices?: InvoiceCreateNestedManyWithoutTenantInput
+    aiLogs?: AILogCreateNestedManyWithoutTenantInput
+    bankAccounts?: BankAccountCreateNestedManyWithoutTenantInput
+    bankTransactions?: BankTransactionCreateNestedManyWithoutTenantInput
+    invoicePayments?: InvoicePaymentCreateNestedManyWithoutTenantInput
+    paymentGatewayConfigs?: PaymentGatewayConfigCreateNestedManyWithoutTenantInput
+    cryptoWallets?: CryptoWalletCreateNestedManyWithoutTenantInput
+    expenseCategories?: ExpenseCategoryCreateNestedManyWithoutTenantInput
+    expenses?: ExpenseCreateNestedManyWithoutTenantInput
+    recurringInvoiceTemplates?: RecurringInvoiceTemplateCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantUncheckedCreateWithoutBadgesInput = {
+    id?: string
+    vertical: $Enums.Vertical
+    name: string
+    slug: string
+    email?: string | null
+    phone?: string | null
+    website?: string | null
+    logo?: string | null
+    subscriptionTier?: string
+    aiCredits?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutTenantInput
+    clients?: ClientUncheckedCreateNestedManyWithoutTenantInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutTenantInput
+    classes?: ClassUncheckedCreateNestedManyWithoutTenantInput
+    packages?: PackageUncheckedCreateNestedManyWithoutTenantInput
+    orders?: OrderUncheckedCreateNestedManyWithoutTenantInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutTenantInput
+    aiLogs?: AILogUncheckedCreateNestedManyWithoutTenantInput
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutTenantInput
+    bankTransactions?: BankTransactionUncheckedCreateNestedManyWithoutTenantInput
+    invoicePayments?: InvoicePaymentUncheckedCreateNestedManyWithoutTenantInput
+    paymentGatewayConfigs?: PaymentGatewayConfigUncheckedCreateNestedManyWithoutTenantInput
+    cryptoWallets?: CryptoWalletUncheckedCreateNestedManyWithoutTenantInput
+    expenseCategories?: ExpenseCategoryUncheckedCreateNestedManyWithoutTenantInput
+    expenses?: ExpenseUncheckedCreateNestedManyWithoutTenantInput
+    recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateUncheckedCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantCreateOrConnectWithoutBadgesInput = {
+    where: TenantWhereUniqueInput
+    create: XOR<TenantCreateWithoutBadgesInput, TenantUncheckedCreateWithoutBadgesInput>
+  }
+
+  export type ClientBadgeCreateWithoutBadgeInput = {
+    id?: string
+    earnedAt?: Date | string
+    notified?: boolean
+    client: ClientCreateNestedOneWithoutBadgesInput
+  }
+
+  export type ClientBadgeUncheckedCreateWithoutBadgeInput = {
+    id?: string
+    clientId: string
+    earnedAt?: Date | string
+    notified?: boolean
+  }
+
+  export type ClientBadgeCreateOrConnectWithoutBadgeInput = {
+    where: ClientBadgeWhereUniqueInput
+    create: XOR<ClientBadgeCreateWithoutBadgeInput, ClientBadgeUncheckedCreateWithoutBadgeInput>
+  }
+
+  export type ClientBadgeCreateManyBadgeInputEnvelope = {
+    data: ClientBadgeCreateManyBadgeInput | ClientBadgeCreateManyBadgeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TenantUpsertWithoutBadgesInput = {
+    update: XOR<TenantUpdateWithoutBadgesInput, TenantUncheckedUpdateWithoutBadgesInput>
+    create: XOR<TenantCreateWithoutBadgesInput, TenantUncheckedCreateWithoutBadgesInput>
+    where?: TenantWhereInput
+  }
+
+  export type TenantUpdateToOneWithWhereWithoutBadgesInput = {
+    where?: TenantWhereInput
+    data: XOR<TenantUpdateWithoutBadgesInput, TenantUncheckedUpdateWithoutBadgesInput>
+  }
+
+  export type TenantUpdateWithoutBadgesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    vertical?: EnumVerticalFieldUpdateOperationsInput | $Enums.Vertical
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionTier?: StringFieldUpdateOperationsInput | string
+    aiCredits?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutTenantNestedInput
+    clients?: ClientUpdateManyWithoutTenantNestedInput
+    sessions?: SessionUpdateManyWithoutTenantNestedInput
+    classes?: ClassUpdateManyWithoutTenantNestedInput
+    packages?: PackageUpdateManyWithoutTenantNestedInput
+    orders?: OrderUpdateManyWithoutTenantNestedInput
+    invoices?: InvoiceUpdateManyWithoutTenantNestedInput
+    aiLogs?: AILogUpdateManyWithoutTenantNestedInput
+    bankAccounts?: BankAccountUpdateManyWithoutTenantNestedInput
+    bankTransactions?: BankTransactionUpdateManyWithoutTenantNestedInput
+    invoicePayments?: InvoicePaymentUpdateManyWithoutTenantNestedInput
+    paymentGatewayConfigs?: PaymentGatewayConfigUpdateManyWithoutTenantNestedInput
+    cryptoWallets?: CryptoWalletUpdateManyWithoutTenantNestedInput
+    expenseCategories?: ExpenseCategoryUpdateManyWithoutTenantNestedInput
+    expenses?: ExpenseUpdateManyWithoutTenantNestedInput
+    recurringInvoiceTemplates?: RecurringInvoiceTemplateUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutTenantNestedInput
+  }
+
+  export type TenantUncheckedUpdateWithoutBadgesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    vertical?: EnumVerticalFieldUpdateOperationsInput | $Enums.Vertical
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionTier?: StringFieldUpdateOperationsInput | string
+    aiCredits?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutTenantNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutTenantNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutTenantNestedInput
+    classes?: ClassUncheckedUpdateManyWithoutTenantNestedInput
+    packages?: PackageUncheckedUpdateManyWithoutTenantNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutTenantNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+    aiLogs?: AILogUncheckedUpdateManyWithoutTenantNestedInput
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutTenantNestedInput
+    bankTransactions?: BankTransactionUncheckedUpdateManyWithoutTenantNestedInput
+    invoicePayments?: InvoicePaymentUncheckedUpdateManyWithoutTenantNestedInput
+    paymentGatewayConfigs?: PaymentGatewayConfigUncheckedUpdateManyWithoutTenantNestedInput
+    cryptoWallets?: CryptoWalletUncheckedUpdateManyWithoutTenantNestedInput
+    expenseCategories?: ExpenseCategoryUncheckedUpdateManyWithoutTenantNestedInput
+    expenses?: ExpenseUncheckedUpdateManyWithoutTenantNestedInput
+    recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutTenantNestedInput
+  }
+
+  export type ClientBadgeUpsertWithWhereUniqueWithoutBadgeInput = {
+    where: ClientBadgeWhereUniqueInput
+    update: XOR<ClientBadgeUpdateWithoutBadgeInput, ClientBadgeUncheckedUpdateWithoutBadgeInput>
+    create: XOR<ClientBadgeCreateWithoutBadgeInput, ClientBadgeUncheckedCreateWithoutBadgeInput>
+  }
+
+  export type ClientBadgeUpdateWithWhereUniqueWithoutBadgeInput = {
+    where: ClientBadgeWhereUniqueInput
+    data: XOR<ClientBadgeUpdateWithoutBadgeInput, ClientBadgeUncheckedUpdateWithoutBadgeInput>
+  }
+
+  export type ClientBadgeUpdateManyWithWhereWithoutBadgeInput = {
+    where: ClientBadgeScalarWhereInput
+    data: XOR<ClientBadgeUpdateManyMutationInput, ClientBadgeUncheckedUpdateManyWithoutBadgeInput>
+  }
+
+  export type ClientCreateWithoutBadgesInput = {
+    id?: string
+    name: string
+    email: string
+    phone?: string | null
+    avatar?: string | null
+    dateOfBirth?: Date | string | null
+    gender?: string | null
+    goals?: ClientCreategoalsInput | string[]
+    currentWeight?: number | null
+    targetWeight?: number | null
+    height?: number | null
+    bodyMeasurements?: NullableJsonNullValueInput | InputJsonValue
+    bodyFatPercent?: number | null
+    fitnessLevel?: string | null
+    injuryHistory?: string | null
+    dietaryNotes?: string | null
+    medicalNotes?: string | null
+    creditsRemaining?: number
+    membershipType?: string | null
+    membershipExpiry?: Date | string | null
+    status?: string
+    tags?: ClientCreatetagsInput | string[]
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tenant: TenantCreateNestedOneWithoutClientsInput
+    sessions?: SessionCreateNestedManyWithoutClientInput
+    orders?: OrderCreateNestedManyWithoutClientInput
+    invoices?: InvoiceCreateNestedManyWithoutClientInput
+    measurements?: ClientMeasurementCreateNestedManyWithoutClientInput
+    progressPhotos?: ProgressPhotoCreateNestedManyWithoutClientInput
+  }
+
+  export type ClientUncheckedCreateWithoutBadgesInput = {
+    id?: string
+    tenantId: string
+    name: string
+    email: string
+    phone?: string | null
+    avatar?: string | null
+    dateOfBirth?: Date | string | null
+    gender?: string | null
+    goals?: ClientCreategoalsInput | string[]
+    currentWeight?: number | null
+    targetWeight?: number | null
+    height?: number | null
+    bodyMeasurements?: NullableJsonNullValueInput | InputJsonValue
+    bodyFatPercent?: number | null
+    fitnessLevel?: string | null
+    injuryHistory?: string | null
+    dietaryNotes?: string | null
+    medicalNotes?: string | null
+    creditsRemaining?: number
+    membershipType?: string | null
+    membershipExpiry?: Date | string | null
+    status?: string
+    tags?: ClientCreatetagsInput | string[]
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutClientInput
+    orders?: OrderUncheckedCreateNestedManyWithoutClientInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutClientInput
+    measurements?: ClientMeasurementUncheckedCreateNestedManyWithoutClientInput
+    progressPhotos?: ProgressPhotoUncheckedCreateNestedManyWithoutClientInput
+  }
+
+  export type ClientCreateOrConnectWithoutBadgesInput = {
+    where: ClientWhereUniqueInput
+    create: XOR<ClientCreateWithoutBadgesInput, ClientUncheckedCreateWithoutBadgesInput>
+  }
+
+  export type BadgeCreateWithoutClientBadgesInput = {
+    id?: string
+    name: string
+    description: string
+    icon: string
+    color: string
+    category: string
+    criteria: JsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tenant: TenantCreateNestedOneWithoutBadgesInput
+  }
+
+  export type BadgeUncheckedCreateWithoutClientBadgesInput = {
+    id?: string
+    tenantId: string
+    name: string
+    description: string
+    icon: string
+    color: string
+    category: string
+    criteria: JsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BadgeCreateOrConnectWithoutClientBadgesInput = {
+    where: BadgeWhereUniqueInput
+    create: XOR<BadgeCreateWithoutClientBadgesInput, BadgeUncheckedCreateWithoutClientBadgesInput>
+  }
+
+  export type ClientUpsertWithoutBadgesInput = {
+    update: XOR<ClientUpdateWithoutBadgesInput, ClientUncheckedUpdateWithoutBadgesInput>
+    create: XOR<ClientCreateWithoutBadgesInput, ClientUncheckedCreateWithoutBadgesInput>
+    where?: ClientWhereInput
+  }
+
+  export type ClientUpdateToOneWithWhereWithoutBadgesInput = {
+    where?: ClientWhereInput
+    data: XOR<ClientUpdateWithoutBadgesInput, ClientUncheckedUpdateWithoutBadgesInput>
+  }
+
+  export type ClientUpdateWithoutBadgesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: ClientUpdategoalsInput | string[]
+    currentWeight?: NullableFloatFieldUpdateOperationsInput | number | null
+    targetWeight?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
+    bodyMeasurements?: NullableJsonNullValueInput | InputJsonValue
+    bodyFatPercent?: NullableFloatFieldUpdateOperationsInput | number | null
+    fitnessLevel?: NullableStringFieldUpdateOperationsInput | string | null
+    injuryHistory?: NullableStringFieldUpdateOperationsInput | string | null
+    dietaryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    medicalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    creditsRemaining?: IntFieldUpdateOperationsInput | number
+    membershipType?: NullableStringFieldUpdateOperationsInput | string | null
+    membershipExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    tags?: ClientUpdatetagsInput | string[]
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneRequiredWithoutClientsNestedInput
+    sessions?: SessionUpdateManyWithoutClientNestedInput
+    orders?: OrderUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUpdateManyWithoutClientNestedInput
+    measurements?: ClientMeasurementUpdateManyWithoutClientNestedInput
+    progressPhotos?: ProgressPhotoUpdateManyWithoutClientNestedInput
+  }
+
+  export type ClientUncheckedUpdateWithoutBadgesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: ClientUpdategoalsInput | string[]
+    currentWeight?: NullableFloatFieldUpdateOperationsInput | number | null
+    targetWeight?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
+    bodyMeasurements?: NullableJsonNullValueInput | InputJsonValue
+    bodyFatPercent?: NullableFloatFieldUpdateOperationsInput | number | null
+    fitnessLevel?: NullableStringFieldUpdateOperationsInput | string | null
+    injuryHistory?: NullableStringFieldUpdateOperationsInput | string | null
+    dietaryNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    medicalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    creditsRemaining?: IntFieldUpdateOperationsInput | number
+    membershipType?: NullableStringFieldUpdateOperationsInput | string | null
+    membershipExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    tags?: ClientUpdatetagsInput | string[]
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutClientNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutClientNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
+    measurements?: ClientMeasurementUncheckedUpdateManyWithoutClientNestedInput
+    progressPhotos?: ProgressPhotoUncheckedUpdateManyWithoutClientNestedInput
+  }
+
+  export type BadgeUpsertWithoutClientBadgesInput = {
+    update: XOR<BadgeUpdateWithoutClientBadgesInput, BadgeUncheckedUpdateWithoutClientBadgesInput>
+    create: XOR<BadgeCreateWithoutClientBadgesInput, BadgeUncheckedCreateWithoutClientBadgesInput>
+    where?: BadgeWhereInput
+  }
+
+  export type BadgeUpdateToOneWithWhereWithoutClientBadgesInput = {
+    where?: BadgeWhereInput
+    data: XOR<BadgeUpdateWithoutClientBadgesInput, BadgeUncheckedUpdateWithoutClientBadgesInput>
+  }
+
+  export type BadgeUpdateWithoutClientBadgesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    icon?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    criteria?: JsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tenant?: TenantUpdateOneRequiredWithoutBadgesNestedInput
+  }
+
+  export type BadgeUncheckedUpdateWithoutClientBadgesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    icon?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    criteria?: JsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TenantCreateWithoutWorkoutTemplatesInput = {
+    id?: string
+    vertical: $Enums.Vertical
+    name: string
+    slug: string
+    email?: string | null
+    phone?: string | null
+    website?: string | null
+    logo?: string | null
+    subscriptionTier?: string
+    aiCredits?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutTenantInput
+    clients?: ClientCreateNestedManyWithoutTenantInput
+    sessions?: SessionCreateNestedManyWithoutTenantInput
+    classes?: ClassCreateNestedManyWithoutTenantInput
+    packages?: PackageCreateNestedManyWithoutTenantInput
+    orders?: OrderCreateNestedManyWithoutTenantInput
+    invoices?: InvoiceCreateNestedManyWithoutTenantInput
+    aiLogs?: AILogCreateNestedManyWithoutTenantInput
+    bankAccounts?: BankAccountCreateNestedManyWithoutTenantInput
+    bankTransactions?: BankTransactionCreateNestedManyWithoutTenantInput
+    invoicePayments?: InvoicePaymentCreateNestedManyWithoutTenantInput
+    paymentGatewayConfigs?: PaymentGatewayConfigCreateNestedManyWithoutTenantInput
+    cryptoWallets?: CryptoWalletCreateNestedManyWithoutTenantInput
+    expenseCategories?: ExpenseCategoryCreateNestedManyWithoutTenantInput
+    expenses?: ExpenseCreateNestedManyWithoutTenantInput
+    recurringInvoiceTemplates?: RecurringInvoiceTemplateCreateNestedManyWithoutTenantInput
+    badges?: BadgeCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantUncheckedCreateWithoutWorkoutTemplatesInput = {
+    id?: string
+    vertical: $Enums.Vertical
+    name: string
+    slug: string
+    email?: string | null
+    phone?: string | null
+    website?: string | null
+    logo?: string | null
+    subscriptionTier?: string
+    aiCredits?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutTenantInput
+    clients?: ClientUncheckedCreateNestedManyWithoutTenantInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutTenantInput
+    classes?: ClassUncheckedCreateNestedManyWithoutTenantInput
+    packages?: PackageUncheckedCreateNestedManyWithoutTenantInput
+    orders?: OrderUncheckedCreateNestedManyWithoutTenantInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutTenantInput
+    aiLogs?: AILogUncheckedCreateNestedManyWithoutTenantInput
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutTenantInput
+    bankTransactions?: BankTransactionUncheckedCreateNestedManyWithoutTenantInput
+    invoicePayments?: InvoicePaymentUncheckedCreateNestedManyWithoutTenantInput
+    paymentGatewayConfigs?: PaymentGatewayConfigUncheckedCreateNestedManyWithoutTenantInput
+    cryptoWallets?: CryptoWalletUncheckedCreateNestedManyWithoutTenantInput
+    expenseCategories?: ExpenseCategoryUncheckedCreateNestedManyWithoutTenantInput
+    expenses?: ExpenseUncheckedCreateNestedManyWithoutTenantInput
+    recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedCreateNestedManyWithoutTenantInput
+    badges?: BadgeUncheckedCreateNestedManyWithoutTenantInput
+    scheduleTemplates?: ScheduleTemplateUncheckedCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantCreateOrConnectWithoutWorkoutTemplatesInput = {
+    where: TenantWhereUniqueInput
+    create: XOR<TenantCreateWithoutWorkoutTemplatesInput, TenantUncheckedCreateWithoutWorkoutTemplatesInput>
+  }
+
+  export type TenantUpsertWithoutWorkoutTemplatesInput = {
+    update: XOR<TenantUpdateWithoutWorkoutTemplatesInput, TenantUncheckedUpdateWithoutWorkoutTemplatesInput>
+    create: XOR<TenantCreateWithoutWorkoutTemplatesInput, TenantUncheckedCreateWithoutWorkoutTemplatesInput>
+    where?: TenantWhereInput
+  }
+
+  export type TenantUpdateToOneWithWhereWithoutWorkoutTemplatesInput = {
+    where?: TenantWhereInput
+    data: XOR<TenantUpdateWithoutWorkoutTemplatesInput, TenantUncheckedUpdateWithoutWorkoutTemplatesInput>
+  }
+
+  export type TenantUpdateWithoutWorkoutTemplatesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    vertical?: EnumVerticalFieldUpdateOperationsInput | $Enums.Vertical
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionTier?: StringFieldUpdateOperationsInput | string
+    aiCredits?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutTenantNestedInput
+    clients?: ClientUpdateManyWithoutTenantNestedInput
+    sessions?: SessionUpdateManyWithoutTenantNestedInput
+    classes?: ClassUpdateManyWithoutTenantNestedInput
+    packages?: PackageUpdateManyWithoutTenantNestedInput
+    orders?: OrderUpdateManyWithoutTenantNestedInput
+    invoices?: InvoiceUpdateManyWithoutTenantNestedInput
+    aiLogs?: AILogUpdateManyWithoutTenantNestedInput
+    bankAccounts?: BankAccountUpdateManyWithoutTenantNestedInput
+    bankTransactions?: BankTransactionUpdateManyWithoutTenantNestedInput
+    invoicePayments?: InvoicePaymentUpdateManyWithoutTenantNestedInput
+    paymentGatewayConfigs?: PaymentGatewayConfigUpdateManyWithoutTenantNestedInput
+    cryptoWallets?: CryptoWalletUpdateManyWithoutTenantNestedInput
+    expenseCategories?: ExpenseCategoryUpdateManyWithoutTenantNestedInput
+    expenses?: ExpenseUpdateManyWithoutTenantNestedInput
+    recurringInvoiceTemplates?: RecurringInvoiceTemplateUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUpdateManyWithoutTenantNestedInput
+  }
+
+  export type TenantUncheckedUpdateWithoutWorkoutTemplatesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    vertical?: EnumVerticalFieldUpdateOperationsInput | $Enums.Vertical
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionTier?: StringFieldUpdateOperationsInput | string
+    aiCredits?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutTenantNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutTenantNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutTenantNestedInput
+    classes?: ClassUncheckedUpdateManyWithoutTenantNestedInput
+    packages?: PackageUncheckedUpdateManyWithoutTenantNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutTenantNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+    aiLogs?: AILogUncheckedUpdateManyWithoutTenantNestedInput
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutTenantNestedInput
+    bankTransactions?: BankTransactionUncheckedUpdateManyWithoutTenantNestedInput
+    invoicePayments?: InvoicePaymentUncheckedUpdateManyWithoutTenantNestedInput
+    paymentGatewayConfigs?: PaymentGatewayConfigUncheckedUpdateManyWithoutTenantNestedInput
+    cryptoWallets?: CryptoWalletUncheckedUpdateManyWithoutTenantNestedInput
+    expenseCategories?: ExpenseCategoryUncheckedUpdateManyWithoutTenantNestedInput
+    expenses?: ExpenseUncheckedUpdateManyWithoutTenantNestedInput
+    recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUncheckedUpdateManyWithoutTenantNestedInput
+    scheduleTemplates?: ScheduleTemplateUncheckedUpdateManyWithoutTenantNestedInput
+  }
+
+  export type TenantCreateWithoutScheduleTemplatesInput = {
+    id?: string
+    vertical: $Enums.Vertical
+    name: string
+    slug: string
+    email?: string | null
+    phone?: string | null
+    website?: string | null
+    logo?: string | null
+    subscriptionTier?: string
+    aiCredits?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutTenantInput
+    clients?: ClientCreateNestedManyWithoutTenantInput
+    sessions?: SessionCreateNestedManyWithoutTenantInput
+    classes?: ClassCreateNestedManyWithoutTenantInput
+    packages?: PackageCreateNestedManyWithoutTenantInput
+    orders?: OrderCreateNestedManyWithoutTenantInput
+    invoices?: InvoiceCreateNestedManyWithoutTenantInput
+    aiLogs?: AILogCreateNestedManyWithoutTenantInput
+    bankAccounts?: BankAccountCreateNestedManyWithoutTenantInput
+    bankTransactions?: BankTransactionCreateNestedManyWithoutTenantInput
+    invoicePayments?: InvoicePaymentCreateNestedManyWithoutTenantInput
+    paymentGatewayConfigs?: PaymentGatewayConfigCreateNestedManyWithoutTenantInput
+    cryptoWallets?: CryptoWalletCreateNestedManyWithoutTenantInput
+    expenseCategories?: ExpenseCategoryCreateNestedManyWithoutTenantInput
+    expenses?: ExpenseCreateNestedManyWithoutTenantInput
+    recurringInvoiceTemplates?: RecurringInvoiceTemplateCreateNestedManyWithoutTenantInput
+    badges?: BadgeCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantUncheckedCreateWithoutScheduleTemplatesInput = {
+    id?: string
+    vertical: $Enums.Vertical
+    name: string
+    slug: string
+    email?: string | null
+    phone?: string | null
+    website?: string | null
+    logo?: string | null
+    subscriptionTier?: string
+    aiCredits?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutTenantInput
+    clients?: ClientUncheckedCreateNestedManyWithoutTenantInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutTenantInput
+    classes?: ClassUncheckedCreateNestedManyWithoutTenantInput
+    packages?: PackageUncheckedCreateNestedManyWithoutTenantInput
+    orders?: OrderUncheckedCreateNestedManyWithoutTenantInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutTenantInput
+    aiLogs?: AILogUncheckedCreateNestedManyWithoutTenantInput
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutTenantInput
+    bankTransactions?: BankTransactionUncheckedCreateNestedManyWithoutTenantInput
+    invoicePayments?: InvoicePaymentUncheckedCreateNestedManyWithoutTenantInput
+    paymentGatewayConfigs?: PaymentGatewayConfigUncheckedCreateNestedManyWithoutTenantInput
+    cryptoWallets?: CryptoWalletUncheckedCreateNestedManyWithoutTenantInput
+    expenseCategories?: ExpenseCategoryUncheckedCreateNestedManyWithoutTenantInput
+    expenses?: ExpenseUncheckedCreateNestedManyWithoutTenantInput
+    recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedCreateNestedManyWithoutTenantInput
+    badges?: BadgeUncheckedCreateNestedManyWithoutTenantInput
+    workoutTemplates?: WorkoutTemplateUncheckedCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantCreateOrConnectWithoutScheduleTemplatesInput = {
+    where: TenantWhereUniqueInput
+    create: XOR<TenantCreateWithoutScheduleTemplatesInput, TenantUncheckedCreateWithoutScheduleTemplatesInput>
+  }
+
+  export type TenantUpsertWithoutScheduleTemplatesInput = {
+    update: XOR<TenantUpdateWithoutScheduleTemplatesInput, TenantUncheckedUpdateWithoutScheduleTemplatesInput>
+    create: XOR<TenantCreateWithoutScheduleTemplatesInput, TenantUncheckedCreateWithoutScheduleTemplatesInput>
+    where?: TenantWhereInput
+  }
+
+  export type TenantUpdateToOneWithWhereWithoutScheduleTemplatesInput = {
+    where?: TenantWhereInput
+    data: XOR<TenantUpdateWithoutScheduleTemplatesInput, TenantUncheckedUpdateWithoutScheduleTemplatesInput>
+  }
+
+  export type TenantUpdateWithoutScheduleTemplatesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    vertical?: EnumVerticalFieldUpdateOperationsInput | $Enums.Vertical
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionTier?: StringFieldUpdateOperationsInput | string
+    aiCredits?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutTenantNestedInput
+    clients?: ClientUpdateManyWithoutTenantNestedInput
+    sessions?: SessionUpdateManyWithoutTenantNestedInput
+    classes?: ClassUpdateManyWithoutTenantNestedInput
+    packages?: PackageUpdateManyWithoutTenantNestedInput
+    orders?: OrderUpdateManyWithoutTenantNestedInput
+    invoices?: InvoiceUpdateManyWithoutTenantNestedInput
+    aiLogs?: AILogUpdateManyWithoutTenantNestedInput
+    bankAccounts?: BankAccountUpdateManyWithoutTenantNestedInput
+    bankTransactions?: BankTransactionUpdateManyWithoutTenantNestedInput
+    invoicePayments?: InvoicePaymentUpdateManyWithoutTenantNestedInput
+    paymentGatewayConfigs?: PaymentGatewayConfigUpdateManyWithoutTenantNestedInput
+    cryptoWallets?: CryptoWalletUpdateManyWithoutTenantNestedInput
+    expenseCategories?: ExpenseCategoryUpdateManyWithoutTenantNestedInput
+    expenses?: ExpenseUpdateManyWithoutTenantNestedInput
+    recurringInvoiceTemplates?: RecurringInvoiceTemplateUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUpdateManyWithoutTenantNestedInput
+  }
+
+  export type TenantUncheckedUpdateWithoutScheduleTemplatesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    vertical?: EnumVerticalFieldUpdateOperationsInput | $Enums.Vertical
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionTier?: StringFieldUpdateOperationsInput | string
+    aiCredits?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutTenantNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutTenantNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutTenantNestedInput
+    classes?: ClassUncheckedUpdateManyWithoutTenantNestedInput
+    packages?: PackageUncheckedUpdateManyWithoutTenantNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutTenantNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+    aiLogs?: AILogUncheckedUpdateManyWithoutTenantNestedInput
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutTenantNestedInput
+    bankTransactions?: BankTransactionUncheckedUpdateManyWithoutTenantNestedInput
+    invoicePayments?: InvoicePaymentUncheckedUpdateManyWithoutTenantNestedInput
+    paymentGatewayConfigs?: PaymentGatewayConfigUncheckedUpdateManyWithoutTenantNestedInput
+    cryptoWallets?: CryptoWalletUncheckedUpdateManyWithoutTenantNestedInput
+    expenseCategories?: ExpenseCategoryUncheckedUpdateManyWithoutTenantNestedInput
+    expenses?: ExpenseUncheckedUpdateManyWithoutTenantNestedInput
+    recurringInvoiceTemplates?: RecurringInvoiceTemplateUncheckedUpdateManyWithoutTenantNestedInput
+    badges?: BadgeUncheckedUpdateManyWithoutTenantNestedInput
+    workoutTemplates?: WorkoutTemplateUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type UserCreateManyTenantInput = {
@@ -63110,6 +70631,45 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type BadgeCreateManyTenantInput = {
+    id?: string
+    name: string
+    description: string
+    icon: string
+    color: string
+    category: string
+    criteria: JsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkoutTemplateCreateManyTenantInput = {
+    id?: string
+    name: string
+    description?: string | null
+    category: string
+    difficulty: string
+    duration: number
+    exercises?: WorkoutTemplateCreateexercisesInput | InputJsonValue[]
+    muscleGroups?: WorkoutTemplateCreatemuscleGroupsInput | string[]
+    equipment?: WorkoutTemplateCreateequipmentInput | string[]
+    isPublic?: boolean
+    usageCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ScheduleTemplateCreateManyTenantInput = {
+    id?: string
+    name: string
+    description?: string | null
+    slots?: ScheduleTemplateCreateslotsInput | InputJsonValue[]
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type UserUpdateWithoutTenantInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -63181,6 +70741,7 @@ export namespace Prisma {
     invoices?: InvoiceUpdateManyWithoutClientNestedInput
     measurements?: ClientMeasurementUpdateManyWithoutClientNestedInput
     progressPhotos?: ProgressPhotoUpdateManyWithoutClientNestedInput
+    badges?: ClientBadgeUpdateManyWithoutClientNestedInput
   }
 
   export type ClientUncheckedUpdateWithoutTenantInput = {
@@ -63214,6 +70775,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedUpdateManyWithoutClientNestedInput
     measurements?: ClientMeasurementUncheckedUpdateManyWithoutClientNestedInput
     progressPhotos?: ProgressPhotoUncheckedUpdateManyWithoutClientNestedInput
+    badges?: ClientBadgeUncheckedUpdateManyWithoutClientNestedInput
   }
 
   export type ClientUncheckedUpdateManyWithoutTenantInput = {
@@ -63986,6 +71548,125 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type BadgeUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    icon?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    criteria?: JsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clientBadges?: ClientBadgeUpdateManyWithoutBadgeNestedInput
+  }
+
+  export type BadgeUncheckedUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    icon?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    criteria?: JsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clientBadges?: ClientBadgeUncheckedUpdateManyWithoutBadgeNestedInput
+  }
+
+  export type BadgeUncheckedUpdateManyWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    icon?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    criteria?: JsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkoutTemplateUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    difficulty?: StringFieldUpdateOperationsInput | string
+    duration?: IntFieldUpdateOperationsInput | number
+    exercises?: WorkoutTemplateUpdateexercisesInput | InputJsonValue[]
+    muscleGroups?: WorkoutTemplateUpdatemuscleGroupsInput | string[]
+    equipment?: WorkoutTemplateUpdateequipmentInput | string[]
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    usageCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkoutTemplateUncheckedUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    difficulty?: StringFieldUpdateOperationsInput | string
+    duration?: IntFieldUpdateOperationsInput | number
+    exercises?: WorkoutTemplateUpdateexercisesInput | InputJsonValue[]
+    muscleGroups?: WorkoutTemplateUpdatemuscleGroupsInput | string[]
+    equipment?: WorkoutTemplateUpdateequipmentInput | string[]
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    usageCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkoutTemplateUncheckedUpdateManyWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    difficulty?: StringFieldUpdateOperationsInput | string
+    duration?: IntFieldUpdateOperationsInput | number
+    exercises?: WorkoutTemplateUpdateexercisesInput | InputJsonValue[]
+    muscleGroups?: WorkoutTemplateUpdatemuscleGroupsInput | string[]
+    equipment?: WorkoutTemplateUpdateequipmentInput | string[]
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    usageCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScheduleTemplateUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    slots?: ScheduleTemplateUpdateslotsInput | InputJsonValue[]
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScheduleTemplateUncheckedUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    slots?: ScheduleTemplateUpdateslotsInput | InputJsonValue[]
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ScheduleTemplateUncheckedUpdateManyWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    slots?: ScheduleTemplateUpdateslotsInput | InputJsonValue[]
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type AccountCreateManyUserInput = {
     id?: string
     type: string
@@ -64143,6 +71824,13 @@ export namespace Prisma {
     view: string
     notes?: string | null
     createdAt?: Date | string
+  }
+
+  export type ClientBadgeCreateManyClientInput = {
+    id?: string
+    badgeId: string
+    earnedAt?: Date | string
+    notified?: boolean
   }
 
   export type SessionUpdateWithoutClientInput = {
@@ -64388,6 +72076,27 @@ export namespace Prisma {
     view?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClientBadgeUpdateWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    earnedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notified?: BoolFieldUpdateOperationsInput | boolean
+    badge?: BadgeUpdateOneRequiredWithoutClientBadgesNestedInput
+  }
+
+  export type ClientBadgeUncheckedUpdateWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    badgeId?: StringFieldUpdateOperationsInput | string
+    earnedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notified?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type ClientBadgeUncheckedUpdateManyWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    badgeId?: StringFieldUpdateOperationsInput | string
+    earnedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notified?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ClassBookingCreateManyClassInput = {
@@ -65110,6 +72819,34 @@ export namespace Prisma {
     externalEventId?: StringFieldUpdateOperationsInput | string
     lastSyncedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     syncHash?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ClientBadgeCreateManyBadgeInput = {
+    id?: string
+    clientId: string
+    earnedAt?: Date | string
+    notified?: boolean
+  }
+
+  export type ClientBadgeUpdateWithoutBadgeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    earnedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notified?: BoolFieldUpdateOperationsInput | boolean
+    client?: ClientUpdateOneRequiredWithoutBadgesNestedInput
+  }
+
+  export type ClientBadgeUncheckedUpdateWithoutBadgeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    earnedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notified?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type ClientBadgeUncheckedUpdateManyWithoutBadgeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    earnedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notified?: BoolFieldUpdateOperationsInput | boolean
   }
 
 

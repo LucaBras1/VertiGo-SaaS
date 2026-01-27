@@ -20,6 +20,11 @@ import {
   LogOut,
   TrendingUp,
   LayoutGrid,
+  BarChart3,
+  FileBarChart,
+  Receipt,
+  ClipboardList,
+  CalendarClock,
 } from 'lucide-react'
 import { useUIStore } from '@/stores/uiStore'
 import { cn } from '@/lib/utils'
@@ -55,6 +60,20 @@ const navigation: NavSection[] = [
     items: [
       { name: 'Balíčky', href: '/dashboard/packages', icon: Package },
       { name: 'Faktury', href: '/dashboard/invoices', icon: FileText },
+      { name: 'Výdaje', href: '/dashboard/expenses', icon: Receipt },
+    ],
+  },
+  {
+    title: 'ANALYTIKA',
+    items: [
+      { name: 'Reporty', href: '/dashboard/reports', icon: FileBarChart },
+    ],
+  },
+  {
+    title: 'KNIHOVNA',
+    items: [
+      { name: 'Šablony tréninků', href: '/dashboard/templates', icon: ClipboardList },
+      { name: 'Šablony rozvrhu', href: '/dashboard/schedule-templates', icon: CalendarClock },
     ],
   },
   {

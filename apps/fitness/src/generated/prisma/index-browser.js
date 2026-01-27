@@ -622,6 +622,56 @@ exports.Prisma.CalendarFeedTokenScalarFieldEnum = {
   expiresAt: 'expiresAt'
 };
 
+exports.Prisma.BadgeScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  name: 'name',
+  description: 'description',
+  icon: 'icon',
+  color: 'color',
+  category: 'category',
+  criteria: 'criteria',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ClientBadgeScalarFieldEnum = {
+  id: 'id',
+  clientId: 'clientId',
+  badgeId: 'badgeId',
+  earnedAt: 'earnedAt',
+  notified: 'notified'
+};
+
+exports.Prisma.WorkoutTemplateScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  name: 'name',
+  description: 'description',
+  category: 'category',
+  difficulty: 'difficulty',
+  duration: 'duration',
+  exercises: 'exercises',
+  muscleGroups: 'muscleGroups',
+  equipment: 'equipment',
+  isPublic: 'isPublic',
+  usageCount: 'usageCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ScheduleTemplateScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  name: 'name',
+  description: 'description',
+  slots: 'slots',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -726,7 +776,11 @@ exports.Prisma.ModelName = {
   NotificationLog: 'NotificationLog',
   CalendarIntegration: 'CalendarIntegration',
   CalendarEventSync: 'CalendarEventSync',
-  CalendarFeedToken: 'CalendarFeedToken'
+  CalendarFeedToken: 'CalendarFeedToken',
+  Badge: 'Badge',
+  ClientBadge: 'ClientBadge',
+  WorkoutTemplate: 'WorkoutTemplate',
+  ScheduleTemplate: 'ScheduleTemplate'
 };
 
 /**

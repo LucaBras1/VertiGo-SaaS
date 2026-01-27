@@ -95,6 +95,11 @@ model Tenant {
   expenses                  Expense[]
   recurringInvoiceTemplates RecurringInvoiceTemplate[]
 
+  // Feature relations
+  badges            Badge[]
+  workoutTemplates  WorkoutTemplate[]
+  scheduleTemplates ScheduleTemplate[]
+
   @@map("tenants")
 }
 
@@ -217,11 +222,12 @@ model Client {
   updatedAt   DateTime @updatedAt
 
   // Relations
-  sessions    Session[]
-  orders      Order[]
-  invoices    Invoice[]
-  measurements ClientMeasurement[]
+  sessions       Session[]
+  orders         Order[]
+  invoices       Invoice[]
+  measurements   ClientMeasurement[]
   progressPhotos ProgressPhoto[]
+  badges         ClientBadge[]
 
   @@map("clients")
 }
@@ -992,4 +998,82 @@ model CalendarFeedToken {
   @@index([tenantId])
   @@index([userId])
   @@map("calendar_feed_tokens")
+}
+
+// ============================================
+// ACHIEVEMENT BADGES & GAMIFICATION
+// ============================================
+
+model Badge {
+  id          String   @id @default(cuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name        String
+  description String
+  icon        String
+  color       String
+  category    String   // consistency, progress, milestone, social
+  criteria    Json     // { type: "sessions_completed", value: 10 }
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  clientBadges ClientBadge[]
+
+  @@map("badges")
+}
+
+model ClientBadge {
+  id        String   @id @default(cuid())
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  badgeId   String
+  badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  earnedAt  DateTime @default(now())
+  notified  Boolean  @default(false)
+
+  @@unique([clientId, badgeId])
+  @@map("client_badges")
+}
+
+// ============================================
+// WORKOUT TEMPLATE LIBRARY
+// ============================================
+
+model WorkoutTemplate {
+  id           String   @id @default(cuid())
+  tenantId     String
+  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name         String
+  description  String?
+  category     String   // strength, cardio, hiit, flexibility
+  difficulty   String   // beginner, intermediate, advanced
+  duration     Int      // minutes
+  exercises    Json[]
+  muscleGroups String[]
+  equipment    String[]
+  isPublic     Boolean  @default(false)
+  usageCount   Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("workout_templates")
+}
+
+// ============================================
+// SCHEDULE TEMPLATES
+// ============================================
+
+model ScheduleTemplate {
+  id          String   @id @default(cuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  slots       Json[]   // [{ dayOfWeek: 1, startTime: "09:00", duration: 60, type: "session" }]
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("schedule_templates")
 }
