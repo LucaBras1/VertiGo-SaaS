@@ -538,6 +538,90 @@ exports.Prisma.RecurringInvoiceTemplateScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.PushSubscriptionScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  userId: 'userId',
+  clientId: 'clientId',
+  endpoint: 'endpoint',
+  p256dh: 'p256dh',
+  auth: 'auth',
+  userAgent: 'userAgent',
+  deviceName: 'deviceName',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.NotificationPreferenceScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  userId: 'userId',
+  clientId: 'clientId',
+  sessionReminders: 'sessionReminders',
+  classReminders: 'classReminders',
+  invoiceNotifications: 'invoiceNotifications',
+  paymentNotifications: 'paymentNotifications',
+  atRiskAlerts: 'atRiskAlerts',
+  reminderMinutesBefore: 'reminderMinutesBefore',
+  emailEnabled: 'emailEnabled',
+  pushEnabled: 'pushEnabled',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.NotificationLogScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  type: 'type',
+  recipientType: 'recipientType',
+  recipientId: 'recipientId',
+  title: 'title',
+  body: 'body',
+  data: 'data',
+  channel: 'channel',
+  status: 'status',
+  error: 'error',
+  sentAt: 'sentAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.CalendarIntegrationScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  userId: 'userId',
+  provider: 'provider',
+  accessToken: 'accessToken',
+  refreshToken: 'refreshToken',
+  tokenExpiry: 'tokenExpiry',
+  calendarId: 'calendarId',
+  calendarEmail: 'calendarEmail',
+  syncEnabled: 'syncEnabled',
+  syncDirection: 'syncDirection',
+  lastSyncAt: 'lastSyncAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CalendarEventSyncScalarFieldEnum = {
+  id: 'id',
+  integrationId: 'integrationId',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  externalEventId: 'externalEventId',
+  lastSyncedAt: 'lastSyncedAt',
+  syncHash: 'syncHash'
+};
+
+exports.Prisma.CalendarFeedTokenScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  userId: 'userId',
+  token: 'token',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -636,7 +720,13 @@ exports.Prisma.ModelName = {
   CryptoPayment: 'CryptoPayment',
   ExpenseCategory: 'ExpenseCategory',
   Expense: 'Expense',
-  RecurringInvoiceTemplate: 'RecurringInvoiceTemplate'
+  RecurringInvoiceTemplate: 'RecurringInvoiceTemplate',
+  PushSubscription: 'PushSubscription',
+  NotificationPreference: 'NotificationPreference',
+  NotificationLog: 'NotificationLog',
+  CalendarIntegration: 'CalendarIntegration',
+  CalendarEventSync: 'CalendarEventSync',
+  CalendarFeedToken: 'CalendarFeedToken'
 };
 
 /**

@@ -1,13 +1,15 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Settings, User, Building2, Bell, Shield, Loader2, Save } from 'lucide-react'
+import { Settings, User, Building2, Bell, Shield, Calendar, Loader2, Save } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import toast from 'react-hot-toast'
 import { cn } from '@/lib/utils'
+import { NotificationSettings } from '@/components/notifications'
+import { CalendarSettings } from '@/components/calendar'
 
 const profileSchema = z.object({
   name: z.string().min(1, 'Jméno je povinné'),
@@ -25,12 +27,13 @@ const businessSchema = z.object({
 type ProfileFormData = z.infer<typeof profileSchema>
 type BusinessFormData = z.infer<typeof businessSchema>
 
-type Tab = 'profile' | 'business' | 'notifications' | 'security'
+type Tab = 'profile' | 'business' | 'notifications' | 'calendar' | 'security'
 
 const tabs: { id: Tab; label: string; icon: typeof User }[] = [
   { id: 'profile', label: 'Profil', icon: User },
   { id: 'business', label: 'Firma', icon: Building2 },
   { id: 'notifications', label: 'Notifikace', icon: Bell },
+  { id: 'calendar', label: 'Kalendář', icon: Calendar },
   { id: 'security', label: 'Zabezpečení', icon: Shield },
 ]
 
@@ -309,52 +312,15 @@ export default function SettingsPage() {
 
               {activeTab === 'notifications' && (
                 <div className="space-y-6">
-                  <h2 className="text-lg font-semibold text-gray-900">Nastavení notifikací</h2>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between py-3 border-b border-gray-100">
-                      <div>
-                        <p className="font-medium text-gray-900">Emailové notifikace</p>
-                        <p className="text-sm text-gray-500">Dostávat upozornění na nové rezervace</p>
-                      </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" defaultChecked className="sr-only peer" />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
-                      </label>
-                    </div>
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">Nastavení notifikací</h2>
+                  <NotificationSettings />
+                </div>
+              )}
 
-                    <div className="flex items-center justify-between py-3 border-b border-gray-100">
-                      <div>
-                        <p className="font-medium text-gray-900">Připomenutí sessions</p>
-                        <p className="text-sm text-gray-500">Upozornění den před plánovaným tréninkem</p>
-                      </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" defaultChecked className="sr-only peer" />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
-                      </label>
-                    </div>
-
-                    <div className="flex items-center justify-between py-3 border-b border-gray-100">
-                      <div>
-                        <p className="font-medium text-gray-900">Upozornění na splatnost faktur</p>
-                        <p className="text-sm text-gray-500">Notifikace o nezaplacených fakturách</p>
-                      </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" defaultChecked className="sr-only peer" />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
-                      </label>
-                    </div>
-
-                    <div className="flex items-center justify-between py-3">
-                      <div>
-                        <p className="font-medium text-gray-900">Marketing a novinky</p>
-                        <p className="text-sm text-gray-500">Tipy a nové funkce aplikace</p>
-                      </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" className="sr-only peer" />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
-                      </label>
-                    </div>
-                  </div>
+              {activeTab === 'calendar' && (
+                <div className="space-y-6">
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">Synchronizace kalendáře</h2>
+                  <CalendarSettings />
                 </div>
               )}
 
