@@ -1,12 +1,43 @@
 import Stripe from 'stripe'
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  console.warn('STRIPE_SECRET_KEY is not set - payments will not work')
+// Lazy-loaded Stripe client - only created when actually accessed
+let _stripe: Stripe | null = null
+
+/**
+ * Get the Stripe client - lazily initialized to avoid build-time errors
+ * when STRIPE_SECRET_KEY is not set
+ */
+export function getStripeClient(): Stripe {
+  if (!_stripe) {
+    const apiKey = process.env.STRIPE_SECRET_KEY
+    if (!apiKey) {
+      console.warn('STRIPE_SECRET_KEY is not set - payments will not work')
+      throw new Error('STRIPE_SECRET_KEY environment variable is not set')
+    }
+    _stripe = new Stripe(apiKey, {
+      apiVersion: '2025-02-24.acacia',
+      typescript: true,
+    })
+  }
+  return _stripe
 }
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2025-02-24.acacia',
-  typescript: true,
+// For backwards compatibility - using a getter ensures lazy initialization
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const stripe: Stripe = new Proxy({} as Stripe, {
+  get(target, prop) {
+    // Allow typeof checks and symbol access
+    if (prop === 'then' || prop === 'catch' || typeof prop === 'symbol') {
+      return undefined
+    }
+    // Lazy load the actual stripe client
+    const client = getStripeClient()
+    const value = client[prop as keyof Stripe]
+    if (typeof value === 'function') {
+      return value.bind(client)
+    }
+    return value
+  },
 })
 
 // Helper to format amount for Stripe (converts to cents/smallest unit)
