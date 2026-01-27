@@ -202,12 +202,12 @@ export async function GET(
     const pdfData = transformInvoiceForPDF(invoice, user)
 
     // Generate PDF buffer
-    const pdfBuffer = await renderToBuffer(React.createElement(InvoicePDF, { data: pdfData }))
+    const pdfBuffer = await renderToBuffer(React.createElement(InvoicePDF, { data: pdfData }) as any)
 
     // Create filename with invoice number
     const filename = `faktura-${invoice.invoiceNumber}.pdf`.replace(/\//g, '-')
 
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(new Uint8Array(pdfBuffer), {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="${filename}"`,

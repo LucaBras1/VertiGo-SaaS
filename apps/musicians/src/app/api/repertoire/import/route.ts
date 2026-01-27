@@ -37,7 +37,13 @@ export async function POST(request: NextRequest) {
     // Bulk create songs
     const created = await prisma.repertoireSong.createMany({
       data: parseResult.songs.map(song => ({
-        ...song,
+        title: song.title,
+        artist: song.artist,
+        genre: song.genre,
+        duration: song.duration ?? 0, // Default to 0 if not provided
+        bpm: song.bpm,
+        key: song.key,
+        notes: song.notes,
         tenantId: session.user.tenantId,
         vertical: 'MUSICIANS' as Vertical,
       })),

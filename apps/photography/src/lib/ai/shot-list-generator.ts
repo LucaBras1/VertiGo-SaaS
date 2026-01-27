@@ -41,7 +41,7 @@ export const ShotListInputSchema = z.object({
 
   // For weddings
   weddingDetails: z.object({
-    brideGetting ready: z.boolean().optional(),
+    brideGettingReady: z.boolean().optional(),
     groomGettingReady: z.boolean().optional(),
     firstLook: z.boolean().optional(),
     ceremony: z.boolean().optional(),
@@ -263,8 +263,25 @@ function generateTemplateShootList(input: ShotListInput): ShotList {
   return generateGenericShotList(input)
 }
 
+type ShotSection = {
+  name: string
+  timeSlot?: string
+  location?: string
+  shots: Array<{
+    id: string
+    description: string
+    priority: 'must-have' | 'nice-to-have' | 'optional'
+    subjects?: string[]
+    technicalNotes?: string
+    suggestedSettings?: { aperture?: string; lens?: string; lighting?: string }
+    composition?: string
+    timing?: string
+  }>
+  notes?: string
+}
+
 function generateWeddingShotList(input: ShotListInput): ShotList {
-  const sections = []
+  const sections: ShotSection[] = []
 
   // Getting Ready
   if (input.weddingDetails?.brideGettingReady) {
@@ -490,7 +507,16 @@ function generateWeddingShotList(input: ShotListInput): ShotList {
     })
   }
 
-  const allShots = sections.flatMap(s => s.shots)
+  const allShots = sections.flatMap(s => s.shots) as Array<{
+    id: string
+    description: string
+    priority: 'must-have' | 'nice-to-have' | 'optional'
+    technicalNotes?: string
+    subjects?: string[]
+    suggestedSettings?: { aperture?: string; lens?: string; lighting?: string }
+    composition?: string
+    timing?: string
+  }>
 
   return {
     sections,

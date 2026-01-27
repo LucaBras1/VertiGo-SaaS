@@ -250,7 +250,7 @@ export default function SignupPage() {
               </div>
               <div>
                 <p className="text-primary-50 italic mb-2">
-                  "EventPro has transformed how we manage events. The AI timeline feature alone saves us hours of planning!"
+                  &quot;EventPro has transformed how we manage events. The AI timeline feature alone saves us hours of planning!&quot;
                 </p>
                 <p className="text-sm text-primary-200">
                   Sarah Chen, Event Director

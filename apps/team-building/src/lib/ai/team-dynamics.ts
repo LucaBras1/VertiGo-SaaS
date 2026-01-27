@@ -132,7 +132,7 @@ Analyze this team and recommend the best activities. Provide:
       teamDynamicsOutputSchema,
       {
         tenantId: 'team-building',
-        vertical: 'team-building',
+        vertical: 'team_building',
       },
       {
         model: 'gpt-4o-mini',

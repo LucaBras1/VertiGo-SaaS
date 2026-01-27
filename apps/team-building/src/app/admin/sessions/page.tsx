@@ -2,6 +2,9 @@
  * Admin - Sessions List Page
  */
 
+// Force dynamic rendering - database queries at runtime
+export const dynamic = 'force-dynamic'
+
 import { prisma } from '@/lib/db'
 import { SessionsList } from '@/components/admin/SessionsList'
 

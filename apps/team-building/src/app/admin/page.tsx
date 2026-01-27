@@ -3,6 +3,9 @@
  * Displays real data from database
  */
 
+// Force dynamic rendering - database queries at runtime
+export const dynamic = 'force-dynamic'
+
 import Link from 'next/link'
 import {
   Users,

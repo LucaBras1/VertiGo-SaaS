@@ -55,7 +55,7 @@ export default function EditSongPage() {
       </div>
 
       <div className="max-w-2xl">
-        <SongForm initialData={song} isEditing />
+        <SongForm initialData={song} />
       </div>
     </div>
   )

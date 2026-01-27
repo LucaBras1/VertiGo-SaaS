@@ -108,7 +108,7 @@ Respond with comprehensive, objective-focused recommendations.
       objectiveMatcherOutputSchema,
       {
         tenantId: 'team-building',
-        vertical: 'team-building',
+        vertical: 'team_building',
       },
       {
         model: 'gpt-4o-mini',
@@ -156,7 +156,7 @@ Return the top ${topN} activities ranked by match score (0-100).
       quickMatchSchema,
       {
         tenantId: 'team-building',
-        vertical: 'team-building',
+        vertical: 'team_building',
       },
       {
         model: 'gpt-4o-mini',

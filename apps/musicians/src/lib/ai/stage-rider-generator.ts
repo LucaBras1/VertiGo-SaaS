@@ -372,7 +372,7 @@ export async function exportStageRiderPDF(rider: StageRider): Promise<Buffer> {
   }
 
   const pdfBuffer = await renderToBuffer(
-    React.createElement(StageRiderPDF, { data: riderData })
+    React.createElement(StageRiderPDF, { data: riderData }) as any
   )
 
   return pdfBuffer

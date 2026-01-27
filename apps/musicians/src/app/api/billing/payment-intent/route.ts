@@ -18,10 +18,14 @@ function getStripeClient(): StripeClient {
   })
 }
 
+// Supported currencies
+const SUPPORTED_CURRENCIES = ['CZK', 'EUR', 'USD', 'GBP', 'PLN', 'HUF', 'CHF', 'SEK', 'DKK', 'NOK', 'CAD', 'AUD', 'JPY', 'CNY'] as const
+type SupportedCurrency = typeof SUPPORTED_CURRENCIES[number]
+
 const createPaymentIntentSchema = z.object({
   invoiceId: z.string().uuid(),
   amount: z.number().positive().optional(), // If not provided, use invoice total
-  currency: z.string().default('CZK'),
+  currency: z.enum(SUPPORTED_CURRENCIES).default('CZK'),
   description: z.string().optional(),
 })
 
@@ -99,6 +103,7 @@ export async function POST(req: NextRequest) {
     // Create payment record in database
     await prisma.invoicePayment.create({
       data: {
+        tenantId: session.user.tenantId,
         invoiceId: invoice.id,
         amount: paymentAmount,
         currency: validated.currency.toUpperCase(),

@@ -2,6 +2,8 @@
  * Edit Activity Page
  */
 
+export const dynamic = 'force-dynamic'
+
 import ActivityForm from '@/components/admin/ActivityForm'
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'

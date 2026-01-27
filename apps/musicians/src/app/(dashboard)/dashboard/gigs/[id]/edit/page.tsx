@@ -57,7 +57,7 @@ export default function EditGigPage() {
       </div>
 
       <div className="max-w-3xl">
-        <GigForm clients={clients} initialData={gig} isEditing />
+        <GigForm initialData={gig} />
       </div>
     </div>
   )

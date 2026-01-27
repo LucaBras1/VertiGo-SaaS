@@ -187,7 +187,7 @@ function PerformerCard({ performer }: { performer: typeof MOCK_PERFORMERS[0] }) 
           <div>
             <h3 className="text-lg font-semibold text-gray-900">{performer.name}</h3>
             {performer.stageName && (
-              <p className="text-sm text-gray-600 italic">"{performer.stageName}"</p>
+              <p className="text-sm text-gray-600 italic">&quot;{performer.stageName}&quot;</p>
             )}
           </div>
           <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full capitalize">

@@ -69,7 +69,7 @@ export const TechRiderInputSchema = z.object({
   }).optional(),
 
   venue: z.object({
-    dressing rooms: z.number().optional(),
+    dressingRooms: z.number().optional(),
     loadInAccess: z.string().optional(),
     powerAvailable: z.string().optional(),
   }).optional(),

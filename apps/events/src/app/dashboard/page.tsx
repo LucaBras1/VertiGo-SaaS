@@ -19,7 +19,7 @@ export default function DashboardOverview() {
       <div className="flex justify-between items-start">
         <div>
           <h1 className="text-3xl font-display font-bold mb-2">Welcome back, John! 👋</h1>
-          <p className="text-gray-600">Here's what's happening with your events today</p>
+          <p className="text-gray-600">Here&apos;s what&apos;s happening with your events today</p>
         </div>
 
         <Link href="/dashboard/events/new" className="btn-primary inline-flex items-center">
@@ -131,7 +131,7 @@ export default function DashboardOverview() {
 
           {/* Tasks */}
           <div className="card">
-            <h2 className="text-xl font-semibold mb-4">Today's Tasks</h2>
+            <h2 className="text-xl font-semibold mb-4">Today&apos;s Tasks</h2>
             <div className="space-y-3">
               <TaskItem
                 title="Confirm venue booking"

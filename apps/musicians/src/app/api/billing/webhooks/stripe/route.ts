@@ -118,18 +118,27 @@ async function handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent) {
         },
       })
     } else {
-      // Create payment record if it doesn't exist (e.g., from checkout session)
-      await tx.invoicePayment.create({
-        data: {
-          invoiceId: metadata.invoiceId,
-          amount: amount, // Amount in cents
-          currency: paymentIntent.currency.toUpperCase(),
-          method: 'STRIPE',
-          status: 'COMPLETED',
-          gatewayPaymentId: id,
-          completedAt: new Date(),
-        },
+      // Get tenantId from invoice
+      const invoiceForTenant = await tx.invoice.findUnique({
+        where: { id: metadata.invoiceId },
+        select: { tenantId: true },
       })
+
+      if (invoiceForTenant) {
+        // Create payment record if it doesn't exist (e.g., from checkout session)
+        await tx.invoicePayment.create({
+          data: {
+            tenantId: invoiceForTenant.tenantId,
+            invoiceId: metadata.invoiceId,
+            amount: amount, // Amount in cents
+            currency: paymentIntent.currency.toUpperCase(),
+            method: 'STRIPE',
+            status: 'COMPLETED',
+            gatewayPaymentId: id,
+            completedAt: new Date(),
+          },
+        })
+      }
     }
 
     // Update invoice
@@ -210,16 +219,25 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     })
 
     if (!existing && amount_total) {
-      await prisma.invoicePayment.create({
-        data: {
-          invoiceId: metadata.invoiceId,
-          amount: amount_total,
-          currency: session.currency?.toUpperCase() || 'CZK',
-          method: 'STRIPE',
-          status: 'PROCESSING',
-          gatewayPaymentId: payment_intent,
-        },
+      // Get tenantId from invoice
+      const invoice = await prisma.invoice.findUnique({
+        where: { id: metadata.invoiceId },
+        select: { tenantId: true },
       })
+
+      if (invoice) {
+        await prisma.invoicePayment.create({
+          data: {
+            tenantId: invoice.tenantId,
+            invoiceId: metadata.invoiceId,
+            amount: amount_total,
+            currency: session.currency?.toUpperCase() || 'CZK',
+            method: 'STRIPE',
+            status: 'PROCESSING',
+            gatewayPaymentId: payment_intent,
+          },
+        })
+      }
     }
   }
 }

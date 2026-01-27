@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
     const session = await prisma.session.create({
       data: {
         programId,
-        customerId: customerId || null,
+        // customerId removed - field doesn't exist in Session model
         date: new Date(date),
         endDate: endDate ? new Date(endDate) : null,
         venue,

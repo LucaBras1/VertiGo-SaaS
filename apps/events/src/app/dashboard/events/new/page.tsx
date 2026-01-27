@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import {
   Calendar,
@@ -68,7 +68,7 @@ const MOCK_PERFORMERS = [
   { id: '4', name: 'DJ Rhythm', type: 'Music' },
 ]
 
-export default function NewEventPage() {
+function NewEventContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const preselectedVenue = searchParams.get('venue')
@@ -511,5 +511,23 @@ export default function NewEventPage() {
         </div>
       </form>
     </div>
+  )
+}
+
+function LoadingFallback() {
+  return (
+    <div className="space-y-6 max-w-5xl animate-pulse">
+      <div className="h-10 bg-gray-200 rounded w-1/3"></div>
+      <div className="h-20 bg-gray-200 rounded"></div>
+      <div className="h-96 bg-gray-200 rounded"></div>
+    </div>
+  )
+}
+
+export default function NewEventPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <NewEventContent />
+    </Suspense>
   )
 }

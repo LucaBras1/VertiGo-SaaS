@@ -10,7 +10,7 @@ import toast from 'react-hot-toast'
 export default function EditInvoicePage() {
   const params = useParams()
   const router = useRouter()
-  const [invoice, setInvoice] = useState(null)
+  const [invoice, setInvoice] = useState<any>(null)
   const [clients, setClients] = useState([])
   const [gigs, setGigs] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -89,7 +89,6 @@ export default function EditInvoicePage() {
           clients={clients}
           gigs={gigs}
           initialData={invoice}
-          isEditing
         />
       </div>
     </div>

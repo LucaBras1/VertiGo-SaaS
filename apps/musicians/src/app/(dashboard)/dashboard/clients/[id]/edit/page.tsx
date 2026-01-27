@@ -55,7 +55,7 @@ export default function EditClientPage() {
       </div>
 
       <div className="max-w-2xl">
-        <ClientForm initialData={client} isEditing />
+        <ClientForm initialData={client} />
       </div>
     </div>
   )

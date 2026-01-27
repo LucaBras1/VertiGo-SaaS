@@ -33,6 +33,7 @@ interface Gallery {
     package: {
       id: string
       title: string
+      eventType: string | null
       client: {
         id: string
         name: string

@@ -2,6 +2,9 @@
  * Admin - Programs List Page
  */
 
+// Force dynamic rendering - database queries at runtime
+export const dynamic = 'force-dynamic'
+
 import { prisma } from '@/lib/db'
 import { ProgramsList } from '@/components/admin/ProgramsList'
 

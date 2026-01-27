@@ -22,7 +22,7 @@ interface Program {
   duration: number | null
   minTeamSize: number | null
   maxTeamSize: number | null
-  teamSize: string | null
+  teamSize: number | null
   objectives: string[] | null
   activityLinks: { activity: { title: string } }[]
   _count: { sessions: number; orderItems: number }
@@ -198,7 +198,7 @@ export function ProgramsList({ initialPrograms }: ProgramsListProps) {
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-700">
-                      {formatDuration(program.duration)}
+                      {program.duration ? formatDuration(program.duration) : 'N/A'}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-700">
                       {program.minTeamSize && program.maxTeamSize

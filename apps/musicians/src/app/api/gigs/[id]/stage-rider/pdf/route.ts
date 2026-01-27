@@ -127,14 +127,14 @@ export async function GET(
     }
 
     // Generate PDF buffer
-    const pdfBuffer = await renderToBuffer(React.createElement(StageRiderPDF, { data: riderData }))
+    const pdfBuffer = await renderToBuffer(React.createElement(StageRiderPDF, { data: riderData }) as any)
 
     // Create filename
     const safeBandName = (tenant.bandName || tenant.name).replace(/[^a-zA-Z0-9]/g, '-')
     const safeGigTitle = gig.title.replace(/[^a-zA-Z0-9]/g, '-')
     const filename = `stage-rider-${safeBandName}-${safeGigTitle}.pdf`
 
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(new Uint8Array(pdfBuffer), {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="${filename}"`,
@@ -215,14 +215,14 @@ export async function POST(
     }
 
     // Generate PDF buffer
-    const pdfBuffer = await renderToBuffer(React.createElement(StageRiderPDF, { data: riderData }))
+    const pdfBuffer = await renderToBuffer(React.createElement(StageRiderPDF, { data: riderData }) as any)
 
     // Create filename
     const safeBandName = stageRiderInput.bandName.replace(/[^a-zA-Z0-9]/g, '-')
     const safeGigTitle = gig.title.replace(/[^a-zA-Z0-9]/g, '-')
     const filename = `stage-rider-${safeBandName}-${safeGigTitle}.pdf`
 
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(new Uint8Array(pdfBuffer), {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="${filename}"`,

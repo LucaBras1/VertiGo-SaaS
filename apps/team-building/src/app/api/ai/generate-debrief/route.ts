@@ -14,7 +14,7 @@ import { prisma } from '@/lib/db'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { sessionId } = body
+    const { sessionId, format = 'hr-standard' } = body
 
     if (!sessionId) {
       return NextResponse.json(
@@ -60,18 +60,19 @@ export async function POST(request: NextRequest) {
         teamSize: session.teamSize || 0,
         teamName: session.teamName || '',
         companyName: session.companyName || '',
-        objectives: session.objectives || [],
+        objectives: (session.objectives as string[]) || [],
         customObjectives: session.customObjectives || '',
       },
       program: {
         title: session.program?.title || 'Unknown Program',
-        objectives: session.program?.objectives || [],
+        objectives: (session.program?.objectives as string[]) || [],
       },
       activitiesCompleted: session.program?.activityLinks.map((link) => ({
         title: link.activity.title,
-        objectives: link.activity.objectives || [],
+        objectives: (link.activity.objectives as string[]) || [],
         duration: link.activity.duration,
       })) || [],
+      format: format as 'executive' | 'detailed' | 'hr-standard',
     }
 
     // Generate debrief

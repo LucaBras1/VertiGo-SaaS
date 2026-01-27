@@ -119,11 +119,11 @@ export default function BillingDashboardPage() {
     },
   ];
 
-  const statusConfig: Record<string, { label: string; variant: 'default' | 'warning' | 'success' | 'destructive' }> = {
+  const statusConfig: Record<string, { label: string; variant: 'default' | 'warning' | 'success' | 'danger' }> = {
     draft: { label: 'Koncept', variant: 'default' },
     sent: { label: 'Odesláno', variant: 'warning' },
     paid: { label: 'Zaplaceno', variant: 'success' },
-    overdue: { label: 'Po splatnosti', variant: 'destructive' },
+    overdue: { label: 'Po splatnosti', variant: 'danger' },
   };
 
   if (isLoading) {

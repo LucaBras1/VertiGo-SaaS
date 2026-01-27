@@ -60,7 +60,13 @@ export async function PUT(
     const body = await request.json()
     const validated = updateSetlistSchema.parse(body)
 
-    const setlist = await updateSetlist(params.id, session.user.tenantId, validated)
+    // Convert null to undefined for gigId (Zod allows null, but service expects undefined)
+    const updateInput = {
+      ...validated,
+      gigId: validated.gigId ?? undefined,
+    }
+
+    const setlist = await updateSetlist(params.id, session.user.tenantId, updateInput)
     return NextResponse.json(setlist)
   } catch (error) {
     if (error instanceof z.ZodError) {

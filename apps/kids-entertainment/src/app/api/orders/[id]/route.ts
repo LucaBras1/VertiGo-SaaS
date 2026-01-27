@@ -5,6 +5,8 @@
  * DELETE /api/orders/[id] - Delete order
  */
 
+export const dynamic = 'force-dynamic'
+
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'

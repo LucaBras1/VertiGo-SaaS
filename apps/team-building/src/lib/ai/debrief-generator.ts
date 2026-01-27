@@ -217,7 +217,7 @@ actionable recommendations, and next steps. Also generate a formatted HTML versi
       debriefGeneratorOutputSchema,
       {
         tenantId: 'team-building',
-        vertical: 'team-building',
+        vertical: 'team_building',
       },
       {
         model: 'gpt-4o', // Use more capable model for report generation
@@ -251,7 +251,7 @@ Create a brief (2-3 paragraph) summary of the session highlighting key outcomes 
       userPrompt,
       {
         tenantId: 'team-building',
-        vertical: 'team-building',
+        vertical: 'team_building',
       },
       {
         systemPrompt,

@@ -65,7 +65,7 @@ export async function PATCH(request: NextRequest) {
 
     const updatedTenant = await prisma.tenant.update({
       where: { id: session.user.tenantId },
-      data: { settings: updatedSettings },
+      data: { settings: updatedSettings as any },
       select: {
         id: true,
         settings: true,

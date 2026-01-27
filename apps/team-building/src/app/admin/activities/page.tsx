@@ -3,6 +3,9 @@
  * Server component that fetches data and passes to client component
  */
 
+// Force dynamic rendering - database queries at runtime
+export const dynamic = 'force-dynamic'
+
 import { prisma } from '@/lib/db'
 import { ActivitiesList } from '@/components/admin/ActivitiesList'
 

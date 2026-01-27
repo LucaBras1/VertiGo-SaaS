@@ -132,7 +132,7 @@ Be specific and actionable. Consider inclusivity and accessibility.
       difficultyCalibratorOutputSchema,
       {
         tenantId: 'team-building',
-        vertical: 'team-building',
+        vertical: 'team_building',
       },
       {
         model: 'gpt-4o-mini',
@@ -177,7 +177,7 @@ Respond with just the level and brief reasoning.
       quickSchema,
       {
         tenantId: 'team-building',
-        vertical: 'team-building',
+        vertical: 'team_building',
       },
       {
         model: 'gpt-4o-mini',

@@ -3,6 +3,8 @@
  * Edit existing party package
  */
 
+export const dynamic = 'force-dynamic'
+
 import PackageForm from '@/components/admin/PackageForm'
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'

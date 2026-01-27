@@ -98,6 +98,7 @@ export async function POST(req: NextRequest) {
     // Create payment record in database
     await prisma.invoicePayment.create({
       data: {
+        tenantId: session.user.tenantId,
         invoiceId: invoice.id,
         amount: remainingAmount,
         currency: 'CZK',

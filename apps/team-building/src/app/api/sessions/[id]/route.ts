@@ -79,7 +79,7 @@ export async function PUT(
       where: { id: params.id },
       data: {
         programId,
-        customerId: customerId || null,
+        // customerId removed - field doesn't exist in Session model
         date: date ? new Date(date) : undefined,
         endDate: endDate ? new Date(endDate) : null,
         venue,
