@@ -23,7 +23,6 @@ export function getStripeClient(): Stripe {
 }
 
 // For backwards compatibility - using a getter ensures lazy initialization
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const stripe: Stripe = new Proxy({} as Stripe, {
   get(target, prop) {
     // Allow typeof checks and symbol access
