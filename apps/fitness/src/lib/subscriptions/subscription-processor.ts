@@ -5,7 +5,7 @@
  */
 
 import { prisma } from '@/lib/prisma'
-import { Decimal } from '@prisma/client/runtime/library'
+import { Prisma } from '@/generated/prisma'
 
 export type SubscriptionFrequency = 'WEEKLY' | 'BIWEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY'
 export type SubscriptionStatus = 'active' | 'paused' | 'cancelled' | 'expired' | 'past_due'
@@ -100,7 +100,7 @@ export async function createSubscription(data: CreateSubscriptionData) {
       tenantId: data.tenantId,
       clientId: data.clientId,
       packageId: data.packageId,
-      amount: new Decimal(data.amount),
+      amount: new Prisma.Decimal(data.amount),
       currency: data.currency || 'CZK',
       frequency: data.frequency,
       startDate,
@@ -269,7 +269,7 @@ export async function processDueSubscriptions(
           subtotal: Number(subscription.amount),
           tax: 0,
           total: Number(subscription.amount),
-          amountPaid: new Decimal(0),
+          amountPaid: new Prisma.Decimal(0),
           amountRemaining: subscription.amount,
           notes: subscription.package
             ? `Předplatné: ${subscription.package.name}`

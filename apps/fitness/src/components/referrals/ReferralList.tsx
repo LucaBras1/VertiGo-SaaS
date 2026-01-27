@@ -30,6 +30,7 @@ interface Client {
   id: string
   name: string
   email: string
+  referralCode: string | null
 }
 
 interface ReferralListProps {
@@ -269,7 +270,10 @@ export function ReferralList({ onSendInvite }: ReferralListProps) {
                       )}
                       {referral.status === 'pending' && (
                         <button
-                          onClick={() => onSendInvite(referral.referrer)}
+                          onClick={() => onSendInvite({
+                            ...referral.referrer,
+                            referralCode: referral.referralCode,
+                          })}
                           className="flex items-center gap-1 px-2 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                         >
                           <Send className="h-3.5 w-3.5" />

@@ -113,9 +113,19 @@ export async function PATCH(
       )
     }
 
+    // Prepare data with proper JSON handling for Prisma 7
+    const { triggerConfig, ...rest } = result.data
+
     const sequence = await prisma.emailSequence.update({
       where: { id },
-      data: result.data,
+      data: {
+        ...rest,
+        ...(triggerConfig !== undefined && {
+          triggerConfig: triggerConfig === null
+            ? { set: null }
+            : triggerConfig,
+        }),
+      } as any,
       include: {
         steps: {
           orderBy: { stepOrder: 'asc' },

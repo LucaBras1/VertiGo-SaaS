@@ -210,7 +210,8 @@ exports.Prisma.ClientScalarFieldEnum = {
   tags: 'tags',
   notes: 'notes',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  referralCode: 'referralCode'
 };
 
 exports.Prisma.ClientMeasurementScalarFieldEnum = {
@@ -335,6 +336,11 @@ exports.Prisma.InvoiceScalarFieldEnum = {
   subtotal: 'subtotal',
   tax: 'tax',
   total: 'total',
+  amountPaid: 'amountPaid',
+  amountRemaining: 'amountRemaining',
+  subscriptionId: 'subscriptionId',
+  dunningLevel: 'dunningLevel',
+  templateId: 'templateId',
   paymentMethod: 'paymentMethod',
   notes: 'notes',
   createdAt: 'createdAt',
@@ -672,6 +678,195 @@ exports.Prisma.ScheduleTemplateScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ClientEventScalarFieldEnum = {
+  id: 'id',
+  clientId: 'clientId',
+  tenantId: 'tenantId',
+  eventType: 'eventType',
+  eventDate: 'eventDate',
+  title: 'title',
+  description: 'description',
+  metadata: 'metadata',
+  isMilestone: 'isMilestone',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.SubscriptionScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  clientId: 'clientId',
+  packageId: 'packageId',
+  amount: 'amount',
+  currency: 'currency',
+  frequency: 'frequency',
+  nextBillingDate: 'nextBillingDate',
+  billingDay: 'billingDay',
+  status: 'status',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  pausedAt: 'pausedAt',
+  cancelledAt: 'cancelledAt',
+  stripeCustomerId: 'stripeCustomerId',
+  stripeSubscriptionId: 'stripeSubscriptionId',
+  stripePaymentMethodId: 'stripePaymentMethodId',
+  autoRenew: 'autoRenew',
+  retryCount: 'retryCount',
+  maxRetries: 'maxRetries',
+  lastPaymentDate: 'lastPaymentDate',
+  lastPaymentStatus: 'lastPaymentStatus',
+  reminderSent: 'reminderSent',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CreditNoteScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  invoiceId: 'invoiceId',
+  creditNoteNumber: 'creditNoteNumber',
+  issueDate: 'issueDate',
+  subtotal: 'subtotal',
+  tax: 'tax',
+  total: 'total',
+  reason: 'reason',
+  notes: 'notes',
+  status: 'status',
+  appliedAt: 'appliedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.InvoiceTemplateScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  name: 'name',
+  description: 'description',
+  logo: 'logo',
+  primaryColor: 'primaryColor',
+  headerText: 'headerText',
+  footerText: 'footerText',
+  showLogo: 'showLogo',
+  showVat: 'showVat',
+  showQrCode: 'showQrCode',
+  isDefault: 'isDefault',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DunningStepScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  invoiceId: 'invoiceId',
+  step: 'step',
+  action: 'action',
+  sentAt: 'sentAt',
+  dueDate: 'dueDate',
+  response: 'response',
+  respondedAt: 'respondedAt'
+};
+
+exports.Prisma.EmailSequenceScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  name: 'name',
+  description: 'description',
+  triggerType: 'triggerType',
+  triggerConfig: 'triggerConfig',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.EmailSequenceStepScalarFieldEnum = {
+  id: 'id',
+  sequenceId: 'sequenceId',
+  stepOrder: 'stepOrder',
+  delayDays: 'delayDays',
+  delayHours: 'delayHours',
+  subject: 'subject',
+  htmlContent: 'htmlContent',
+  textContent: 'textContent',
+  conditions: 'conditions',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.EmailSequenceEnrollmentScalarFieldEnum = {
+  id: 'id',
+  sequenceId: 'sequenceId',
+  clientId: 'clientId',
+  tenantId: 'tenantId',
+  currentStep: 'currentStep',
+  status: 'status',
+  enrolledAt: 'enrolledAt',
+  nextEmailAt: 'nextEmailAt',
+  completedAt: 'completedAt',
+  emailsSent: 'emailsSent',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.EmailSequenceEmailScalarFieldEnum = {
+  id: 'id',
+  enrollmentId: 'enrollmentId',
+  stepOrder: 'stepOrder',
+  sentAt: 'sentAt',
+  deliveredAt: 'deliveredAt',
+  openedAt: 'openedAt',
+  clickedAt: 'clickedAt',
+  status: 'status',
+  error: 'error',
+  resendId: 'resendId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ReferralScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  referrerId: 'referrerId',
+  referredId: 'referredId',
+  referralCode: 'referralCode',
+  referredEmail: 'referredEmail',
+  referredName: 'referredName',
+  referredPhone: 'referredPhone',
+  status: 'status',
+  createdAt: 'createdAt',
+  signedUpAt: 'signedUpAt',
+  qualifiedAt: 'qualifiedAt',
+  rewardedAt: 'rewardedAt',
+  expiresAt: 'expiresAt',
+  referrerReward: 'referrerReward',
+  referredReward: 'referredReward',
+  referrerRewardApplied: 'referrerRewardApplied',
+  referredRewardApplied: 'referredRewardApplied',
+  source: 'source'
+};
+
+exports.Prisma.ReferralSettingsScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  isActive: 'isActive',
+  referrerRewardType: 'referrerRewardType',
+  referrerRewardValue: 'referrerRewardValue',
+  referredRewardType: 'referredRewardType',
+  referredRewardValue: 'referredRewardValue',
+  qualificationCriteria: 'qualificationCriteria',
+  maxReferralsPerClient: 'maxReferralsPerClient',
+  referralCodeExpiry: 'referralCodeExpiry',
+  sendReferralEmails: 'sendReferralEmails',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AnalyticsSnapshotScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  date: 'date',
+  period: 'period',
+  metrics: 'metrics',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -780,7 +975,19 @@ exports.Prisma.ModelName = {
   Badge: 'Badge',
   ClientBadge: 'ClientBadge',
   WorkoutTemplate: 'WorkoutTemplate',
-  ScheduleTemplate: 'ScheduleTemplate'
+  ScheduleTemplate: 'ScheduleTemplate',
+  ClientEvent: 'ClientEvent',
+  Subscription: 'Subscription',
+  CreditNote: 'CreditNote',
+  InvoiceTemplate: 'InvoiceTemplate',
+  DunningStep: 'DunningStep',
+  EmailSequence: 'EmailSequence',
+  EmailSequenceStep: 'EmailSequenceStep',
+  EmailSequenceEnrollment: 'EmailSequenceEnrollment',
+  EmailSequenceEmail: 'EmailSequenceEmail',
+  Referral: 'Referral',
+  ReferralSettings: 'ReferralSettings',
+  AnalyticsSnapshot: 'AnalyticsSnapshot'
 };
 
 /**

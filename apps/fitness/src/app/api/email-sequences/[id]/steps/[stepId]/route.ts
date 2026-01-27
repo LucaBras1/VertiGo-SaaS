@@ -116,9 +116,17 @@ export async function PATCH(
       )
     }
 
+    // Prepare data with proper JSON handling
+    const updateData = {
+      ...result.data,
+      conditions: result.data.conditions !== undefined
+        ? (result.data.conditions as object)
+        : undefined,
+    }
+
     const step = await prisma.emailSequenceStep.update({
       where: { id: stepId },
-      data: result.data,
+      data: updateData,
     })
 
     return NextResponse.json(step)

@@ -1,7 +1,7 @@
 /**
  * Unit tests for ProgressPredictorAI - Goal Timeline Prediction
  */
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { predictProgress, ProgressPredictorInput } from '../progress-predictor'
 import { createMockContext } from '../../../../__tests__/setup'
 import { disableOpenAIMocks, enableOpenAIMocks } from '../../../../__tests__/mocks/openai'

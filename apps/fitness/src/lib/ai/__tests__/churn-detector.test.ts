@@ -1,7 +1,7 @@
 /**
  * Unit tests for ChurnDetectorAI - Client Retention Analysis
  */
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { detectChurnRisk, ChurnDetectorInput } from '../churn-detector'
 import { createMockContext } from '../../../../__tests__/setup'
 import { disableOpenAIMocks, enableOpenAIMocks } from '../../../../__tests__/mocks/openai'

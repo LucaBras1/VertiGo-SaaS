@@ -1,7 +1,7 @@
 /**
  * Unit tests for WorkoutAI - Workout Plan Generation
  */
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { generateWorkout, suggestProgression, WorkoutGeneratorInput } from '../workout-generator'
 import { createMockContext } from '../../../../__tests__/setup'
 import { disableOpenAIMocks, enableOpenAIMocks } from '../../../../__tests__/mocks/openai'

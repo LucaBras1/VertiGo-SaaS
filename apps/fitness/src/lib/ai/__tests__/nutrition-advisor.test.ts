@@ -1,7 +1,7 @@
 /**
  * Unit tests for NutritionAdvisorAI - Nutrition Guidance
  */
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { generateNutritionAdvice, NutritionAdvisorInput } from '../nutrition-advisor'
 import { createMockContext } from '../../../../__tests__/setup'
 import { disableOpenAIMocks, enableOpenAIMocks } from '../../../../__tests__/mocks/openai'
@@ -186,11 +186,13 @@ describe('NutritionAdvisorAI - generateNutritionAdvice', () => {
     })
 
     it('should adapt protein sources for vegetarians', async () => {
-      const vegetarianInput = {
+      const vegetarianInput: NutritionAdvisorInput = {
         ...mockWeightLossInput,
         dietaryPreferences: {
-          ...mockWeightLossInput.dietaryPreferences,
           restrictions: ['vegetarian'],
+          allergies: mockWeightLossInput.dietaryPreferences?.allergies,
+          dislikes: mockWeightLossInput.dietaryPreferences?.dislikes,
+          mealsPerDay: mockWeightLossInput.dietaryPreferences?.mealsPerDay ?? 3,
         },
       }
 

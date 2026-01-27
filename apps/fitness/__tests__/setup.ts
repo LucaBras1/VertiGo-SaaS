@@ -4,7 +4,11 @@
 import { beforeAll, afterAll, beforeEach, afterEach, vi } from 'vitest'
 
 // Mock environment variables
-process.env.NODE_ENV = 'test'
+Object.defineProperty(process.env, 'NODE_ENV', {
+  value: 'test',
+  writable: true,
+  configurable: true,
+})
 process.env.NEXTAUTH_URL = 'http://localhost:3006'
 process.env.NEXTAUTH_SECRET = 'test-secret-key-for-testing-only'
 process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/test_db'

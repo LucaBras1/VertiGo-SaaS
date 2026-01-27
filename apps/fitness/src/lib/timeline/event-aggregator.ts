@@ -284,7 +284,7 @@ export async function createTimelineEvent(data: {
       eventType: data.eventType,
       title: data.title,
       description: data.description,
-      metadata: data.metadata,
+      metadata: data.metadata as object | undefined,
       isMilestone: data.isMilestone ?? false,
       eventDate: data.eventDate ?? new Date(),
     },

@@ -97,11 +97,18 @@ export async function POST(request: Request) {
       )
     }
 
+    // Prepare data with proper JSON handling
+    const createData = {
+      tenantId: session.user.tenantId,
+      name: result.data.name,
+      description: result.data.description,
+      triggerType: result.data.triggerType,
+      triggerConfig: result.data.triggerConfig as object | undefined,
+      isActive: result.data.isActive,
+    }
+
     const sequence = await prisma.emailSequence.create({
-      data: {
-        tenantId: session.user.tenantId,
-        ...result.data,
-      },
+      data: createData,
       include: {
         steps: true,
       },

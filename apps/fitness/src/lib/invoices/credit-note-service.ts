@@ -5,7 +5,7 @@
  */
 
 import { prisma } from '@/lib/prisma'
-import { Decimal } from '@prisma/client/runtime/library'
+import { Prisma } from '@/generated/prisma'
 
 interface CreateCreditNoteData {
   tenantId: string
@@ -88,9 +88,9 @@ export async function createCreditNote(data: CreateCreditNoteData) {
       tenantId: data.tenantId,
       invoiceId: data.invoiceId,
       creditNoteNumber,
-      subtotal: new Decimal(subtotal),
-      tax: new Decimal(tax),
-      total: new Decimal(data.amount),
+      subtotal: new Prisma.Decimal(subtotal),
+      tax: new Prisma.Decimal(tax),
+      total: new Prisma.Decimal(data.amount),
       reason: data.reason,
       notes: data.notes,
       status: 'draft',
@@ -187,8 +187,8 @@ export async function applyCreditNote(creditNoteId: string, tenantId: string) {
     prisma.invoice.update({
       where: { id: creditNote.invoiceId },
       data: {
-        amountPaid: new Decimal(newAmountPaid),
-        amountRemaining: new Decimal(newAmountRemaining),
+        amountPaid: new Prisma.Decimal(newAmountPaid),
+        amountRemaining: new Prisma.Decimal(newAmountRemaining),
         status: newStatus,
         ...(newStatus === 'paid' && { paidDate: new Date() }),
       },
@@ -247,8 +247,8 @@ export async function recordPartialPayment(data: {
     prisma.invoice.update({
       where: { id: data.invoiceId },
       data: {
-        amountPaid: new Decimal(newAmountPaid),
-        amountRemaining: new Decimal(newAmountRemaining),
+        amountPaid: new Prisma.Decimal(newAmountPaid),
+        amountRemaining: new Prisma.Decimal(newAmountRemaining),
         status: newStatus,
         ...(newStatus === 'paid' && { paidDate: new Date() }),
         paymentMethod: data.paymentMethod || invoice.paymentMethod,
@@ -258,7 +258,7 @@ export async function recordPartialPayment(data: {
       data: {
         tenantId: data.tenantId,
         invoiceId: data.invoiceId,
-        amount: new Decimal(data.amount),
+        amount: new Prisma.Decimal(data.amount),
         currency: 'CZK',
         method: (data.paymentMethod as 'BANK_TRANSFER' | 'CARD' | 'CASH' | 'PAYPAL' | 'STRIPE' | 'GOPAY' | 'CRYPTO') || 'BANK_TRANSFER',
         status: 'COMPLETED',

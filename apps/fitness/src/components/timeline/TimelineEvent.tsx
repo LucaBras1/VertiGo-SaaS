@@ -241,20 +241,20 @@ export function TimelineEventComponent({ event, isLast, onEdit }: TimelineEventP
                   )}
                 </>
               )}
-              {event.type === 'badge_earned' && event.metadata.icon && (
+              {event.type === 'badge_earned' && event.metadata.icon ? (
                 <span
                   className="px-2 py-1 text-lg"
-                  title={event.metadata.category as string}
+                  title={String(event.metadata.category ?? '')}
                 >
-                  {event.metadata.icon as string}
+                  {String(event.metadata.icon)}
                 </span>
-              )}
+              ) : null}
               {(event.type === 'invoice_paid' || event.type === 'invoice_created') &&
-                event.metadata.total && (
+                event.metadata.total ? (
                   <span className="px-2 py-1 text-xs bg-secondary-700 rounded text-gray-300">
-                    {event.metadata.total as number} CZK
+                    {Number(event.metadata.total)} CZK
                   </span>
-                )}
+                ) : null}
             </div>
           )}
         </div>

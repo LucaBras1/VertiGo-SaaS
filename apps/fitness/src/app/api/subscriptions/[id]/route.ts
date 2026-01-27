@@ -4,7 +4,7 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { cancelSubscription } from '@/lib/subscriptions/subscription-processor'
 import { z } from 'zod'
-import { Decimal } from '@prisma/client/runtime/library'
+import { Prisma } from '@/generated/prisma'
 
 const updateSubscriptionSchema = z.object({
   amount: z.number().positive().optional(),
@@ -98,7 +98,7 @@ export async function PATCH(
     const updateData: Record<string, unknown> = {}
 
     if (data.amount !== undefined) {
-      updateData.amount = new Decimal(data.amount)
+      updateData.amount = new Prisma.Decimal(data.amount)
     }
     if (data.frequency !== undefined) {
       updateData.frequency = data.frequency

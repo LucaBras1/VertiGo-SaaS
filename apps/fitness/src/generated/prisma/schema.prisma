@@ -221,13 +221,21 @@ model Client {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Referral
+  referralCode String? @unique
+
   // Relations
-  sessions       Session[]
-  orders         Order[]
-  invoices       Invoice[]
-  measurements   ClientMeasurement[]
-  progressPhotos ProgressPhoto[]
-  badges         ClientBadge[]
+  sessions         Session[]
+  orders           Order[]
+  invoices         Invoice[]
+  measurements     ClientMeasurement[]
+  progressPhotos   ProgressPhoto[]
+  badges           ClientBadge[]
+  events           ClientEvent[]
+  subscriptions    Subscription[]
+  emailEnrollments EmailSequenceEnrollment[]
+  referredBy       Referral[]                @relation("Referred")
+  referrals        Referral[]                @relation("Referrer")
 
   @@map("clients")
 }
@@ -381,6 +389,9 @@ model Package {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Relations
+  subscriptions Subscription[]
+
   @@map("packages")
 }
 
@@ -438,7 +449,7 @@ model Invoice {
   client   Client  @relation(fields: [clientId], references: [id], onDelete: Cascade)
 
   invoiceNumber String @unique
-  status        String @default("draft") // draft, sent, paid, overdue, cancelled
+  status        String @default("draft") // draft, sent, paid, overdue, cancelled, partial
 
   // Dates
   issueDate DateTime  @default(now())
@@ -449,6 +460,18 @@ model Invoice {
   subtotal Float
   tax      Float @default(0)
   total    Float
+
+  // Partial payment tracking
+  amountPaid      Decimal  @default(0) @db.Decimal(10, 2)
+  amountRemaining Decimal? @db.Decimal(10, 2)
+
+  // Subscription link
+  subscriptionId String?
+  subscription   Subscription? @relation("SubscriptionInvoices", fields: [subscriptionId], references: [id])
+
+  // Dunning
+  dunningLevel Int     @default(0)
+  templateId   String?
 
   // Payment
   paymentMethod String?
@@ -462,6 +485,8 @@ model Invoice {
   payments         InvoicePayment[]
   bankTransactions BankTransaction[]
   cryptoPayments   CryptoPayment[]
+  creditNotes      CreditNote[]
+  dunningSteps     DunningStep[]
 
   @@map("invoices")
 }
@@ -1076,4 +1101,288 @@ model ScheduleTemplate {
   updatedAt   DateTime @updatedAt
 
   @@map("schedule_templates")
+}
+
+// ============================================
+// CLIENT JOURNEY TIMELINE
+// ============================================
+
+model ClientEvent {
+  id          String   @id @default(cuid())
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  tenantId    String
+  eventType   String // session_completed, measurement_recorded, badge_earned, invoice_paid, milestone, note, package_purchased
+  eventDate   DateTime @default(now())
+  title       String
+  description String?  @db.Text
+  metadata    Json?    @db.JsonB
+  isMilestone Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([clientId, eventDate])
+  @@index([tenantId, eventDate])
+  @@map("client_events")
+}
+
+// ============================================
+// SUBSCRIPTIONS (RECURRING BILLING)
+// ============================================
+
+model Subscription {
+  id        String   @id @default(cuid())
+  tenantId  String
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  packageId String?
+  package   Package? @relation(fields: [packageId], references: [id])
+
+  // Pricing
+  amount   Decimal @db.Decimal(10, 2)
+  currency String  @default("CZK")
+
+  // Billing schedule
+  frequency       String // WEEKLY, BIWEEKLY, MONTHLY, QUARTERLY, YEARLY
+  nextBillingDate DateTime
+  billingDay      Int? // Day of month (1-31) or day of week (1-7)
+
+  // Status
+  status      String    @default("active") // active, paused, cancelled, expired, past_due
+  startDate   DateTime  @default(now())
+  endDate     DateTime?
+  pausedAt    DateTime?
+  cancelledAt DateTime?
+
+  // Stripe integration
+  stripeCustomerId      String?
+  stripeSubscriptionId  String?
+  stripePaymentMethodId String?
+
+  // Auto-renewal settings
+  autoRenew  Boolean @default(true)
+  retryCount Int     @default(0)
+  maxRetries Int     @default(3)
+
+  // Payment tracking
+  lastPaymentDate   DateTime?
+  lastPaymentStatus String?
+  reminderSent      Boolean   @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  generatedInvoices Invoice[] @relation("SubscriptionInvoices")
+
+  @@index([tenantId, status, nextBillingDate])
+  @@index([clientId])
+  @@map("subscriptions")
+}
+
+// ============================================
+// ADVANCED INVOICING
+// ============================================
+
+model CreditNote {
+  id               String    @id @default(cuid())
+  tenantId         String
+  invoiceId        String
+  invoice          Invoice   @relation(fields: [invoiceId], references: [id])
+  creditNoteNumber String    @unique
+  issueDate        DateTime  @default(now())
+  subtotal         Decimal   @db.Decimal(10, 2)
+  tax              Decimal   @default(0) @db.Decimal(10, 2)
+  total            Decimal   @db.Decimal(10, 2)
+  reason           String
+  notes            String?   @db.Text
+  status           String    @default("draft") // draft, issued, applied
+  appliedAt        DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([tenantId, invoiceId])
+  @@map("credit_notes")
+}
+
+model InvoiceTemplate {
+  id           String   @id @default(cuid())
+  tenantId     String
+  name         String
+  description  String?
+  logo         String?
+  primaryColor String?
+  headerText   String?  @db.Text
+  footerText   String?  @db.Text
+  showLogo     Boolean  @default(true)
+  showVat      Boolean  @default(true)
+  showQrCode   Boolean  @default(true)
+  isDefault    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([tenantId])
+  @@map("invoice_templates")
+}
+
+model DunningStep {
+  id          String    @id @default(cuid())
+  tenantId    String
+  invoiceId   String
+  invoice     Invoice   @relation(fields: [invoiceId], references: [id])
+  step        Int
+  action      String // reminder_sent, final_notice, collections
+  sentAt      DateTime  @default(now())
+  dueDate     DateTime
+  response    String?
+  respondedAt DateTime?
+
+  @@index([tenantId, invoiceId])
+  @@map("dunning_steps")
+}
+
+// ============================================
+// EMAIL SEQUENCES
+// ============================================
+
+model EmailSequence {
+  id            String   @id @default(cuid())
+  tenantId      String
+  name          String
+  description   String?
+  triggerType   String // client_created, package_purchased, session_completed, days_inactive, membership_expiring, manual
+  triggerConfig Json?    @db.JsonB
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  steps       EmailSequenceStep[]
+  enrollments EmailSequenceEnrollment[]
+
+  @@index([tenantId, triggerType])
+  @@map("email_sequences")
+}
+
+model EmailSequenceStep {
+  id          String        @id @default(cuid())
+  sequenceId  String
+  sequence    EmailSequence @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+  stepOrder   Int
+  delayDays   Int           @default(0)
+  delayHours  Int           @default(0)
+  subject     String
+  htmlContent String        @db.Text
+  textContent String?       @db.Text
+  conditions  Json?         @db.JsonB
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([sequenceId])
+  @@map("email_sequence_steps")
+}
+
+model EmailSequenceEnrollment {
+  id          String        @id @default(cuid())
+  sequenceId  String
+  sequence    EmailSequence @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+  clientId    String
+  client      Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  tenantId    String
+  currentStep Int           @default(0)
+  status      String        @default("active") // active, paused, completed, unsubscribed
+  enrolledAt  DateTime      @default(now())
+  nextEmailAt DateTime?
+  completedAt DateTime?
+  emailsSent  Int           @default(0)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  emails EmailSequenceEmail[]
+
+  @@unique([sequenceId, clientId])
+  @@index([tenantId, status, nextEmailAt])
+  @@map("email_sequence_enrollments")
+}
+
+model EmailSequenceEmail {
+  id           String                  @id @default(cuid())
+  enrollmentId String
+  enrollment   EmailSequenceEnrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  stepOrder    Int
+  sentAt       DateTime?
+  deliveredAt  DateTime?
+  openedAt     DateTime?
+  clickedAt    DateTime?
+  status       String                  @default("pending") // pending, sent, delivered, opened, clicked, bounced, failed
+  error        String?
+  resendId     String?
+  createdAt    DateTime                @default(now())
+
+  @@index([enrollmentId])
+  @@map("email_sequence_emails")
+}
+
+// ============================================
+// REFERRAL PROGRAM
+// ============================================
+
+model Referral {
+  id                    String    @id @default(cuid())
+  tenantId              String
+  referrerId            String
+  referrer              Client    @relation("Referrer", fields: [referrerId], references: [id], onDelete: Cascade)
+  referredId            String?
+  referred              Client?   @relation("Referred", fields: [referredId], references: [id])
+  referralCode          String    @unique
+  referredEmail         String?
+  referredName          String?
+  referredPhone         String?
+  status                String    @default("pending") // pending, signed_up, qualified, rewarded, expired
+  createdAt             DateTime  @default(now())
+  signedUpAt            DateTime?
+  qualifiedAt           DateTime?
+  rewardedAt            DateTime?
+  expiresAt             DateTime?
+  referrerReward        Json?     @db.JsonB
+  referredReward        Json?     @db.JsonB
+  referrerRewardApplied Boolean   @default(false)
+  referredRewardApplied Boolean   @default(false)
+  source                String? // link, email, social, qr
+
+  @@index([tenantId, referrerId, status])
+  @@map("referrals")
+}
+
+model ReferralSettings {
+  id                    String   @id @default(cuid())
+  tenantId              String   @unique
+  isActive              Boolean  @default(true)
+  referrerRewardType    String   @default("credits") // credits, discount, cash
+  referrerRewardValue   Int      @default(1)
+  referredRewardType    String   @default("discount")
+  referredRewardValue   Int      @default(10)
+  qualificationCriteria String   @default("first_session") // signup, first_session, first_payment
+  maxReferralsPerClient Int?
+  referralCodeExpiry    Int? // days
+  sendReferralEmails    Boolean  @default(true)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@map("referral_settings")
+}
+
+// ============================================
+// ANALYTICS
+// ============================================
+
+model AnalyticsSnapshot {
+  id        String   @id @default(cuid())
+  tenantId  String
+  date      DateTime @default(now())
+  period    String // daily, weekly, monthly
+  metrics   Json     @db.JsonB
+  createdAt DateTime @default(now())
+
+  @@unique([tenantId, date, period])
+  @@index([tenantId, date])
+  @@map("analytics_snapshots")
 }

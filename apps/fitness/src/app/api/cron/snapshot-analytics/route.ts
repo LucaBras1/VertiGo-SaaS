@@ -13,9 +13,8 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Get all active tenants
+    // Get all tenants
     const tenants = await prisma.tenant.findMany({
-      where: { status: 'active' },
       select: { id: true },
     })
 

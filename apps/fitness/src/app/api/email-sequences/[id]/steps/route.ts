@@ -68,7 +68,7 @@ export async function POST(
         subject: result.data.subject,
         htmlContent: result.data.htmlContent,
         textContent: result.data.textContent,
-        conditions: result.data.conditions,
+        conditions: result.data.conditions as object | undefined,
       },
     })
 
