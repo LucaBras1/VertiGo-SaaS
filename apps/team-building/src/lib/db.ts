@@ -1,30 +1,54 @@
 /**
  * Prisma Database Client for TeamForge
- * Prisma 7 requires adapter for SQLite
+ * Prisma 7 requires adapter for PostgreSQL
  */
 
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { PrismaClient } from '../generated/prisma'
+import { PrismaPg } from '@prisma/adapter-pg'
+import { Pool } from 'pg'
 
-declare global {
-  // eslint-disable-next-line no-var
-  var prisma: PrismaClient | undefined
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined
+  pool: Pool | undefined
 }
 
-// Prisma 7 - SQLite adapter pattern
-const adapter = new PrismaBetterSqlite3({
-  url: process.env.DATABASE_URL || 'file:./prisma/dev.db',
-})
+function createPrismaClient(): PrismaClient {
+  const connectionString = process.env.DATABASE_URL
 
-export const prisma =
-  global.prisma ||
-  new PrismaClient({
+  // During build time (no DATABASE_URL), return a proxy that will throw on actual usage
+  if (!connectionString) {
+    console.warn('[Prisma] DATABASE_URL not set - database operations will fail at runtime')
+    return new Proxy({} as PrismaClient, {
+      get: (target, prop) => {
+        if (prop === 'then' || prop === 'catch' || typeof prop === 'symbol') {
+          return undefined
+        }
+        return () => {
+          throw new Error('DATABASE_URL environment variable is not set')
+        }
+      },
+    })
+  }
+
+  // Create PostgreSQL connection pool
+  const pool = globalForPrisma.pool ?? new Pool({ connectionString })
+
+  if (process.env.NODE_ENV !== 'production') {
+    globalForPrisma.pool = pool
+  }
+
+  const adapter = new PrismaPg(pool)
+
+  return new PrismaClient({
     adapter,
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
   })
+}
+
+export const prisma = globalForPrisma.prisma ?? createPrismaClient()
 
 if (process.env.NODE_ENV !== 'production') {
-  global.prisma = prisma
+  globalForPrisma.prisma = prisma
 }
 
 export default prisma
