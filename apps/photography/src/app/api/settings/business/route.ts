@@ -20,26 +20,19 @@ export async function GET() {
 
     const tenant = await prisma.tenant.findUnique({
       where: { id: session.user.tenantId },
-      select: {
-        id: true,
-        name: true,
-        settings: true,
-      }
     })
 
     if (!tenant) {
       return NextResponse.json({ error: 'Business not found' }, { status: 404 })
     }
 
-    // Extract business settings from JSON settings field
-    const settings = (tenant.settings as Record<string, unknown>) || {}
-
+    // Return tenant details - note: website, phone, address would need schema extension
     return NextResponse.json({
       id: tenant.id,
       name: tenant.name,
-      website: settings.website || '',
-      phone: settings.phone || '',
-      address: settings.address || '',
+      website: '',  // TODO: Add to schema
+      phone: '',    // TODO: Add to schema
+      address: '',  // TODO: Add to schema
     })
   } catch (error) {
     console.error('GET /api/settings/business error:', error)
@@ -57,42 +50,21 @@ export async function PUT(request: NextRequest) {
     const body = await request.json()
     const data = UpdateBusinessSchema.parse(body)
 
-    // Get current tenant settings
-    const currentTenant = await prisma.tenant.findUnique({
-      where: { id: session.user.tenantId },
-      select: { settings: true }
-    })
-
-    const currentSettings = (currentTenant?.settings as Record<string, unknown>) || {}
-
-    // Update tenant with new settings
+    // Update tenant name only - other fields need schema extension
     const tenant = await prisma.tenant.update({
       where: { id: session.user.tenantId },
       data: {
         name: data.name,
-        settings: {
-          ...currentSettings,
-          website: data.website || '',
-          phone: data.phone || '',
-          address: data.address || '',
-        },
         updatedAt: new Date(),
       },
-      select: {
-        id: true,
-        name: true,
-        settings: true,
-      }
     })
-
-    const settings = (tenant.settings as Record<string, unknown>) || {}
 
     return NextResponse.json({
       id: tenant.id,
       name: tenant.name,
-      website: settings.website || '',
-      phone: settings.phone || '',
-      address: settings.address || '',
+      website: '',  // TODO: Add to schema
+      phone: '',    // TODO: Add to schema
+      address: '',  // TODO: Add to schema
     })
   } catch (error) {
     console.error('PUT /api/settings/business error:', error)
