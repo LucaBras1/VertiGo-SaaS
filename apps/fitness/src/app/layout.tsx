@@ -1,7 +1,8 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { Toaster } from 'react-hot-toast'
 import { SessionProvider } from '@/components/providers/SessionProvider'
+import { PWAProvider } from '@/components/providers/PWAProvider'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -10,6 +11,27 @@ export const metadata: Metadata = {
   title: 'FitAdmin - Smart Management for Fitness Pros',
   description: 'AI-powered management platform for personal trainers and fitness studios',
   keywords: 'fitness, personal training, gym management, workout planning, client management',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'FitAdmin',
+  },
+  formatDetection: {
+    telephone: true,
+  },
+  other: {
+    'mobile-web-app-capable': 'yes',
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#10B981',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({
@@ -21,7 +43,9 @@ export default function RootLayout({
     <html lang="cs">
       <body className={inter.className}>
         <SessionProvider>
-          {children}
+          <PWAProvider>
+            {children}
+          </PWAProvider>
           <Toaster
             position="top-right"
             toastOptions={{

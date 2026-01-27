@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline - FitAdmin</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      padding: 20px;
+    }
+
+    .container {
+      text-align: center;
+      max-width: 400px;
+    }
+
+    .icon {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 24px;
+      background: rgba(16, 185, 129, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon svg {
+      width: 60px;
+      height: 60px;
+      color: #10B981;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    p {
+      color: #94A3B8;
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .retry-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #10B981;
+      color: white;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .retry-btn:hover {
+      background: #059669;
+    }
+
+    .retry-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .cached-pages {
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .cached-pages h2 {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #64748B;
+      margin-bottom: 16px;
+    }
+
+    .cached-pages ul {
+      list-style: none;
+    }
+
+    .cached-pages a {
+      display: block;
+      color: #10B981;
+      text-decoration: none;
+      padding: 12px;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+
+    .cached-pages a:hover {
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .logo {
+      position: fixed;
+      bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #475569;
+      font-size: 14px;
+    }
+
+    .logo svg {
+      width: 24px;
+      height: 24px;
+      color: #10B981;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414" />
+      </svg>
+    </div>
+
+    <h1>Jste offline</h1>
+    <p>
+      Zkontrolujte prosim pripojeni k internetu a zkuste to znovu.
+      Nektery obsah muze byt dostupny v mezipamet.
+    </p>
+
+    <button class="retry-btn" onclick="window.location.reload()">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+      </svg>
+      Zkusit znovu
+    </button>
+
+    <div class="cached-pages" id="cached-pages" style="display: none;">
+      <h2>Dostupne offline</h2>
+      <ul id="cached-list"></ul>
+    </div>
+  </div>
+
+  <div class="logo">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+    </svg>
+    FitAdmin
+  </div>
+
+  <script>
+    // Check for cached pages and display them
+    if ('caches' in window) {
+      caches.open('fitadmin-pages-v1').then(cache => {
+        cache.keys().then(keys => {
+          if (keys.length > 0) {
+            const cachedPages = document.getElementById('cached-pages');
+            const cachedList = document.getElementById('cached-list');
+
+            cachedPages.style.display = 'block';
+
+            keys.forEach(request => {
+              const url = new URL(request.url);
+              if (url.pathname !== '/offline' && url.pathname.startsWith('/dashboard')) {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = url.pathname;
+                a.textContent = url.pathname.replace('/dashboard/', '').replace(/-/g, ' ') || 'Dashboard';
+                li.appendChild(a);
+                cachedList.appendChild(li);
+              }
+            });
+          }
+        });
+      });
+    }
+
+    // Auto-retry when back online
+    window.addEventListener('online', () => {
+      window.location.reload();
+    });
+  </script>
+</body>
+</html>

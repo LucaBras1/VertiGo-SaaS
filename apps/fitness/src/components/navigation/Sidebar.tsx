@@ -25,6 +25,9 @@ import {
   Receipt,
   ClipboardList,
   CalendarClock,
+  Gift,
+  RefreshCw,
+  Mail,
 } from 'lucide-react'
 import { useUIStore } from '@/stores/uiStore'
 import { cn } from '@/lib/utils'
@@ -46,6 +49,7 @@ const navigation: NavSection[] = [
     items: [
       { name: 'Klienti', href: '/dashboard/clients', icon: Users },
       { name: 'Progress', href: '/dashboard/progress', icon: TrendingUp },
+      { name: 'Doporučení', href: '/dashboard/referrals', icon: Gift },
     ],
   },
   {
@@ -59,6 +63,7 @@ const navigation: NavSection[] = [
     title: 'OBCHOD',
     items: [
       { name: 'Balíčky', href: '/dashboard/packages', icon: Package },
+      { name: 'Předplatné', href: '/dashboard/subscriptions', icon: RefreshCw },
       { name: 'Faktury', href: '/dashboard/invoices', icon: FileText },
       { name: 'Výdaje', href: '/dashboard/expenses', icon: Receipt },
     ],
@@ -66,7 +71,14 @@ const navigation: NavSection[] = [
   {
     title: 'ANALYTIKA',
     items: [
+      { name: 'Přehled', href: '/dashboard/analytics', icon: BarChart3 },
       { name: 'Reporty', href: '/dashboard/reports', icon: FileBarChart },
+    ],
+  },
+  {
+    title: 'MARKETING',
+    items: [
+      { name: 'Email sekvence', href: '/dashboard/email-sequences', icon: Mail },
     ],
   },
   {
