@@ -53,6 +53,24 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Generate Prisma clients
+        run: |
+          # Generate shared database package
+          cd packages/database && npx prisma generate && cd ../..
+          # Generate app-specific clients
+          for app in fitness photography musicians events performing-arts kids-entertainment team-building; do
+            if [ -d "apps/$app/prisma" ]; then
+              echo "Generating Prisma client for $app..."
+              cd apps/$app && npx prisma generate && cd ../..
+            fi
+          done
+          # Generate _shared-core if exists
+          if [ -d "_shared-core/prisma" ]; then
+            cd _shared-core && npx prisma generate && cd ..
+          fi
+        env:
+          DATABASE_URL: postgresql://user:password@localhost:5432/db
+
       - name: Type check
         run: pnpm run type-check || true
 
