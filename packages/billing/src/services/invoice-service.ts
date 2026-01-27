@@ -7,7 +7,7 @@ import type {
   InvoiceNumberFormat,
   InvoiceLineItem,
 } from '../types/invoice';
-import type { TaxConfig } from '../types/tax';
+import type { TaxConfig as _TaxConfig } from '../types/tax';
 
 export class InvoiceService {
   private prisma: PrismaClient;
@@ -123,7 +123,7 @@ export class InvoiceService {
       data: {
         tenantId: input.tenantId,
         invoiceNumber,
-        status: input.status || 'DRAFT',
+        status: (input.status || 'DRAFT') as any,
         issueDate: input.issueDate,
         dueDate: input.dueDate,
         subtotal,

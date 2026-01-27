@@ -76,7 +76,8 @@ export type TaxExemption = z.infer<typeof TaxExemptionSchema>;
 // Helper function to get VAT rate by country
 export function getVatRate(countryCode: CountryCode, type: 'standard' | 'reduced' | 'superReduced' = 'standard'): number {
   const rates = VAT_RATES[countryCode];
-  return rates[type] ?? rates.standard;
+  const rate = (rates as Record<string, number | undefined>)[type];
+  return rate ?? rates.standard;
 }
 
 // Check if reverse charge applies (EU B2B)

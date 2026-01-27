@@ -14,11 +14,9 @@ export interface RecurringInvoiceTemplate {
 }
 
 export class RecurringInvoiceService {
-  private prisma: PrismaClient;
   private invoiceService: InvoiceService;
 
   constructor(prisma: PrismaClient) {
-    this.prisma = prisma;
     this.invoiceService = new InvoiceService(prisma);
   }
 
@@ -95,7 +93,7 @@ export class RecurringInvoiceService {
    * Generate single invoice from template
    */
   async generateFromTemplate(
-    templateId: string
+    _templateId: string
   ): Promise<Invoice> {
     // In production:
     // 1. Load template
@@ -109,6 +107,7 @@ export class RecurringInvoiceService {
     const mockInput: CreateInvoiceInput = {
       tenantId: 'mock',
       type: 'RECURRING',
+      status: 'DRAFT',
       issueDate: now,
       dueDate,
       seller: {
@@ -129,8 +128,10 @@ export class RecurringInvoiceService {
       subtotal: 0,
       taxAmount: 0,
       total: 0,
+      discount: 0,
       currency: 'EUR',
       paymentTerm: 'NET_14',
+      autoGenerateNumber: true,
     };
 
     return this.invoiceService.createInvoice(mockInput);
@@ -139,28 +140,28 @@ export class RecurringInvoiceService {
   /**
    * Pause recurring template
    */
-  async pauseTemplate(templateId: string): Promise<void> {
+  async pauseTemplate(_templateId: string): Promise<void> {
     // Update isActive to false
   }
 
   /**
    * Resume recurring template
    */
-  async resumeTemplate(templateId: string): Promise<void> {
+  async resumeTemplate(_templateId: string): Promise<void> {
     // Update isActive to true
   }
 
   /**
    * Delete recurring template
    */
-  async deleteTemplate(templateId: string): Promise<void> {
+  async deleteTemplate(_templateId: string): Promise<void> {
     // Delete template
   }
 
   /**
    * Get all active templates for tenant
    */
-  async getActiveTemplates(tenantId: string): Promise<RecurringInvoiceTemplate[]> {
+  async getActiveTemplates(_tenantId: string): Promise<RecurringInvoiceTemplate[]> {
     // Query active templates
     return [];
   }
@@ -168,7 +169,7 @@ export class RecurringInvoiceService {
   /**
    * Preview next invoice from template
    */
-  async previewNextInvoice(templateId: string): Promise<Partial<Invoice>> {
+  async previewNextInvoice(_templateId: string): Promise<Partial<Invoice>> {
     // Generate preview without saving
     const now = new Date();
     const dueDate = this.calculateDueDate(now, 14);

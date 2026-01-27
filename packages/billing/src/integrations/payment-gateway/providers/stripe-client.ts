@@ -12,7 +12,7 @@ export class StripeClient {
 
   constructor(config: StripeClientConfig) {
     this.stripe = new Stripe(config.secretKey, {
-      apiVersion: '2024-12-18.acacia',
+      apiVersion: '2024-12-18.acacia' as Stripe.LatestApiVersion,
     });
     this.webhookSecret = config.webhookSecret;
   }

@@ -7,10 +7,9 @@ import type {
 } from '../types/expense';
 
 export class ExpenseService {
-  private prisma: PrismaClient;
-
-  constructor(prisma: PrismaClient) {
-    this.prisma = prisma;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  constructor(_prisma: PrismaClient) {
+    // Prisma client stored for future use when models are implemented
   }
 
   /**
@@ -45,8 +44,8 @@ export class ExpenseService {
    * Update expense
    */
   async updateExpense(
-    expenseId: string,
-    updates: Partial<Expense>
+    _expenseId: string,
+    _updates: Partial<Expense>
   ): Promise<Expense> {
     // In production, update Expense table
     return {} as Expense;
@@ -55,7 +54,7 @@ export class ExpenseService {
   /**
    * Get expense by ID
    */
-  async getExpense(expenseId: string): Promise<Expense | null> {
+  async getExpense(_expenseId: string): Promise<Expense | null> {
     // In production, query Expense table
     return null;
   }
@@ -63,7 +62,7 @@ export class ExpenseService {
   /**
    * List expenses with filters
    */
-  async listExpenses(filter: ExpenseFilter): Promise<Expense[]> {
+  async listExpenses(_filter: ExpenseFilter): Promise<Expense[]> {
     // In production, query Expense table with filters
     return [];
   }
@@ -71,7 +70,7 @@ export class ExpenseService {
   /**
    * Delete expense
    */
-  async deleteExpense(expenseId: string): Promise<void> {
+  async deleteExpense(_expenseId: string): Promise<void> {
     // In production, delete from Expense table
   }
 
@@ -121,7 +120,7 @@ export class ExpenseService {
    * In production, this would use Google Vision API, AWS Textract, or similar
    */
   async processReceiptOcr(
-    imageUrl: string
+    _imageUrl: string
   ): Promise<ReceiptOcrResult> {
     // Mock OCR result
     return {
@@ -138,9 +137,9 @@ export class ExpenseService {
    * Get expense statistics
    */
   async getStatistics(
-    tenantId: string,
-    dateFrom?: Date,
-    dateTo?: Date
+    _tenantId: string,
+    _dateFrom?: Date,
+    _dateTo?: Date
   ): Promise<{
     totalExpenses: number;
     totalApproved: number;

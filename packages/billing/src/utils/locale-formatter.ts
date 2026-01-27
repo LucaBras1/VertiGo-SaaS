@@ -91,7 +91,7 @@ export class LocaleFormatter {
    */
   static formatInvoiceNumber(
     invoiceNumber: string,
-    locale: string = 'en-US'
+    _locale: string = 'en-US'
   ): string {
     // For now, just return as-is
     // Could add locale-specific formatting later

@@ -92,7 +92,7 @@ export class PaymentService {
   /**
    * Get payment by ID
    */
-  async getPayment(paymentId: string): Promise<Payment | null> {
+  async getPayment(_paymentId: string): Promise<Payment | null> {
     // Mock implementation
     return null;
   }
@@ -100,7 +100,7 @@ export class PaymentService {
   /**
    * Get payments for invoice
    */
-  async getPaymentsByInvoice(invoiceId: string): Promise<Payment[]> {
+  async getPaymentsByInvoice(_invoiceId: string): Promise<Payment[]> {
     // Mock implementation
     return [];
   }
@@ -109,9 +109,9 @@ export class PaymentService {
    * Process refund
    */
   async processRefund(
-    paymentId: string,
-    amount: number,
-    reason?: string
+    _paymentId: string,
+    _amount: number,
+    _reason?: string
   ): Promise<{ success: boolean; refundId?: string; error?: string }> {
     try {
       // Mock refund processing
@@ -153,9 +153,9 @@ export class PaymentService {
    * Get payment statistics
    */
   async getStatistics(
-    tenantId: string,
-    dateFrom?: Date,
-    dateTo?: Date
+    _tenantId: string,
+    _dateFrom?: Date,
+    _dateTo?: Date
   ): Promise<{
     totalProcessed: number;
     totalCompleted: number;

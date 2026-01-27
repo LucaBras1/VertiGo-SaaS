@@ -146,7 +146,7 @@ Predict when this invoice will be paid based on customer's payment history:
 - Issue Date: ${invoice.issueDate.toISOString().split('T')[0]}
 - Due Date: ${invoice.dueDate.toISOString().split('T')[0]}
 - Status: ${invoice.status}
-- Customer: ${invoice.billingName}
+- Customer: ${invoice.buyer.name}
 
 **Customer Payment History:**
 - Average Days to Payment: ${historical.averageDaysToPayment}

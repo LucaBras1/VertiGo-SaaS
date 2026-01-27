@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CurrencySchema, MoneySchema } from './currency';
+import { CurrencySchema } from './currency';
 import { TaxConfigSchema } from './tax';
 
 // Invoice statuses

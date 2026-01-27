@@ -88,9 +88,9 @@ export class InvoiceReminderService {
    * Check if reminder was already sent
    */
   private async wasReminderSent(
-    invoiceId: string,
-    type: 'BEFORE_DUE' | 'AFTER_DUE',
-    daysOffset: number
+    _invoiceId: string,
+    _type: 'BEFORE_DUE' | 'AFTER_DUE',
+    _daysOffset: number
   ): Promise<boolean> {
     // In production, check reminder_logs table
     // For now, return false (always send)
@@ -182,7 +182,7 @@ export class InvoiceReminderService {
       return {
         subject: `Reminder: Invoice ${invoice.invoiceNumber} due in ${daysOffset} days`,
         body: `
-Dear ${invoice.billingName},
+Dear ${invoice.buyer.name},
 
 This is a friendly reminder that invoice ${invoice.invoiceNumber} for ${invoice.total} ${invoice.currency} is due on ${dueDate} (in ${daysOffset} days).
 
@@ -195,7 +195,7 @@ Thank you for your business!
       return {
         subject: `Overdue: Invoice ${invoice.invoiceNumber} - ${daysOffset} days past due`,
         body: `
-Dear ${invoice.billingName},
+Dear ${invoice.buyer.name},
 
 Invoice ${invoice.invoiceNumber} for ${invoice.total} ${invoice.currency} was due on ${dueDate} and is now ${daysOffset} days overdue.
 
@@ -212,7 +212,7 @@ Thank you.
   /**
    * Get reminder history for invoice
    */
-  async getReminderHistory(invoiceId: string): Promise<ReminderLog[]> {
+  async getReminderHistory(_invoiceId: string): Promise<ReminderLog[]> {
     // In production, query reminder_logs table
     return [];
   }

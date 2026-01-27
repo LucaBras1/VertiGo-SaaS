@@ -1,4 +1,4 @@
-import { Configuration, PlaidApi, PlaidEnvironments, Transaction } from 'plaid';
+import { Configuration, PlaidApi, PlaidEnvironments } from 'plaid';
 import type { BankTransaction, PlaidTransaction } from '../../../types/bank';
 import type { Currency } from '../../../types/currency';
 

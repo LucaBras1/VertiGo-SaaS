@@ -1,6 +1,7 @@
 // Export integrations
 export * from './bank/bank-factory';
-export * from './bank/transaction-sync';
+// TODO: Re-enable when BankAccount, BankTransaction, InvoicePayment models are added to schema
+// export * from './bank/transaction-sync';
 export * from './bank/providers/fio-client';
 export * from './bank/providers/plaid-client';
 

@@ -1,15 +1,22 @@
 import { PrismaClient, Decimal } from '@prisma/client';
+
+// Type assertion for Prisma client with banking models (not yet in schema)
+type PrismaWithBanking = PrismaClient & {
+  bankAccount: any;
+  bankTransaction: any;
+  invoicePayment: any;
+};
 import type { BankAccount, BankTransaction, BankSyncResult } from '../../types/bank';
 import { BankFactory } from './bank-factory';
 import { AIPaymentMatcher, PaymentMatchSuggestion } from '../../ai/payment-matcher';
 
 export class BankTransactionSyncService {
-  private prisma: PrismaClient;
+  private prisma: PrismaWithBanking;
   private factory: BankFactory;
   private matcher?: AIPaymentMatcher;
 
   constructor(prisma: PrismaClient, openaiKey?: string) {
-    this.prisma = prisma;
+    this.prisma = prisma as PrismaWithBanking;
     this.factory = new BankFactory();
     if (openaiKey) {
       this.matcher = new AIPaymentMatcher(openaiKey);
@@ -187,7 +194,7 @@ export class BankTransactionSyncService {
     const candidateInvoices = await this.prisma.invoice.findMany({
       where: {
         tenantId,
-        status: { in: ['sent', 'overdue'] },
+        status: { in: ['SENT', 'OVERDUE'] },
       },
       include: {
         customer: true,
@@ -248,7 +255,7 @@ export class BankTransactionSyncService {
       // Create payment record and update invoice in a transaction
       await this.prisma.$transaction(async (tx) => {
         // Create InvoicePayment record
-        await tx.invoicePayment.create({
+        await (tx as any).invoicePayment.create({
           data: {
             invoiceId,
             amount: Number(transaction.amount) * 100, // Convert to cents
@@ -261,7 +268,7 @@ export class BankTransactionSyncService {
         });
 
         // Update transaction as matched
-        await tx.bankTransaction.update({
+        await (tx as any).bankTransaction.update({
           where: { id: transactionId },
           data: {
             isMatched: true,
@@ -274,15 +281,15 @@ export class BankTransactionSyncService {
 
         // Update invoice paid amount
         const transactionAmountCents = Number(transaction.amount) * 100;
-        const newPaidAmount = (invoice.paidAmount || 0) + transactionAmountCents;
+        const newPaidAmount = ((invoice as any).paidAmount || 0) + transactionAmountCents;
 
         await tx.invoice.update({
           where: { id: invoiceId },
           data: {
             paidAmount: newPaidAmount,
-            status: newPaidAmount >= invoice.totalAmount ? 'paid' : 'sent',
-            paidDate: newPaidAmount >= invoice.totalAmount ? new Date() : null,
-          },
+            status: newPaidAmount >= (invoice as any).total ? 'PAID' : 'SENT',
+            paidDate: newPaidAmount >= (invoice as any).total ? new Date() : null,
+          } as any,
         });
       });
 
@@ -320,12 +327,12 @@ export class BankTransactionSyncService {
 
       await this.prisma.$transaction(async (tx) => {
         // Delete the payment record
-        await tx.invoicePayment.deleteMany({
+        await (tx as any).invoicePayment.deleteMany({
           where: { bankTransactionId: transactionId },
         });
 
         // Update transaction as unmatched
-        await tx.bankTransaction.update({
+        await (tx as any).bankTransaction.update({
           where: { id: transactionId },
           data: {
             isMatched: false,
@@ -339,12 +346,12 @@ export class BankTransactionSyncService {
         // Recalculate invoice paid amount
         const invoice = await tx.invoice.findUnique({
           where: { id: invoiceId },
-          include: { payments: true },
-        });
+        }) as any;
 
         if (invoice) {
-          const newPaidAmount = invoice.payments.reduce(
-            (sum, p) => sum + p.amount,
+          const payments = (invoice as any).payments || [];
+          const newPaidAmount = payments.reduce(
+            (sum: number, p: any) => sum + p.amount,
             0
           );
 
@@ -352,9 +359,9 @@ export class BankTransactionSyncService {
             where: { id: invoiceId },
             data: {
               paidAmount: newPaidAmount,
-              status: newPaidAmount >= invoice.totalAmount ? 'paid' : 'sent',
-              paidDate: newPaidAmount >= invoice.totalAmount ? new Date() : null,
-            },
+              status: newPaidAmount >= (invoice as any).total ? 'PAID' : 'SENT',
+              paidDate: newPaidAmount >= (invoice as any).total ? new Date() : null,
+            } as any,
           });
         }
       });
@@ -421,7 +428,7 @@ export class BankTransactionSyncService {
     const candidateInvoices = await this.prisma.invoice.findMany({
       where: {
         tenantId: transaction.tenantId,
-        status: { in: ['sent', 'overdue'] },
+        status: { in: ['SENT', 'OVERDUE'] },
       },
     });
 
@@ -433,7 +440,7 @@ export class BankTransactionSyncService {
       if (invoiceVS && txVS && invoiceVS === txVS) {
         // Check if amount matches
         const transactionAmountCents = Number(transaction.amount) * 100;
-        const remainingAmount = invoice.totalAmount - (invoice.paidAmount || 0);
+        const remainingAmount = (invoice as any).total - ((invoice as any).paidAmount || 0);
 
         if (Math.abs(transactionAmountCents - remainingAmount) <= 100) {
           // Within 1 CZK tolerance
@@ -506,7 +513,7 @@ export class BankTransactionSyncService {
     const txAmount = Number(transaction.amount) * 100; // Convert to cents
 
     for (const invoice of invoices) {
-      const remainingAmount = invoice.totalAmount - (invoice.paidAmount || 0);
+      const remainingAmount = (invoice as any).total - ((invoice as any).paidAmount || 0);
       let confidence = 0;
       const factors = {
         amountMatch: false,

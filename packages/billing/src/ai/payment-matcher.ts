@@ -63,7 +63,7 @@ export class AIPaymentMatcher {
         amountMatch: this.amountsMatch(transaction.amount, invoice.total),
         dateProximity: this.calculateDateProximity(transaction.date, invoice.dueDate),
         vsMatch: this.variableSymbolsMatch(transaction.variableSymbol, invoice.invoiceNumber),
-        nameMatch: this.namesMatch(transaction.counterpartyName, invoice.billingName),
+        nameMatch: this.namesMatch(transaction.counterpartyName, invoice.buyer.name),
         textSimilarity: 0,
       };
 
@@ -150,7 +150,7 @@ ${invoices.map((inv, i) => `
 ${i + 1}. Invoice ${inv.invoiceNumber}
    - Amount: ${inv.total} ${inv.currency}
    - Due Date: ${inv.dueDate.toISOString().split('T')[0]}
-   - Customer: ${inv.billingName}
+   - Customer: ${inv.buyer.name}
    - Status: ${inv.status}
 `).join('\n')}
 

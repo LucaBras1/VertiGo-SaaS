@@ -54,6 +54,8 @@ export class TaxService {
       taxConfig: {
         type: 'VAT',
         rate: items[0]?.taxRate || 0,
+        isReversedCharge: false,
+        isExempt: false,
       },
       breakdown,
     };
