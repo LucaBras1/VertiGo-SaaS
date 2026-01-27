@@ -41,6 +41,14 @@ test-results
 # Prisma
 prisma/*.db
 prisma/*.db-journal
+**/src/generated/prisma/
+
+# Deployment scripts with credentials
+deploy-*.sh
+
+# Temp/backup files
+*.sql
+nul
 
 # Misc
 *.tsbuildinfo
