@@ -3,13 +3,15 @@ import { clsx } from 'clsx'
 
 interface BadgeProps {
   children: ReactNode
-  variant?: 'default' | 'success' | 'warning' | 'danger' | 'info' | 'gray' | 'yellow' | 'green' | 'blue' | 'red'
+  variant?: 'default' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'gray' | 'yellow' | 'green' | 'blue' | 'red'
   size?: 'sm' | 'md'
+  className?: string
 }
 
-export function Badge({ children, variant = 'default', size = 'md' }: BadgeProps) {
+export function Badge({ children, variant = 'default', size = 'md', className }: BadgeProps) {
   const variantStyles = {
     default: 'bg-gray-100 text-gray-700',
+    secondary: 'bg-gray-200 text-gray-600',
     success: 'bg-green-100 text-green-700',
     warning: 'bg-amber-100 text-amber-700',
     danger: 'bg-red-100 text-red-700',
@@ -31,7 +33,8 @@ export function Badge({ children, variant = 'default', size = 'md' }: BadgeProps
       className={clsx(
         'inline-flex items-center font-medium rounded-full',
         variantStyles[variant],
-        sizeStyles[size]
+        sizeStyles[size],
+        className
       )}
     >
       {children}

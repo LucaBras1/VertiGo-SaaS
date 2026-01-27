@@ -6,6 +6,8 @@
 
 import { prisma } from '@/lib/prisma'
 import { Prisma } from '@/generated/prisma'
+import { sendBillingReminderEmail } from '@/lib/email'
+import { stripe, formatAmountForStripe } from '@/lib/stripe'
 
 export type SubscriptionFrequency = 'WEEKLY' | 'BIWEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY'
 export type SubscriptionStatus = 'active' | 'paused' | 'cancelled' | 'expired' | 'past_due'
@@ -368,6 +370,7 @@ export async function sendBillingReminders(
     },
     include: {
       client: true,
+      package: true,
     },
   })
 
@@ -375,8 +378,18 @@ export async function sendBillingReminders(
 
   for (const subscription of subscriptions) {
     try {
-      // TODO: Send email reminder
-      // await sendBillingReminderEmail(subscription)
+      // Send email reminder to client
+      if (subscription.client.email) {
+        await sendBillingReminderEmail({
+          to: subscription.client.email,
+          clientName: subscription.client.name,
+          packageName: subscription.package?.name,
+          amount: Number(subscription.amount),
+          currency: subscription.currency,
+          nextBillingDate: subscription.nextBillingDate,
+          frequency: subscription.frequency,
+        })
+      }
 
       await prisma.subscription.update({
         where: { id: subscription.id },
@@ -397,6 +410,7 @@ export async function sendBillingReminders(
  */
 export async function retryPayment(subscriptionId: string): Promise<{
   success: boolean
+  paymentIntentId?: string
   error?: string
 }> {
   const subscription = await prisma.subscription.findUnique({
@@ -417,19 +431,77 @@ export async function retryPayment(subscriptionId: string): Promise<{
     return { success: false, error: 'Max retry attempts reached' }
   }
 
-  try {
-    // TODO: Integrate with Stripe for actual payment retry
-    // const paymentIntent = await stripe.paymentIntents.create(...)
-
+  // Check if we have required Stripe info for off-session payment
+  if (!subscription.stripeCustomerId || !subscription.stripePaymentMethodId) {
+    // No saved payment method - can't retry automatically
     await prisma.subscription.update({
       where: { id: subscriptionId },
       data: {
         retryCount: { increment: 1 },
-        lastPaymentStatus: 'retry_attempted',
+        lastPaymentStatus: 'failed',
+      },
+    })
+    return {
+      success: false,
+      error: 'No saved payment method for automatic retry'
+    }
+  }
+
+  try {
+    // Create PaymentIntent for off-session payment
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: formatAmountForStripe(Number(subscription.amount), subscription.currency),
+      currency: subscription.currency.toLowerCase(),
+      customer: subscription.stripeCustomerId,
+      payment_method: subscription.stripePaymentMethodId,
+      off_session: true,
+      confirm: true,
+      metadata: {
+        subscriptionId: subscription.id,
+        tenantId: subscription.tenantId,
+        clientId: subscription.clientId,
+        retryAttempt: String(subscription.retryCount + 1),
+        type: 'subscription_retry',
       },
     })
 
-    return { success: true }
+    // Update subscription status based on payment intent status
+    if (paymentIntent.status === 'succeeded') {
+      await prisma.subscription.update({
+        where: { id: subscriptionId },
+        data: {
+          retryCount: 0,
+          lastPaymentStatus: 'paid',
+          lastPaymentDate: new Date(),
+          status: 'active',
+        },
+      })
+      return { success: true, paymentIntentId: paymentIntent.id }
+    } else if (paymentIntent.status === 'requires_action') {
+      // Payment requires additional authentication
+      await prisma.subscription.update({
+        where: { id: subscriptionId },
+        data: {
+          retryCount: { increment: 1 },
+          lastPaymentStatus: 'requires_action',
+        },
+      })
+      return {
+        success: false,
+        paymentIntentId: paymentIntent.id,
+        error: 'Payment requires customer authentication'
+      }
+    } else {
+      // Payment pending or processing
+      await prisma.subscription.update({
+        where: { id: subscriptionId },
+        data: {
+          retryCount: { increment: 1 },
+          lastPaymentStatus: 'processing',
+        },
+      })
+      return { success: true, paymentIntentId: paymentIntent.id }
+    }
   } catch (error) {
     await prisma.subscription.update({
       where: { id: subscriptionId },

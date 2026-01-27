@@ -197,6 +197,84 @@ export async function sendSessionReminderEmail({
   })
 }
 
+export async function sendBillingReminderEmail({
+  to,
+  clientName,
+  packageName,
+  amount,
+  currency,
+  nextBillingDate,
+  frequency,
+  manageUrl,
+}: {
+  to: string
+  clientName: string
+  packageName?: string | null
+  amount: number | string
+  currency: string
+  nextBillingDate: Date
+  frequency: string
+  manageUrl?: string
+}): Promise<EmailResult> {
+  const formattedAmount = typeof amount === 'number'
+    ? amount.toLocaleString('cs-CZ')
+    : amount
+  const formattedDate = nextBillingDate.toLocaleDateString('cs-CZ', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+
+  const frequencyText: Record<string, string> = {
+    WEEKLY: 'týdenní',
+    BIWEEKLY: 'čtrnáctidenní',
+    MONTHLY: 'měsíční',
+    QUARTERLY: 'čtvrtletní',
+    YEARLY: 'roční',
+  }
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      </head>
+      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
+          <h1 style="color: white; margin: 0; font-size: 24px;">Připomínka platby</h1>
+        </div>
+        <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 12px 12px;">
+          <p style="font-size: 16px;">Dobrý den, <strong>${clientName}</strong>!</p>
+          <p>Rádi bychom Vás upozornili na blížící se platbu za Vaše předplatné.</p>
+          <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #F59E0B;">
+            ${packageName ? `<p style="margin: 5px 0;"><strong>Balíček:</strong> ${packageName}</p>` : ''}
+            <p style="margin: 5px 0;"><strong>Částka:</strong> ${formattedAmount} ${currency}</p>
+            <p style="margin: 5px 0;"><strong>Datum platby:</strong> ${formattedDate}</p>
+            <p style="margin: 5px 0;"><strong>Frekvence:</strong> ${frequencyText[frequency] || frequency}</p>
+          </div>
+          <p style="color: #666; font-size: 14px;">Ujistěte se prosím, že máte na účtu dostatek prostředků pro úspěšné zpracování platby.</p>
+          ${manageUrl ? `
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${manageUrl}" style="display: inline-block; background: #10B981; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600;">Spravovat předplatné</a>
+          </div>
+          ` : ''}
+          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
+          <p style="color: #9ca3af; font-size: 12px; text-align: center;">FitAdmin - Správa fitness studia</p>
+        </div>
+      </body>
+    </html>
+  `
+
+  return sendEmail({
+    to,
+    subject: `Připomínka platby - ${formattedDate}`,
+    html,
+    text: `Dobrý den, ${clientName}! Připomínáme blížící se platbu ${formattedAmount} ${currency} dne ${formattedDate}${packageName ? ` za balíček ${packageName}` : ''}.`,
+  })
+}
+
 export async function sendInvoiceEmail({
   to,
   clientName,

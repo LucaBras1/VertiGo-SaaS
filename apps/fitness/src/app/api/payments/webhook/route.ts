@@ -2,8 +2,33 @@ import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import Stripe from 'stripe'
 import { prisma } from '@/lib/prisma'
+import { Prisma } from '@/generated/prisma'
 import { verifyWebhookSignature } from '@/lib/stripe'
 import { sendEmail } from '@/lib/email'
+
+/**
+ * Generate unique invoice number
+ */
+async function generateInvoiceNumber(tenantId: string): Promise<string> {
+  const year = new Date().getFullYear()
+  const prefix = `FA${year}`
+
+  const lastInvoice = await prisma.invoice.findFirst({
+    where: {
+      tenantId,
+      invoiceNumber: { startsWith: prefix },
+    },
+    orderBy: { invoiceNumber: 'desc' },
+  })
+
+  let nextNumber = 1
+  if (lastInvoice) {
+    const lastNumber = parseInt(lastInvoice.invoiceNumber.slice(-4))
+    nextNumber = lastNumber + 1
+  }
+
+  return `${prefix}${nextNumber.toString().padStart(4, '0')}`
+}
 
 /**
  * Handle package purchase payment
@@ -373,10 +398,94 @@ export async function POST(req: Request) {
       break
     }
 
+    case 'payment_intent.succeeded': {
+      const paymentIntent = event.data.object as Stripe.PaymentIntent
+      const metadata = paymentIntent.metadata || {}
+
+      // Handle subscription retry payment success
+      if (metadata.type === 'subscription_retry' && metadata.subscriptionId) {
+        try {
+          await prisma.subscription.update({
+            where: { id: metadata.subscriptionId },
+            data: {
+              status: 'active',
+              retryCount: 0,
+              lastPaymentStatus: 'paid',
+              lastPaymentDate: new Date(),
+            },
+          })
+
+          // Create invoice for the retry payment
+          const subscription = await prisma.subscription.findUnique({
+            where: { id: metadata.subscriptionId },
+            include: { client: true, package: true },
+          })
+
+          if (subscription) {
+            const invoiceNumber = await generateInvoiceNumber(subscription.tenantId)
+            await prisma.invoice.create({
+              data: {
+                tenantId: subscription.tenantId,
+                clientId: subscription.clientId,
+                subscriptionId: subscription.id,
+                invoiceNumber,
+                status: 'paid',
+                issueDate: new Date(),
+                dueDate: new Date(),
+                paidDate: new Date(),
+                subtotal: Number(subscription.amount),
+                tax: 0,
+                total: Number(subscription.amount),
+                amountPaid: subscription.amount,
+                amountRemaining: new Prisma.Decimal(0),
+                paymentMethod: 'STRIPE',
+                notes: subscription.package
+                  ? `Předplatné: ${subscription.package.name} (opakovaná platba)`
+                  : 'Pravidelná platba (opakovaná)',
+              },
+            })
+          }
+
+          console.log(`Subscription retry payment succeeded: ${metadata.subscriptionId}`)
+        } catch (err) {
+          console.error('Error processing subscription payment success:', err)
+        }
+      }
+      break
+    }
+
     case 'payment_intent.payment_failed': {
       const paymentIntent = event.data.object as Stripe.PaymentIntent
+      const metadata = paymentIntent.metadata || {}
+
       console.log(`Payment failed: ${paymentIntent.id}`)
-      // Could send notification email here
+
+      // Handle subscription retry payment failure
+      if (metadata.type === 'subscription_retry' && metadata.subscriptionId) {
+        try {
+          const subscription = await prisma.subscription.findUnique({
+            where: { id: metadata.subscriptionId },
+          })
+
+          if (subscription) {
+            const newRetryCount = subscription.retryCount + 1
+            const isPastDue = newRetryCount >= subscription.maxRetries
+
+            await prisma.subscription.update({
+              where: { id: metadata.subscriptionId },
+              data: {
+                retryCount: newRetryCount,
+                lastPaymentStatus: 'failed',
+                ...(isPastDue && { status: 'past_due' }),
+              },
+            })
+
+            console.log(`Subscription retry payment failed: ${metadata.subscriptionId}, retry ${newRetryCount}/${subscription.maxRetries}`)
+          }
+        } catch (err) {
+          console.error('Error processing subscription payment failure:', err)
+        }
+      }
       break
     }
 
