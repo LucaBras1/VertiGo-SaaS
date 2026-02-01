@@ -1,3 +1,7 @@
+'use client'
+
+import { useSession, signOut } from 'next-auth/react'
+import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import {
   Calendar,
@@ -17,6 +21,20 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
+  const { data: session } = useSession()
+  const pathname = usePathname()
+
+  const userInitials = session?.user?.name
+    ?.split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2) || 'U'
+
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: '/login' })
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top Navigation */}
@@ -54,11 +72,11 @@ export default function DashboardLayout({
 
             <div className="flex items-center space-x-3 pl-4 border-l border-gray-200">
               <div className="text-right hidden sm:block">
-                <p className="text-sm font-semibold">John Doe</p>
-                <p className="text-xs text-gray-500">Event Manager</p>
+                <p className="text-sm font-semibold">{session?.user?.name || 'User'}</p>
+                <p className="text-xs text-gray-500">{session?.user?.tenantName || 'Event Manager'}</p>
               </div>
               <button className="w-10 h-10 bg-gradient-to-br from-primary-600 to-accent-500 rounded-full flex items-center justify-center text-white font-semibold">
-                JD
+                {userInitials}
               </button>
             </div>
           </div>
@@ -68,11 +86,11 @@ export default function DashboardLayout({
       {/* Sidebar */}
       <aside className="fixed top-16 left-0 bottom-0 w-64 bg-white border-r border-gray-200 overflow-y-auto hidden lg:block">
         <nav className="p-4 space-y-2">
-          <NavItem href="/dashboard" icon={<BarChart3 />} label="Overview" />
-          <NavItem href="/dashboard/events" icon={<Calendar />} label="Events" active />
-          <NavItem href="/dashboard/performers" icon={<Users />} label="Performers" />
-          <NavItem href="/dashboard/venues" icon={<MapPin />} label="Venues" />
-          <NavItem href="/dashboard/clients" icon={<UserCircle2 />} label="Clients" />
+          <NavItem href="/dashboard" icon={<BarChart3 />} label="Overview" active={pathname === '/dashboard'} />
+          <NavItem href="/dashboard/events" icon={<Calendar />} label="Events" active={pathname.startsWith('/dashboard/events')} />
+          <NavItem href="/dashboard/performers" icon={<Users />} label="Performers" active={pathname.startsWith('/dashboard/performers')} />
+          <NavItem href="/dashboard/venues" icon={<MapPin />} label="Venues" active={pathname.startsWith('/dashboard/venues')} />
+          <NavItem href="/dashboard/clients" icon={<UserCircle2 />} label="Clients" active={pathname.startsWith('/dashboard/clients')} />
 
           <div className="pt-6 pb-2">
             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3">
@@ -80,8 +98,14 @@ export default function DashboardLayout({
             </p>
           </div>
 
-          <NavItem href="/dashboard/settings" icon={<Settings />} label="Settings" />
-          <NavItem href="/logout" icon={<LogOut />} label="Logout" />
+          <NavItem href="/dashboard/settings" icon={<Settings />} label="Settings" active={pathname.startsWith('/dashboard/settings')} />
+          <button
+            onClick={handleLogout}
+            className="flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors text-gray-600 hover:bg-gray-50 w-full"
+          >
+            <span className="w-5 h-5"><LogOut /></span>
+            <span className="font-medium">Logout</span>
+          </button>
         </nav>
 
         {/* Upgrade Card */}
