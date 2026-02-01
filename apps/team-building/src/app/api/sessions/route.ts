@@ -5,6 +5,8 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import { sendSessionConfirmationEmail } from '@/lib/email'
+import { format } from 'date-fns'
 
 /**
  * GET /api/sessions
@@ -67,6 +69,10 @@ export async function POST(request: NextRequest) {
       status,
       isPublic,
       notes,
+      // Email notification fields (optional)
+      sendConfirmation,
+      contactEmail,
+      contactName,
     } = body
 
     // Validate required fields
@@ -105,6 +111,27 @@ export async function POST(request: NextRequest) {
         },
       },
     })
+
+    // Send confirmation email if requested
+    if (sendConfirmation && contactEmail) {
+      const sessionDate = new Date(date)
+      const objectivesList = Array.isArray(objectives) ? objectives : []
+
+      await sendSessionConfirmationEmail({
+        to: contactEmail,
+        contactName: contactName || 'Team',
+        companyName: companyName || 'Your Company',
+        programTitle: session.program?.title || 'Team Building Session',
+        sessionDate: format(sessionDate, 'MMMM d, yyyy'),
+        sessionTime: format(sessionDate, 'h:mm a'),
+        venue: venue?.name || 'TBD',
+        teamSize: teamSize || 0,
+        objectives: objectivesList,
+      }).catch((err) => {
+        console.error('Failed to send confirmation email:', err)
+        // Don't fail the request if email fails
+      })
+    }
 
     return NextResponse.json({ success: true, data: session }, { status: 201 })
   } catch (error) {

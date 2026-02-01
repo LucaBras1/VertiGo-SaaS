@@ -7,33 +7,72 @@ import {
   TrendingUp,
   CheckCircle,
   ArrowRight,
-  Zap
+  Zap,
+  Check,
+  Crown
 } from 'lucide-react'
+import { Navigation } from '@/components/landing/Navigation'
+
+const pricingPlans = [
+  {
+    name: 'Starter',
+    price: '49',
+    description: 'Perfect for small team building companies',
+    icon: Zap,
+    features: [
+      '10 sessions per month',
+      'Basic AI activity matching',
+      'Email session debriefs',
+      'Customer management',
+      'Standard reports',
+      'Email support',
+    ],
+    cta: 'Start Free Trial',
+    popular: false,
+  },
+  {
+    name: 'Professional',
+    price: '149',
+    description: 'For growing team building businesses',
+    icon: Crown,
+    features: [
+      'Unlimited sessions',
+      'All 4 AI modules',
+      'Advanced analytics & insights',
+      'Custom branding on reports',
+      'Priority support',
+      'API access',
+      'Team collaboration',
+      'PDF export',
+    ],
+    cta: 'Start Free Trial',
+    popular: true,
+  },
+  {
+    name: 'Enterprise',
+    price: '399',
+    description: 'For large-scale operations',
+    icon: Crown,
+    features: [
+      'Everything in Professional',
+      'White-label solution',
+      'Full API access',
+      'Dedicated account manager',
+      'Custom integrations',
+      'SLA guarantee',
+      'Advanced security',
+      'Multi-location support',
+    ],
+    cta: 'Contact Sales',
+    popular: false,
+  },
+]
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-emerald-50">
       {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-2">
-              <Users className="w-8 h-8 text-brand-primary" />
-              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
-                TeamForge
-              </span>
-            </div>
-            <div className="hidden md:flex items-center gap-8">
-              <a href="#features" className="text-gray-700 hover:text-brand-primary transition-colors">Features</a>
-              <a href="#ai-powered" className="text-gray-700 hover:text-brand-primary transition-colors">AI Capabilities</a>
-              <a href="#pricing" className="text-gray-700 hover:text-brand-primary transition-colors">Pricing</a>
-              <Link href="/login" className="btn-primary">
-                Get Started
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navigation />
 
       {/* Hero Section */}
       <section className="pt-20 pb-32 px-4">
@@ -176,7 +215,7 @@ export default function Home() {
                 <div>
                   <h3 className="text-2xl font-bold mb-3">DifficultyCalibratorAI</h3>
                   <p className="text-gray-600 mb-4">
-                    Automatically adjust activity difficulty based on team's physical capabilities,
+                    Automatically adjust activity difficulty based on team&apos;s physical capabilities,
                     age range, and experience level.
                   </p>
                   <ul className="space-y-2">
@@ -276,8 +315,137 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <section id="pricing" className="py-24 px-4">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Simple, Transparent{' '}
+              <span className="text-brand-primary">Pricing</span>
+            </h2>
+            <p className="text-xl text-gray-600">
+              Choose the plan that fits your business. All plans include 14-day free trial.
+            </p>
+          </div>
+
+          {/* Pricing cards */}
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {pricingPlans.map((plan) => {
+              const Icon = plan.icon
+              return (
+                <div
+                  key={plan.name}
+                  className={`relative rounded-2xl p-8 ${
+                    plan.popular
+                      ? 'bg-gradient-to-br from-blue-500 to-emerald-500 text-white shadow-2xl scale-105'
+                      : 'bg-white border border-gray-200 shadow-lg'
+                  }`}
+                >
+                  {/* Popular badge */}
+                  {plan.popular && (
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-gray-900 text-xs font-bold px-4 py-1 rounded-full">
+                      MOST POPULAR
+                    </div>
+                  )}
+
+                  {/* Icon */}
+                  <div
+                    className={`inline-flex p-3 rounded-xl mb-4 ${
+                      plan.popular
+                        ? 'bg-white/20'
+                        : 'bg-blue-100'
+                    }`}
+                  >
+                    <Icon
+                      className={`w-6 h-6 ${
+                        plan.popular ? 'text-white' : 'text-brand-primary'
+                      }`}
+                    />
+                  </div>
+
+                  {/* Plan name */}
+                  <h3
+                    className={`text-2xl font-bold mb-2 ${
+                      plan.popular ? 'text-white' : 'text-gray-900'
+                    }`}
+                  >
+                    {plan.name}
+                  </h3>
+
+                  {/* Description */}
+                  <p
+                    className={`mb-6 ${
+                      plan.popular ? 'text-white/90' : 'text-gray-600'
+                    }`}
+                  >
+                    {plan.description}
+                  </p>
+
+                  {/* Price */}
+                  <div className="mb-6">
+                    <span
+                      className={`text-5xl font-bold ${
+                        plan.popular ? 'text-white' : 'text-gray-900'
+                      }`}
+                    >
+                      ${plan.price}
+                    </span>
+                    <span
+                      className={`${
+                        plan.popular ? 'text-white/80' : 'text-gray-500'
+                      }`}
+                    >
+                      /month
+                    </span>
+                  </div>
+
+                  {/* CTA button */}
+                  <Link
+                    href={plan.cta === 'Contact Sales' ? '/contact' : '/signup'}
+                    className={`block w-full py-3 px-6 rounded-lg font-semibold mb-8 text-center transition-all ${
+                      plan.popular
+                        ? 'bg-white text-blue-600 hover:bg-gray-50'
+                        : 'bg-gradient-to-r from-blue-600 to-emerald-600 text-white hover:from-blue-700 hover:to-emerald-700'
+                    }`}
+                  >
+                    {plan.cta}
+                  </Link>
+
+                  {/* Features */}
+                  <ul className="space-y-3">
+                    {plan.features.map((feature) => (
+                      <li key={feature} className="flex items-start gap-3">
+                        <Check
+                          className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
+                            plan.popular ? 'text-yellow-300' : 'text-brand-secondary'
+                          }`}
+                        />
+                        <span
+                          className={`text-sm ${
+                            plan.popular ? 'text-white/90' : 'text-gray-600'
+                          }`}
+                        >
+                          {feature}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Bottom note */}
+          <div className="mt-12 text-center text-gray-600">
+            <p className="mb-2">All plans include 14-day free trial. No credit card required.</p>
+            <p>Need a custom plan? <Link href="/contact" className="text-brand-primary font-semibold hover:underline">Contact us</Link></p>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
-      <section className="py-24 px-4">
+      <section className="py-24 px-4 bg-white/50">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Ready to Transform Your Team Building Business?
