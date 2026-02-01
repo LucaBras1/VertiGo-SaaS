@@ -207,3 +207,98 @@ export async function getEvent(
     return null
   }
 }
+
+// ============================================
+// Calendar Client Helper Functions
+// Used by sync-service when we already have a calendar instance
+// ============================================
+
+interface CalendarEventData {
+  summary: string
+  description?: string
+  start: Date
+  end: Date
+  location?: string
+  attendees?: Array<{ email: string }>
+}
+
+/**
+ * Create a calendar event using an existing calendar client
+ */
+export async function createCalendarEvent(
+  calendar: calendar_v3.Calendar,
+  calendarId: string,
+  event: CalendarEventData
+): Promise<{ id?: string }> {
+  const response = await calendar.events.insert({
+    calendarId,
+    requestBody: {
+      summary: event.summary,
+      description: event.description,
+      location: event.location,
+      start: {
+        dateTime: event.start.toISOString(),
+        timeZone: 'Europe/Prague',
+      },
+      end: {
+        dateTime: event.end.toISOString(),
+        timeZone: 'Europe/Prague',
+      },
+      attendees: event.attendees,
+    },
+  })
+
+  return { id: response.data.id || undefined }
+}
+
+/**
+ * Update a calendar event using an existing calendar client
+ */
+export async function updateCalendarEvent(
+  calendar: calendar_v3.Calendar,
+  calendarId: string,
+  eventId: string,
+  event: CalendarEventData
+): Promise<{ id?: string }> {
+  const response = await calendar.events.update({
+    calendarId,
+    eventId,
+    requestBody: {
+      summary: event.summary,
+      description: event.description,
+      location: event.location,
+      start: {
+        dateTime: event.start.toISOString(),
+        timeZone: 'Europe/Prague',
+      },
+      end: {
+        dateTime: event.end.toISOString(),
+        timeZone: 'Europe/Prague',
+      },
+      attendees: event.attendees,
+    },
+  })
+
+  return { id: response.data.id || undefined }
+}
+
+/**
+ * Delete a calendar event using an existing calendar client
+ */
+export async function deleteCalendarEvent(
+  calendar: calendar_v3.Calendar,
+  calendarId: string,
+  eventId: string
+): Promise<void> {
+  try {
+    await calendar.events.delete({
+      calendarId,
+      eventId,
+    })
+  } catch (error: any) {
+    // 404/410 means already deleted, which is fine
+    if (error.code !== 404 && error.code !== 410) {
+      throw error
+    }
+  }
+}

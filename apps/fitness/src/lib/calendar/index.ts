@@ -2,9 +2,27 @@
 // Exports all calendar-related functions
 
 // Google Calendar
-export { isGoogleCalendarConfigured, getAuthUrl, disconnectGoogle } from './google/auth'
-export { listCalendars, createEvent, updateEvent, deleteEvent, getEvent } from './google/events'
-export type { GoogleCalendarEvent, CalendarListEntry, SyncResult } from './google/types'
+export {
+  isGoogleCalendarConfigured,
+  getAuthUrl,
+  getTokensFromCode,
+  saveTokens,
+  disconnectGoogle,
+  getCalendarClient,
+  getCalendarEmail,
+  getAuthenticatedClient,
+} from './google/auth'
+export {
+  listCalendars,
+  createEvent,
+  updateEvent,
+  deleteEvent,
+  getEvent,
+  createCalendarEvent,
+  updateCalendarEvent,
+  deleteCalendarEvent,
+} from './google/events'
+export type { GoogleCalendarEvent, GoogleOAuthTokens, CalendarListEntry, SyncResult } from './google/types'
 
 // Apple Calendar (ICS)
 export { generateICS, generateEventHash } from './apple/ics-generator'
