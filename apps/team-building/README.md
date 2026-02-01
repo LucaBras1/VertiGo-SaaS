@@ -9,14 +9,53 @@ TeamForge is an AI-powered management system for corporate team building compani
 **Target Market:** Corporate team building providers
 **Market Size:** $4B+ team building industry
 **Target Users:** 30,000+ team building companies worldwide
+**Status:** Production Ready (100% Complete)
 
 ## Branding
 
 - **Name:** TeamForge
 - **Tagline:** "Build stronger teams with AI"
-- **Primary Color:** Corporate Blue (#2563EB)
-- **Secondary Color:** Trust Green (#059669)
+- **Primary Color:** Corporate Blue (#0EA5E9)
+- **Secondary Color:** Trust Green (#22C55E)
 - **Tone:** Professional, results-oriented, collaborative
+
+## Features
+
+### Landing Page
+- Hero section with gradient background
+- AI-powered features showcase (4 AI modules)
+- 3-tier pricing (Starter $49, Professional $149, Enterprise $399)
+- Mobile navigation with slide-out menu
+- Responsive design (320px - 1920px)
+
+### Admin Dashboard
+- Programs management (CRUD with activity linking)
+- Activities management (objectives, difficulty, duration)
+- Sessions management (with AI debrief generation)
+- Customers management (CRM with organization tracking)
+- Reports & analytics (Recharts + PDF export)
+- Settings (site info, contact, company details)
+
+### Email Integration
+- Session confirmation emails
+- AI debrief delivery emails
+- Welcome emails for new customers
+- Invoice emails with line items
+- Powered by Resend SDK
+
+### AI Features
+
+#### 1. TeamDynamicsAI
+Analyze team composition and suggest appropriate activities based on size, objectives, physical level, and duration constraints.
+
+#### 2. ObjectiveMatcherAI
+Match corporate objectives to activities with precision scoring and evidence-based recommendations.
+
+#### 3. DifficultyCalibratorAI
+Adjust activity difficulty based on team's physical capabilities, age range, and experience level.
+
+#### 4. DebriefGeneratorAI
+Generate HR-ready post-session reports with executive summaries, key findings, and actionable recommendations.
 
 ## Entity Mapping
 
@@ -29,151 +68,20 @@ TeamForge adapts the shared core schema with industry-specific terminology:
 | Service | **Extra** | Additional services (facilitation, catering, equipment) |
 | Event | **Session** | Scheduled team building session with a corporate client |
 
-## AI Features
-
-### 1. TeamDynamicsAI
-**Purpose:** Analyze team composition and suggest appropriate activities
-
-**Inputs:**
-- Team size and composition (departments, seniority, age range)
-- Objectives (communication, trust, leadership, etc.)
-- Physical level preferences
-- Duration constraints
-- Previous activities (to avoid repetition)
-
-**Outputs:**
-- Recommended activities with match scores (0-100)
-- Team analysis (strengths, challenges, recommendations)
-- Suggested activity sequence
-- Expected outcomes for each activity
-
-**Model:** GPT-4o-mini (fast, cost-effective)
-
-### 2. ObjectiveMatcherAI
-**Purpose:** Match corporate objectives to activities with precision
-
-**Inputs:**
-- Team objectives (standard + custom)
-- Team context (size, industry, challenges)
-- Available activities catalog
-
-**Outputs:**
-- Activity recommendations for each objective
-- Alignment scores (0-100)
-- How each activity addresses objectives
-- Integration strategies
-- Measurable metrics for evaluation
-
-**Model:** GPT-4o-mini
-
-### 3. DifficultyCalibratorAI
-**Purpose:** Adjust activity difficulty based on team capabilities
-
-**Inputs:**
-- Activity details (default difficulty, rules, materials)
-- Team profile (physical level, age, fitness, special needs)
-- Facilitator experience level
-- Target duration
-
-**Outputs:**
-- Calibrated difficulty level
-- Specific adjustments (with reasoning)
-- Activity modifications
-- Facilitator guidance (setup tips, watch-for signals)
-- Estimated completion time
-- Success prediction with risk mitigation
-
-**Model:** GPT-4o-mini
-
-### 4. DebriefGeneratorAI
-**Purpose:** Generate HR-ready post-session reports
-
-**Inputs:**
-- Session information (company, team, dates, objectives)
-- Activities completed (with duration and notes)
-- Facilitator observations (dynamics, highlights, challenges)
-- Quantitative metrics (engagement, collaboration, etc.)
-
-**Outputs:**
-- Executive summary
-- Objectives assessment (achieved/partial/not achieved)
-- Key findings (strengths, growth areas, breakthroughs)
-- Team dynamics analysis (communication, collaboration, leadership)
-- Actionable recommendations (immediate, short-term, long-term)
-- Next steps and measurement metrics
-- Formatted HTML report for PDF generation
-
-**Model:** GPT-4o (higher quality for professional reports)
-
-## Specific Features
-
-### Objective-Based Activity Matching
-- Pre-defined objectives: Communication, Trust, Leadership, Problem-solving, Creativity, Collaboration, Conflict Resolution, Motivation
-- Custom objectives support
-- AI-powered matching with alignment scores
-- Evidence-based recommendations
-
-### Corporate Features
-- Industry type tracking (Technology, Finance, Healthcare, etc.)
-- Team composition analysis (departments, seniority levels)
-- Corporate invoicing integration
-- HR-ready reporting
-
-### Scalability & Accessibility
-- Activities scale from small teams to large groups
-- Physical level adaptation (LOW, MEDIUM, HIGH)
-- Indoor/Outdoor/Flexible location support
-- Special needs accommodations
-
-## Database Schema
-
-### Core Models
-
-**Program** (extends Performance)
-```prisma
-- teamSize, minTeamSize, maxTeamSize
-- objectives[] (array of ObjectiveType)
-- industryType
-- physicalLevel (LOW, MEDIUM, HIGH)
-- indoorOutdoor (INDOOR, OUTDOOR, BOTH, FLEXIBLE)
-- duration (minutes)
-- includesCatering, debriefIncluded, facilitationRequired
-- pricePerPerson
-```
-
-**Activity** (extends Game)
-```prisma
-- minParticipants, maxParticipants, idealGroupSize
-- objectives[], learningOutcomes[]
-- physicalDemand, indoorOutdoor
-- materialsNeeded[], facilitatorGuide
-- difficultyLevel (easy, medium, hard, adaptive)
-- scalable, canCombine
-```
-
-**Session** (extends Event)
-```prisma
-- teamSize, teamName, companyName, industryType
-- objectives[], customObjectives
-- debriefCompleted, debriefReport (AI-generated)
-```
-
-### Enums
-- **ObjectiveType:** COMMUNICATION, TRUST, LEADERSHIP, PROBLEM_SOLVING, CREATIVITY, COLLABORATION, CONFLICT, MOTIVATION
-- **PhysicalLevel:** LOW, MEDIUM, HIGH
-- **IndoorOutdoor:** INDOOR, OUTDOOR, BOTH, FLEXIBLE
-- **IndustryType:** TECHNOLOGY, FINANCE, HEALTHCARE, EDUCATION, etc.
-
 ## Tech Stack
 
 - **Framework:** Next.js 14 (App Router)
 - **Language:** TypeScript
-- **Database:** SQLite (via Prisma, shared with core)
+- **Database:** PostgreSQL (via Prisma 7)
 - **AI:** OpenAI GPT-4o / GPT-4o-mini (via `@vertigo/ai-core`)
 - **Styling:** Tailwind CSS (blue/green theme)
 - **Forms:** React Hook Form + Zod validation
 - **State:** Zustand (for client state)
 - **Auth:** NextAuth.js
+- **Email:** Resend SDK
+- **Charts:** Recharts
+- **PDF:** jsPDF + jspdf-autotable
+- **UI:** HeadlessUI (mobile menu), Lucide React (icons)
 
 ## Project Structure
 
@@ -181,34 +89,51 @@ TeamForge adapts the shared core schema with industry-specific terminology:
 apps/team-building/
 ├── prisma/
 │   └── schema.prisma           # Extended schema with TeamForge models
+├── scripts/
+│   └── create-admin.ts         # Admin user creation script
 ├── src/
-│   ├── app/                    # Next.js App Router
+│   ├── app/
+│   │   ├── page.tsx            # Landing page (pricing, features)
 │   │   ├── layout.tsx          # Root layout
-│   │   ├── page.tsx            # Landing page
 │   │   ├── globals.css         # Global styles
 │   │   ├── admin/              # Admin dashboard
-│   │   ├── api/                # API routes
-│   │   └── (auth)/             # Auth pages
-│   ├── components/             # React components
-│   │   ├── programs/           # Program management
-│   │   ├── activities/         # Activity catalog
-│   │   ├── sessions/           # Session scheduling
+│   │   │   ├── login/          # Login page
+│   │   │   ├── programs/       # Programs management
+│   │   │   ├── activities/     # Activities management
+│   │   │   ├── sessions/       # Sessions management
+│   │   │   ├── customers/      # Customers management
+│   │   │   ├── orders/         # Orders management
+│   │   │   ├── invoices/       # Invoices management
+│   │   │   ├── reports/        # Reports & analytics
+│   │   │   └── settings/       # Application settings
+│   │   └── api/                # API routes
+│   │       ├── auth/           # NextAuth handlers
+│   │       ├── programs/       # Programs CRUD
+│   │       ├── activities/     # Activities CRUD
+│   │       ├── sessions/       # Sessions CRUD
+│   │       ├── customers/      # Customers CRUD
+│   │       ├── orders/         # Orders CRUD
+│   │       ├── invoices/       # Invoices CRUD
+│   │       └── ai/             # AI endpoints
+│   ├── components/
+│   │   ├── admin/              # Admin-specific components
+│   │   ├── landing/            # Landing page components
+│   │   │   └── Navigation.tsx  # Mobile navigation
 │   │   └── ui/                 # Reusable UI components
-│   ├── lib/
-│   │   ├── ai/                 # AI modules
-│   │   │   ├── team-dynamics.ts
-│   │   │   ├── objective-matcher.ts
-│   │   │   ├── difficulty-calibrator.ts
-│   │   │   └── debrief-generator.ts
-│   │   ├── ai-client.ts        # AI client initialization
-│   │   ├── db.ts               # Prisma client
-│   │   └── utils.ts            # Utilities
-│   └── types/                  # TypeScript types
-├── public/                     # Static assets
+│   └── lib/
+│       ├── auth.ts             # NextAuth configuration
+│       ├── db.ts               # Prisma client
+│       ├── email.ts            # Resend email service
+│       ├── ai-client.ts        # AI client initialization
+│       └── utils.ts            # Utilities
 ├── .env.example                # Environment variables template
+├── .eslintrc.json              # ESLint configuration
 ├── package.json
 ├── tsconfig.json
 ├── tailwind.config.ts
+├── SETUP.md                    # Setup guide
+├── IMPLEMENTATION_STATUS.md    # Development status
+├── COMPLETION_REPORT.md        # Completion report
 └── README.md                   # This file
 ```
 
@@ -216,7 +141,9 @@ apps/team-building/
 
 ### Prerequisites
 - Node.js 18+ and pnpm
+- PostgreSQL database
 - OpenAI API key
+- Resend API key (for email features)
 
 ### 1. Install Dependencies
 ```bash
@@ -231,16 +158,30 @@ cp .env.example .env
 
 Edit `.env`:
 ```env
-DATABASE_URL="file:../../_shared-core/prisma/dev.db"
-NEXTAUTH_URL="http://localhost:3002"
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/teamforge"
+
+# NextAuth
+NEXTAUTH_URL="http://localhost:3009"
 NEXTAUTH_SECRET="your-secret-here"
+
+# Admin User
+ADMIN_EMAIL="admin@teamforge.local"
+ADMIN_PASSWORD="admin123"
+
+# OpenAI (for AI features)
 OPENAI_API_KEY="sk-..."
+
+# Email (Resend)
+RESEND_API_KEY="re_..."
+EMAIL_FROM="TeamForge <noreply@teamforge.ai>"
 ```
 
 ### 3. Initialize Database
 ```bash
 pnpm prisma generate
 pnpm prisma migrate dev
+npx tsx scripts/create-admin.ts
 ```
 
 ### 4. Run Development Server
@@ -248,75 +189,7 @@ pnpm prisma migrate dev
 pnpm dev
 ```
 
-Visit `http://localhost:3002`
-
-## Usage Examples
-
-### Using AI Services
-
-```typescript
-import { getAIServices } from '@/lib/ai-client'
-
-// Initialize AI services
-const ai = getAIServices()
-
-// 1. Analyze team and get activity recommendations
-const teamAnalysis = await ai.teamDynamics.analyze(
-  {
-    teamSize: 25,
-    objectives: ['COMMUNICATION', 'TRUST', 'COLLABORATION'],
-    industryType: 'TECHNOLOGY',
-    physicalLevel: 'MEDIUM',
-    duration: 180, // 3 hours
-  },
-  availableActivities
-)
-
-// 2. Match objectives to activities
-const objectiveMatches = await ai.objectiveMatcher.match(
-  {
-    objectives: ['Improve communication', 'Build trust'],
-    teamContext: { size: 25, industry: 'TECHNOLOGY' }
-  },
-  availableActivities
-)
-
-// 3. Calibrate activity difficulty
-const calibration = await ai.difficultyCalibrator.calibrate({
-  activityId: 'activity-id',
-  activityTitle: 'Trust Fall Challenge',
-  defaultDifficulty: 'medium',
-  teamProfile: {
-    size: 25,
-    physicalLevel: 'MEDIUM',
-    averageAge: 35,
-    ageRange: { min: 25, max: 55 },
-  }
-})
-
-// 4. Generate debrief report
-const report = await ai.debriefGenerator.generate({
-  session: {
-    id: 'session-id',
-    date: '2025-01-22',
-    companyName: 'Acme Corp',
-    teamSize: 25,
-    objectives: ['COMMUNICATION', 'TRUST']
-  },
-  activitiesCompleted: [
-    {
-      title: 'Team Trivia',
-      duration: 60,
-      objectives: ['COMMUNICATION'],
-      participationRate: 95
-    }
-  ],
-  facilitatorObservations: {
-    teamDynamics: 'Strong collaboration, some communication gaps',
-    highlights: ['Great energy', 'Creative problem-solving']
-  }
-})
-```
+Visit `http://localhost:3009`
 
 ## API Endpoints
 
@@ -331,17 +204,39 @@ const report = await ai.debriefGenerator.generate({
 - `GET /api/activities` - List activities
 - `GET /api/activities/:id` - Get activity
 - `POST /api/activities` - Create activity
+- `PUT /api/activities/:id` - Update activity
+- `DELETE /api/activities/:id` - Delete activity
+
+### Sessions
+- `GET /api/sessions` - List sessions
+- `POST /api/sessions` - Create session (with optional email notification)
+- `GET /api/sessions/:id` - Get session
+- `PUT /api/sessions/:id` - Update session
+- `DELETE /api/sessions/:id` - Delete session
 
 ### AI Endpoints
 - `POST /api/ai/analyze-team` - TeamDynamicsAI
 - `POST /api/ai/match-objectives` - ObjectiveMatcherAI
 - `POST /api/ai/calibrate-difficulty` - DifficultyCalibratorAI
-- `POST /api/ai/generate-debrief` - DebriefGeneratorAI
+- `POST /api/ai/generate-debrief` - DebriefGeneratorAI (with optional email)
 
-### Sessions
-- `GET /api/sessions` - List sessions
-- `POST /api/sessions` - Create session
-- `POST /api/sessions/:id/debrief` - Generate debrief
+### Customers
+- `GET /api/customers` - List customers
+- `POST /api/customers` - Create customer
+- `GET /api/customers/:id` - Get customer
+- `PUT /api/customers/:id` - Update customer
+- `DELETE /api/customers/:id` - Delete customer
+
+## Email Templates
+
+TeamForge includes 4 email templates powered by Resend:
+
+| Template | Trigger | Description |
+|----------|---------|-------------|
+| `sendWelcomeEmail` | Customer registration | Welcome with login link |
+| `sendSessionConfirmationEmail` | Session creation | Booking confirmation with details |
+| `sendDebriefEmail` | Debrief generation | AI report delivery with key insights |
+| `sendInvoiceEmail` | Invoice creation | Invoice with line items and payment info |
 
 ## Deployment
 
@@ -351,11 +246,13 @@ vercel --prod
 ```
 
 ### Environment Variables (Production)
-```
-DATABASE_URL="postgresql://..."  # PostgreSQL in production
+```env
+DATABASE_URL="postgresql://..."
 NEXTAUTH_URL="https://teamforge.yourdomain.com"
 NEXTAUTH_SECRET="production-secret"
 OPENAI_API_KEY="sk-..."
+RESEND_API_KEY="re_..."
+EMAIL_FROM="TeamForge <noreply@teamforge.ai>"
 ```
 
 ## Monitoring & Analytics
@@ -383,25 +280,20 @@ const costByFeature = await prisma.aIUsage.groupBy({
 })
 ```
 
-## Development Roadmap
+## Development Status
 
-### Phase 1 (Current) ✅
-- [x] Core entity models (Program, Activity, Extra, Session)
-- [x] AI modules implementation (all 4 modules)
-- [x] Landing page with branding
-- [x] Database schema
+### Completed (100%)
+- [x] Infrastructure & configuration
+- [x] Database schema (Prisma 7 + PostgreSQL)
+- [x] Authentication (NextAuth.js)
+- [x] Admin dashboard with all CRUD operations
+- [x] AI integration (all 4 modules)
+- [x] Landing page with pricing
+- [x] Mobile navigation
+- [x] Email integration (Resend)
+- [x] Reports & analytics (Recharts + PDF export)
 
-### Phase 2 (Next)
-- [ ] Admin dashboard (Programs, Activities, Sessions)
-- [ ] Session booking workflow
-- [ ] Debrief report UI with PDF export
-- [ ] Customer portal
-
-### Phase 3 (Future)
-- [ ] Real-time collaboration (multi-facilitator)
-- [ ] Mobile app for facilitators
-- [ ] Advanced analytics dashboard
-- [ ] Integration with corporate HR systems
+See [IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md) for detailed status.
 
 ## Contributing
 
@@ -420,4 +312,4 @@ For questions or issues:
 
 ---
 
-**Built with ❤️ for team building professionals**
+**Built with love for team building professionals**
