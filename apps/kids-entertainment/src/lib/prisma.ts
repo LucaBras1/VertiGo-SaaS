@@ -19,8 +19,20 @@ declare global {
 function createPrismaClient(): PrismaClient {
   const connectionString = process.env.DATABASE_URL
 
+  // Build-time guard - return proxy instead of throwing
+  // This allows Next.js build to complete without DATABASE_URL
   if (!connectionString) {
-    throw new Error('DATABASE_URL environment variable is not set')
+    console.warn('[Prisma] DATABASE_URL not set - database operations will fail at runtime')
+    return new Proxy({} as PrismaClient, {
+      get: (target, prop) => {
+        if (prop === 'then' || prop === 'catch' || typeof prop === 'symbol') {
+          return undefined
+        }
+        return () => {
+          throw new Error('DATABASE_URL environment variable is not set')
+        }
+      },
+    })
   }
 
   // Create PostgreSQL connection pool
