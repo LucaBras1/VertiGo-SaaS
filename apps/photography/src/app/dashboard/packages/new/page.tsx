@@ -1,89 +1,88 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { ArrowLeft, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import toast from 'react-hot-toast'
+import { useClients } from '@/hooks/useClients'
+import { useCreatePackage } from '@/hooks/usePackages'
 
-interface Client {
-  id: string
-  name: string
-  email: string
-}
+const packageSchema = z.object({
+  clientId: z.string().min(1, 'Please select a client'),
+  title: z.string().min(1, 'Package title is required'),
+  eventType: z.string().optional(),
+  eventDate: z.string().optional(),
+  shotCount: z.number().int().positive().optional().nullable(),
+  deliveryDays: z.number().int().positive().optional().nullable(),
+  editingHours: z.number().positive().optional().nullable(),
+  styleTags: z.array(z.string()).optional(),
+  equipment: z.array(z.string()).optional(),
+  secondShooter: z.boolean().optional(),
+  rawFilesIncluded: z.boolean().optional(),
+  basePrice: z.number().int().nonnegative().optional().nullable(),
+  travelCosts: z.number().int().nonnegative().optional().nullable(),
+  totalPrice: z.number().int().nonnegative().optional().nullable(),
+  notes: z.string().optional(),
+})
+
+type PackageFormData = z.infer<typeof packageSchema>
+
+const EVENT_TYPES = [
+  { value: 'wedding', label: 'Wedding' },
+  { value: 'portrait', label: 'Portrait' },
+  { value: 'corporate', label: 'Corporate' },
+  { value: 'family', label: 'Family' },
+  { value: 'product', label: 'Product' },
+  { value: 'newborn', label: 'Newborn' },
+  { value: 'maternity', label: 'Maternity' },
+]
 
 export default function NewPackagePage() {
   const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-  const [clients, setClients] = useState<Client[]>([])
-  const [formData, setFormData] = useState({
-    clientId: '',
-    title: '',
-    eventType: 'wedding',
-    eventDate: '',
-    shotCount: '',
-    deliveryDays: '',
-    editingHours: '',
-    styleTags: '',
-    equipment: '',
-    secondShooter: false,
-    rawFilesIncluded: false,
-    basePrice: '',
-    travelCosts: '',
-    totalPrice: '',
-    notes: ''
+  const { data: clients = [], isLoading: clientsLoading } = useClients()
+  const createPackage = useCreatePackage()
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm<PackageFormData>({
+    resolver: zodResolver(packageSchema),
+    defaultValues: {
+      eventType: 'wedding',
+      secondShooter: false,
+      rawFilesIncluded: false,
+      styleTags: [],
+      equipment: [],
+    },
   })
 
-  useEffect(() => {
-    fetchClients()
-  }, [])
+  // Auto-calculate total price
+  const basePrice = watch('basePrice')
+  const travelCosts = watch('travelCosts')
 
-  const fetchClients = async () => {
+  const onSubmit = async (data: PackageFormData) => {
     try {
-      const res = await fetch('/api/clients')
-      const data = await res.json()
-      setClients(data)
-    } catch (error) {
-      console.error('Failed to fetch clients:', error)
-    }
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-
-    try {
-      const payload = {
-        ...formData,
-        shotCount: formData.shotCount ? parseInt(formData.shotCount) : null,
-        deliveryDays: formData.deliveryDays ? parseInt(formData.deliveryDays) : null,
-        editingHours: formData.editingHours ? parseFloat(formData.editingHours) : null,
-        styleTags: formData.styleTags ? formData.styleTags.split(',').map(s => s.trim()) : [],
-        equipment: formData.equipment ? formData.equipment.split(',').map(s => s.trim()) : [],
-        basePrice: formData.basePrice ? parseInt(formData.basePrice) : null,
-        travelCosts: formData.travelCosts ? parseInt(formData.travelCosts) : null,
-        totalPrice: formData.totalPrice ? parseInt(formData.totalPrice) : null,
-      }
-
-      const res = await fetch('/api/packages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+      const result = await createPackage.mutateAsync({
+        ...data,
+        eventDate: data.eventDate || undefined,
+        shotCount: data.shotCount || undefined,
+        deliveryDays: data.deliveryDays || undefined,
+        editingHours: data.editingHours || undefined,
+        basePrice: data.basePrice || undefined,
+        travelCosts: data.travelCosts || undefined,
+        totalPrice: data.totalPrice || undefined,
       })
-
-      if (!res.ok) throw new Error('Failed to create package')
-
-      const data = await res.json()
-      toast.success('Package created successfully!')
-      router.push(`/dashboard/packages/${data.id}`)
-    } catch (error) {
-      toast.error('Failed to create package')
-      console.error(error)
-    } finally {
-      setIsLoading(false)
+      router.push(`/dashboard/packages/${result.id}`)
+    } catch {
+      // Error handled by mutation
     }
   }
 
@@ -100,7 +99,7 @@ export default function NewPackagePage() {
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Client & Basic Info */}
         <Card>
           <CardHeader>
@@ -108,51 +107,67 @@ export default function NewPackagePage() {
           </CardHeader>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Client</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Client *</label>
               <select
-                value={formData.clientId}
-                onChange={(e) => setFormData({ ...formData, clientId: e.target.value })}
+                {...register('clientId')}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
-                required
+                disabled={clientsLoading}
               >
                 <option value="">Select a client</option>
                 {clients.map(client => (
-                  <option key={client.id} value={client.id}>{client.name} ({client.email})</option>
+                  <option key={client.id} value={client.id}>
+                    {client.name} ({client.email})
+                  </option>
                 ))}
               </select>
+              {errors.clientId && (
+                <p className="mt-1 text-sm text-red-600">{errors.clientId.message}</p>
+              )}
+              {clients.length === 0 && !clientsLoading && (
+                <p className="mt-1 text-sm text-gray-500">
+                  No clients found.{' '}
+                  <Link href="/dashboard/clients/new" className="text-amber-600 hover:text-amber-700">
+                    Create a client first
+                  </Link>
+                </p>
+              )}
             </div>
-
-            <Input
-              label="Package Title"
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              placeholder="e.g., Wedding Photography Package"
-              required
-            />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Event Type</label>
-              <select
-                value={formData.eventType}
-                onChange={(e) => setFormData({ ...formData, eventType: e.target.value })}
+              <label className="block text-sm font-medium text-gray-700 mb-1">Package Title *</label>
+              <input
+                {...register('title')}
+                type="text"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
-              >
-                <option value="wedding">Wedding</option>
-                <option value="portrait">Portrait</option>
-                <option value="corporate">Corporate</option>
-                <option value="family">Family</option>
-                <option value="product">Product</option>
-                <option value="newborn">Newborn</option>
-                <option value="maternity">Maternity</option>
-              </select>
+                placeholder="e.g., Wedding Photography Package"
+              />
+              {errors.title && (
+                <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>
+              )}
             </div>
 
-            <Input
-              type="date"
-              label="Event Date"
-              value={formData.eventDate}
-              onChange={(e) => setFormData({ ...formData, eventDate: e.target.value })}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Event Type</label>
+                <select
+                  {...register('eventType')}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                >
+                  {EVENT_TYPES.map(type => (
+                    <option key={type.value} value={type.value}>{type.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Event Date</label>
+                <input
+                  {...register('eventDate')}
+                  type="date"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+            </div>
           </div>
         </Card>
 
@@ -162,53 +177,64 @@ export default function NewPackagePage() {
             <CardTitle>Photography Details</CardTitle>
           </CardHeader>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input
-              type="number"
-              label="Shot Count"
-              value={formData.shotCount}
-              onChange={(e) => setFormData({ ...formData, shotCount: e.target.value })}
-              placeholder="Number of final photos"
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Shot Count</label>
+              <input
+                {...register('shotCount', { valueAsNumber: true })}
+                type="number"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                placeholder="Number of final photos"
+              />
+            </div>
 
-            <Input
-              type="number"
-              label="Delivery Days"
-              value={formData.deliveryDays}
-              onChange={(e) => setFormData({ ...formData, deliveryDays: e.target.value })}
-              placeholder="Days until delivery"
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Delivery Days</label>
+              <input
+                {...register('deliveryDays', { valueAsNumber: true })}
+                type="number"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                placeholder="Days until delivery"
+              />
+            </div>
 
-            <Input
-              type="number"
-              step="0.5"
-              label="Editing Hours"
-              value={formData.editingHours}
-              onChange={(e) => setFormData({ ...formData, editingHours: e.target.value })}
-              placeholder="Estimated edit time"
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Editing Hours</label>
+              <input
+                {...register('editingHours', { valueAsNumber: true })}
+                type="number"
+                step="0.5"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                placeholder="Estimated edit time"
+              />
+            </div>
 
-            <Input
-              label="Style Tags"
-              value={formData.styleTags}
-              onChange={(e) => setFormData({ ...formData, styleTags: e.target.value })}
-              placeholder="moody, bright, documentary"
-              helperText="Comma-separated"
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Style Tags</label>
+              <input
+                type="text"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                placeholder="moody, bright, documentary"
+                onChange={(e) => setValue('styleTags', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
+              />
+              <p className="mt-1 text-xs text-gray-500">Comma-separated</p>
+            </div>
 
-            <Input
-              label="Equipment"
-              value={formData.equipment}
-              onChange={(e) => setFormData({ ...formData, equipment: e.target.value })}
-              placeholder="Canon R5, 24-70mm"
-              helperText="Comma-separated"
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Equipment</label>
+              <input
+                type="text"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                placeholder="Canon R5, 24-70mm"
+                onChange={(e) => setValue('equipment', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
+              />
+              <p className="mt-1 text-xs text-gray-500">Comma-separated</p>
+            </div>
 
-            <div className="space-y-3">
+            <div className="flex flex-col gap-3 justify-center">
               <label className="flex items-center">
                 <input
+                  {...register('secondShooter')}
                   type="checkbox"
-                  checked={formData.secondShooter}
-                  onChange={(e) => setFormData({ ...formData, secondShooter: e.target.checked })}
                   className="mr-2 rounded border-gray-300 text-amber-500 focus:ring-amber-500"
                 />
                 <span className="text-sm font-medium text-gray-700">Second Shooter</span>
@@ -216,9 +242,8 @@ export default function NewPackagePage() {
 
               <label className="flex items-center">
                 <input
+                  {...register('rawFilesIncluded')}
                   type="checkbox"
-                  checked={formData.rawFilesIncluded}
-                  onChange={(e) => setFormData({ ...formData, rawFilesIncluded: e.target.checked })}
                   className="mr-2 rounded border-gray-300 text-amber-500 focus:ring-amber-500"
                 />
                 <span className="text-sm font-medium text-gray-700">RAW Files Included</span>
@@ -233,29 +258,35 @@ export default function NewPackagePage() {
             <CardTitle>Pricing</CardTitle>
           </CardHeader>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Input
-              type="number"
-              label="Base Price"
-              value={formData.basePrice}
-              onChange={(e) => setFormData({ ...formData, basePrice: e.target.value })}
-              placeholder="0"
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Base Price ($)</label>
+              <input
+                {...register('basePrice', { valueAsNumber: true })}
+                type="number"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                placeholder="0"
+              />
+            </div>
 
-            <Input
-              type="number"
-              label="Travel Costs"
-              value={formData.travelCosts}
-              onChange={(e) => setFormData({ ...formData, travelCosts: e.target.value })}
-              placeholder="0"
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Travel Costs ($)</label>
+              <input
+                {...register('travelCosts', { valueAsNumber: true })}
+                type="number"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                placeholder="0"
+              />
+            </div>
 
-            <Input
-              type="number"
-              label="Total Price"
-              value={formData.totalPrice}
-              onChange={(e) => setFormData({ ...formData, totalPrice: e.target.value })}
-              placeholder="0"
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Total Price ($)</label>
+              <input
+                {...register('totalPrice', { valueAsNumber: true })}
+                type="number"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                placeholder={((basePrice || 0) + (travelCosts || 0)).toString()}
+              />
+            </div>
           </div>
         </Card>
 
@@ -265,8 +296,7 @@ export default function NewPackagePage() {
             <CardTitle>Additional Notes</CardTitle>
           </CardHeader>
           <textarea
-            value={formData.notes}
-            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+            {...register('notes')}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
             rows={4}
             placeholder="Any additional notes or requirements..."
@@ -275,7 +305,10 @@ export default function NewPackagePage() {
 
         {/* Actions */}
         <div className="flex items-center gap-4">
-          <Button type="submit" isLoading={isLoading}>
+          <Button type="submit" disabled={isSubmitting || createPackage.isPending}>
+            {(isSubmitting || createPackage.isPending) && (
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            )}
             Create Package
           </Button>
           <Link href="/dashboard/packages">

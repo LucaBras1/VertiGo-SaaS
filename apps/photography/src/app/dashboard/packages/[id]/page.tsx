@@ -1,151 +1,81 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
   ArrowLeft, Edit, Trash2, Calendar, User, DollarSign,
-  Camera, Clock, FileText, Images, ListChecks, Send
+  Camera, FileText, ListChecks, ChevronRight, Loader2
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Modal } from '@/components/ui/Modal'
-import toast from 'react-hot-toast'
+import {
+  usePackage, useDeletePackage, useUpdatePackageStatus,
+  PackageStatus, STATUS_LABELS, getNextStatuses
+} from '@/hooks/usePackages'
 
-interface Package {
-  id: string
-  title: string
-  status: 'INQUIRY' | 'QUOTE_SENT' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED'
-  eventType: string | null
-  eventDate: string | null
-  shotCount: number | null
-  deliveryDays: number | null
-  editingHours: number | null
-  styleTags: string[]
-  equipment: string[]
-  secondShooter: boolean
-  rawFilesIncluded: boolean
-  basePrice: number | null
-  travelCosts: number | null
-  totalPrice: number | null
-  notes: string | null
-  createdAt: string
-  client: {
-    id: string
-    name: string
-    email: string
-    phone: string | null
-  }
-  shoots: Array<{
-    id: string
-    date: string
-    venueName: string | null
-  }>
-  shotLists: Array<{
-    id: string
-    name: string
-    status: string
-  }>
-  invoices: Array<{
-    id: string
-    invoiceNumber: string
-    status: string
-    total: number
-  }>
+const statusConfig: Record<PackageStatus, { label: string; color: 'gray' | 'blue' | 'green' | 'red' }> = {
+  INQUIRY: { label: 'Inquiry', color: 'gray' },
+  QUOTE_SENT: { label: 'Quote Sent', color: 'blue' },
+  CONFIRMED: { label: 'Confirmed', color: 'green' },
+  COMPLETED: { label: 'Completed', color: 'green' },
+  CANCELLED: { label: 'Cancelled', color: 'red' }
 }
-
-const statusConfig = {
-  INQUIRY: { label: 'Inquiry', color: 'gray' as const },
-  QUOTE_SENT: { label: 'Quote Sent', color: 'blue' as const },
-  CONFIRMED: { label: 'Confirmed', color: 'green' as const },
-  COMPLETED: { label: 'Completed', color: 'green' as const },
-  CANCELLED: { label: 'Cancelled', color: 'red' as const }
-}
-
-const statusOptions = ['INQUIRY', 'QUOTE_SENT', 'CONFIRMED', 'COMPLETED', 'CANCELLED']
 
 export default function PackageDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const [pkg, setPkg] = useState<Package | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const packageId = params.id as string
+
+  const { data: pkg, isLoading, error } = usePackage(packageId)
+  const deletePackage = useDeletePackage()
+  const updateStatus = useUpdatePackageStatus()
+
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
-  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
 
-  useEffect(() => {
-    fetchPackage()
-  }, [params.id])
-
-  const fetchPackage = async () => {
-    try {
-      const res = await fetch(`/api/packages/${params.id}`)
-      if (!res.ok) throw new Error('Package not found')
-      const data = await res.json()
-      setPkg(data)
-    } catch (error) {
-      console.error('Failed to fetch package:', error)
-      toast.error('Package not found')
-      router.push('/dashboard/packages')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleStatusChange = async (newStatus: string) => {
-    if (!pkg) return
-    setIsUpdatingStatus(true)
-    try {
-      const res = await fetch(`/api/packages/${params.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus })
-      })
-      if (!res.ok) throw new Error('Failed to update status')
-      setPkg({ ...pkg, status: newStatus as Package['status'] })
-      toast.success('Status updated')
-    } catch (error) {
-      toast.error('Failed to update status')
-    } finally {
-      setIsUpdatingStatus(false)
-    }
+  const handleStatusChange = (newStatus: PackageStatus) => {
+    updateStatus.mutate({ id: packageId, status: newStatus })
   }
 
   const handleDelete = async () => {
-    setIsDeleting(true)
     try {
-      const res = await fetch(`/api/packages/${params.id}`, {
-        method: 'DELETE'
-      })
-      if (!res.ok) throw new Error('Failed to delete package')
-      toast.success('Package deleted')
+      await deletePackage.mutateAsync(packageId)
       router.push('/dashboard/packages')
-    } catch (error) {
-      toast.error('Failed to delete package')
-    } finally {
-      setIsDeleting(false)
-      setShowDeleteModal(false)
+    } catch {
+      // Error handled by mutation
     }
   }
 
-  const formatCurrency = (amount: number | null) => {
+  const formatCurrency = (amount: number | null | undefined) => {
     if (!amount) return '-'
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD'
-    }).format(amount / 100)
+    }).format(amount)
   }
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div>
+        <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
       </div>
     )
   }
 
-  if (!pkg) return null
+  if (error || !pkg) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-red-600 mb-4">Package not found</p>
+        <Link href="/dashboard/packages">
+          <Button>Back to Packages</Button>
+        </Link>
+      </div>
+    )
+  }
+
+  const nextStatuses = getNextStatuses(pkg.status)
 
   return (
     <div className="space-y-6">
@@ -160,7 +90,7 @@ export default function PackageDetailPage() {
           <p className="text-gray-600 mt-1">{pkg.client.name} &bull; {pkg.eventType}</p>
         </div>
         <div className="flex items-center gap-2">
-          <Link href={`/dashboard/packages/${params.id}/edit`}>
+          <Link href={`/dashboard/packages/${packageId}/edit`}>
             <Button variant="secondary">
               <Edit className="w-4 h-4 mr-2" />
               Edit
@@ -178,21 +108,31 @@ export default function PackageDetailPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-4">
             <span className="text-sm text-gray-600">Status:</span>
-            <select
-              value={pkg.status}
-              onChange={(e) => handleStatusChange(e.target.value)}
-              disabled={isUpdatingStatus}
-              className="px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
-            >
-              {statusOptions.map(status => (
-                <option key={status} value={status}>
-                  {statusConfig[status as keyof typeof statusConfig].label}
-                </option>
-              ))}
-            </select>
-            <Badge variant={statusConfig[pkg.status].color}>
-              {statusConfig[pkg.status].label}
+            <Badge variant={statusConfig[pkg.status].color} size="md">
+              {STATUS_LABELS[pkg.status]}
             </Badge>
+
+            {/* Status Workflow */}
+            {nextStatuses.length > 0 && (
+              <div className="flex items-center gap-2">
+                <ChevronRight className="w-4 h-4 text-gray-400" />
+                {nextStatuses.map(status => (
+                  <Button
+                    key={status}
+                    size="sm"
+                    variant={status === 'CANCELLED' ? 'danger' : 'secondary'}
+                    onClick={() => handleStatusChange(status)}
+                    disabled={updateStatus.isPending}
+                  >
+                    {updateStatus.isPending ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      STATUS_LABELS[status]
+                    )}
+                  </Button>
+                ))}
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-2">
             <Link href={`/dashboard/shoots/new?packageId=${pkg.id}`}>
@@ -228,7 +168,7 @@ export default function PackageDetailPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-gray-600">Event Type</p>
-                <p className="font-medium">{pkg.eventType || '-'}</p>
+                <p className="font-medium capitalize">{pkg.eventType || '-'}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Event Date</p>
@@ -264,7 +204,7 @@ export default function PackageDetailPage() {
               <div>
                 <p className="text-sm text-gray-600 mb-2">Style Tags</p>
                 <div className="flex flex-wrap gap-2">
-                  {pkg.styleTags.length > 0 ? pkg.styleTags.map((tag, idx) => (
+                  {pkg.styleTags && pkg.styleTags.length > 0 ? pkg.styleTags.map((tag, idx) => (
                     <Badge key={idx} variant="default">{tag}</Badge>
                   )) : <span className="text-gray-400">No tags</span>}
                 </div>
@@ -272,7 +212,7 @@ export default function PackageDetailPage() {
               <div>
                 <p className="text-sm text-gray-600 mb-2">Equipment</p>
                 <div className="flex flex-wrap gap-2">
-                  {pkg.equipment.length > 0 ? pkg.equipment.map((item, idx) => (
+                  {pkg.equipment && pkg.equipment.length > 0 ? pkg.equipment.map((item, idx) => (
                     <Badge key={idx} variant="info">{item}</Badge>
                   )) : <span className="text-gray-400">Not specified</span>}
                 </div>
@@ -333,7 +273,7 @@ export default function PackageDetailPage() {
               </div>
               <div className="flex justify-between font-bold border-t pt-2">
                 <span>Total</span>
-                <span>{formatCurrency(pkg.totalPrice)}</span>
+                <span className="text-amber-600">{formatCurrency(pkg.totalPrice)}</span>
               </div>
             </div>
           </Card>
@@ -343,10 +283,10 @@ export default function PackageDetailPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Camera className="w-4 h-4" />
-                Shoots ({pkg.shoots.length})
+                Shoots ({pkg.shoots?.length || 0})
               </CardTitle>
             </CardHeader>
-            {pkg.shoots.length === 0 ? (
+            {!pkg.shoots || pkg.shoots.length === 0 ? (
               <p className="text-gray-400 text-sm">No shoots scheduled</p>
             ) : (
               <div className="space-y-2">
@@ -361,15 +301,40 @@ export default function PackageDetailPage() {
             )}
           </Card>
 
+          {/* Shot Lists */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ListChecks className="w-4 h-4" />
+                Shot Lists ({pkg.shotLists?.length || 0})
+              </CardTitle>
+            </CardHeader>
+            {!pkg.shotLists || pkg.shotLists.length === 0 ? (
+              <p className="text-gray-400 text-sm">No shot lists</p>
+            ) : (
+              <div className="space-y-2">
+                {pkg.shotLists.map(list => (
+                  <Link key={list.id} href={`/dashboard/shot-lists/${list.id}`}
+                    className="flex items-center justify-between p-2 rounded hover:bg-gray-50">
+                    <span className="font-medium text-sm">{list.name}</span>
+                    <Badge variant={list.status === 'FINALIZED' ? 'green' : 'gray'} size="sm">
+                      {list.status}
+                    </Badge>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </Card>
+
           {/* Invoices */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="w-4 h-4" />
-                Invoices ({pkg.invoices.length})
+                Invoices ({pkg.invoices?.length || 0})
               </CardTitle>
             </CardHeader>
-            {pkg.invoices.length === 0 ? (
+            {!pkg.invoices || pkg.invoices.length === 0 ? (
               <p className="text-gray-400 text-sm">No invoices</p>
             ) : (
               <div className="space-y-2">
@@ -392,13 +357,13 @@ export default function PackageDetailPage() {
       <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)} title="Delete Package">
         <div className="space-y-4">
           <p className="text-gray-600">
-            Are you sure you want to delete "{pkg.title}"? This action cannot be undone.
+            Are you sure you want to delete &quot;{pkg.title}&quot;? This action cannot be undone.
           </p>
           <div className="flex justify-end gap-2">
             <Button variant="ghost" onClick={() => setShowDeleteModal(false)}>
               Cancel
             </Button>
-            <Button variant="danger" onClick={handleDelete} isLoading={isDeleting}>
+            <Button variant="danger" onClick={handleDelete} isLoading={deletePackage.isPending}>
               Delete Package
             </Button>
           </div>
