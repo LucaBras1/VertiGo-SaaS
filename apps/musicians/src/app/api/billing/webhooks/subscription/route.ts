@@ -285,11 +285,13 @@ const subscriptionHandlers = createSubscriptionWebhookHandlers({
   },
 })
 
-// Get webhook secret from environment
+// Get webhook secret from environment (lazy-loaded for build-time safety)
 const getWebhookSecret = () => {
   const secret = process.env.STRIPE_SUBSCRIPTION_WEBHOOK_SECRET || process.env.STRIPE_WEBHOOK_SECRET
   if (!secret) {
-    throw new Error('STRIPE_WEBHOOK_SECRET is not configured')
+    // During build, just return a placeholder - the route won't be called anyway
+    console.warn('[Stripe Webhook] STRIPE_WEBHOOK_SECRET not configured - webhook will fail at runtime')
+    return 'build-time-placeholder'
   }
   return secret
 }
