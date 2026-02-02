@@ -222,9 +222,9 @@
    - Book session form
    - Session list for client
 
-3. **VPS Cron Setup**
-   - Configure crontab for `/api/cron/session-reminders`
-   - Configure other cron endpoints (dunning, badges, subscriptions)
+3. ~~**VPS Cron Setup**~~ ✅ COMPLETED
+   - [x] Session reminders cron configured (VPS Centrum Job ID: 4)
+   - [ ] Configure other cron endpoints (dunning, badges, subscriptions)
 
 ### P2 - Medium Priority
 1. **AI Integration**
@@ -318,6 +318,7 @@
 - [x] Production database (PostgreSQL on VPS)
 - [x] Environment variables configured
 - [x] SSL certificate (Let's Encrypt)
+- [x] CRON_SECRET configured
 - [ ] OpenAI API key provisioned
 - [ ] VAPID keys for push notifications
 
@@ -326,6 +327,7 @@
 - [x] PM2 process manager
 - [x] Apache reverse proxy
 - [x] SSL/HTTPS enabled
+- [x] Session reminders cron job (VPS Centrum)
 - [ ] Database backups automated
 - [ ] Monitoring setup (Sentry)
 
@@ -375,8 +377,23 @@ GOOGLE_REDIRECT_URI=https://fitadmin.muzx.cz/api/calendar/google/callback
 CRON_SECRET=xxx
 ```
 
-### Cron Jobs to Configure
+### VPS Cron Deployment (Completed)
+- **Session Reminders Cron** - Deployed via VPS Centrum API
+  - Job ID: 4
+  - Schedule: Every 5 minutes (`*/5 * * * *`)
+  - URL: `https://fitadmin.muzx.cz/api/cron/session-reminders?secret=...`
+  - Authentication: Query parameter (VPS Centrum doesn't support custom headers)
+- **CRON_SECRET** - Added to `/var/www/fitadmin/apps/fitness/.env.local`
+- **Database Schema** - Synchronized with `prisma db push`
+
+### Remaining Crons to Configure
 ```bash
-# Session/class reminders - every 5 min
-*/5 * * * * curl -H "Authorization: Bearer $CRON_SECRET" https://fitadmin.muzx.cz/api/cron/session-reminders
+# Dunning - daily 9am
+0 9 * * * curl "https://fitadmin.muzx.cz/api/cron/dunning?secret=$CRON_SECRET"
+
+# Badges - daily midnight
+0 0 * * * curl "https://fitadmin.muzx.cz/api/cron/check-badges?secret=$CRON_SECRET"
+
+# Subscriptions - daily 6am
+0 6 * * * curl "https://fitadmin.muzx.cz/api/cron/process-subscriptions?secret=$CRON_SECRET"
 ```
