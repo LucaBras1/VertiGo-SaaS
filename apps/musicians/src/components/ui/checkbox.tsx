@@ -7,18 +7,36 @@ import { Check } from 'lucide-react'
 export interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
   label?: string
   description?: string
+  indeterminate?: boolean
+  onCheckedChange?: (checked: boolean) => void
 }
 
 const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ className, label, description, id, ...props }, ref) => {
+  ({ className, label, description, id, indeterminate, onCheckedChange, onChange, ...props }, ref) => {
     const generatedId = React.useId()
     const inputId = id || generatedId
+    const internalRef = React.useRef<HTMLInputElement>(null)
+
+    // Merge refs
+    React.useImperativeHandle(ref, () => internalRef.current!)
+
+    // Handle indeterminate state
+    React.useEffect(() => {
+      if (internalRef.current) {
+        internalRef.current.indeterminate = indeterminate || false
+      }
+    }, [indeterminate])
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      onChange?.(e)
+      onCheckedChange?.(e.target.checked)
+    }
 
     return (
       <div className="flex items-start">
         <div className="flex items-center h-5">
           <input
-            ref={ref}
+            ref={internalRef}
             id={inputId}
             type="checkbox"
             className={cn(
@@ -28,6 +46,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
               'disabled:cursor-not-allowed disabled:opacity-50',
               className
             )}
+            onChange={handleChange}
             {...props}
           />
         </div>

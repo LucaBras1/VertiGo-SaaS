@@ -134,3 +134,48 @@ export function useDeleteGig() {
     },
   })
 }
+
+// Bulk operations
+export function useBulkDeleteGigs() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (ids: string[]) => {
+      const res = await fetch('/api/gigs/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids }),
+      })
+      if (!res.ok) {
+        const error = await res.json()
+        throw new Error(error.message || 'Failed to delete gigs')
+      }
+      return res.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: gigKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: gigKeys.stats() })
+    },
+  })
+}
+
+export function useBulkUpdateGigStatus() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ ids, status }: { ids: string[]; status: GigStatus }) => {
+      const res = await fetch('/api/gigs/bulk', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids, status }),
+      })
+      if (!res.ok) {
+        const error = await res.json()
+        throw new Error(error.message || 'Failed to update gigs')
+      }
+      return res.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: gigKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: gigKeys.stats() })
+    },
+  })
+}

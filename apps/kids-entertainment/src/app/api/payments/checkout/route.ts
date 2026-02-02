@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
       })
 
       return NextResponse.json({
-        sessionId: session.id,
+        sessionId: session.sessionId,
         url: session.url,
       })
     } else if (paymentType === 'full') {
@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
       })
 
       return NextResponse.json({
-        sessionId: session.id,
+        sessionId: session.sessionId,
         url: session.url,
       })
     }

@@ -4,3 +4,6 @@ export * from './useClients'
 export * from './useRepertoire'
 export * from './useSetlists'
 export * from './useInvoices'
+
+// Utility hooks
+export * from './useBulkSelection'

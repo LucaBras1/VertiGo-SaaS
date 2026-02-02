@@ -3,11 +3,13 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
-import { ArrowLeft, Edit, Trash2, Music, Clock, Sparkles } from 'lucide-react'
+import { ArrowLeft, Edit, Trash2, Music, Clock, Sparkles, Activity } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogHeader, DialogTitle, DialogContent, DialogFooter } from '@/components/ui/dialog'
+import EnergyFlowChart from '@/components/charts/EnergyFlowChart'
+import { calculateAverageEnergy, getEnergyLabel } from '@/lib/utils/energy'
 import toast from 'react-hot-toast'
 
 interface SetlistSong {
@@ -17,6 +19,7 @@ interface SetlistSong {
   duration: number
   key?: string
   bpm?: number
+  mood?: string
   order: number
 }
 
@@ -40,6 +43,7 @@ const statusConfig: Record<string, { label: string; variant: 'default' | 'warnin
 
 const moodLabels: Record<string, string> = {
   energetic: 'Energická',
+  party: 'Párty',
   romantic: 'Romantická',
   chill: 'Klidná',
   mixed: 'Smíšená',
@@ -172,6 +176,11 @@ export default function SetlistDetailPage() {
         </CardContent>
       </Card>
 
+      {/* Energy Flow Chart */}
+      {songs.length > 0 && (
+        <EnergyFlowChart songs={songs} title="Průběh energie setlistu" />
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <Card>
@@ -201,7 +210,10 @@ export default function SetlistDetailPage() {
                       </div>
                       <div className="text-right text-sm text-gray-500">
                         <p>{formatDuration(song.duration)}</p>
-                        {song.key && <p>{song.key}</p>}
+                        <div className="flex items-center gap-2 justify-end">
+                          {song.key && <span>{song.key}</span>}
+                          {song.bpm && <span className="text-xs">{song.bpm} BPM</span>}
+                        </div>
                       </div>
                     </li>
                   ))}
@@ -227,6 +239,15 @@ export default function SetlistDetailPage() {
                 <span className="text-gray-600">Písní:</span>
                 <span>{songs.length}</span>
               </div>
+              {songs.length > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-gray-600 flex items-center gap-1">
+                    <Activity className="h-4 w-4" />
+                    Energie:
+                  </span>
+                  <span>{getEnergyLabel(calculateAverageEnergy(songs))}</span>
+                </div>
+              )}
             </CardContent>
           </Card>
 

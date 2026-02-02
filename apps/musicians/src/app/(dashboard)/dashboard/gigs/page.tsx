@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Plus,
   Search,
@@ -14,8 +15,15 @@ import {
   Music,
   DollarSign,
   MapPin,
+  Trash2,
+  Download,
+  CheckCircle,
 } from 'lucide-react'
 import { formatCurrency, formatDate } from '@/lib/utils'
+import { useBulkSelection } from '@/hooks/useBulkSelection'
+import { useBulkDeleteGigs, useBulkUpdateGigStatus } from '@/hooks/useGigs'
+import { BulkActionsBar, createDeleteAction, createExportAction, createStatusChangeAction } from '@/components/bulk/BulkActionsBar'
+import { toCsv, downloadCsv, gigCsvColumns, type GigExport } from '@/lib/utils/export'
 import toast from 'react-hot-toast'
 
 interface Gig {
@@ -26,7 +34,9 @@ interface Gig {
   eventDate: string
   venueName?: string
   venueCity?: string
-  agreedPrice?: number
+  totalPrice?: number
+  clientName?: string
+  clientEmail?: string
   customer?: {
     firstName: string
     lastName: string
@@ -57,23 +67,8 @@ export default function GigsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
 
-  useEffect(() => {
-    fetchGigs()
-  }, [])
-
-  const fetchGigs = async () => {
-    try {
-      const response = await fetch('/api/gigs')
-      if (response.ok) {
-        const data = await response.json()
-        setGigs(data.gigs || [])
-      }
-    } catch (error) {
-      toast.error('Nepodařilo se načíst gigy')
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  const bulkDeleteMutation = useBulkDeleteGigs()
+  const bulkUpdateMutation = useBulkUpdateGigStatus()
 
   const filteredGigs = gigs.filter((gig) => {
     const matchesSearch =
@@ -85,11 +80,90 @@ export default function GigsPage() {
     return matchesSearch && matchesStatus
   })
 
+  const {
+    selectedIds,
+    isSelected,
+    toggle,
+    toggleAll,
+    deselectAll,
+    isAllSelected,
+    isPartiallySelected,
+    selectedCount,
+    hasSelection,
+  } = useBulkSelection({
+    items: filteredGigs,
+    getItemId: (gig) => gig.id,
+  })
+
+  const fetchGigs = useCallback(async () => {
+    try {
+      const response = await fetch('/api/gigs')
+      if (response.ok) {
+        const data = await response.json()
+        setGigs(data.gigs || [])
+      }
+    } catch (error) {
+      toast.error('Nepodařilo se načíst gigy')
+    } finally {
+      setIsLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchGigs()
+  }, [fetchGigs])
+
+  const handleBulkDelete = async (ids: string[]) => {
+    try {
+      await bulkDeleteMutation.mutateAsync(ids)
+      toast.success(`Smazáno ${ids.length} gigů`)
+      fetchGigs()
+    } catch (error) {
+      toast.error('Nepodařilo se smazat gigy')
+      throw error
+    }
+  }
+
+  const handleBulkExport = async (ids: string[]) => {
+    const selectedGigs = gigs.filter(g => ids.includes(g.id))
+    const exportData: GigExport[] = selectedGigs.map(g => ({
+      id: g.id,
+      title: g.title,
+      status: statusConfig[g.status]?.label || g.status,
+      clientName: g.clientName || g.customer ? `${g.customer?.firstName} ${g.customer?.lastName}` : undefined,
+      clientEmail: g.clientEmail,
+      eventDate: g.eventDate ? formatDate(new Date(g.eventDate)) : undefined,
+      venueName: g.venueName,
+      totalPrice: g.totalPrice,
+    }))
+    const csv = toCsv(exportData, gigCsvColumns)
+    downloadCsv(csv, `gigy-export-${new Date().toISOString().split('T')[0]}`)
+    toast.success(`Exportováno ${ids.length} gigů`)
+  }
+
+  const handleBulkStatusChange = async (ids: string[], status: string) => {
+    try {
+      await bulkUpdateMutation.mutateAsync({ ids, status: status as any })
+      toast.success(`Aktualizováno ${ids.length} gigů`)
+      fetchGigs()
+    } catch (error) {
+      toast.error('Nepodařilo se aktualizovat gigy')
+      throw error
+    }
+  }
+
+  const bulkActions = [
+    createDeleteAction(handleBulkDelete, 'gigů'),
+    createExportAction(handleBulkExport),
+    createStatusChangeAction('confirm', 'Potvrdit', 'CONFIRMED', handleBulkStatusChange),
+    createStatusChangeAction('complete', 'Dokončit', 'COMPLETED', handleBulkStatusChange),
+  ]
+
   const stats = {
     total: gigs.length,
     confirmed: gigs.filter(g => g.status === 'CONFIRMED').length,
     pending: gigs.filter(g => g.status === 'INQUIRY' || g.status === 'QUOTE_SENT').length,
-    totalValue: gigs.filter(g => g.agreedPrice).reduce((sum, g) => sum + (g.agreedPrice || 0), 0),
+    totalValue: gigs.filter(g => g.totalPrice).reduce((sum, g) => sum + (g.totalPrice || 0), 0),
   }
 
   if (isLoading) {
@@ -169,6 +243,20 @@ export default function GigsPage() {
         </Card>
       </div>
 
+      {/* Select All */}
+      {filteredGigs.length > 0 && (
+        <div className="flex items-center gap-3 px-2">
+          <Checkbox
+            checked={isAllSelected}
+            indeterminate={isPartiallySelected}
+            onCheckedChange={toggleAll}
+          />
+          <span className="text-sm text-gray-600">
+            {isAllSelected ? 'Vše vybráno' : 'Vybrat vše'}
+          </span>
+        </div>
+      )}
+
       {/* Gigs list */}
       <div className="space-y-3">
         {filteredGigs.length === 0 ? (
@@ -194,50 +282,77 @@ export default function GigsPage() {
         ) : (
           filteredGigs.map((gig) => {
             const status = statusConfig[gig.status] || statusConfig.INQUIRY
+            const selected = isSelected(gig.id)
             return (
-              <Link key={gig.id} href={`/dashboard/gigs/${gig.id}`}>
-                <Card className="p-6 hover:border-primary-300 hover:shadow-md transition cursor-pointer">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-lg font-semibold text-gray-900">
-                          {gig.title}
-                        </h3>
-                        <Badge variant={status.variant}>{status.label}</Badge>
-                      </div>
+              <Card
+                key={gig.id}
+                className={`p-6 hover:border-primary-300 hover:shadow-md transition cursor-pointer ${
+                  selected ? 'border-primary-500 bg-primary-50/50' : ''
+                }`}
+              >
+                <div className="flex items-start gap-4">
+                  <div
+                    className="pt-1"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      toggle(gig.id)
+                    }}
+                  >
+                    <Checkbox checked={selected} />
+                  </div>
+                  <Link href={`/dashboard/gigs/${gig.id}`} className="flex-1">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className="text-lg font-semibold text-gray-900">
+                            {gig.title}
+                          </h3>
+                          <Badge variant={status.variant}>{status.label}</Badge>
+                        </div>
 
-                      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm text-gray-600">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4" />
-                          <span>{formatDate(new Date(gig.eventDate))}</span>
-                        </div>
-                        {gig.venueName && (
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm text-gray-600">
                           <div className="flex items-center gap-2">
-                            <MapPin className="w-4 h-4" />
-                            <span>{gig.venueName}</span>
+                            <Calendar className="w-4 h-4" />
+                            <span>{formatDate(new Date(gig.eventDate))}</span>
                           </div>
-                        )}
-                        <div className="flex items-center gap-2">
-                          <Music className="w-4 h-4" />
-                          <span>{eventTypeLabels[gig.eventType] || gig.eventType}</span>
-                        </div>
-                        {gig.agreedPrice && (
+                          {gig.venueName && (
+                            <div className="flex items-center gap-2">
+                              <MapPin className="w-4 h-4" />
+                              <span>{gig.venueName}</span>
+                            </div>
+                          )}
                           <div className="flex items-center gap-2">
-                            <DollarSign className="w-4 h-4" />
-                            <span className="font-semibold text-gray-900">
-                              {formatCurrency(gig.agreedPrice / 100)}
-                            </span>
+                            <Music className="w-4 h-4" />
+                            <span>{eventTypeLabels[gig.eventType] || gig.eventType}</span>
                           </div>
-                        )}
+                          {gig.totalPrice && (
+                            <div className="flex items-center gap-2">
+                              <DollarSign className="w-4 h-4" />
+                              <span className="font-semibold text-gray-900">
+                                {formatCurrency(gig.totalPrice / 100)}
+                              </span>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Card>
-              </Link>
+                  </Link>
+                </div>
+              </Card>
             )
           })
         )}
       </div>
+
+      {/* Bulk Actions Bar */}
+      <BulkActionsBar
+        selectedCount={selectedCount}
+        selectedIds={selectedIds}
+        onDeselect={deselectAll}
+        actions={bulkActions}
+        entityName="gigů"
+      />
     </div>
   )
 }

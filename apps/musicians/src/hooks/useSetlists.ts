@@ -136,3 +136,48 @@ export function useDeleteSetlist() {
     },
   })
 }
+
+// Bulk operations
+export function useBulkDeleteSetlists() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (ids: string[]) => {
+      const res = await fetch('/api/setlists/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids }),
+      })
+      if (!res.ok) {
+        const error = await res.json()
+        throw new Error(error.message || 'Failed to delete setlists')
+      }
+      return res.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: setlistKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: setlistKeys.stats() })
+    },
+  })
+}
+
+export function useBulkUpdateSetlistStatus() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ ids, status }: { ids: string[]; status: SetlistStatus }) => {
+      const res = await fetch('/api/setlists/bulk', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids, status }),
+      })
+      if (!res.ok) {
+        const error = await res.json()
+        throw new Error(error.message || 'Failed to update setlists')
+      }
+      return res.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: setlistKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: setlistKeys.stats() })
+    },
+  })
+}

@@ -1,61 +1,27 @@
-import { Resend } from 'resend'
+/**
+ * Email Service - GigBook
+ * Email notifications for musician gig management
+ * Using @vertigo/email shared package
+ */
 
-// Initialize Resend client
-const resend = process.env.RESEND_API_KEY
-  ? new Resend(process.env.RESEND_API_KEY)
-  : null
+import {
+  createEmailService,
+  musiciansTheme,
+  generateButton,
+  generateInfoBox,
+  wrapInBaseTemplate,
+  type EmailResult,
+} from '@vertigo/email'
 
-const FROM_EMAIL = process.env.EMAIL_FROM || 'GigBook <noreply@gigbook.app>'
+// Create email service with musicians branding
+const emailService = createEmailService({
+  branding: musiciansTheme,
+})
 
-// Email sending result type
-interface EmailResult {
-  success: boolean
-  messageId?: string
-  error?: string
-}
+// Re-export for convenience
+export type { EmailResult }
 
-// Send generic email
-export async function sendEmail({
-  to,
-  subject,
-  html,
-  text,
-}: {
-  to: string | string[]
-  subject: string
-  html: string
-  text?: string
-}): Promise<EmailResult> {
-  if (!resend) {
-    console.warn('Resend not configured - email not sent:', { to, subject })
-    return { success: false, error: 'Email service not configured' }
-  }
-
-  try {
-    const { data, error } = await resend.emails.send({
-      from: FROM_EMAIL,
-      to: Array.isArray(to) ? to : [to],
-      subject,
-      html,
-      text,
-    })
-
-    if (error) {
-      console.error('Resend error:', error)
-      return { success: false, error: error.message }
-    }
-
-    return { success: true, messageId: data?.id }
-  } catch (err) {
-    console.error('Email send error:', err)
-    return { success: false, error: 'Failed to send email' }
-  }
-}
-
-// ============================================
-// EMAIL TEMPLATES
-// ============================================
-
+// Standard email templates
 export async function sendWelcomeEmail({
   to,
   name,
@@ -65,36 +31,9 @@ export async function sendWelcomeEmail({
   name: string
   loginUrl: string
 }): Promise<EmailResult> {
-  const html = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      </head>
-      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
-          <h1 style="color: white; margin: 0; font-size: 28px;">Vítejte v GigBook!</h1>
-        </div>
-        <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 12px 12px;">
-          <p style="font-size: 16px;">Dobrý den, <strong>${name}</strong>!</p>
-          <p>Váš účet byl úspěšně vytvořen. Nyní můžete začít spravovat své koncerty, repertoár, setlisty a faktury.</p>
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${loginUrl}" style="display: inline-block; background: #2563eb; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600;">Přihlásit se</a>
-          </div>
-          <p style="color: #666; font-size: 14px;">Pokud máte jakékoliv otázky, neváhejte nás kontaktovat.</p>
-          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
-          <p style="color: #9ca3af; font-size: 12px; text-align: center;">GigBook - Správa koncertů pro muzikanty</p>
-        </div>
-      </body>
-    </html>
-  `
-
-  return sendEmail({
+  return emailService.sendWelcome({
     to,
-    subject: 'Vítejte v GigBook!',
-    html,
-    text: `Dobrý den, ${name}! Váš účet byl úspěšně vytvořen. Přihlaste se na: ${loginUrl}`,
+    data: { recipientName: name, loginUrl },
   })
 }
 
@@ -109,37 +48,9 @@ export async function sendPasswordResetEmail({
   resetUrl: string
   expiresIn?: string
 }): Promise<EmailResult> {
-  const html = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      </head>
-      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: #1E293B; padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
-          <h1 style="color: white; margin: 0; font-size: 24px;">Obnovení hesla</h1>
-        </div>
-        <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 12px 12px;">
-          <p style="font-size: 16px;">Dobrý den, <strong>${name}</strong>!</p>
-          <p>Obdrželi jsme žádost o obnovení hesla k vašemu účtu GigBook. Klikněte na tlačítko níže pro nastavení nového hesla:</p>
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${resetUrl}" style="display: inline-block; background: #2563eb; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600;">Nastavit nové heslo</a>
-          </div>
-          <p style="color: #666; font-size: 14px;">Tento odkaz je platný ${expiresIn}.</p>
-          <p style="color: #666; font-size: 14px;">Pokud jste o obnovení hesla nežádali, tento email ignorujte.</p>
-          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
-          <p style="color: #9ca3af; font-size: 12px; text-align: center;">GigBook - Správa koncertů pro muzikanty</p>
-        </div>
-      </body>
-    </html>
-  `
-
-  return sendEmail({
+  return emailService.sendPasswordReset({
     to,
-    subject: 'Obnovení hesla - GigBook',
-    html,
-    text: `Dobrý den, ${name}! Pro obnovení hesla klikněte na: ${resetUrl} (platnost ${expiresIn})`,
+    data: { recipientName: name, resetUrl, expiresIn },
   })
 }
 
@@ -158,42 +69,13 @@ export async function sendInvoiceEmail({
   dueDate: string
   invoiceUrl: string
 }): Promise<EmailResult> {
-  const html = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      </head>
-      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: #1E293B; padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
-          <h1 style="color: white; margin: 0; font-size: 24px;">Nová faktura</h1>
-        </div>
-        <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 12px 12px;">
-          <p style="font-size: 16px;">Dobrý den, <strong>${clientName}</strong>!</p>
-          <p>Posíláme vám novou fakturu za hudební služby:</p>
-          <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #e5e7eb;">
-            <p style="margin: 5px 0;"><strong>Číslo faktury:</strong> ${invoiceNumber}</p>
-            <p style="margin: 5px 0;"><strong>Částka:</strong> ${amount}</p>
-            <p style="margin: 5px 0;"><strong>Splatnost:</strong> ${dueDate}</p>
-          </div>
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${invoiceUrl}" style="display: inline-block; background: #2563eb; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600;">Zobrazit fakturu</a>
-          </div>
-          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
-          <p style="color: #9ca3af; font-size: 12px; text-align: center;">GigBook - Správa koncertů pro muzikanty</p>
-        </div>
-      </body>
-    </html>
-  `
-
-  return sendEmail({
+  return emailService.sendInvoice({
     to,
-    subject: `Faktura ${invoiceNumber} - GigBook`,
-    html,
-    text: `Dobrý den, ${clientName}! Posíláme fakturu ${invoiceNumber} na částku ${amount}. Splatnost: ${dueDate}. Zobrazit: ${invoiceUrl}`,
+    data: { recipientName: clientName, invoiceNumber, amount, dueDate, invoiceUrl },
   })
 }
+
+// Custom musicians-specific templates
 
 export async function sendGigConfirmationEmail({
   to,
@@ -216,45 +98,44 @@ export async function sendGigConfirmationEmail({
   amount?: string
   detailsUrl?: string
 }): Promise<EmailResult> {
-  const html = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      </head>
-      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
-          <h1 style="color: white; margin: 0; font-size: 24px;">Potvrzení koncertu</h1>
-        </div>
-        <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 12px 12px;">
-          <p style="font-size: 16px;">Dobrý den, <strong>${clientName}</strong>!</p>
-          <p>S radostí potvrzujeme rezervaci koncertu:</p>
-          <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #2563eb;">
-            <p style="margin: 5px 0;"><strong>Akce:</strong> ${gigName}</p>
-            <p style="margin: 5px 0;"><strong>Datum:</strong> ${gigDate}</p>
-            <p style="margin: 5px 0;"><strong>Čas:</strong> ${gigTime}</p>
-            <p style="margin: 5px 0;"><strong>Místo:</strong> ${venue}</p>
-            <p style="margin: 5px 0;"><strong>Kapela:</strong> ${bandName}</p>
-            ${amount ? `<p style="margin: 5px 0;"><strong>Cena:</strong> ${amount}</p>` : ''}
-          </div>
-          ${detailsUrl ? `
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${detailsUrl}" style="display: inline-block; background: #2563eb; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600;">Zobrazit detaily</a>
-          </div>
-          ` : ''}
-          <p style="color: #666; font-size: 14px;">Těšíme se na spolupráci!</p>
-          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
-          <p style="color: #9ca3af; font-size: 12px; text-align: center;">GigBook - Správa koncertů pro muzikanty</p>
-        </div>
-      </body>
-    </html>
+  const gigDetails = `
+    <p style="margin: 5px 0;"><strong>Akce:</strong> ${gigName}</p>
+    <p style="margin: 5px 0;"><strong>Datum:</strong> ${gigDate}</p>
+    <p style="margin: 5px 0;"><strong>Čas:</strong> ${gigTime}</p>
+    <p style="margin: 5px 0;"><strong>Místo:</strong> ${venue}</p>
+    <p style="margin: 5px 0;"><strong>Kapela:</strong> ${bandName}</p>
+    ${amount ? `<p style="margin: 5px 0;"><strong>Cena:</strong> ${amount}</p>` : ''}
   `
 
-  return sendEmail({
+  const content = `
+    <p style="font-size: 16px;">Dobrý den, <strong>${clientName}</strong>!</p>
+    <p>S radostí potvrzujeme rezervaci koncertu:</p>
+    ${generateInfoBox(gigDetails, musiciansTheme.primaryColor)}
+    ${detailsUrl ? generateButton('Zobrazit detaily', detailsUrl, musiciansTheme.primaryColor) : ''}
+    <p style="color: #666; font-size: 14px;">Těšíme se na spolupráci!</p>
+  `
+
+  const html = wrapInBaseTemplate(musiciansTheme, content, { title: 'Potvrzení koncertu' })
+
+  return emailService.sendCustom({
     to,
     subject: `Potvrzení koncertu: ${gigName} - ${gigDate}`,
     html,
     text: `Dobrý den, ${clientName}! Potvrzujeme rezervaci koncertu "${gigName}" dne ${gigDate} v ${gigTime} na místě ${venue}. Kapela: ${bandName}.${amount ? ` Cena: ${amount}.` : ''}`,
   })
+}
+
+// Generic email sending (for backwards compatibility)
+export async function sendEmail({
+  to,
+  subject,
+  html,
+  text,
+}: {
+  to: string | string[]
+  subject: string
+  html: string
+  text?: string
+}): Promise<EmailResult> {
+  return emailService.sendCustom({ to, subject, html, text })
 }

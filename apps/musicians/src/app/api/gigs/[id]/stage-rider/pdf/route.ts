@@ -5,6 +5,7 @@ import { getGigById } from '@/lib/services/gigs'
 import { generateStageRider, StageRiderInput } from '@/lib/ai/stage-rider-generator'
 import { renderToBuffer } from '@react-pdf/renderer'
 import { StageRiderPDF } from '@/lib/pdf/stage-rider-pdf'
+import { StageRiderPDFV2 } from '@/lib/pdf/stage-rider-pdf-v2'
 import { prisma } from '@/lib/db'
 import React from 'react'
 
@@ -120,14 +121,25 @@ export async function GET(
       },
     })
 
+    // Check if v2 is requested
+    const useV2 = request.nextUrl.searchParams.get('v2') === 'true'
+
     // Add gig-specific info to the rider
     const riderData = {
       ...stageRider,
       generatedDate: new Date().toISOString(),
+      // V2 specific fields
+      logoUrl: (tenant as any).logoUrl,
+      eventName: gig.title,
+      eventDate: gig.eventDate?.toISOString(),
+      venueName: venue?.name,
+      venueAddress: venue?.address,
+      bandMembers: gig.bandMembers || 4,
     }
 
-    // Generate PDF buffer
-    const pdfBuffer = await renderToBuffer(React.createElement(StageRiderPDF, { data: riderData }) as any)
+    // Generate PDF buffer - use v2 if requested
+    const PdfComponent = useV2 ? StageRiderPDFV2 : StageRiderPDF
+    const pdfBuffer = await renderToBuffer(React.createElement(PdfComponent, { data: riderData }) as any)
 
     // Create filename
     const safeBandName = (tenant.bandName || tenant.name).replace(/[^a-zA-Z0-9]/g, '-')

@@ -1,13 +1,14 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
-import { ArrowLeft, Edit, Trash2, Mail, FileText, Music, Calendar, MapPin, Users, DollarSign, Download, Loader2 } from 'lucide-react'
+import { ArrowLeft, Edit, Trash2, Mail, FileText, Music, Calendar, MapPin, Users, DollarSign, Download, Loader2, Activity } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogHeader, DialogTitle, DialogContent, DialogFooter } from '@/components/ui/dialog'
+import EnergyFlowChart from '@/components/charts/EnergyFlowChart'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import toast from 'react-hot-toast'
 
@@ -388,6 +389,33 @@ export default function GigDetailPage() {
           )}
         </div>
       </div>
+
+      {/* Combined Energy Flow Chart for all setlists */}
+      {gig.setlists.length > 0 && (() => {
+        // Combine all songs from all setlists
+        const allSongs = gig.setlists.flatMap((setlist: any, setlistIndex: number) => {
+          const songs = setlist.songs || []
+          let offset = 0
+          // Calculate offset based on previous setlists
+          for (let i = 0; i < setlistIndex; i++) {
+            offset += (gig.setlists[i].songs?.length || 0)
+          }
+          return songs.map((song: any, idx: number) => ({
+            ...song,
+            order: offset + idx + 1,
+          }))
+        })
+
+        if (allSongs.length === 0) return null
+
+        return (
+          <EnergyFlowChart
+            songs={allSongs}
+            title={`Průběh energie (${gig.setlists.length > 1 ? 'kombinovaný' : gig.setlists[0].name})`}
+            showAnalysis={true}
+          />
+        )
+      })()}
 
       {/* Delete Dialog */}
       <Dialog open={showDeleteDialog} onClose={() => setShowDeleteDialog(false)}>

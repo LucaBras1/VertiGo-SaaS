@@ -8,7 +8,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Tabs, TabList, TabTrigger, TabPanels, TabPanel } from '@/components/ui/tabs'
-import { User, Building, CreditCard, Bell } from 'lucide-react'
+import { User, Building, CreditCard, Bell, Calendar } from 'lucide-react'
+import CalendarSettings from '@/components/calendar/CalendarSettings'
 import toast from 'react-hot-toast'
 
 interface BillingData {
@@ -287,6 +288,10 @@ export default function SettingsPage() {
           <TabTrigger>
             <Bell className="h-4 w-4 mr-2" />
             Notifikace
+          </TabTrigger>
+          <TabTrigger>
+            <Calendar className="h-4 w-4 mr-2" />
+            Kalendář
           </TabTrigger>
         </TabList>
 
@@ -568,6 +573,11 @@ export default function SettingsPage() {
                 </div>
               </CardContent>
             </Card>
+          </TabPanel>
+
+          {/* Calendar */}
+          <TabPanel>
+            <CalendarSettings />
           </TabPanel>
         </TabPanels>
       </Tabs>

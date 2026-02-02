@@ -942,3 +942,64 @@ model VerificationToken {
   @@unique([identifier, token])
   @@map("verification_tokens")
 }
+
+// ========================================
+// CALENDAR INTEGRATION MODELS
+// ========================================
+
+model CalendarIntegration {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  tenantId     String
+  userId       String
+
+  // Provider info
+  provider     String   // 'google' | 'apple' | 'outlook'
+  calendarId   String?  // Selected calendar ID
+
+  // OAuth tokens (encrypted)
+  accessToken  String?
+  refreshToken String?
+  tokenExpiry  DateTime?
+
+  // Sync settings
+  syncEnabled  Boolean  @default(true)
+  lastSyncAt   DateTime?
+  syncErrors   Json?    // Last sync errors if any
+
+  @@unique([tenantId, userId, provider])
+  @@index([tenantId])
+  @@map("calendar_integrations")
+}
+
+model CalendarEventSync {
+  id             String   @id @default(cuid())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  integrationId  String
+  entityType     String   // 'gig'
+  entityId       String   // Gig ID
+  externalEventId String  // Google/Apple event ID
+  syncHash       String?  // Hash of synced data for change detection
+
+  @@unique([integrationId, entityType, entityId])
+  @@index([entityId])
+  @@map("calendar_event_syncs")
+}
+
+model CalendarFeedToken {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+
+  tenantId   String
+  userId     String
+  token      String   @unique @default(cuid())
+  expiresAt  DateTime?
+
+  @@unique([tenantId, userId])
+  @@index([token])
+  @@map("calendar_feed_tokens")
+}

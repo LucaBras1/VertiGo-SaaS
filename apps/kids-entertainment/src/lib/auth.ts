@@ -7,8 +7,10 @@
 import { createAuthOptions, hashPassword, verifyPassword } from '@vertigo/auth'
 import { prisma } from './prisma'
 
+// Cast to any to bypass PrismaClient type mismatch between verticals
+// Each vertical has its own generated Prisma client with different models
 export const authOptions = createAuthOptions({
-  prisma,
+  prisma: prisma as any,
   pages: {
     signIn: '/admin/login',
     error: '/admin/login',

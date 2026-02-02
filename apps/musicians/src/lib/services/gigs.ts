@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/db'
 import { GigStatus, Vertical } from '@/generated/prisma'
+import { syncGigToCalendars } from '@/lib/calendar/sync-service'
 
 export interface CreateGigInput {
   tenantId: string
@@ -108,7 +109,7 @@ export async function getGigById(id: string, tenantId: string) {
 export async function createGig(input: CreateGigInput) {
   const slug = await generateUniqueSlug(input.title)
 
-  return prisma.gig.create({
+  const gig = await prisma.gig.create({
     data: {
       ...input,
       slug,
@@ -117,6 +118,22 @@ export async function createGig(input: CreateGigInput) {
       status: 'INQUIRY' as GigStatus,
     },
   })
+
+  // Sync to connected calendars (async, don't block)
+  if (gig.eventDate) {
+    syncGigToCalendars(input.tenantId, {
+      id: gig.id,
+      title: gig.title,
+      status: gig.status,
+      eventDate: gig.eventDate,
+      eventDuration: gig.eventDuration || undefined,
+      venue: gig.venue as any,
+      clientName: gig.clientName || undefined,
+      description: gig.internalNotes || undefined,
+    }).catch(err => console.error('Calendar sync error:', err))
+  }
+
+  return gig
 }
 
 export async function updateGig(id: string, tenantId: string, input: UpdateGigInput) {
@@ -137,7 +154,7 @@ export async function updateGig(id: string, tenantId: string, input: UpdateGigIn
     totalPrice = basePrice + travelCosts
   }
 
-  return prisma.gig.update({
+  const gig = await prisma.gig.update({
     where: { id },
     data: {
       ...input,
@@ -145,6 +162,23 @@ export async function updateGig(id: string, tenantId: string, input: UpdateGigIn
       venue: input.venue ? JSON.parse(JSON.stringify(input.venue)) : undefined,
     },
   })
+
+  // Sync to connected calendars (async, don't block)
+  const eventDate = gig.eventDate || existing.eventDate
+  if (eventDate) {
+    syncGigToCalendars(tenantId, {
+      id: gig.id,
+      title: gig.title,
+      status: gig.status,
+      eventDate,
+      eventDuration: gig.eventDuration || undefined,
+      venue: gig.venue as any,
+      clientName: gig.clientName || undefined,
+      description: gig.internalNotes || undefined,
+    }).catch(err => console.error('Calendar sync error:', err))
+  }
+
+  return gig
 }
 
 export async function deleteGig(id: string, tenantId: string) {
