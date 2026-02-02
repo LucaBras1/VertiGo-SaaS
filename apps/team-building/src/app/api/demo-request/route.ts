@@ -5,6 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
+import { sendDemoRequestEmail, sendDemoConfirmationEmail } from '@/lib/email'
 
 const demoRequestSchema = z.object({
   name: z.string().min(1, 'Jméno je povinné'),
@@ -21,22 +22,32 @@ export async function POST(request: NextRequest) {
     // Validate input
     const validatedData = demoRequestSchema.parse(body)
 
-    // In production, you would:
-    // 1. Store in database (leads table)
-    // 2. Send email notification to sales team
-    // 3. Send confirmation email to requester
-    // 4. Optionally integrate with CRM (HubSpot, Salesforce, etc.)
-
+    // Log submission
     console.log('Demo request submission:', {
       ...validatedData,
       timestamp: new Date().toISOString(),
       ip: request.headers.get('x-forwarded-for') || 'unknown',
     })
 
-    // TODO: Implement CRM integration and email notifications
-    // await createLead(validatedData)
-    // await sendDemoRequestNotification(validatedData)
-    // await sendDemoConfirmationEmail(validatedData)
+    // Send notification email to sales team (non-blocking)
+    sendDemoRequestEmail({
+      name: validatedData.name,
+      email: validatedData.email,
+      company: validatedData.company,
+      teamSize: validatedData.teamSize,
+      message: validatedData.message,
+    }).catch((err) => {
+      console.error('Failed to send demo request notification:', err)
+    })
+
+    // Send confirmation email to requester (non-blocking)
+    sendDemoConfirmationEmail({
+      to: validatedData.email,
+      name: validatedData.name,
+      company: validatedData.company,
+    }).catch((err) => {
+      console.error('Failed to send demo confirmation email:', err)
+    })
 
     return NextResponse.json({
       success: true,

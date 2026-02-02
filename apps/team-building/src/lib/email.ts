@@ -259,6 +259,184 @@ export async function sendDebriefEmail({
   })
 }
 
+export async function sendContactFormEmail({
+  name,
+  email,
+  phone,
+  inquiryType,
+  message,
+}: {
+  name: string
+  email: string
+  phone?: string
+  inquiryType: string
+  message: string
+}): Promise<EmailResult> {
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@teamforge.ai'
+
+  const inquiryTypeLabels: Record<string, string> = {
+    general: 'Obecný dotaz',
+    sales: 'Prodej',
+    support: 'Podpora',
+    partnership: 'Partnerství',
+    other: 'Jiný',
+  }
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      </head>
+      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: linear-gradient(135deg, #0EA5E9 0%, #22C55E 100%); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
+          <h1 style="color: white; margin: 0; font-size: 24px;">New Contact Form Submission</h1>
+        </div>
+        <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 12px 12px;">
+          <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #0EA5E9;">
+            <h3 style="margin: 0 0 15px 0; color: #0EA5E9;">Contact Details</h3>
+            <p style="margin: 8px 0;"><strong>Name:</strong> ${name}</p>
+            <p style="margin: 8px 0;"><strong>Email:</strong> ${email}</p>
+            ${phone ? `<p style="margin: 8px 0;"><strong>Phone:</strong> ${phone}</p>` : ''}
+            <p style="margin: 8px 0;"><strong>Inquiry Type:</strong> ${inquiryTypeLabels[inquiryType] || inquiryType}</p>
+          </div>
+
+          <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #22C55E;">
+            <h3 style="margin: 0 0 15px 0; color: #22C55E;">Message</h3>
+            <p style="margin: 0; color: #666; white-space: pre-wrap;">${message}</p>
+          </div>
+
+          <p style="color: #666; font-size: 14px;">Reply directly to this email to respond to <strong>${name}</strong>.</p>
+          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
+          <p style="color: #9ca3af; font-size: 12px; text-align: center;">TeamForge - AI-Powered Team Building Management</p>
+        </div>
+      </body>
+    </html>
+  `
+
+  return sendEmail({
+    to: adminEmail,
+    subject: `[TeamForge Contact] ${inquiryTypeLabels[inquiryType] || inquiryType}: ${name}`,
+    html,
+    text: `New contact form submission from ${name} (${email}). Type: ${inquiryType}. Message: ${message}`,
+  })
+}
+
+export async function sendDemoRequestEmail({
+  name,
+  email,
+  company,
+  teamSize,
+  message,
+}: {
+  name: string
+  email: string
+  company: string
+  teamSize: string
+  message?: string
+}): Promise<EmailResult> {
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@teamforge.ai'
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      </head>
+      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: linear-gradient(135deg, #8B5CF6 0%, #0EA5E9 100%); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
+          <h1 style="color: white; margin: 0; font-size: 24px;">🎯 New Demo Request!</h1>
+        </div>
+        <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 12px 12px;">
+          <p style="font-size: 16px; color: #666;">A potential customer wants to schedule a demo!</p>
+
+          <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #8B5CF6;">
+            <h3 style="margin: 0 0 15px 0; color: #8B5CF6;">Lead Information</h3>
+            <p style="margin: 8px 0;"><strong>Name:</strong> ${name}</p>
+            <p style="margin: 8px 0;"><strong>Email:</strong> ${email}</p>
+            <p style="margin: 8px 0;"><strong>Company:</strong> ${company}</p>
+            <p style="margin: 8px 0;"><strong>Team Size:</strong> ${teamSize} employees</p>
+          </div>
+
+          ${message ? `
+          <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #22C55E;">
+            <h3 style="margin: 0 0 15px 0; color: #22C55E;">Additional Notes</h3>
+            <p style="margin: 0; color: #666; white-space: pre-wrap;">${message}</p>
+          </div>
+          ` : ''}
+
+          <div style="background: #FEF3C7; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #F59E0B;">
+            <p style="margin: 0; font-size: 14px;"><strong>⏰ Action Required:</strong> Respond within 24 hours to schedule the demo.</p>
+          </div>
+
+          <p style="color: #666; font-size: 14px;">Reply directly to this email to contact <strong>${name}</strong>.</p>
+          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
+          <p style="color: #9ca3af; font-size: 12px; text-align: center;">TeamForge - AI-Powered Team Building Management</p>
+        </div>
+      </body>
+    </html>
+  `
+
+  return sendEmail({
+    to: adminEmail,
+    subject: `[TeamForge Demo] ${company} (${teamSize} employees) - ${name}`,
+    html,
+    text: `New demo request from ${name} at ${company}. Email: ${email}. Team size: ${teamSize}. ${message ? `Message: ${message}` : ''}`,
+  })
+}
+
+export async function sendDemoConfirmationEmail({
+  to,
+  name,
+  company,
+}: {
+  to: string
+  name: string
+  company: string
+}): Promise<EmailResult> {
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      </head>
+      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: linear-gradient(135deg, #0EA5E9 0%, #22C55E 100%); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
+          <h1 style="color: white; margin: 0; font-size: 24px;">Thank You for Your Interest!</h1>
+        </div>
+        <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 12px 12px;">
+          <p style="font-size: 16px;">Hello, <strong>${name}</strong>!</p>
+          <p>Thank you for requesting a demo for <strong>${company}</strong>. We're excited to show you how TeamForge can transform your team building programs.</p>
+
+          <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #0EA5E9;">
+            <h3 style="margin: 0 0 15px 0; color: #0EA5E9;">What to Expect</h3>
+            <ul style="margin: 0; padding-left: 20px; color: #666;">
+              <li>A member of our team will contact you within 24 hours</li>
+              <li>We'll schedule a personalized 30-minute demo</li>
+              <li>See our AI-powered features in action</li>
+              <li>Get answers to all your questions</li>
+            </ul>
+          </div>
+
+          <p style="color: #666; font-size: 14px;">In the meantime, feel free to reply to this email with any questions!</p>
+          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
+          <p style="color: #9ca3af; font-size: 12px; text-align: center;">TeamForge - AI-Powered Team Building Management</p>
+        </div>
+      </body>
+    </html>
+  `
+
+  return sendEmail({
+    to,
+    subject: 'Your TeamForge Demo Request - We\'ll Be In Touch!',
+    html,
+    text: `Hello ${name}! Thank you for requesting a demo for ${company}. We'll contact you within 24 hours to schedule a personalized demo.`,
+  })
+}
+
 export async function sendInvoiceEmail({
   to,
   contactName,

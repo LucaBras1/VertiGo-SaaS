@@ -5,6 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
+import { sendContactFormEmail } from '@/lib/email'
 
 const contactSchema = z.object({
   name: z.string().min(1, 'Jméno je povinné'),
@@ -21,20 +22,23 @@ export async function POST(request: NextRequest) {
     // Validate input
     const validatedData = contactSchema.parse(body)
 
-    // In production, you would:
-    // 1. Store in database
-    // 2. Send email notification to admin
-    // 3. Send confirmation email to user
-
-    // For now, we'll log and return success
+    // Log submission
     console.log('Contact form submission:', {
       ...validatedData,
       timestamp: new Date().toISOString(),
       ip: request.headers.get('x-forwarded-for') || 'unknown',
     })
 
-    // TODO: Implement email sending with nodemailer or similar
-    // const emailSent = await sendContactEmail(validatedData)
+    // Send notification email to admin (non-blocking)
+    sendContactFormEmail({
+      name: validatedData.name,
+      email: validatedData.email,
+      phone: validatedData.phone,
+      inquiryType: validatedData.inquiryType,
+      message: validatedData.message,
+    }).catch((err) => {
+      console.error('Failed to send contact form email:', err)
+    })
 
     return NextResponse.json({
       success: true,

@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { prisma } from '@/lib/db'
 import bcrypt from 'bcryptjs'
+import { sendWelcomeEmail } from '@/lib/email'
 
 const signupSchema = z.object({
   name: z.string().min(1, 'Jméno je povinné'),
@@ -60,10 +61,14 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // In production, you would:
-    // 1. Send welcome email
-    // 2. Create trial subscription
-    // 3. Set up onboarding flow
+    // Send welcome email (non-blocking)
+    sendWelcomeEmail({
+      to: user.email,
+      name: user.name || validatedData.name,
+      companyName: validatedData.company,
+    }).catch((err) => {
+      console.error('Failed to send welcome email:', err)
+    })
 
     console.log('New user registration:', {
       userId: user.id,
@@ -71,9 +76,6 @@ export async function POST(request: NextRequest) {
       company: validatedData.company,
       timestamp: new Date().toISOString(),
     })
-
-    // TODO: Implement welcome email
-    // await sendWelcomeEmail(user, validatedData.company)
 
     return NextResponse.json({
       success: true,

@@ -37,10 +37,12 @@ TeamForge is an AI-powered management system for corporate team building compani
 - Settings (site info, contact, company details)
 
 ### Email Integration
+- Welcome emails for new users
 - Session confirmation emails
 - AI debrief delivery emails
-- Welcome emails for new customers
 - Invoice emails with line items
+- Contact form notifications
+- Demo request notifications with confirmations
 - Powered by Resend SDK
 
 ### AI Features
@@ -89,9 +91,11 @@ TeamForge adapts the shared core schema with industry-specific terminology:
 apps/team-building/
 ├── __tests__/
 │   ├── setup.ts                # Test setup and mocks
+│   ├── mocks/
+│   │   └── openai.ts           # OpenAI mock responses for AI tests
 │   └── api/                    # API tests
-│       ├── auth.test.ts        # Authentication tests
-│       └── programs.test.ts    # Programs API tests
+│       ├── auth.test.ts        # Authentication tests (10 tests)
+│       └── programs.test.ts    # Programs API tests (11 tests)
 ├── prisma/
 │   ├── schema.prisma           # Extended schema with TeamForge models
 │   └── seed.ts                 # Database seed script
@@ -127,9 +131,20 @@ apps/team-building/
 │   └── lib/
 │       ├── auth.ts             # NextAuth configuration
 │       ├── db.ts               # Prisma client
-│       ├── email.ts            # Resend email service
+│       ├── email.ts            # Resend email service (7 templates)
 │       ├── ai-client.ts        # AI client initialization
-│       └── utils.ts            # Utilities
+│       ├── utils.ts            # Utilities
+│       └── ai/                 # AI modules
+│           ├── index.ts        # AI exports
+│           ├── team-dynamics.ts
+│           ├── objective-matcher.ts
+│           ├── difficulty-calibrator.ts
+│           ├── debrief-generator.ts
+│           └── __tests__/      # AI module tests (58 tests)
+│               ├── team-dynamics.test.ts
+│               ├── objective-matcher.test.ts
+│               ├── difficulty-calibrator.test.ts
+│               └── debrief-generator.test.ts
 ├── .env.example                # Environment variables template
 ├── .eslintrc.json              # ESLint configuration
 ├── vitest.config.ts            # Vitest test configuration
@@ -224,8 +239,16 @@ pnpm test:coverage
 
 ### Test Structure
 - `__tests__/setup.ts` - Global mocks and test utilities
+- `__tests__/mocks/openai.ts` - OpenAI mock responses for AI testing
 - `__tests__/api/auth.test.ts` - Authentication tests (10 tests)
 - `__tests__/api/programs.test.ts` - Programs API tests (11 tests)
+- `src/lib/ai/__tests__/` - AI module tests:
+  - `objective-matcher.test.ts` - ObjectiveMatcherAI tests (11 tests)
+  - `team-dynamics.test.ts` - TeamDynamicsAI tests (12 tests)
+  - `difficulty-calibrator.test.ts` - DifficultyCalibratorAI tests (15 tests)
+  - `debrief-generator.test.ts` - DebriefGeneratorAI tests (20 tests)
+
+**Total: 79 tests** (21 API + 58 AI)
 
 ## API Endpoints
 
@@ -263,16 +286,23 @@ pnpm test:coverage
 - `PUT /api/customers/:id` - Update customer
 - `DELETE /api/customers/:id` - Delete customer
 
+### Health & Monitoring
+- `GET /api/health` - Health check endpoint (database, memory, uptime)
+- `HEAD /api/health` - Simple health check for load balancers
+
 ## Email Templates
 
-TeamForge includes 4 email templates powered by Resend:
+TeamForge includes 7 email templates powered by Resend:
 
 | Template | Trigger | Description |
 |----------|---------|-------------|
-| `sendWelcomeEmail` | Customer registration | Welcome with login link |
+| `sendWelcomeEmail` | User registration | Welcome with login link |
 | `sendSessionConfirmationEmail` | Session creation | Booking confirmation with details |
 | `sendDebriefEmail` | Debrief generation | AI report delivery with key insights |
 | `sendInvoiceEmail` | Invoice creation | Invoice with line items and payment info |
+| `sendContactFormEmail` | Contact form submission | Notification to admin with inquiry details |
+| `sendDemoRequestEmail` | Demo request | Notification to sales team |
+| `sendDemoConfirmationEmail` | Demo request | Confirmation to requester |
 
 ## Deployment
 
@@ -340,12 +370,14 @@ const costByFeature = await prisma.aIUsage.groupBy({
 - [x] Authentication (NextAuth.js)
 - [x] Admin dashboard with all CRUD operations
 - [x] AI integration (all 4 modules)
+- [x] AI module tests (58 tests, 96%+ coverage)
 - [x] Landing page with pricing
 - [x] Mobile navigation
-- [x] Email integration (Resend)
+- [x] Email integration (7 templates via Resend)
 - [x] Reports & analytics (Recharts + PDF export)
-- [x] Testing infrastructure (Vitest)
+- [x] Testing infrastructure (Vitest, 79 total tests)
 - [x] Database seeding
+- [x] Health check endpoint for monitoring
 
 See [IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md) for detailed status.
 
