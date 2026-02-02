@@ -1,7 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ['@vertigo/ui', '@vertigo/ai-core', '@vertigo/database'],
+  transpilePackages: [
+    '@vertigo/ui',
+    '@vertigo/ai-core',
+    '@vertigo/database',
+    '@vertigo/auth',
+    '@vertigo/email',
+  ],
   images: {
     domains: [
       'localhost',

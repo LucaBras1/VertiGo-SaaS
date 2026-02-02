@@ -7,8 +7,10 @@
 import { createAuthOptions, hashPassword, verifyPassword } from '@vertigo/auth'
 import { prisma } from './db'
 
+// Cast to any to bypass PrismaClient type mismatch between verticals
+// Each vertical has its own generated Prisma client with different models
 export const authOptions = createAuthOptions({
-  prisma,
+  prisma: prisma as any,
   pages: {
     signIn: '/auth/signin',
     error: '/auth/signin',
@@ -26,33 +28,4 @@ export const authOptions = createAuthOptions({
 // Re-export utilities for convenience
 export { hashPassword, verifyPassword }
 
-// Type extensions for NextAuth
-declare module 'next-auth' {
-  interface User {
-    role?: string
-    tenantId?: string
-    tenantName?: string
-    tenantSlug?: string
-  }
-  interface Session {
-    user: {
-      id: string
-      email: string
-      name?: string | null
-      role: string
-      tenantId: string
-      tenantName: string
-      tenantSlug: string
-    }
-  }
-}
-
-declare module 'next-auth/jwt' {
-  interface JWT {
-    role?: string
-    id?: string
-    tenantId?: string
-    tenantName?: string
-    tenantSlug?: string
-  }
-}
+// Type extensions are in src/types/next-auth.d.ts

@@ -1,61 +1,27 @@
-import { Resend } from 'resend'
+/**
+ * Email Service - FitAdmin
+ * Email notifications for fitness management
+ * Using @vertigo/email shared package
+ */
 
-// Initialize Resend client
-const resend = process.env.RESEND_API_KEY
-  ? new Resend(process.env.RESEND_API_KEY)
-  : null
+import {
+  createEmailService,
+  fitnessTheme,
+  generateButton,
+  generateInfoBox,
+  wrapInBaseTemplate,
+  type EmailResult,
+} from '@vertigo/email'
 
-const FROM_EMAIL = process.env.EMAIL_FROM || 'FitAdmin <noreply@fitadmin.app>'
+// Create email service with fitness branding
+const emailService = createEmailService({
+  branding: fitnessTheme,
+})
 
-// Email sending result type
-interface EmailResult {
-  success: boolean
-  messageId?: string
-  error?: string
-}
+// Re-export for convenience
+export type { EmailResult }
 
-// Send generic email
-export async function sendEmail({
-  to,
-  subject,
-  html,
-  text,
-}: {
-  to: string | string[]
-  subject: string
-  html: string
-  text?: string
-}): Promise<EmailResult> {
-  if (!resend) {
-    console.warn('Resend not configured - email not sent:', { to, subject })
-    return { success: false, error: 'Email service not configured' }
-  }
-
-  try {
-    const { data, error } = await resend.emails.send({
-      from: FROM_EMAIL,
-      to: Array.isArray(to) ? to : [to],
-      subject,
-      html,
-      text,
-    })
-
-    if (error) {
-      console.error('Resend error:', error)
-      return { success: false, error: error.message }
-    }
-
-    return { success: true, messageId: data?.id }
-  } catch (err) {
-    console.error('Email send error:', err)
-    return { success: false, error: 'Failed to send email' }
-  }
-}
-
-// ============================================
-// EMAIL TEMPLATES
-// ============================================
-
+// Standard email templates
 export async function sendWelcomeEmail({
   to,
   name,
@@ -65,36 +31,9 @@ export async function sendWelcomeEmail({
   name: string
   loginUrl: string
 }): Promise<EmailResult> {
-  const html = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      </head>
-      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
-          <h1 style="color: white; margin: 0; font-size: 28px;">Vítejte v FitAdmin!</h1>
-        </div>
-        <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 12px 12px;">
-          <p style="font-size: 16px;">Dobrý den, <strong>${name}</strong>!</p>
-          <p>Váš účet byl úspěšně vytvořen. Nyní můžete začít spravovat své klienty, plánovat tréninky a sledovat pokrok.</p>
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${loginUrl}" style="display: inline-block; background: #10B981; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600;">Přihlásit se</a>
-          </div>
-          <p style="color: #666; font-size: 14px;">Pokud máte jakékoliv otázky, neváhejte nás kontaktovat.</p>
-          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
-          <p style="color: #9ca3af; font-size: 12px; text-align: center;">FitAdmin - Správa fitness studia</p>
-        </div>
-      </body>
-    </html>
-  `
-
-  return sendEmail({
+  return emailService.sendWelcome({
     to,
-    subject: 'Vítejte v FitAdmin!',
-    html,
-    text: `Dobrý den, ${name}! Váš účet byl úspěšně vytvořen. Přihlaste se na: ${loginUrl}`,
+    data: { recipientName: name, loginUrl },
   })
 }
 
@@ -109,39 +48,34 @@ export async function sendPasswordResetEmail({
   resetUrl: string
   expiresIn?: string
 }): Promise<EmailResult> {
-  const html = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      </head>
-      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: #1E293B; padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
-          <h1 style="color: white; margin: 0; font-size: 24px;">Obnovení hesla</h1>
-        </div>
-        <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 12px 12px;">
-          <p style="font-size: 16px;">Dobrý den, <strong>${name}</strong>!</p>
-          <p>Obdrželi jsme žádost o obnovení hesla k vašemu účtu. Klikněte na tlačítko níže pro nastavení nového hesla:</p>
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${resetUrl}" style="display: inline-block; background: #10B981; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600;">Nastavit nové heslo</a>
-          </div>
-          <p style="color: #666; font-size: 14px;">Tento odkaz je platný ${expiresIn}.</p>
-          <p style="color: #666; font-size: 14px;">Pokud jste o obnovení hesla nežádali, tento email ignorujte.</p>
-          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
-          <p style="color: #9ca3af; font-size: 12px; text-align: center;">FitAdmin - Správa fitness studia</p>
-        </div>
-      </body>
-    </html>
-  `
-
-  return sendEmail({
+  return emailService.sendPasswordReset({
     to,
-    subject: 'Obnovení hesla - FitAdmin',
-    html,
-    text: `Dobrý den, ${name}! Pro obnovení hesla klikněte na: ${resetUrl} (platnost ${expiresIn})`,
+    data: { recipientName: name, resetUrl, expiresIn },
   })
 }
+
+export async function sendInvoiceEmail({
+  to,
+  clientName,
+  invoiceNumber,
+  amount,
+  dueDate,
+  invoiceUrl,
+}: {
+  to: string
+  clientName: string
+  invoiceNumber: string
+  amount: string
+  dueDate: string
+  invoiceUrl: string
+}): Promise<EmailResult> {
+  return emailService.sendInvoice({
+    to,
+    data: { recipientName: clientName, invoiceNumber, amount, dueDate, invoiceUrl },
+  })
+}
+
+// Custom fitness-specific templates
 
 export async function sendSessionReminderEmail({
   to,
@@ -160,36 +94,24 @@ export async function sendSessionReminderEmail({
   duration: number
   location?: string
 }): Promise<EmailResult> {
-  const html = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      </head>
-      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
-          <h1 style="color: white; margin: 0; font-size: 24px;">Připomínka tréninku</h1>
-        </div>
-        <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 12px 12px;">
-          <p style="font-size: 16px;">Dobrý den, <strong>${clientName}</strong>!</p>
-          <p>Připomínáme vám blížící se trénink:</p>
-          <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #10B981;">
-            <p style="margin: 5px 0;"><strong>Datum:</strong> ${sessionDate}</p>
-            <p style="margin: 5px 0;"><strong>Čas:</strong> ${sessionTime}</p>
-            <p style="margin: 5px 0;"><strong>Délka:</strong> ${duration} minut</p>
-            <p style="margin: 5px 0;"><strong>Trenér:</strong> ${trainerName}</p>
-            ${location ? `<p style="margin: 5px 0;"><strong>Místo:</strong> ${location}</p>` : ''}
-          </div>
-          <p style="color: #666; font-size: 14px;">Těšíme se na vás!</p>
-          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
-          <p style="color: #9ca3af; font-size: 12px; text-align: center;">FitAdmin - Správa fitness studia</p>
-        </div>
-      </body>
-    </html>
+  const eventDetails = `
+    <p style="margin: 5px 0;"><strong>Datum:</strong> ${sessionDate}</p>
+    <p style="margin: 5px 0;"><strong>Čas:</strong> ${sessionTime}</p>
+    <p style="margin: 5px 0;"><strong>Délka:</strong> ${duration} minut</p>
+    <p style="margin: 5px 0;"><strong>Trenér:</strong> ${trainerName}</p>
+    ${location ? `<p style="margin: 5px 0;"><strong>Místo:</strong> ${location}</p>` : ''}
   `
 
-  return sendEmail({
+  const content = `
+    <p style="font-size: 16px;">Dobrý den, <strong>${clientName}</strong>!</p>
+    <p>Připomínáme vám blížící se trénink:</p>
+    ${generateInfoBox(eventDetails, fitnessTheme.primaryColor)}
+    <p style="color: #666; font-size: 14px;">Těšíme se na vás!</p>
+  `
+
+  const html = wrapInBaseTemplate(fitnessTheme, content, { title: 'Připomínka tréninku' })
+
+  return emailService.sendCustom({
     to,
     subject: `Připomínka tréninku - ${sessionDate} v ${sessionTime}`,
     html,
@@ -234,40 +156,24 @@ export async function sendBillingReminderEmail({
     YEARLY: 'roční',
   }
 
-  const html = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      </head>
-      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
-          <h1 style="color: white; margin: 0; font-size: 24px;">Připomínka platby</h1>
-        </div>
-        <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 12px 12px;">
-          <p style="font-size: 16px;">Dobrý den, <strong>${clientName}</strong>!</p>
-          <p>Rádi bychom Vás upozornili na blížící se platbu za Vaše předplatné.</p>
-          <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #F59E0B;">
-            ${packageName ? `<p style="margin: 5px 0;"><strong>Balíček:</strong> ${packageName}</p>` : ''}
-            <p style="margin: 5px 0;"><strong>Částka:</strong> ${formattedAmount} ${currency}</p>
-            <p style="margin: 5px 0;"><strong>Datum platby:</strong> ${formattedDate}</p>
-            <p style="margin: 5px 0;"><strong>Frekvence:</strong> ${frequencyText[frequency] || frequency}</p>
-          </div>
-          <p style="color: #666; font-size: 14px;">Ujistěte se prosím, že máte na účtu dostatek prostředků pro úspěšné zpracování platby.</p>
-          ${manageUrl ? `
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${manageUrl}" style="display: inline-block; background: #10B981; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600;">Spravovat předplatné</a>
-          </div>
-          ` : ''}
-          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
-          <p style="color: #9ca3af; font-size: 12px; text-align: center;">FitAdmin - Správa fitness studia</p>
-        </div>
-      </body>
-    </html>
+  const billingDetails = `
+    ${packageName ? `<p style="margin: 5px 0;"><strong>Balíček:</strong> ${packageName}</p>` : ''}
+    <p style="margin: 5px 0;"><strong>Částka:</strong> ${formattedAmount} ${currency}</p>
+    <p style="margin: 5px 0;"><strong>Datum platby:</strong> ${formattedDate}</p>
+    <p style="margin: 5px 0;"><strong>Frekvence:</strong> ${frequencyText[frequency] || frequency}</p>
   `
 
-  return sendEmail({
+  const content = `
+    <p style="font-size: 16px;">Dobrý den, <strong>${clientName}</strong>!</p>
+    <p>Rádi bychom Vás upozornili na blížící se platbu za Vaše předplatné.</p>
+    ${generateInfoBox(billingDetails, '#F59E0B')}
+    <p style="color: #666; font-size: 14px;">Ujistěte se prosím, že máte na účtu dostatek prostředků pro úspěšné zpracování platby.</p>
+    ${manageUrl ? generateButton('Spravovat předplatné', manageUrl, fitnessTheme.primaryColor) : ''}
+  `
+
+  const html = wrapInBaseTemplate(fitnessTheme, content, { title: 'Připomínka platby' })
+
+  return emailService.sendCustom({
     to,
     subject: `Připomínka platby - ${formattedDate}`,
     html,
@@ -275,54 +181,17 @@ export async function sendBillingReminderEmail({
   })
 }
 
-export async function sendInvoiceEmail({
+// Generic email sending (for backwards compatibility)
+export async function sendEmail({
   to,
-  clientName,
-  invoiceNumber,
-  amount,
-  dueDate,
-  invoiceUrl,
+  subject,
+  html,
+  text,
 }: {
-  to: string
-  clientName: string
-  invoiceNumber: string
-  amount: string
-  dueDate: string
-  invoiceUrl: string
+  to: string | string[]
+  subject: string
+  html: string
+  text?: string
 }): Promise<EmailResult> {
-  const html = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      </head>
-      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: #1E293B; padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
-          <h1 style="color: white; margin: 0; font-size: 24px;">Nová faktura</h1>
-        </div>
-        <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 12px 12px;">
-          <p style="font-size: 16px;">Dobrý den, <strong>${clientName}</strong>!</p>
-          <p>Posíláme vám novou fakturu:</p>
-          <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #e5e7eb;">
-            <p style="margin: 5px 0;"><strong>Číslo faktury:</strong> ${invoiceNumber}</p>
-            <p style="margin: 5px 0;"><strong>Částka:</strong> ${amount}</p>
-            <p style="margin: 5px 0;"><strong>Splatnost:</strong> ${dueDate}</p>
-          </div>
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${invoiceUrl}" style="display: inline-block; background: #10B981; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600;">Zobrazit fakturu</a>
-          </div>
-          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
-          <p style="color: #9ca3af; font-size: 12px; text-align: center;">FitAdmin - Správa fitness studia</p>
-        </div>
-      </body>
-    </html>
-  `
-
-  return sendEmail({
-    to,
-    subject: `Faktura ${invoiceNumber} - FitAdmin`,
-    html,
-    text: `Dobrý den, ${clientName}! Posíláme fakturu ${invoiceNumber} na částku ${amount}. Splatnost: ${dueDate}. Zobrazit: ${invoiceUrl}`,
-  })
+  return emailService.sendCustom({ to, subject, html, text })
 }

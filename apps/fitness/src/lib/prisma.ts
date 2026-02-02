@@ -7,6 +7,34 @@ const globalForPrisma = globalThis as unknown as {
   pool: Pool | undefined
 }
 
+/**
+ * Create a nested proxy that throws on any method call
+ * This allows code like prisma.user.findUnique() to be evaluated at build time
+ * without failing, but will throw at runtime if DATABASE_URL is missing
+ */
+function createBuildTimeProxy(): PrismaClient {
+  const createNestedProxy = (path: string[] = []): unknown => {
+    return new Proxy(() => {}, {
+      get(target, prop: string | symbol) {
+        if (prop === 'then' || prop === 'catch' || prop === 'finally' || typeof prop === 'symbol') {
+          return undefined
+        }
+        // Return another proxy for chained access (prisma.user.findUnique)
+        return createNestedProxy([...path, String(prop)])
+      },
+      apply() {
+        // When called as a function, throw an error
+        const fullPath = path.join('.')
+        throw new Error(
+          `DATABASE_URL environment variable is not set. Cannot call prisma.${fullPath}()`
+        )
+      },
+    })
+  }
+
+  return createNestedProxy() as PrismaClient
+}
+
 function createPrismaClient(): PrismaClient {
   const connectionString = process.env.DATABASE_URL
 
@@ -14,17 +42,7 @@ function createPrismaClient(): PrismaClient {
   // This allows the build to complete but prevents runtime errors if database isn't configured
   if (!connectionString) {
     console.warn('[Prisma] DATABASE_URL not set - database operations will fail at runtime')
-    // Return a proxy that throws on any property access (lazy error)
-    return new Proxy({} as PrismaClient, {
-      get: (target, prop) => {
-        if (prop === 'then' || prop === 'catch' || typeof prop === 'symbol') {
-          return undefined
-        }
-        return () => {
-          throw new Error('DATABASE_URL environment variable is not set')
-        }
-      },
-    })
+    return createBuildTimeProxy()
   }
 
   // Create connection pool for Prisma 7 adapter
