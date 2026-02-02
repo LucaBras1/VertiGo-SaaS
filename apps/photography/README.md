@@ -8,9 +8,15 @@ ShootFlow is a comprehensive booking and workflow management system designed spe
 
 ### Core Functionality
 - **Package Management** - Track inquiries, quotes, confirmed shoots, and completed packages
-- **Client Management** - CRM for couples, families, and businesses
+- **Client CRM** ✅ - Full-featured CRM with React Query, filtering, sorting, and pagination
+  - Type filtering (Individual, Couple, Business)
+  - Search by name/email
+  - Form validation with Zod
 - **Invoicing** - Integrated billing system linked to packages
-- **Calendar** - Visual timeline of upcoming shoots
+- **Calendar** ✅ - Interactive week view calendar for scheduling shoots
+  - Time slots grid (8:00 - 20:00)
+  - Color-coded shoots by package status
+  - Create/Edit/Delete shoots via modals
 - **Gallery System** - Client-facing photo galleries
 
 ### AI-Powered Features
@@ -303,25 +309,37 @@ S3_REGION=""
 apps/photography/
 ├── src/
 │   ├── app/              # Next.js app router
-│   │   ├── (auth)/       # Auth pages (login, register)
-│   │   ├── (dashboard)/  # Main app (packages, shoots, galleries)
+│   │   ├── auth/         # Auth pages (login, register, forgot-password)
+│   │   ├── dashboard/    # Main app
+│   │   │   ├── calendar/     # Week view calendar (NEW)
+│   │   │   ├── clients/      # Client CRM pages (Refactored)
+│   │   │   ├── packages/     # Package management
+│   │   │   ├── shoots/       # Shoot management
+│   │   │   ├── galleries/    # Gallery management
+│   │   │   ├── invoices/     # Invoice management
+│   │   │   ├── shot-lists/   # Shot list builder
+│   │   │   └── settings/     # User settings
 │   │   ├── api/          # API routes
 │   │   └── page.tsx      # Landing page
 │   ├── components/
 │   │   ├── ui/           # Reusable UI components
-│   │   ├── packages/     # Package-specific components
-│   │   ├── shot-lists/   # Shot list builder
-│   │   ├── galleries/    # Gallery management
+│   │   ├── calendar/     # Calendar components (NEW)
+│   │   │   ├── ShootDetailModal.tsx
+│   │   │   ├── ShootFormModal.tsx
+│   │   │   └── index.ts
+│   │   ├── modals/       # AI and other modals
 │   │   └── ai/           # AI assistant widgets
+│   ├── hooks/            # React Query hooks
+│   │   ├── useClients.ts     # Client CRUD operations
+│   │   ├── usePackages.ts    # Package CRUD operations
+│   │   └── useShoots.ts      # Shoot CRUD operations (NEW)
 │   ├── lib/
 │   │   ├── ai/           # AI modules
-│   │   │   ├── shot-list-generator.ts
-│   │   │   ├── gallery-curator.ts
-│   │   │   ├── style-matcher.ts
-│   │   │   └── edit-time-predictor.ts
+│   │   ├── auth.ts       # NextAuth configuration
 │   │   ├── prisma.ts     # Prisma client
-│   │   └── utils.ts      # Helpers
-│   └── hooks/            # React hooks
+│   │   ├── email.ts      # Email utilities
+│   │   └── utils.ts      # Helpers (cn function)
+│   └── types/            # TypeScript types
 ├── prisma/
 │   └── schema.prisma     # Database schema
 ├── public/               # Static assets
@@ -330,12 +348,26 @@ apps/photography/
 
 ## API Routes
 
+### Clients ✅
+- `GET /api/clients` - List clients (with filters: search, type, sortBy, sortOrder)
+- `GET /api/clients/[id]` - Get client details with packages and invoices
+- `POST /api/clients` - Create client
+- `PUT /api/clients/[id]` - Update client
+- `DELETE /api/clients/[id]` - Delete client
+
 ### Packages
-- `GET /api/packages` - List packages (with filters)
+- `GET /api/packages` - List packages (with filters: status, eventType, clientId, date range)
 - `GET /api/packages/[id]` - Get package details
 - `POST /api/packages` - Create package
 - `PUT /api/packages/[id]` - Update package
 - `DELETE /api/packages/[id]` - Delete package
+
+### Shoots ✅
+- `GET /api/shoots` - List shoots (with filters: dateFrom, dateTo, packageId)
+- `GET /api/shoots/[id]` - Get shoot details with package and shot list
+- `POST /api/shoots` - Create shoot
+- `PUT /api/shoots/[id]` - Update shoot
+- `DELETE /api/shoots/[id]` - Delete shoot
 
 ### AI Features
 - `POST /api/ai/shot-list/generate` - Generate shot list
@@ -355,6 +387,13 @@ apps/photography/
 - `POST /api/galleries` - Create gallery
 - `POST /api/galleries/[id]/upload` - Upload photos
 - `POST /api/galleries/[id]/curate` - AI curation
+
+### Invoices
+- `GET /api/invoices` - List invoices
+- `GET /api/invoices/[id]` - Get invoice details
+- `POST /api/invoices` - Create invoice
+- `PUT /api/invoices/[id]` - Update invoice
+- `DELETE /api/invoices/[id]` - Delete invoice
 
 ## User Flows
 
@@ -412,6 +451,61 @@ Use `lucide-react` with photography theme:
 - DollarSign, CreditCard (pricing)
 - Calendar, Clock (scheduling)
 
+## React Query Hooks
+
+The application uses React Query for data fetching and state management. All hooks are located in `src/hooks/`.
+
+### useClients
+```typescript
+import { useClients, useClient, useCreateClient, useUpdateClient, useDeleteClient } from '@/hooks/useClients'
+
+// List clients with filtering
+const { data, isLoading } = useClients({
+  search: 'john',
+  type: 'couple',
+  sortBy: 'createdAt',
+  sortOrder: 'desc'
+})
+
+// Get single client
+const { data: client } = useClient(clientId)
+
+// Mutations
+const createMutation = useCreateClient()
+const updateMutation = useUpdateClient()
+const deleteMutation = useDeleteClient()
+```
+
+### usePackages
+```typescript
+import { usePackages, usePackage, useCreatePackage, useUpdatePackage } from '@/hooks/usePackages'
+
+// List packages with filtering
+const { data } = usePackages({
+  status: 'CONFIRMED',
+  eventType: 'wedding',
+  clientId: '...'
+})
+```
+
+### useShoots
+```typescript
+import { useShoots, useShoot, useCreateShoot, useUpdateShoot, useDeleteShoot } from '@/hooks/useShoots'
+
+// List all shoots
+const { data: shoots } = useShoots()
+
+// Mutations with optimistic updates
+const createMutation = useCreateShoot()
+createMutation.mutate({
+  packageId: '...',
+  date: '2024-03-15',
+  startTime: '10:00',
+  endTime: '14:00',
+  venueName: 'Central Park'
+})
+```
+
 ## Development
 
 ### Running Tests
@@ -452,14 +546,22 @@ pnpm build
 - [x] Project setup and structure
 - [x] Database schema
 - [x] AI modules (ShotListAI, GalleryCuratorAI)
-- [ ] Authentication system
-- [ ] Package management UI
-- [ ] Basic invoicing
+- [x] Authentication system (NextAuth with email/password)
+- [x] Password reset flow
+- [x] Package management UI
+- [x] Basic invoicing
 
-### Phase 2: Core Features
-- [ ] Shot list builder with templates
-- [ ] Client CRM
-- [ ] Gallery system with upload
+### Phase 2: Core Features ✅ (78% Complete)
+- [x] Shot list builder with templates
+- [x] Client CRM with React Query
+  - [x] Client list with filtering, sorting, pagination
+  - [x] Client detail page
+  - [x] Create/Edit client with form validation (Zod)
+- [x] Calendar integration
+  - [x] Week view with time slots
+  - [x] Shoot scheduling modals
+  - [x] Color-coded status indicators
+- [x] Gallery system with upload
 - [ ] Public gallery pages
 - [ ] Email templates
 - [ ] Contract module
