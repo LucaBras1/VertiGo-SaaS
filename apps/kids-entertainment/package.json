@@ -10,10 +10,15 @@
     "type-check": "tsc --noEmit",
     "prisma:studio": "prisma studio",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:generate": "prisma generate"
+    "prisma:generate": "prisma generate",
+    "prisma:seed": "npx tsx prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "npx tsx prisma/seed.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
+    "@stripe/stripe-js": "^5.6.0",
     "@headlessui/react": "^2.2.9",
     "@hookform/resolvers": "^3.9.0",
     "@prisma/adapter-pg": "^7.3.0",
@@ -39,6 +44,7 @@
     "react-hook-form": "^7.53.0",
     "react-hot-toast": "^2.6.0",
     "slugify": "^1.6.6",
+    "stripe": "^17.7.0",
     "tailwind-merge": "^2.6.0",
     "zod": "^3.23.8",
     "zustand": "^5.0.8"

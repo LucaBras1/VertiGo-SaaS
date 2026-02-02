@@ -7,66 +7,64 @@ import Link from 'next/link'
 import { ArrowLeft, Filter } from 'lucide-react'
 import { PackageCard } from '@/components/packages/PackageCard'
 import { Button } from '@/components/ui/Button'
+import { prisma } from '@/lib/prisma'
 
-// Mock data - replace with actual database query
-const mockPackages = [
-  {
-    id: '1',
-    slug: 'princess-party-premium',
-    title: 'Princess Party Premium',
-    subtitle: 'Magical fairy tale experience',
-    excerpt: 'Complete princess experience with costume, activities, and royal treats',
-    featuredImageUrl: '',
-    featuredImageAlt: 'Princess Party',
-    price: 899000, // 8990 CZK in cents
-    duration: 180,
-    ageGroups: ['TODDLER_3_5', 'KIDS_6_9'],
-    maxChildren: 15,
-    themeName: 'Princezny',
-    includesCharacter: true,
-    includesCake: true,
-    includesGoodybags: true,
-    featured: true,
-  },
-  {
-    id: '2',
-    slug: 'superhero-adventure',
-    title: 'Superhero Adventure',
-    subtitle: 'Action-packed superhero training',
-    excerpt: 'Become a superhero with exciting challenges and missions',
-    featuredImageUrl: '',
-    featuredImageAlt: 'Superhero Party',
-    price: 849000,
-    duration: 180,
-    ageGroups: ['KIDS_6_9', 'TWEENS_10_12'],
-    maxChildren: 20,
-    themeName: 'Superhrdinové',
-    includesCharacter: true,
-    includesCake: false,
-    includesGoodybags: true,
-    featured: true,
-  },
-  {
-    id: '3',
-    slug: 'science-lab-party',
-    title: 'Science Lab Party',
-    subtitle: 'Fun experiments and discoveries',
-    excerpt: 'Hands-on science experiments that amaze and educate',
-    featuredImageUrl: '',
-    featuredImageAlt: 'Science Party',
-    price: 799000,
-    duration: 150,
-    ageGroups: ['KIDS_6_9', 'TWEENS_10_12'],
-    maxChildren: 12,
-    themeName: 'Věda',
-    includesCharacter: false,
-    includesCake: false,
-    includesGoodybags: true,
-    featured: false,
-  },
-]
+export const dynamic = 'force-dynamic'
 
-export default function PackagesPage() {
+async function getPackages(ageGroup?: string) {
+  const where: any = {
+    status: 'active',
+  }
+
+  if (ageGroup) {
+    where.ageGroups = {
+      has: ageGroup,
+    }
+  }
+
+  const packages = await prisma.package.findMany({
+    where,
+    orderBy: [
+      { featured: 'desc' },
+      { order: 'asc' },
+      { createdAt: 'desc' },
+    ],
+    include: {
+      activities: {
+        include: {
+          activity: {
+            select: {
+              title: true,
+              slug: true,
+            },
+          },
+        },
+        orderBy: {
+          order: 'asc',
+        },
+      },
+    },
+  })
+
+  return packages
+}
+
+interface PageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+export default async function PackagesPage({ searchParams }: PageProps) {
+  const params = await searchParams
+  const ageGroup = typeof params.age === 'string' ? params.age : undefined
+  const packages = await getPackages(ageGroup)
+
+  const ageGroups = [
+    { value: 'TODDLER_3_5', label: '3-5 let' },
+    { value: 'KIDS_6_9', label: '6-9 let' },
+    { value: 'TWEENS_10_12', label: '10-12 let' },
+    { value: 'TEENS_13_PLUS', label: '13+ let' },
+  ]
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-partypal-pink-50 via-white to-partypal-yellow-50">
       {/* Header */}
@@ -95,39 +93,66 @@ export default function PackagesPage() {
             </p>
           </div>
 
-          {/* Filters (placeholder) */}
+          {/* Filters */}
           <div className="flex flex-wrap gap-4 mb-8">
-            <Button variant="outline" size="sm">
-              <Filter className="h-4 w-4 mr-2" />
-              Všechny věkové skupiny
-            </Button>
-            <Button variant="ghost" size="sm">
-              3-5 let
-            </Button>
-            <Button variant="ghost" size="sm">
-              6-9 let
-            </Button>
-            <Button variant="ghost" size="sm">
-              10-12 let
-            </Button>
-            <Button variant="ghost" size="sm">
-              13+ let
-            </Button>
+            <Link href="/packages">
+              <Button variant={!ageGroup ? 'outline' : 'ghost'} size="sm">
+                <Filter className="h-4 w-4 mr-2" />
+                Všechny věkové skupiny
+              </Button>
+            </Link>
+            {ageGroups.map((group) => (
+              <Link key={group.value} href={`/packages?age=${group.value}`}>
+                <Button
+                  variant={ageGroup === group.value ? 'default' : 'ghost'}
+                  size="sm"
+                >
+                  {group.label}
+                </Button>
+              </Link>
+            ))}
           </div>
 
           {/* Packages Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {mockPackages.map((pkg) => (
-              <PackageCard key={pkg.id} {...pkg} />
+            {packages.map((pkg) => (
+              <PackageCard
+                key={pkg.id}
+                id={pkg.id}
+                slug={pkg.slug}
+                title={pkg.title}
+                subtitle={pkg.subtitle || undefined}
+                excerpt={pkg.excerpt || undefined}
+                featuredImageUrl={pkg.featuredImageUrl}
+                featuredImageAlt={pkg.featuredImageAlt}
+                price={pkg.price || undefined}
+                duration={pkg.duration}
+                ageGroups={pkg.ageGroups}
+                maxChildren={pkg.maxChildren || undefined}
+                themeName={pkg.themeName || undefined}
+                includesCharacter={pkg.includesCharacter}
+                includesCake={pkg.includesCake}
+                includesGoodybags={pkg.includesGoodybags}
+                featured={pkg.featured}
+              />
             ))}
           </div>
 
           {/* Empty State */}
-          {mockPackages.length === 0 && (
+          {packages.length === 0 && (
             <div className="text-center py-16">
               <p className="text-xl text-gray-600 mb-6">
-                Momentálně nemáme žádné balíčky k dispozici.
+                {ageGroup
+                  ? 'Pro tuto věkovou skupinu nemáme žádné balíčky.'
+                  : 'Momentálně nemáme žádné balíčky k dispozici.'}
               </p>
+              {ageGroup && (
+                <Link href="/packages">
+                  <Button variant="outline" className="mr-4">
+                    Zobrazit všechny balíčky
+                  </Button>
+                </Link>
+              )}
               <Link href="/">
                 <Button>Zpět na hlavní stránku</Button>
               </Link>

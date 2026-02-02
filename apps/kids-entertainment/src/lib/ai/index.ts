@@ -1,13 +1,27 @@
 /**
  * AI Features for PartyPal
- * Wrappers for @vertigo/ai-core prompts
+ * Wrappers for @vertigo/ai-core prompts with fallback for missing API key
  */
 
-import { createAIClient, createPromptManager } from '@vertigo/ai-core'
+import { createAIClient, createPromptManager, type AIClient } from '@vertigo/ai-core'
 
-const ai = createAIClient({
-  apiKey: process.env.OPENAI_API_KEY || '',
-})
+// Check if AI is available
+function isAIAvailable(): boolean {
+  return !!process.env.OPENAI_API_KEY
+}
+
+// Lazy-load AI client to avoid build-time errors
+let _ai: AIClient | null = null
+function getAIClient(): AIClient {
+  if (!_ai) {
+    const apiKey = process.env.OPENAI_API_KEY
+    if (!apiKey) {
+      throw new Error('OPENAI_API_KEY environment variable is not set')
+    }
+    _ai = createAIClient({ apiKey })
+  }
+  return _ai
+}
 
 const prompts = createPromptManager()
 
@@ -52,7 +66,7 @@ export async function optimizeForAge(
     throw new Error('Failed to render age optimizer prompt')
   }
 
-  const response = await ai.chat(
+  const response = await getAIClient().chat(
     [
       { role: 'system', content: rendered.systemPrompt },
       { role: 'user', content: rendered.userPrompt },
@@ -108,6 +122,12 @@ export async function checkSafety(
   input: SafetyCheckInput,
   tenantId: string = 'default'
 ): Promise<SafetyCheckOutput> {
+  // If AI is not available, return a fallback response
+  if (!isAIAvailable()) {
+    console.warn('[AI] OPENAI_API_KEY not set - using fallback safety check')
+    return generateFallbackSafetyCheck(input)
+  }
+
   const rendered = prompts.render('kids_entertainment', 'safety-checker', {
     activities: JSON.stringify(input.activities, null, 2),
     allergies: input.allergies.join(', '),
@@ -121,23 +141,103 @@ export async function checkSafety(
     throw new Error('Failed to render safety checker prompt')
   }
 
-  const response = await ai.chat(
-    [
-      { role: 'system', content: rendered.systemPrompt },
-      { role: 'user', content: rendered.userPrompt },
-    ],
-    {
-      tenantId,
-      vertical: 'kids_entertainment',
-    },
-    {
-      model: 'gpt-4o',
-      temperature: 0.3, // Lower temperature for safety-critical output
-      responseFormat: 'json',
+  try {
+    const response = await getAIClient().chat(
+      [
+        { role: 'system', content: rendered.systemPrompt },
+        { role: 'user', content: rendered.userPrompt },
+      ],
+      {
+        tenantId,
+        vertical: 'kids_entertainment',
+      },
+      {
+        model: 'gpt-4o',
+        temperature: 0.3, // Lower temperature for safety-critical output
+        responseFormat: 'json',
+      }
+    )
+
+    return JSON.parse(response.data as string)
+  } catch (error) {
+    console.error('[AI] Safety check failed, using fallback:', error)
+    return generateFallbackSafetyCheck(input)
+  }
+}
+
+/**
+ * Fallback safety check when AI is not available
+ * Provides conservative safety recommendations based on known patterns
+ */
+function generateFallbackSafetyCheck(input: SafetyCheckInput): SafetyCheckOutput {
+  const activityRisks = input.activities.map((activity) => {
+    // Determine risk based on activity properties
+    const hasAllergenConcerns = input.allergies.length > 0 &&
+      (activity.allergens?.some((a: string) => input.allergies.includes(a)) ||
+       activity.name?.toLowerCase().includes('food') ||
+       activity.name?.toLowerCase().includes('painting'))
+
+    const isHighEnergy = activity.energyLevel === 'high' ||
+      activity.name?.toLowerCase().includes('running') ||
+      activity.name?.toLowerCase().includes('jumping')
+
+    const physicalRisk = isHighEnergy ? 'MODERATE' : 'LOW'
+    const allergenRisk = hasAllergenConcerns ? 'MODERATE' : 'LOW'
+
+    return {
+      activityId: activity.id || 'unknown',
+      activityName: activity.name || 'Unknown Activity',
+      physicalSafety: {
+        risk: physicalRisk as 'LOW' | 'MODERATE' | 'HIGH' | 'CRITICAL',
+        concerns: isHighEnergy
+          ? ['Vyžaduje dozor dospělého', 'Dbejte na dostatečný prostor']
+          : [],
+        mitigations: isHighEnergy
+          ? ['Zajistěte měkký povrch', 'Omezte počet dětí najednou']
+          : ['Standardní dozor'],
+      },
+      allergenConcerns: {
+        risk: allergenRisk as 'LOW' | 'MODERATE' | 'HIGH' | 'CRITICAL',
+        allergens: hasAllergenConcerns ? input.allergies : [],
+        mitigations: hasAllergenConcerns
+          ? ['Zkontrolujte složení materiálů', 'Mějte připraveny antihistaminika']
+          : [],
+      },
+      supervisionNeeded: isHighEnergy || input.ageMin < 5,
+      ageAppropriate: true,
+      recommendations: [
+        'Zajistěte první pomoc na místě',
+        'Mějte po ruce kontakt na rodiče',
+      ],
     }
+  })
+
+  // Determine overall risk
+  const hasHighRisk = activityRisks.some(
+    (r) => r.physicalSafety.risk === 'HIGH' || r.allergenConcerns.risk === 'HIGH'
+  )
+  const hasModeateRisk = activityRisks.some(
+    (r) => r.physicalSafety.risk === 'MODERATE' || r.allergenConcerns.risk === 'MODERATE'
   )
 
-  return JSON.parse(response.data as string)
+  return {
+    overallRisk: hasHighRisk ? 'MODERATE' : hasModeateRisk ? 'LOW' : 'LOW',
+    activityRisks,
+    generalRecommendations: [
+      'Zajistěte adekvátní dozor dospělých (min. 1 dospělý na 5 dětí)',
+      'Mějte připravenou lékárničku první pomoci',
+      'Zkontrolujte pojištění prostoru',
+      input.allergies.length > 0
+        ? `Upozorněte všechny na alergie: ${input.allergies.join(', ')}`
+        : 'Zeptejte se rodičů na případné alergie',
+    ],
+    emergencyPreparations: [
+      'Mějte po ruce telefonní čísla na rodiče',
+      'Zkontrolujte přístupnost pro záchrannou službu',
+      'Připravte klidný prostor pro odpočinek',
+      'Zajistěte dostatek tekutin',
+    ],
+  }
 }
 
 export interface ThemeSuggesterInput {
@@ -179,7 +279,7 @@ export async function suggestThemes(
     throw new Error('Failed to render theme suggester prompt')
   }
 
-  const response = await ai.chat(
+  const response = await getAIClient().chat(
     [
       { role: 'system', content: rendered.systemPrompt },
       { role: 'user', content: rendered.userPrompt },
@@ -225,7 +325,7 @@ export async function generateParentMessage(
     throw new Error('Failed to render parent communication prompt')
   }
 
-  const response = await ai.chat(
+  const response = await getAIClient().chat(
     [
       { role: 'system', content: rendered.systemPrompt },
       { role: 'user', content: rendered.userPrompt },
@@ -279,7 +379,7 @@ export async function predictPhotoMoments(
     throw new Error('Failed to render photo moment predictor prompt')
   }
 
-  const response = await ai.chat(
+  const response = await getAIClient().chat(
     [
       { role: 'system', content: rendered.systemPrompt },
       { role: 'user', content: rendered.userPrompt },

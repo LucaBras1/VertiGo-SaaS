@@ -13,7 +13,7 @@ export const ageOptimizerPrompt: PromptTemplate = {
   id: 'age-optimizer',
   name: 'Age Optimizer AI',
   version: '1.0.0',
-  vertical: 'kids-entertainment',
+  vertical: 'kids_entertainment',
   description: 'Adapts party program to specific age group characteristics',
   systemPrompt: `You are a child development expert and party entertainment specialist.
 Your role is to optimize party programs based on the age group of children attending.
@@ -53,7 +53,7 @@ export const safetyCheckerPrompt: PromptTemplate = {
   id: 'safety-checker',
   name: 'Safety Checker AI',
   version: '1.0.0',
-  vertical: 'kids-entertainment',
+  vertical: 'kids_entertainment',
   description: 'Checks activities for safety concerns and allergen risks',
   systemPrompt: `You are a child safety expert and pediatric allergy specialist.
 Your role is to identify potential safety hazards and allergen risks in party activities.
@@ -96,7 +96,7 @@ export const themeSuggesterPrompt: PromptTemplate = {
   id: 'theme-suggester',
   name: 'Theme Suggester AI',
   version: '1.0.0',
-  vertical: 'kids-entertainment',
+  vertical: 'kids_entertainment',
   description: 'Suggests party themes based on child interests and trends',
   systemPrompt: `You are a creative party planner specializing in children's entertainment.
 Your role is to suggest engaging, age-appropriate party themes that match the child's interests.
@@ -140,7 +140,7 @@ export const parentCommunicationPrompt: PromptTemplate = {
   id: 'parent-communication',
   name: 'Parent Communication AI',
   version: '1.0.0',
-  vertical: 'kids-entertainment',
+  vertical: 'kids_entertainment',
   description: 'Generates professional, friendly parent communication',
   systemPrompt: `You are a professional children's party entertainer with excellent parent communication skills.
 Your role is to generate clear, friendly, reassuring messages to parents.
@@ -187,7 +187,7 @@ export const photoMomentPredictorPrompt: PromptTemplate = {
   id: 'photo-moment-predictor',
   name: 'Photo Moment Predictor AI',
   version: '1.0.0',
-  vertical: 'kids-entertainment',
+  vertical: 'kids_entertainment',
   description: 'Predicts optimal times to capture memorable photos',
   systemPrompt: `You are a professional children's event photographer and party planner.
 Your role is to predict the best moments to capture photos during a party.

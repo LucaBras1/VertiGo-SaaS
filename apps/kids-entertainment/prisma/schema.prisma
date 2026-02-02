@@ -417,7 +417,7 @@ model Order {
   specialRequests String?
   allergyNotes String?
 
-  // Pricing
+  // Pricing (includes payment data: total, deposit, stripeSessionId, paymentIntentId, etc.)
   pricing Json?
 
   // Payment

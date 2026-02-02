@@ -78,21 +78,44 @@ apps/events/
 ├── src/
 │   ├── app/
 │   │   ├── page.tsx           # Landing page (purple/orange branding)
-│   │   ├── login/             # Authentication
-│   │   ├── signup/
+│   │   ├── login/             # Authentication (NextAuth)
+│   │   ├── signup/            # User registration
+│   │   ├── api/
+│   │   │   ├── auth/
+│   │   │   │   ├── [...nextauth]/route.ts  # NextAuth handlers
+│   │   │   │   └── signup/route.ts         # Registration endpoint
+│   │   │   ├── events/        # Events CRUD
+│   │   │   ├── performers/    # Performers CRUD
+│   │   │   ├── venues/        # Venues CRUD
+│   │   │   ├── clients/       # Clients CRUD
+│   │   │   ├── bookings/      # Bookings CRUD
+│   │   │   ├── dashboard/stats/route.ts    # Dashboard statistics
+│   │   │   └── ai/
+│   │   │       ├── timeline/route.ts       # AI timeline generation
+│   │   │       ├── budget/route.ts         # AI budget optimization
+│   │   │       └── experience/route.ts     # AI experience analysis
 │   │   └── dashboard/         # Main application
-│   │       ├── page.tsx       # Dashboard overview
+│   │       ├── layout.tsx     # Session-aware navigation
+│   │       ├── page.tsx       # Dashboard overview (connected to API)
 │   │       ├── events/        # Event management
 │   │       ├── performers/    # Performer roster
 │   │       ├── venues/        # Venue management
 │   │       └── clients/       # Client management
 │   ├── components/
-│   │   └── timeline-generator.tsx  # AI timeline UI
-│   └── lib/
-│       └── ai/
-│           ├── timeline-optimizer.ts        # AI timeline generation
-│           ├── budget-optimizer.ts          # AI budget allocation
-│           └── guest-experience-analyzer.ts # AI experience prediction
+│   │   ├── providers/
+│   │   │   └── session-provider.tsx  # NextAuth SessionProvider
+│   │   └── timeline-generator.tsx    # AI timeline UI
+│   ├── lib/
+│   │   ├── prisma.ts          # Prisma client (build-time guard)
+│   │   ├── auth.ts            # NextAuth configuration
+│   │   ├── openai.ts          # OpenAI client (lazy loading)
+│   │   └── ai/
+│   │       ├── timeline-optimizer.ts        # AI timeline generation
+│   │       ├── budget-optimizer.ts          # AI budget allocation
+│   │       └── guest-experience-analyzer.ts # AI experience prediction
+│   ├── types/
+│   │   └── next-auth.d.ts     # NextAuth type extensions
+│   └── middleware.ts          # Route protection
 ├── package.json
 ├── tailwind.config.js         # Purple/orange theme
 ├── next.config.js
@@ -175,13 +198,46 @@ Predicts guest satisfaction:
 - Booking interface
 - Contact management
 
+## 🔌 API Endpoints
+
+### Authentication
+- `POST /api/auth/signup` - User registration with tenant creation
+- `POST /api/auth/[...nextauth]` - NextAuth handlers (login, logout, session)
+
+### Events
+- `GET/POST /api/events` - List and create events
+- `GET/PATCH/DELETE /api/events/[id]` - Event details, update, delete
+- `GET/POST /api/events/[id]/tasks` - Event task management
+
+### Performers
+- `GET/POST /api/performers` - List and create performers
+- `GET/PATCH/DELETE /api/performers/[id]` - Performer details, update, delete
+
+### Venues
+- `GET/POST /api/venues` - List and create venues
+- `GET/PATCH/DELETE /api/venues/[id]` - Venue details, update, delete
+
+### Clients
+- `GET/POST /api/clients` - List and create clients
+- `GET/PATCH/DELETE /api/clients/[id]` - Client details, update, delete
+
+### Bookings
+- `GET/POST /api/bookings` - List and create bookings
+- `GET/PATCH/DELETE /api/bookings/[id]` - Booking details, update, delete
+
+### Dashboard & AI
+- `GET /api/dashboard/stats` - Dashboard statistics
+- `POST /api/ai/timeline` - Generate optimized timeline
+- `POST /api/ai/budget` - Budget optimization
+- `POST /api/ai/experience` - Guest experience analysis
+
 ## 🔐 Authentication
 
 Authentication is handled via NextAuth.js with:
-- Email/password login
-- OAuth providers (Google, Microsoft)
-- Session management
-- Role-based access control
+- Email/password login (credentials provider)
+- JWT strategy with 30-day sessions
+- Multi-tenant support (tenantId in session)
+- Route protection via middleware
 
 ## 📱 Responsive Design
 
