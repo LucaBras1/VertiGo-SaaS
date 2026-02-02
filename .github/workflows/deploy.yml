@@ -21,7 +21,7 @@ env:
 jobs:
   build:
     name: Build & Test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout code
@@ -85,7 +85,7 @@ jobs:
   deploy:
     name: Deploy to VPS
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/main'
 
     steps:
