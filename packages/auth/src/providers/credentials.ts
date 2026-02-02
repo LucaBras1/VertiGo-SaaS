@@ -8,7 +8,6 @@ import { compare } from 'bcryptjs'
 // Lazy-loaded credentials provider to handle ESM/CJS interop
 // This is called at runtime when createCredentialsProvider is invoked
 function getCredentialsProvider() {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const mod = require('next-auth/providers/credentials')
   return mod.default || mod
 }
