@@ -18,8 +18,11 @@ let _authOptions: NextAuthOptions | null = null
 
 function getAuthOptionsImpl(): NextAuthOptions {
   if (!_authOptions) {
-    const { db } = require('./db')
-    const prisma = db()
+    // Use require for lazy loading to avoid build-time initialization
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const dbModule = require('./db')
+    // Use the default export (prisma proxy) which handles lazy loading
+    const prisma = dbModule.default || dbModule.prisma
 
     _authOptions = createAuthOptions({
       prisma: prisma as any,

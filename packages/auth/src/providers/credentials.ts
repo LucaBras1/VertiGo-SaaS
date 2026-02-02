@@ -3,8 +3,15 @@
  * Configurable credentials provider for NextAuth
  */
 
-import CredentialsProvider from 'next-auth/providers/credentials'
 import { compare } from 'bcryptjs'
+
+// Lazy-loaded credentials provider to handle ESM/CJS interop
+// This is called at runtime when createCredentialsProvider is invoked
+function getCredentialsProvider() {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const mod = require('next-auth/providers/credentials')
+  return mod.default || mod
+}
 import type { PrismaClient } from '@prisma/client'
 import type { AuthConfig, VertigoUser, ErrorMessages } from '../types'
 import { ERROR_MESSAGES } from '../constants'
@@ -22,6 +29,9 @@ interface CreateCredentialsProviderOptions {
  */
 export function createCredentialsProvider(options: CreateCredentialsProviderOptions) {
   const { prisma, passwordField, multiTenantEnabled, includeSlug, messages } = options
+
+  // Get the credentials provider at runtime to avoid ESM/CJS issues
+  const CredentialsProvider = getCredentialsProvider()
 
   return CredentialsProvider({
     name: 'credentials',

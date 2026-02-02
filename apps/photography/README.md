@@ -8,9 +8,13 @@ ShootFlow is a comprehensive booking and workflow management system designed spe
 
 ### Core Functionality
 - **Package Management** - Track inquiries, quotes, confirmed shoots, and completed packages
-- **Client CRM** ✅ - Full-featured CRM with React Query, filtering, sorting, and pagination
+- **Client CRM** ✅ - Full-featured CRM with React Query, server-side pagination, and statistics
+  - Server-side pagination, filtering, and sorting
   - Type filtering (Individual, Couple, Business)
-  - Search by name/email
+  - Search by name/email/phone
+  - Bulk delete with relation validation
+  - Client statistics dashboard (totals, by type, active, revenue)
+  - Service layer architecture
   - Form validation with Zod
 - **Invoicing** - Integrated billing system linked to packages
 - **Calendar** ✅ - Interactive week view calendar for scheduling shoots
@@ -335,8 +339,10 @@ apps/photography/
 │   │   └── useShoots.ts      # Shoot CRUD operations (NEW)
 │   ├── lib/
 │   │   ├── ai/           # AI modules
-│   │   ├── auth.ts       # NextAuth configuration
-│   │   ├── prisma.ts     # Prisma client
+│   │   ├── services/     # Business logic layer
+│   │   │   └── clients.ts    # Client service (CRUD, stats, bulk ops)
+│   │   ├── auth.ts       # NextAuth configuration (lazy-loaded)
+│   │   ├── prisma.ts     # Prisma client (lazy-loaded with build-time proxy)
 │   │   ├── email.ts      # Email utilities
 │   │   └── utils.ts      # Helpers (cn function)
 │   └── types/            # TypeScript types
@@ -349,11 +355,15 @@ apps/photography/
 ## API Routes
 
 ### Clients ✅
-- `GET /api/clients` - List clients (with filters: search, type, sortBy, sortOrder)
+- `GET /api/clients` - List clients with server-side pagination
+  - Query params: `search`, `type`, `page`, `limit`, `sortBy`, `sortOrder`
+  - Returns: `{ data: Client[], pagination: { page, limit, totalCount, totalPages, hasMore } }`
 - `GET /api/clients/[id]` - Get client details with packages and invoices
-- `POST /api/clients` - Create client
+- `POST /api/clients` - Create client (with email uniqueness validation)
 - `PUT /api/clients/[id]` - Update client
-- `DELETE /api/clients/[id]` - Delete client
+- `DELETE /api/clients/[id]` - Delete client (validates no packages/invoices)
+- `POST /api/clients/bulk` - Bulk operations (delete with relation validation)
+- `GET /api/clients/stats` - Client statistics (totals, by type, active, revenue, top clients)
 
 ### Packages
 - `GET /api/packages` - List packages (with filters: status, eventType, clientId, date range)
@@ -457,23 +467,43 @@ The application uses React Query for data fetching and state management. All hoo
 
 ### useClients
 ```typescript
-import { useClients, useClient, useCreateClient, useUpdateClient, useDeleteClient } from '@/hooks/useClients'
+import {
+  useClients,
+  useClient,
+  useCreateClient,
+  useUpdateClient,
+  useDeleteClient,
+  useBulkDeleteClients,
+  useClientStats
+} from '@/hooks/useClients'
 
-// List clients with filtering
+// List clients with server-side pagination
 const { data, isLoading } = useClients({
   search: 'john',
   type: 'couple',
+  page: 1,
+  limit: 20,
   sortBy: 'createdAt',
   sortOrder: 'desc'
 })
+// data.clients: Client[]
+// data.pagination: { page, limit, totalCount, totalPages, hasMore }
 
 // Get single client
 const { data: client } = useClient(clientId)
+
+// Get client statistics
+const { data: stats } = useClientStats()
+// stats: { total, byType, active, newThisMonth, lifetimeValue, topClients }
 
 // Mutations
 const createMutation = useCreateClient()
 const updateMutation = useUpdateClient()
 const deleteMutation = useDeleteClient()
+const bulkDeleteMutation = useBulkDeleteClients()
+
+// Bulk delete example
+bulkDeleteMutation.mutate(['id1', 'id2', 'id3'])
 ```
 
 ### usePackages
@@ -551,12 +581,15 @@ pnpm build
 - [x] Package management UI
 - [x] Basic invoicing
 
-### Phase 2: Core Features ✅ (78% Complete)
+### Phase 2: Core Features ✅ (85% Complete)
 - [x] Shot list builder with templates
-- [x] Client CRM with React Query
-  - [x] Client list with filtering, sorting, pagination
-  - [x] Client detail page
+- [x] Client CRM with React Query ✅ **100% Complete**
+  - [x] Client list with server-side filtering, sorting, pagination
+  - [x] Client detail page with packages and invoices
   - [x] Create/Edit client with form validation (Zod)
+  - [x] Service layer architecture (`lib/services/clients.ts`)
+  - [x] Bulk delete with relation validation
+  - [x] Client statistics endpoint (totals, by type, revenue, top clients)
 - [x] Calendar integration
   - [x] Week view with time slots
   - [x] Shoot scheduling modals
