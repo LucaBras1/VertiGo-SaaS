@@ -395,7 +395,7 @@ export default function GigDetailPage() {
           <DialogTitle>Smazat gig?</DialogTitle>
         </DialogHeader>
         <DialogContent>
-          <p>Opravdu chcete smazat gig "{gig.title}"? Tato akce je nevratná.</p>
+          <p>Opravdu chcete smazat gig &quot;{gig.title}&quot;? Tato akce je nevratná.</p>
         </DialogContent>
         <DialogFooter>
           <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>

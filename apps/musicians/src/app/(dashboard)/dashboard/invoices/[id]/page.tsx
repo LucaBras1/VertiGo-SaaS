@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
-import { ArrowLeft, Edit, Trash2, Download, Send, CheckCircle, FileText } from 'lucide-react'
+import { ArrowLeft, Edit, Trash2, Download, Send, CheckCircle, FileText, Mail, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -59,6 +59,7 @@ export default function InvoiceDetailPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [isSendingEmail, setIsSendingEmail] = useState(false)
 
   useEffect(() => {
     fetchInvoice()
@@ -115,6 +116,33 @@ export default function InvoiceDetailPage() {
     }
   }
 
+  const handleSendEmail = async () => {
+    if (!invoice?.customer?.email) {
+      toast.error('Zákazník nemá emailovou adresu')
+      return
+    }
+
+    setIsSendingEmail(true)
+    try {
+      const response = await fetch(`/api/invoices/${params.id}/send`, {
+        method: 'POST',
+      })
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send email')
+      }
+
+      // Refresh invoice data to get updated status
+      await fetchInvoice()
+      toast.success(`Faktura odeslána na ${invoice.customer.email}`)
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Nepodařilo se odeslat email')
+    } finally {
+      setIsSendingEmail(false)
+    }
+  }
+
   if (isLoading) {
     return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div></div>
   }
@@ -158,17 +186,47 @@ export default function InvoiceDetailPage() {
       {invoice.status !== 'paid' && (
         <Card>
           <CardContent className="py-4">
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <span className="text-sm text-gray-600">Akce:</span>
               {invoice.status === 'draft' && (
-                <Button size="sm" onClick={() => handleStatusChange('sent')}>
-                  <Send className="h-4 w-4 mr-2" />Odeslat
-                </Button>
+                <>
+                  <Button size="sm" onClick={() => handleStatusChange('sent')}>
+                    <Send className="h-4 w-4 mr-2" />Označit jako odesláno
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleSendEmail}
+                    disabled={isSendingEmail || !invoice.customer?.email}
+                  >
+                    {isSendingEmail ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <Mail className="h-4 w-4 mr-2" />
+                    )}
+                    Odeslat emailem
+                  </Button>
+                </>
               )}
               {(invoice.status === 'sent' || invoice.status === 'overdue') && (
-                <Button size="sm" onClick={() => handleStatusChange('paid')}>
-                  <CheckCircle className="h-4 w-4 mr-2" />Označit jako zaplaceno
-                </Button>
+                <>
+                  <Button size="sm" onClick={() => handleStatusChange('paid')}>
+                    <CheckCircle className="h-4 w-4 mr-2" />Označit jako zaplaceno
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleSendEmail}
+                    disabled={isSendingEmail || !invoice.customer?.email}
+                  >
+                    {isSendingEmail ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <Mail className="h-4 w-4 mr-2" />
+                    )}
+                    Poslat připomínku
+                  </Button>
+                </>
               )}
             </div>
           </CardContent>

@@ -56,7 +56,7 @@ export default function LandingPage() {
           <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
             GigBook streamlines your music career with AI-powered setlist generation,
             smart pricing, and professional stage riders. Focus on your performance,
-            we'll handle the business.
+            we&apos;ll handle the business.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

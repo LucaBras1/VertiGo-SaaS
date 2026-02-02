@@ -191,7 +191,7 @@ export default function SongDetailPage() {
 
       <Dialog open={showDeleteDialog} onClose={() => setShowDeleteDialog(false)}>
         <DialogHeader><DialogTitle>Smazat píseň?</DialogTitle></DialogHeader>
-        <DialogContent><p>Opravdu chcete smazat píseň "{song.title}"?</p></DialogContent>
+        <DialogContent><p>Opravdu chcete smazat píseň &quot;{song.title}&quot;?</p></DialogContent>
         <DialogFooter>
           <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>Zrušit</Button>
           <Button variant="destructive" onClick={handleDelete} isLoading={isDeleting}>Smazat</Button>

@@ -241,7 +241,7 @@ export default function SetlistDetailPage() {
 
       <Dialog open={showDeleteDialog} onClose={() => setShowDeleteDialog(false)}>
         <DialogHeader><DialogTitle>Smazat setlist?</DialogTitle></DialogHeader>
-        <DialogContent><p>Opravdu chcete smazat setlist "{setlist.name}"?</p></DialogContent>
+        <DialogContent><p>Opravdu chcete smazat setlist &quot;{setlist.name}&quot;?</p></DialogContent>
         <DialogFooter>
           <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>Zrušit</Button>
           <Button variant="destructive" onClick={handleDelete} isLoading={isDeleting}>Smazat</Button>

@@ -170,7 +170,7 @@ export default function ClientDetailPage() {
       <Dialog open={showDeleteDialog} onClose={() => setShowDeleteDialog(false)}>
         <DialogHeader><DialogTitle>Smazat klienta?</DialogTitle></DialogHeader>
         <DialogContent>
-          <p>Opravdu chcete smazat klienta "{client.firstName} {client.lastName}"?</p>
+          <p>Opravdu chcete smazat klienta &quot;{client.firstName} {client.lastName}&quot;?</p>
         </DialogContent>
         <DialogFooter>
           <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>Zrušit</Button>
