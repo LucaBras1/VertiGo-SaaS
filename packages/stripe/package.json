@@ -1,0 +1,48 @@
+{
+  "name": "@vertigo/stripe",
+  "version": "0.1.0",
+  "description": "Shared Stripe payment integration for VertiGo SaaS",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "stripe": "^17.0.0"
+  },
+  "peerDependencies": {
+    "next": "^14.0.0 || ^15.0.0"
+  },
+  "peerDependenciesMeta": {
+    "next": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "next": "^14.2.15",
+    "typescript": "^5.7.3",
+    "tsup": "^8.3.6"
+  },
+  "keywords": [
+    "vertigo",
+    "stripe",
+    "payments",
+    "checkout"
+  ],
+  "license": "MIT"
+}
