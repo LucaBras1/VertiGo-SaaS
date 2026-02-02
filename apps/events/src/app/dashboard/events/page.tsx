@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
   Calendar,
@@ -13,8 +13,11 @@ import {
   MoreVertical,
   Eye,
   Edit,
-  Trash2
+  Trash2,
 } from 'lucide-react'
+import { useConfirm } from '@/hooks/use-confirm'
+import { useToast } from '@/hooks/use-toast'
+import { SkeletonTable, SkeletonQuickStats, Skeleton } from '@/components/ui/skeleton'
 
 type EventStatus = 'all' | 'planning' | 'confirmed' | 'in-progress' | 'completed' | 'cancelled'
 
@@ -72,12 +75,54 @@ const MOCK_EVENTS = [
 export default function EventsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<EventStatus>('all')
+  const [events, setEvents] = useState(MOCK_EVENTS)
+  const [isLoading, setIsLoading] = useState(true)
+  const { confirmDelete } = useConfirm()
+  const toast = useToast()
 
-  const filteredEvents = MOCK_EVENTS.filter(event => {
+  useEffect(() => {
+    // Simulate loading
+    const timer = setTimeout(() => setIsLoading(false), 500)
+    return () => clearTimeout(timer)
+  }, [])
+
+  const handleDeleteEvent = async (eventId: string, eventName: string) => {
+    const confirmed = await confirmDelete(eventName)
+    if (confirmed) {
+      setEvents((prev) => prev.filter((e) => e.id !== eventId))
+      toast.success(`Event "${eventName}" byl smazan`)
+    }
+  }
+
+  const filteredEvents = events.filter((event) => {
     const matchesSearch = event.name.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesStatus = statusFilter === 'all' || event.status === statusFilter
     return matchesSearch && matchesStatus
   })
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-start">
+          <div>
+            <Skeleton className="h-9 w-32 mb-2" />
+            <Skeleton className="h-5 w-64" />
+          </div>
+          <Skeleton className="h-10 w-32 rounded-lg" />
+        </div>
+        <div className="card">
+          <div className="flex flex-col md:flex-row gap-4">
+            <Skeleton className="h-10 flex-1 rounded-lg" />
+            <Skeleton className="h-10 w-40 rounded-lg" />
+          </div>
+        </div>
+        <SkeletonQuickStats />
+        <div className="card">
+          <SkeletonTable rows={4} />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -153,7 +198,7 @@ export default function EventsPage() {
             </thead>
             <tbody>
               {filteredEvents.map((event) => (
-                <EventRow key={event.id} event={event} />
+                <EventRow key={event.id} event={event} onDelete={handleDeleteEvent} />
               ))}
             </tbody>
           </table>
@@ -171,7 +216,13 @@ export default function EventsPage() {
   )
 }
 
-function EventRow({ event }: { event: typeof MOCK_EVENTS[0] }) {
+function EventRow({
+  event,
+  onDelete,
+}: {
+  event: typeof MOCK_EVENTS[0]
+  onDelete: (id: string, name: string) => void
+}) {
   const [showMenu, setShowMenu] = useState(false)
 
   const statusColors = {
@@ -265,7 +316,13 @@ function EventRow({ event }: { event: typeof MOCK_EVENTS[0] }) {
                   <Edit className="w-4 h-4" />
                   <span>Edit</span>
                 </button>
-                <button className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 text-sm flex items-center space-x-2">
+                <button
+                  onClick={() => {
+                    setShowMenu(false)
+                    onDelete(event.id, event.name)
+                  }}
+                  className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 text-sm flex items-center space-x-2"
+                >
                   <Trash2 className="w-4 h-4" />
                   <span>Delete</span>
                 </button>

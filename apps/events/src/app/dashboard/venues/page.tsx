@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
   MapPin,
@@ -17,8 +17,9 @@ import {
   Wifi,
   ParkingCircle,
   UtensilsCrossed,
-  Music
+  Music,
 } from 'lucide-react'
+import { SkeletonVenueCard, SkeletonQuickStats, Skeleton } from '@/components/ui/skeleton'
 
 type VenueType = 'all' | 'indoor' | 'outdoor' | 'hybrid'
 
@@ -114,8 +115,14 @@ export default function VenuesPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [typeFilter, setTypeFilter] = useState<VenueType>('all')
   const [capacityFilter, setCapacityFilter] = useState('all')
+  const [isLoading, setIsLoading] = useState(true)
 
-  const filteredVenues = MOCK_VENUES.filter(venue => {
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 500)
+    return () => clearTimeout(timer)
+  }, [])
+
+  const filteredVenues = MOCK_VENUES.filter((venue) => {
     const matchesSearch =
       venue.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       venue.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -128,6 +135,33 @@ export default function VenuesPage() {
       (capacityFilter === 'large' && venue.capacity >= 500)
     return matchesSearch && matchesType && matchesCapacity
   })
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-start">
+          <div>
+            <Skeleton className="h-9 w-32 mb-2" />
+            <Skeleton className="h-5 w-64" />
+          </div>
+          <Skeleton className="h-10 w-32 rounded-lg" />
+        </div>
+        <div className="card">
+          <div className="flex flex-col md:flex-row gap-4">
+            <Skeleton className="h-10 flex-1 rounded-lg" />
+            <Skeleton className="h-10 w-32 rounded-lg" />
+            <Skeleton className="h-10 w-40 rounded-lg" />
+          </div>
+        </div>
+        <SkeletonQuickStats />
+        <div className="grid md:grid-cols-2 gap-6">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <SkeletonVenueCard key={i} />
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">

@@ -13,8 +13,10 @@ import {
   Menu,
   Bell,
   Search,
-  LogOut
+  LogOut,
 } from 'lucide-react'
+import { ErrorBoundary } from '@/components/error-boundary'
+import { ConfirmDialogProvider } from '@/components/ui/confirm-dialog'
 
 export default function DashboardLayout({
   children,
@@ -123,7 +125,9 @@ export default function DashboardLayout({
       {/* Main Content */}
       <main className="lg:pl-64 pt-16">
         <div className="p-6">
-          {children}
+          <ErrorBoundary>
+            <ConfirmDialogProvider>{children}</ConfirmDialogProvider>
+          </ErrorBoundary>
         </div>
       </main>
     </div>

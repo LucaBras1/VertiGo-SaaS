@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
   Users,
@@ -10,10 +10,9 @@ import {
   Star,
   Phone,
   Mail,
-  MapPin,
   DollarSign,
-  Calendar
 } from 'lucide-react'
+import { SkeletonPerformerCard, SkeletonQuickStats, Skeleton } from '@/components/ui/skeleton'
 
 const MOCK_PERFORMERS = [
   {
@@ -67,14 +66,46 @@ const MOCK_PERFORMERS = [
 export default function PerformersPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [typeFilter, setTypeFilter] = useState('all')
+  const [isLoading, setIsLoading] = useState(true)
 
-  const filteredPerformers = MOCK_PERFORMERS.filter(performer => {
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 500)
+    return () => clearTimeout(timer)
+  }, [])
+
+  const filteredPerformers = MOCK_PERFORMERS.filter((performer) => {
     const matchesSearch =
       performer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       performer.stageName?.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesType = typeFilter === 'all' || performer.type === typeFilter
     return matchesSearch && matchesType
   })
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-start">
+          <div>
+            <Skeleton className="h-9 w-40 mb-2" />
+            <Skeleton className="h-5 w-48" />
+          </div>
+          <Skeleton className="h-10 w-36 rounded-lg" />
+        </div>
+        <div className="card">
+          <div className="flex flex-col md:flex-row gap-4">
+            <Skeleton className="h-10 flex-1 rounded-lg" />
+            <Skeleton className="h-10 w-40 rounded-lg" />
+          </div>
+        </div>
+        <SkeletonQuickStats />
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <SkeletonPerformerCard key={i} />
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">

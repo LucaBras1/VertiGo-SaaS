@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
   UserCircle2,
@@ -15,12 +15,12 @@ import {
   TrendingUp,
   Clock,
   CheckCircle,
-  AlertCircle,
   XCircle,
   MoreVertical,
   Eye,
-  Edit
+  Edit,
 } from 'lucide-react'
+import { SkeletonClientCard, SkeletonStatCard, Skeleton } from '@/components/ui/skeleton'
 
 type ClientStatus = 'all' | 'active' | 'prospect' | 'inactive'
 
@@ -115,8 +115,14 @@ const MOCK_CLIENTS = [
 export default function ClientsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<ClientStatus>('all')
+  const [isLoading, setIsLoading] = useState(true)
 
-  const filteredClients = MOCK_CLIENTS.filter(client => {
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 500)
+    return () => clearTimeout(timer)
+  }, [])
+
+  const filteredClients = MOCK_CLIENTS.filter((client) => {
     const matchesSearch =
       client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       client.contactPerson.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -127,9 +133,39 @@ export default function ClientsPage() {
 
   const stats = {
     total: MOCK_CLIENTS.length,
-    active: MOCK_CLIENTS.filter(c => c.status === 'active').length,
-    prospects: MOCK_CLIENTS.filter(c => c.status === 'prospect').length,
+    active: MOCK_CLIENTS.filter((c) => c.status === 'active').length,
+    prospects: MOCK_CLIENTS.filter((c) => c.status === 'prospect').length,
     totalRevenue: MOCK_CLIENTS.reduce((sum, c) => sum + c.totalRevenue, 0),
+  }
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-start">
+          <div>
+            <Skeleton className="h-9 w-32 mb-2" />
+            <Skeleton className="h-5 w-72" />
+          </div>
+          <Skeleton className="h-10 w-32 rounded-lg" />
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <SkeletonStatCard key={i} />
+          ))}
+        </div>
+        <div className="card">
+          <div className="flex flex-col md:flex-row gap-4">
+            <Skeleton className="h-10 flex-1 rounded-lg" />
+            <Skeleton className="h-10 w-40 rounded-lg" />
+          </div>
+        </div>
+        <div className="grid lg:grid-cols-2 gap-6">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <SkeletonClientCard key={i} />
+          ))}
+        </div>
+      </div>
+    )
   }
 
   return (

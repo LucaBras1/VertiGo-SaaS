@@ -11,8 +11,12 @@ import {
   CheckCircle,
   AlertCircle,
   ArrowRight,
-  Loader2
 } from 'lucide-react'
+import {
+  SkeletonDashboardStats,
+  SkeletonEventCard,
+  Skeleton,
+} from '@/components/ui/skeleton'
 import Link from 'next/link'
 import { format } from 'date-fns'
 
@@ -75,10 +79,58 @@ export default function DashboardOverview() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center">
-          <Loader2 className="w-8 h-8 animate-spin text-primary-600 mb-4" />
-          <p className="text-gray-600">Loading dashboard...</p>
+      <div className="space-y-6">
+        {/* Header skeleton */}
+        <div className="flex justify-between items-start">
+          <div>
+            <Skeleton className="h-9 w-64 mb-2" />
+            <Skeleton className="h-5 w-80" />
+          </div>
+          <Skeleton className="h-10 w-32 rounded-lg" />
+        </div>
+
+        {/* Stats skeleton */}
+        <SkeletonDashboardStats />
+
+        {/* Main content skeleton */}
+        <div className="grid lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 card">
+            <div className="flex justify-between items-center mb-6">
+              <Skeleton className="h-6 w-40" />
+              <Skeleton className="h-5 w-20" />
+            </div>
+            <div className="space-y-4">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <SkeletonEventCard key={i} />
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="card">
+              <Skeleton className="h-6 w-32 mb-4" />
+              <div className="space-y-2">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <Skeleton key={i} className="h-12 w-full rounded-lg" />
+                ))}
+              </div>
+            </div>
+
+            <div className="card">
+              <Skeleton className="h-6 w-36 mb-4" />
+              <div className="space-y-3">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className="flex items-start space-x-3">
+                    <Skeleton className="w-8 h-8 rounded-full flex-shrink-0" />
+                    <div className="flex-1">
+                      <Skeleton className="h-4 w-full mb-1" />
+                      <Skeleton className="h-3 w-20" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     )
