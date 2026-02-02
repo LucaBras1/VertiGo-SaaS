@@ -327,16 +327,25 @@ apps/photography/
 │   │   └── page.tsx      # Landing page
 │   ├── components/
 │   │   ├── ui/           # Reusable UI components
-│   │   ├── calendar/     # Calendar components (NEW)
+│   │   ├── calendar/     # Calendar components
 │   │   │   ├── ShootDetailModal.tsx
 │   │   │   ├── ShootFormModal.tsx
 │   │   │   └── index.ts
+│   │   ├── galleries/    # Gallery components ✅ NEW
+│   │   │   ├── PhotoCard.tsx           # Individual photo with hover actions
+│   │   │   ├── PhotoLightbox.tsx       # Full-screen viewer
+│   │   │   ├── PhotoSelectionGrid.tsx  # Main grid container
+│   │   │   ├── PhotoSelectionToolbar.tsx # Filters and bulk actions
+│   │   │   └── PhotoUploader.tsx       # Drag-drop upload
 │   │   ├── modals/       # AI and other modals
 │   │   └── ai/           # AI assistant widgets
 │   ├── hooks/            # React Query hooks
-│   │   ├── useClients.ts     # Client CRUD operations
-│   │   ├── usePackages.ts    # Package CRUD operations
-│   │   └── useShoots.ts      # Shoot CRUD operations (NEW)
+│   │   ├── useClients.ts         # Client CRUD operations
+│   │   ├── usePackages.ts        # Package CRUD operations
+│   │   ├── useShoots.ts          # Shoot CRUD operations
+│   │   ├── useGalleries.ts       # Gallery CRUD operations
+│   │   ├── useInvoices.ts        # Invoice CRUD operations
+│   │   └── usePhotoSelection.ts  # Photo selection state management ✅ NEW
 │   ├── lib/
 │   │   ├── ai/           # AI modules
 │   │   ├── services/     # Business logic layer
@@ -393,10 +402,18 @@ apps/photography/
 
 ### Galleries
 - `GET /api/galleries` - List galleries
-- `GET /api/galleries/[id]` - Get gallery
+- `GET /api/galleries/[id]` - Get gallery with photos
 - `POST /api/galleries` - Create gallery
-- `POST /api/galleries/[id]/upload` - Upload photos
-- `POST /api/galleries/[id]/curate` - AI curation
+- `PUT /api/galleries/[id]` - Update gallery
+- `DELETE /api/galleries/[id]` - Delete gallery
+
+### Gallery Photos
+- `GET /api/galleries/[id]/photos` - List photos in gallery
+- `POST /api/galleries/[id]/photos` - Upload photos (multipart form)
+- `PATCH /api/galleries/[id]/photos` - Bulk update photos ✅ **NEW**
+  - Request: `{ updates: [{ id, selected?, rejected?, isHighlight?, rejectionReason? }] }`
+  - Response: `{ success: true, updated: number, selectedPhotos: number }`
+- `DELETE /api/galleries/[id]/photos?photoId=...` - Delete photo
 
 ### Invoices
 - `GET /api/invoices` - List invoices
@@ -536,6 +553,41 @@ createMutation.mutate({
 })
 ```
 
+### usePhotoSelection ✅ **NEW**
+```typescript
+import { usePhotoSelection } from '@/hooks/usePhotoSelection'
+
+const {
+  photos,              // All photos
+  filteredPhotos,      // Photos matching current filter
+  selectedIds,         // Set of checked photo IDs
+  filterMode,          // 'all' | 'selected' | 'rejected' | 'highlights'
+  setFilterMode,
+  gridSize,            // 'small' | 'medium' | 'large'
+  setGridSize,
+  isUpdating,          // API request in progress
+  stats,               // { total, selected, rejected, highlights, checked }
+
+  // Actions
+  togglePhotoCheck,    // Toggle checkbox (supports shift+click)
+  selectAll,           // Select all visible photos
+  clearSelection,      // Clear all checkboxes
+  markAsSelected,      // Mark photos as selected
+  markAsRejected,      // Mark photos as rejected
+  toggleHighlight,     // Toggle highlight status
+
+  // Bulk actions
+  bulkMarkSelected,    // Mark all checked as selected
+  bulkMarkRejected,    // Mark all checked as rejected
+  bulkToggleHighlights,// Toggle highlights for checked
+  bulkReset            // Reset status for checked
+} = usePhotoSelection({
+  galleryId: 'gallery-id',
+  initialPhotos: photos,
+  onPhotosUpdated: () => refetch()
+})
+```
+
 ## Development
 
 ### Running Tests
@@ -581,7 +633,7 @@ pnpm build
 - [x] Package management UI
 - [x] Basic invoicing
 
-### Phase 2: Core Features ✅ (85% Complete)
+### Phase 2: Core Features ✅ (90% Complete)
 - [x] Shot list builder with templates
 - [x] Client CRM with React Query ✅ **100% Complete**
   - [x] Client list with server-side filtering, sorting, pagination
@@ -594,8 +646,21 @@ pnpm build
   - [x] Week view with time slots
   - [x] Shoot scheduling modals
   - [x] Color-coded status indicators
-- [x] Gallery system with upload
-- [ ] Public gallery pages
+- [x] Gallery system with upload ✅ **100% Complete**
+  - [x] Photo upload with Cloudinary
+  - [x] AI-powered photo curation (GalleryCuratorAI)
+  - [x] **Photo Selection/Rejection UI** ✅ **NEW**
+    - [x] View all photos in responsive grid
+    - [x] Checkbox multi-select with Shift+click range selection
+    - [x] Bulk actions: Select, Reject, Highlight, Reset
+    - [x] Filter modes: All, Selected, Rejected, Highlights
+    - [x] Grid density toggle: Small, Medium, Large
+    - [x] Full-screen lightbox with keyboard navigation
+    - [x] Quality score badges with color coding
+    - [x] Visual status indicators (green/red borders, grayscale)
+    - [x] Optimistic updates with debounced API calls
+    - [x] PATCH endpoint for bulk photo updates
+- [x] Public gallery pages
 - [ ] Email templates
 - [ ] Contract module
 

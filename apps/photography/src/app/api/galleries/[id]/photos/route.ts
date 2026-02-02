@@ -131,6 +131,93 @@ export async function POST(
   }
 }
 
+// PATCH - Bulk update photos (selection, rejection, highlights)
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Verify gallery ownership
+    const gallery = await prisma.gallery.findFirst({
+      where: {
+        id: params.id,
+        tenantId: session.user.tenantId
+      }
+    })
+
+    if (!gallery) {
+      return NextResponse.json({ error: 'Gallery not found' }, { status: 404 })
+    }
+
+    const body = await req.json()
+    const { updates } = body as {
+      updates: Array<{
+        id: string
+        selected?: boolean
+        rejected?: boolean
+        isHighlight?: boolean
+        rejectionReason?: string | null
+      }>
+    }
+
+    if (!updates || !Array.isArray(updates) || updates.length === 0) {
+      return NextResponse.json({ error: 'No updates provided' }, { status: 400 })
+    }
+
+    // Update each photo
+    const updatePromises = updates.map(async (update) => {
+      const { id, ...data } = update
+
+      // Only include defined fields
+      const updateData: Record<string, unknown> = {}
+      if (typeof data.selected === 'boolean') updateData.selected = data.selected
+      if (typeof data.rejected === 'boolean') updateData.rejected = data.rejected
+      if (typeof data.isHighlight === 'boolean') updateData.isHighlight = data.isHighlight
+      if (data.rejectionReason !== undefined) updateData.rejectionReason = data.rejectionReason
+
+      if (Object.keys(updateData).length === 0) return null
+
+      return prisma.galleryPhoto.updateMany({
+        where: {
+          id,
+          galleryId: params.id
+        },
+        data: updateData
+      })
+    })
+
+    await Promise.all(updatePromises.filter(Boolean))
+
+    // Update gallery counts
+    const selectedCount = await prisma.galleryPhoto.count({
+      where: {
+        galleryId: params.id,
+        selected: true,
+        rejected: false
+      }
+    })
+
+    await prisma.gallery.update({
+      where: { id: params.id },
+      data: { selectedPhotos: selectedCount }
+    })
+
+    return NextResponse.json({
+      success: true,
+      updated: updates.length,
+      selectedPhotos: selectedCount
+    })
+  } catch (error) {
+    console.error('PATCH /api/galleries/[id]/photos error:', error)
+    return NextResponse.json({ error: 'Failed to update photos' }, { status: 500 })
+  }
+}
+
 // DELETE - Delete a photo from gallery
 export async function DELETE(
   req: NextRequest,

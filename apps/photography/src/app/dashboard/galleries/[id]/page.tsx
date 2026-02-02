@@ -4,14 +4,15 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
-  ArrowLeft, Edit, Trash2, Images, Download, Share2,
-  Eye, Lock, Sparkles, CheckCircle, Clock, Truck, Upload
+  ArrowLeft, Edit, Trash2, Images, Share2,
+  Sparkles, CheckCircle, Clock, Truck, Upload
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Modal } from '@/components/ui/Modal'
 import { AIGalleryCurationModal } from '@/components/modals/AIGalleryCurationModal'
+import { PhotoSelectionGrid } from '@/components/galleries/PhotoSelectionGrid'
 import toast from 'react-hot-toast'
 
 interface Gallery {
@@ -50,6 +51,8 @@ interface Gallery {
     category: string | null
     isHighlight: boolean
     selected: boolean
+    rejected: boolean
+    rejectionReason: string | null
   }>
 }
 
@@ -244,11 +247,13 @@ export default function GalleryDetailPage() {
           {/* Stats */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <Card className="p-4 text-center">
-              <p className="text-3xl font-bold text-gray-900">{gallery.totalPhotos}</p>
+              <p className="text-3xl font-bold text-gray-900">{gallery.photos.length}</p>
               <p className="text-sm text-gray-600">Total Photos</p>
             </Card>
             <Card className="p-4 text-center">
-              <p className="text-3xl font-bold text-green-600">{gallery.selectedPhotos}</p>
+              <p className="text-3xl font-bold text-green-600">
+                {gallery.photos.filter(p => p.selected && !p.rejected).length}
+              </p>
               <p className="text-sm text-gray-600">Selected</p>
             </Card>
             <Card className="p-4 text-center">
@@ -258,14 +263,14 @@ export default function GalleryDetailPage() {
               <p className="text-sm text-gray-600">Highlights</p>
             </Card>
             <Card className="p-4 text-center">
-              <p className="text-3xl font-bold text-gray-400">
-                {gallery.totalPhotos - gallery.selectedPhotos}
+              <p className="text-3xl font-bold text-red-400">
+                {gallery.photos.filter(p => p.rejected).length}
               </p>
               <p className="text-sm text-gray-600">Rejected</p>
             </Card>
           </div>
 
-          {/* Photo Grid */}
+          {/* Photo Selection Grid */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -273,52 +278,11 @@ export default function GalleryDetailPage() {
                 Photos
               </CardTitle>
             </CardHeader>
-            {gallery.photos.length === 0 ? (
-              <div className="text-center py-12">
-                <Images className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600">No photos uploaded yet</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                {gallery.photos.slice(0, 12).map(photo => (
-                  <div key={photo.id} className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 group">
-                    {photo.thumbnailUrl ? (
-                      <img
-                        src={photo.thumbnailUrl}
-                        alt={photo.filename}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="flex items-center justify-center h-full">
-                        <Images className="w-8 h-8 text-gray-400" />
-                      </div>
-                    )}
-                    {photo.isHighlight && (
-                      <div className="absolute top-2 left-2">
-                        <Badge variant="yellow" size="sm">Highlight</Badge>
-                      </div>
-                    )}
-                    {photo.qualityScore && (
-                      <div className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
-                        {Math.round(photo.qualityScore)}%
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                      <Button size="sm" variant="ghost" className="text-white">
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            {gallery.photos.length > 12 && (
-              <div className="text-center pt-4">
-                <Button variant="ghost">
-                  View All {gallery.photos.length} Photos
-                </Button>
-              </div>
-            )}
+            <PhotoSelectionGrid
+              galleryId={gallery.id}
+              initialPhotos={gallery.photos}
+              onPhotosUpdated={fetchGallery}
+            />
           </Card>
         </div>
 
