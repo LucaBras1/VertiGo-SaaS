@@ -15,7 +15,7 @@ import { formatAmountForDisplay } from '@/lib/stripe'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     // Check authentication
@@ -24,7 +24,7 @@ export async function POST(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { id } = await params
+    const { id } = params
 
     // Get invoice with customer and order details
     const invoice = await prisma.invoice.findUnique({

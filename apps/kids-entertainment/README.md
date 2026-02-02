@@ -144,11 +144,14 @@ model Party {
 ## Tech Stack
 
 - **Framework:** Next.js 14 (App Router)
-- **Database:** PostgreSQL + Prisma ORM
-- **Auth:** NextAuth.js
+- **Database:** PostgreSQL + Prisma 7 (with `@prisma/adapter-pg`)
+- **Auth:** NextAuth.js via @vertigo/auth
 - **Styling:** Tailwind CSS (custom PartyPal theme)
-- **AI:** OpenAI GPT-4o via @vertigo/ai-core
-- **Deployment:** Vercel
+- **AI:** OpenAI GPT-4o via @vertigo/ai-core (with fallback mode)
+- **Payments:** Stripe via @vertigo/stripe
+- **Email:** Resend via @vertigo/email
+- **Testing:** Vitest
+- **Deployment:** Vercel / VPS
 
 ## Getting Started
 
@@ -196,21 +199,31 @@ pnpm prisma:studio
 
 ```
 apps/kids-entertainment/
+├── __tests__/                  # Test files
+│   ├── setup.ts                # Test setup
+│   ├── mocks/                  # Mock factories
+│   ├── api/                    # API route tests
+│   └── ai/                     # AI feature tests
 ├── src/
 │   ├── app/                    # Next.js app router
 │   │   ├── page.tsx            # Landing page
 │   │   ├── layout.tsx          # Root layout
 │   │   ├── globals.css         # Global styles
+│   │   ├── booking/            # Booking flow
+│   │   │   └── pay/            # Payment page
 │   │   ├── packages/           # Package listing/details
 │   │   ├── activities/         # Activity listing/details
 │   │   ├── admin/              # Admin panel
 │   │   │   ├── packages/       # Package management
 │   │   │   ├── activities/     # Activity management
 │   │   │   ├── parties/        # Party/booking management
+│   │   │   ├── invoices/       # Invoice management (with PDF/email actions)
 │   │   │   ├── customers/      # Customer management
 │   │   │   └── settings/       # System settings
 │   │   └── api/                # API routes
 │   │       ├── ai/             # AI feature endpoints
+│   │       ├── health/         # Health check endpoint
+│   │       ├── payments/       # Stripe payment endpoints
 │   │       └── public/         # Public API
 │   ├── components/             # React components
 │   │   ├── ui/                 # Reusable UI components
@@ -220,16 +233,47 @@ apps/kids-entertainment/
 │   │   └── admin/              # Admin panel components
 │   ├── lib/                    # Utilities
 │   │   ├── ai/                 # AI feature implementations
-│   │   ├── prisma.ts           # Prisma client
+│   │   ├── prisma.ts           # Prisma client (lazy-loaded)
+│   │   ├── auth.ts             # NextAuth config (lazy-loaded)
+│   │   ├── email.ts            # Email templates
+│   │   ├── env.ts              # Environment validation
 │   │   └── utils.ts            # Helper functions
 │   └── types/                  # TypeScript types
 ├── prisma/
 │   └── schema.prisma           # Database schema
 ├── public/                     # Static assets
+├── DEPLOYMENT.md               # Deployment documentation
+├── vitest.config.ts            # Vitest configuration
 ├── package.json
 ├── next.config.js
 ├── tailwind.config.ts
 └── tsconfig.json
+```
+
+## Email System
+
+PartyPal includes automated email notifications using @vertigo/email:
+
+### Email Templates
+
+| Template | Trigger | Description |
+|----------|---------|-------------|
+| Booking Confirmation | After booking created | Confirms reservation with details |
+| Payment Receipt | After payment | Stripe receipt with invoice |
+| Party Reminder | Cron (3 days before) | Reminder with checklist |
+| Order Cancellation | Manual/API | Cancellation notification |
+| Payment Reminder | Cron (3 days before due) | Payment reminder |
+| Post-Party Feedback | Cron (1 day after) | Feedback request with link |
+
+### Cron Jobs
+
+Configure cron jobs for automated emails:
+```bash
+# Party reminders (daily at 9:00)
+0 9 * * * curl -X POST https://your-domain.com/api/cron/party-reminders
+
+# Payment reminders (daily at 10:00)
+0 10 * * * curl -X POST https://your-domain.com/api/cron/payment-reminders
 ```
 
 ## Development Workflow
@@ -254,10 +298,20 @@ apps/kids-entertainment/
 2. AI suggests optimal program based on child's age
 3. AI checks safety and allergens
 4. Send quote to parent
-5. Parent confirms booking
-6. AI generates confirmation message
-7. AI predicts photo moments for entertainer
-8. Post-party: Collect feedback
+5. Parent confirms booking → **Booking confirmation email sent automatically**
+6. Parent is redirected to payment page (`/booking/pay?orderId=xxx`)
+7. 30% deposit payment via Stripe
+8. AI generates confirmation message
+9. AI predicts photo moments for entertainer
+10. 3 days before: **Party reminder email** (via cron)
+11. Post-party: **Feedback request email** (via cron)
+
+### 4. Payment Flow
+1. Booking created → Redirect to `/booking/pay?orderId=xxx`
+2. Payment page displays order summary
+3. Customer clicks "Pay Deposit" → Stripe Checkout
+4. On success → Return to `/booking/success`
+5. On failure → Error displayed with retry option
 
 ## AI Implementation Examples
 
@@ -340,36 +394,92 @@ export async function checkSafety(
 
 ## Testing
 
+PartyPal uses Vitest for comprehensive testing.
+
 ```bash
+# Run all tests
+pnpm test
+
+# Run tests with coverage
+pnpm test:coverage
+
+# Run tests in watch mode
+pnpm test -- --watch
+
 # Run type checking
 pnpm type-check
 
 # Run linting
 pnpm lint
+```
 
-# Test AI features (requires OpenAI API key)
-pnpm test:ai
+### Test Structure
+
+```
+__tests__/
+├── setup.ts              # Test setup and global mocks
+├── mocks/
+│   └── prisma.ts         # Prisma mock with factory functions
+├── api/
+│   ├── bookings.test.ts  # Booking API tests (7 tests)
+│   ├── invoices.test.ts  # Invoice API tests (14 tests)
+│   └── parties.test.ts   # Party API tests (19 tests)
+└── ai/
+    └── safety-checker.test.ts  # AI safety checker tests (13 tests)
+```
+
+### Running Specific Tests
+
+```bash
+# Run API tests only
+pnpm test -- __tests__/api
+
+# Run AI tests only
+pnpm test -- __tests__/ai
+
+# Run a specific test file
+pnpm test -- __tests__/api/bookings.test.ts
 ```
 
 ## Deployment
 
-PartyPal deploys to Vercel with automatic CI/CD:
+For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md).
+
+### Quick Start
 
 ```bash
-# Deploy to production
-vercel --prod
+# Build for production
+pnpm build
 
-# Deploy to preview
-vercel
+# Start production server
+pnpm start
 ```
 
-### Environment Variables (Vercel)
+### Health Check
 
-Required variables in Vercel dashboard:
+PartyPal includes a health check endpoint at `/api/health` that monitors:
+- Database connectivity
+- Stripe API availability
+- Email service status
+- AI service availability
+
+```bash
+# Check health status
+curl https://your-domain.com/api/health
+```
+
+### Environment Variables
+
+Required:
 - `DATABASE_URL` - PostgreSQL connection string
 - `NEXTAUTH_SECRET` - NextAuth secret key
-- `OPENAI_API_KEY` - OpenAI API key
-- `SMTP_*` - Email configuration (optional)
+- `NEXTAUTH_URL` - Application URL
+
+Optional (for full functionality):
+- `STRIPE_SECRET_KEY` - Stripe secret key
+- `STRIPE_WEBHOOK_SECRET` - Stripe webhook secret
+- `RESEND_API_KEY` - Resend email API key
+- `OPENAI_API_KEY` - OpenAI API key (AI features work in fallback mode without it)
 
 ## Success Metrics
 
@@ -379,6 +489,16 @@ Required variables in Vercel dashboard:
 - On-time arrival: >95%
 - Photo delivery: <24 hours
 - AI response time: <2 seconds
+
+## Recent Updates (2026-02)
+
+- **Testing Infrastructure**: Added Vitest with 53 tests covering API routes and AI features
+- **Payment Page**: New `/booking/pay` page with order summary and Stripe checkout
+- **Email Templates**: Added cancellation, payment reminder, and feedback emails
+- **Invoice Actions**: Admin UI now has PDF download and email resend buttons
+- **Health Check**: New `/api/health` endpoint for monitoring
+- **Environment Validation**: Runtime validation of required environment variables
+- **Lazy Loading**: Prisma and Auth now use lazy initialization for better build compatibility
 
 ## Future Enhancements
 

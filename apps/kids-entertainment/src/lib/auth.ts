@@ -5,23 +5,42 @@
  */
 
 import { createAuthOptions, hashPassword, verifyPassword } from '@vertigo/auth'
-import { prisma } from './prisma'
+import type { AuthOptions } from 'next-auth'
 
-// Cast to any to bypass PrismaClient type mismatch between verticals
-// Each vertical has its own generated Prisma client with different models
-export const authOptions = createAuthOptions({
-  prisma: prisma as any,
-  pages: {
-    signIn: '/admin/login',
-    error: '/admin/login',
+let _authOptions: AuthOptions | null = null
+
+// Lazy create authOptions to avoid Prisma initialization at import time
+function getAuthOptions(): AuthOptions {
+  if (!_authOptions) {
+    // Import prisma only when needed
+    const { prisma } = require('./prisma')
+
+    // Cast to any to bypass PrismaClient type mismatch between verticals
+    // Each vertical has its own generated Prisma client with different models
+    _authOptions = createAuthOptions({
+      prisma: prisma as any,
+      pages: {
+        signIn: '/admin/login',
+        error: '/admin/login',
+      },
+      schema: {
+        passwordField: 'password',
+      },
+      multiTenant: {
+        enabled: false,
+      },
+      locale: 'cs',
+    })
+  }
+  return _authOptions
+}
+
+// Export as getter
+export const authOptions: AuthOptions = new Proxy({} as AuthOptions, {
+  get(_target, prop) {
+    const opts = getAuthOptions()
+    return opts[prop as keyof AuthOptions]
   },
-  schema: {
-    passwordField: 'password',
-  },
-  multiTenant: {
-    enabled: false,
-  },
-  locale: 'cs',
 })
 
 // Re-export utilities for convenience

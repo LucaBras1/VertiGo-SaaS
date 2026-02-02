@@ -16,6 +16,8 @@ const nextConfig = {
       enabled: true,
     },
   },
+  // Optimize for server-side rendering with Prisma
+  serverExternalPackages: ['@prisma/client', '@prisma/adapter-pg', 'pg'],
 }
 
 module.exports = nextConfig

@@ -7,6 +7,7 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { sendBookingConfirmationEmail } from '@/lib/email'
 
 function generateOrderNumber() {
   const date = new Date()
@@ -222,6 +223,43 @@ export async function POST(request: NextRequest) {
         lastPartyDate: partyDate,
       },
     })
+
+    // Get package name for email
+    let packageName = 'Vlastní program'
+    if (packageId) {
+      const pkg = await prisma.package.findUnique({
+        where: { id: packageId },
+        select: { title: true },
+      })
+      if (pkg) packageName = pkg.title
+    }
+
+    // Send booking confirmation email
+    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3002'
+    const paymentUrl = `${baseUrl}/booking/pay?orderId=${order.id}`
+    const depositAmount = Math.round(totalPrice * 0.3)
+
+    try {
+      await sendBookingConfirmationEmail({
+        to: contact.parentEmail,
+        parentName: contact.parentName,
+        childName: childInfo.name,
+        partyDate: new Date(partyDetails.date).toLocaleDateString('cs-CZ', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }),
+        partyTime: partyDetails.startTime,
+        venue: partyDetails.venue,
+        packageName,
+        depositAmount: `${depositAmount.toLocaleString('cs-CZ')} Kč`,
+        paymentUrl,
+      })
+    } catch (emailError) {
+      // Log but don't fail the booking if email fails
+      console.error('Failed to send booking confirmation email:', emailError)
+    }
 
     return NextResponse.json(
       {

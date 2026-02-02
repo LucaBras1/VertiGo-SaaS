@@ -17,20 +17,60 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Allow public access for payment page - customers need to see their order
+    // But only return limited data for non-authenticated requests
     const session = await getServerSession(authOptions)
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
 
     const order = await prisma.order.findUnique({
       where: { id: params.id },
       include: {
-        customer: true,
+        customer: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+        linkedParty: {
+          include: {
+            package: {
+              select: {
+                id: true,
+                title: true,
+              },
+            },
+          },
+        },
       },
     })
 
     if (!order) {
       return NextResponse.json({ error: 'Order not found' }, { status: 404 })
+    }
+
+    // For non-authenticated requests, return limited data (for payment page)
+    if (!session) {
+      return NextResponse.json({
+        id: order.id,
+        orderNumber: order.orderNumber,
+        partyName: order.partyName,
+        status: order.status,
+        venue: order.venue,
+        guestCount: order.guestCount,
+        dates: order.dates,
+        pricing: order.pricing,
+        customer: order.customer ? {
+          firstName: order.customer.firstName,
+          lastName: order.customer.lastName,
+        } : null,
+        linkedParty: order.linkedParty ? {
+          date: order.linkedParty.date,
+          childName: order.linkedParty.childName,
+          childAge: order.linkedParty.childAge,
+          package: order.linkedParty.package,
+        } : null,
+      })
     }
 
     return NextResponse.json(order)

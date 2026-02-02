@@ -13,7 +13,7 @@ import { generateInvoicePDF } from '@/lib/services/invoices'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     // Check authentication
@@ -22,7 +22,7 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { id } = await params
+    const { id } = params
 
     // Verify invoice exists
     const invoice = await prisma.invoice.findUnique({
