@@ -55,13 +55,15 @@ jobs:
 
       - name: Generate Prisma clients
         run: |
-          # Generate shared database package
-          cd packages/database && npx prisma generate && cd ../..
-          # Generate app-specific clients
+          # Generate shared database package (using subshell for directory isolation)
+          echo "Generating shared database Prisma client..."
+          (cd packages/database && npx prisma generate)
+
+          # Generate app-specific clients (using subshell to prevent cd failures from breaking the loop)
           for app in fitness photography musicians events performing-arts kids-entertainment team-building; do
             if [ -d "apps/$app/prisma" ]; then
               echo "Generating Prisma client for $app..."
-              cd apps/$app && npx prisma generate && cd ../..
+              (cd apps/$app && npx prisma generate) || echo "Warning: Prisma generate failed for $app"
             fi
           done
           # Note: _shared-core is not part of pnpm workspace, skip its Prisma generation in CI
@@ -115,13 +117,21 @@ jobs:
             echo "Installing dependencies..."
             pnpm install --frozen-lockfile
 
-            # Generate Prisma clients
+            # Generate Prisma clients (using subshell for directory isolation)
             echo "Generating Prisma clients..."
-            cd packages/database && pnpm prisma generate && cd ../..
+            (cd packages/database && pnpm prisma generate)
+
+            # Generate app-specific Prisma clients
+            for app in fitness photography musicians events performing-arts kids-entertainment team-building; do
+              if [ -d "apps/$app/prisma" ]; then
+                echo "Generating Prisma client for $app..."
+                (cd apps/$app && pnpm prisma generate) || echo "Warning: Prisma generate failed for $app"
+              fi
+            done
 
             # Run migrations
             echo "Running database migrations..."
-            cd packages/database && pnpm prisma migrate deploy 2>/dev/null || pnpm prisma db push && cd ../..
+            (cd packages/database && pnpm prisma migrate deploy 2>/dev/null || pnpm prisma db push)
 
             # Build applications
             echo "Building applications..."
