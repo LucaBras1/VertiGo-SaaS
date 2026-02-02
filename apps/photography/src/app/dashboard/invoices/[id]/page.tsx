@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Modal } from '@/components/ui/Modal'
 import toast from 'react-hot-toast'
+import { downloadInvoicePDF } from '@/lib/pdf/invoice-pdf'
 
 interface LineItem {
   description: string
@@ -147,6 +148,36 @@ export default function InvoiceDetailPage() {
     }).format(amount / 100)
   }
 
+  const handleDownloadPDF = () => {
+    if (!invoice) return
+
+    downloadInvoicePDF({
+      invoiceNumber: invoice.invoiceNumber,
+      status: invoice.status,
+      createdAt: invoice.createdAt,
+      dueDate: invoice.dueDate,
+      paidAt: invoice.paidAt,
+      businessName: 'ShootFlow Photography', // TODO: Get from tenant settings
+      clientName: invoice.client.name,
+      clientEmail: invoice.client.email,
+      clientPhone: invoice.client.phone || undefined,
+      clientAddress: invoice.client.address || undefined,
+      packageTitle: invoice.package?.title,
+      items: invoice.items.map(item => ({
+        description: item.description,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+        total: item.quantity * item.unitPrice
+      })),
+      subtotal: invoice.subtotal,
+      tax: invoice.tax,
+      total: invoice.total,
+      notes: invoice.notes || undefined
+    })
+
+    toast.success('PDF downloaded')
+  }
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -190,7 +221,7 @@ export default function InvoiceDetailPage() {
               Edit
             </Button>
           </Link>
-          <Button variant="secondary">
+          <Button variant="secondary" onClick={handleDownloadPDF}>
             <Download className="w-4 h-4 mr-2" />
             Download PDF
           </Button>

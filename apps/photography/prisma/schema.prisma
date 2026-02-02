@@ -282,6 +282,11 @@ model GalleryPhoto {
   filename       String
   url            String
   thumbnailUrl   String?
+  publicId       String?   // Cloudinary public ID for deletion
+  width          Int?
+  height         Int?
+  size           Int?      // File size in bytes
+  mimeType       String?
 
   // AI Analysis
   qualityScore   Float?         // 0-100

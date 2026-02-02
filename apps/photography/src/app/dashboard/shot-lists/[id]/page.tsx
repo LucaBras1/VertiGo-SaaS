@@ -1,16 +1,17 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
   ArrowLeft, Edit, Trash2, ListChecks, Camera, Clock,
-  CheckCircle, Circle, Sparkles, Download, Printer
+  CheckCircle, Circle, Sparkles, Printer, Eye, Pencil
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Modal } from '@/components/ui/Modal'
+import { ShotListEditor, ShotCategory } from '@/components/shot-lists/ShotListEditor'
 import toast from 'react-hot-toast'
 
 interface Shot {
@@ -71,6 +72,52 @@ const priorityConfig = {
   'optional': { label: 'Optional', color: 'gray' as const }
 }
 
+// Color mapping for categories
+const categoryColors: Record<string, string> = {
+  'getting-ready': 'bg-pink-500',
+  'přípravy': 'bg-pink-500',
+  'ceremony': 'bg-purple-500',
+  'obřad': 'bg-purple-500',
+  'portraits': 'bg-blue-500',
+  'portréty': 'bg-blue-500',
+  'reception': 'bg-green-500',
+  'hostina': 'bg-green-500',
+  'details': 'bg-amber-500',
+  'detaily': 'bg-amber-500'
+}
+
+// Convert API Section format to Editor ShotCategory format
+function sectionsToCategories(sections: Section[]): ShotCategory[] {
+  return sections.map((section, idx) => ({
+    id: `section-${idx}`,
+    name: section.name,
+    color: categoryColors[section.name.toLowerCase()] || 'bg-gray-500',
+    items: section.shots.map(shot => ({
+      id: shot.id,
+      title: shot.description,
+      description: shot.technicalNotes || '',
+      priority: shot.priority === 'optional' ? 'creative' as const : shot.priority === 'must-have' ? 'must-have' as const : 'nice-to-have' as const,
+      timeSlot: shot.timing || section.timeSlot || '',
+      notes: shot.composition || ''
+    }))
+  }))
+}
+
+// Convert Editor ShotCategory format back to API Section format
+function categoriesToSections(categories: ShotCategory[]): Section[] {
+  return categories.map(cat => ({
+    name: cat.name,
+    shots: cat.items.map(item => ({
+      id: item.id,
+      description: item.title,
+      priority: item.priority === 'creative' ? 'optional' as const : item.priority as 'must-have' | 'nice-to-have',
+      technicalNotes: item.description,
+      timing: item.timeSlot,
+      composition: item.notes
+    }))
+  }))
+}
+
 export default function ShotListDetailPage() {
   const params = useParams()
   const router = useRouter()
@@ -80,9 +127,11 @@ export default function ShotListDetailPage() {
   const [isDeleting, setIsDeleting] = useState(false)
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
   const [completedShots, setCompletedShots] = useState<Set<string>>(new Set())
+  const [isEditMode, setIsEditMode] = useState(false)
 
   useEffect(() => {
     fetchShotList()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id])
 
   const fetchShotList = async () => {
@@ -152,6 +201,38 @@ export default function ShotListDetailPage() {
     window.print()
   }
 
+  const handleSaveEdits = useCallback(async (categories: ShotCategory[]) => {
+    if (!shotList) return
+
+    const sections = categoriesToSections(categories)
+    const totalShots = sections.reduce((sum, s) => sum + s.shots.length, 0)
+    const mustHaveCount = sections.reduce(
+      (sum, s) => sum + s.shots.filter(shot => shot.priority === 'must-have').length,
+      0
+    )
+
+    try {
+      const res = await fetch(`/api/shot-lists/${params.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sections,
+          totalShots,
+          mustHaveCount
+        })
+      })
+
+      if (!res.ok) throw new Error('Failed to save changes')
+
+      const updated = await res.json()
+      setShotList(prev => prev ? { ...prev, sections, totalShots, mustHaveCount } : null)
+      toast.success('Changes saved')
+    } catch (error) {
+      toast.error('Failed to save changes')
+      throw error
+    }
+  }, [shotList, params.id])
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -165,6 +246,49 @@ export default function ShotListDetailPage() {
   const completedCount = completedShots.size
   const progress = shotList.totalShots > 0 ? (completedCount / shotList.totalShots) * 100 : 0
 
+  // Edit Mode View
+  if (isEditMode) {
+    const categories = sectionsToCategories(shotList.sections)
+
+    return (
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <button
+              onClick={() => setIsEditMode(false)}
+              className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-2"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to View Mode
+            </button>
+            <div className="flex items-center gap-3">
+              <h1 className="text-3xl font-bold text-gray-900">{shotList.name}</h1>
+              <Badge variant="info">
+                <Pencil className="w-3 h-3 mr-1" />
+                Edit Mode
+              </Badge>
+            </div>
+            <p className="text-gray-600 mt-1">
+              {shotList.package?.client.name || 'Unassigned'} &bull; {shotList.eventType}
+            </p>
+          </div>
+          <Button variant="secondary" onClick={() => setIsEditMode(false)}>
+            <Eye className="w-4 h-4 mr-2" />
+            View Mode
+          </Button>
+        </div>
+
+        {/* Editor */}
+        <ShotListEditor
+          initialCategories={categories}
+          onSave={handleSaveEdits}
+        />
+      </div>
+    )
+  }
+
+  // View Mode (Original)
   return (
     <div className="space-y-6 print:space-y-4">
       {/* Header */}
@@ -191,10 +315,14 @@ export default function ShotListDetailPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Button onClick={() => setIsEditMode(true)}>
+            <Pencil className="w-4 h-4 mr-2" />
+            Edit Shots
+          </Button>
           <Link href={`/dashboard/shot-lists/${params.id}/edit`}>
             <Button variant="secondary">
               <Edit className="w-4 h-4 mr-2" />
-              Edit
+              Edit Info
             </Button>
           </Link>
           <Button variant="ghost" onClick={handlePrint}>

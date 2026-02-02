@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
   ArrowLeft, Edit, Trash2, Images, Download, Share2,
-  Eye, Lock, Sparkles, CheckCircle, Clock, Truck
+  Eye, Lock, Sparkles, CheckCircle, Clock, Truck, Upload
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -188,6 +188,12 @@ export default function GalleryDetailPage() {
           <p className="text-gray-600 mt-1">{gallery.shoot.package.client.name}</p>
         </div>
         <div className="flex items-center gap-2">
+          <Link href={`/dashboard/galleries/${params.id}/upload`}>
+            <Button>
+              <Upload className="w-4 h-4 mr-2" />
+              Upload Photos
+            </Button>
+          </Link>
           <Link href={`/dashboard/galleries/${params.id}/edit`}>
             <Button variant="secondary">
               <Edit className="w-4 h-4 mr-2" />
