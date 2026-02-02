@@ -494,7 +494,7 @@ model Venue {
   stageDepth      Float?  // meters
   stageHeight     Float?  // meters (grid height)
   flySystem       Boolean @default(false)
-  orchestra Pit   Boolean @default(false)
+  orchestraPit    Boolean @default(false)
 
   // Facilities
   dressingRooms   Int     @default(0)
