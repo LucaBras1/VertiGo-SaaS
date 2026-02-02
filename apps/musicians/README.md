@@ -40,9 +40,29 @@ Generate professional technical riders including:
 - Hospitality requirements
 
 **Export formats:**
-- PDF (professional formatting)
+- PDF (professional formatting) - v1 basic, v2 with stage plot & logo
 - Plain text
 - Email-ready format
+
+#### 5. Energy Flow Chart
+Visual Recharts graph showing energy progression through a setlist:
+- Energy calculated from mood (energetic=9, party=8, romantic=5, chill=3)
+- BPM modifiers (<80 BPM = -2, >140 BPM = +2)
+- Peak and dip detection
+- Average energy analysis
+
+#### 6. Calendar Integration
+Sync gigs with external calendars:
+- **Google Calendar** - OAuth2 sync with auto-refresh
+- **Apple Calendar** - ICS feed URL for subscription
+- Auto-sync on gig create/update/delete
+
+#### 7. Bulk Operations
+Multi-select and batch actions:
+- Select all / select none
+- Bulk delete with confirmation
+- Bulk status change
+- CSV export for Excel
 
 #### 3. GigPriceAI 💰
 Smart pricing suggestions with three tiers:
@@ -81,10 +101,13 @@ GigBook uses musician-friendly terminology:
 
 - **Frontend:** Next.js 14 (App Router), React 18, TypeScript
 - **Styling:** Tailwind CSS (Purple/Blue brand colors)
-- **Database:** PostgreSQL + Prisma ORM
+- **Database:** PostgreSQL + Prisma 7 ORM
 - **AI:** OpenAI GPT-4o via @vertigo/ai-core
 - **Auth:** NextAuth.js (multi-tenant)
 - **PDF:** @react-pdf/renderer
+- **Charts:** Recharts (energy flow, revenue trends)
+- **Calendar:** googleapis (Google Calendar API)
+- **Email:** Resend SDK
 
 ## Database Schema
 
@@ -212,9 +235,10 @@ NEXTAUTH_SECRET="your-secret-key"
 # AI
 OPENAI_API_KEY="sk-..."
 
-# Optional: Google Calendar
-GOOGLE_CLIENT_ID=""
-GOOGLE_CLIENT_SECRET=""
+# Google Calendar OAuth (for calendar sync)
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+GOOGLE_REDIRECT_URI="http://localhost:3002/api/calendar/google/callback"
 ```
 
 ## Project Structure
@@ -226,22 +250,42 @@ apps/musicians/
 │   │   ├── (auth)/       # Auth pages (login, register)
 │   │   ├── (dashboard)/  # Main app (gigs, setlists, etc.)
 │   │   ├── api/          # API routes
+│   │   │   ├── calendar/ # Calendar integration endpoints
+│   │   │   ├── gigs/     # Gig CRUD + bulk operations
+│   │   │   └── ...
 │   │   └── page.tsx      # Landing page
 │   ├── components/
 │   │   ├── ui/           # Reusable UI components
 │   │   ├── gigs/         # Gig-specific components
 │   │   ├── setlists/     # Setlist builder
+│   │   ├── charts/       # EnergyFlowChart
+│   │   ├── bulk/         # BulkActionsBar
+│   │   ├── calendar/     # CalendarSettings
 │   │   └── ai/           # AI assistant widgets
 │   ├── lib/
 │   │   ├── ai/           # AI modules
 │   │   │   ├── setlist-generator.ts
 │   │   │   ├── stage-rider-generator.ts
 │   │   │   └── gig-price-calculator.ts
+│   │   ├── calendar/     # Calendar integration
+│   │   │   ├── google/   # OAuth, events API
+│   │   │   ├── apple/    # ICS generator
+│   │   │   └── sync-service.ts
+│   │   ├── pdf/          # PDF generation
+│   │   │   ├── stage-rider-pdf.tsx
+│   │   │   └── stage-rider-pdf-v2.tsx
+│   │   ├── utils/        # Utilities
+│   │   │   ├── energy.ts # Energy calculation
+│   │   │   └── export.ts # CSV export
 │   │   ├── prisma.ts     # Prisma client
 │   │   └── utils.ts      # Helpers
 │   └── hooks/            # React hooks
+│       ├── useBulkSelection.ts
+│       ├── useGigs.ts
+│       └── ...
 ├── prisma/
-│   └── schema.prisma     # Database schema
+│   ├── schema.prisma     # Database schema
+│   └── migrations/       # Database migrations
 ├── public/               # Static assets
 └── package.json
 ```
@@ -254,6 +298,10 @@ apps/musicians/
 - `POST /api/gigs` - Create gig
 - `PUT /api/gigs/[id]` - Update gig
 - `DELETE /api/gigs/[id]` - Delete gig
+- `POST /api/gigs/bulk` - Bulk delete gigs
+- `PATCH /api/gigs/bulk` - Bulk update gig status
+- `GET /api/gigs/[id]/stage-rider/pdf` - Download stage rider PDF
+- `GET /api/gigs/[id]/stage-rider/pdf?v2=true` - Download enhanced PDF v2
 
 ### AI Features
 - `POST /api/ai/setlist/generate` - Generate setlist
@@ -266,12 +314,28 @@ apps/musicians/
 - `PUT /api/repertoire/[id]` - Update song
 - `DELETE /api/repertoire/[id]` - Delete song
 - `POST /api/repertoire/import` - Bulk import from CSV/Spotify
+- `POST /api/repertoire/bulk` - Bulk delete songs
 
 ### Setlists
 - `GET /api/setlists` - List setlists
 - `GET /api/setlists/[id]` - Get setlist
 - `POST /api/setlists` - Create setlist
 - `PUT /api/setlists/[id]` - Update setlist
+- `POST /api/setlists/bulk` - Bulk delete setlists
+- `PATCH /api/setlists/bulk` - Bulk update setlist status
+
+### Calendar Integration
+- `GET /api/calendar/status` - Check calendar integration status
+- `GET /api/calendar/google/auth` - Initiate Google OAuth flow
+- `GET /api/calendar/google/callback` - OAuth callback handler
+- `POST /api/calendar/google/disconnect` - Disconnect Google Calendar
+- `POST /api/calendar/feed/generate` - Generate Apple Calendar ICS feed token
+- `GET /api/calendar/feed/[token]` - ICS feed endpoint for Apple Calendar
+
+### Bulk Operations
+- `POST /api/clients/bulk` - Bulk delete clients
+- `POST /api/invoices/bulk` - Bulk delete invoices
+- `PATCH /api/invoices/bulk` - Bulk update invoice status
 
 ## User Flows
 
@@ -358,17 +422,23 @@ pnpm build
 - [x] Project setup and structure
 - [x] Database schema
 - [x] AI modules (SetlistAI, StageRiderAI, GigPriceAI)
-- [ ] Authentication system
-- [ ] Gig management UI
-- [ ] Basic invoicing
+- [x] Authentication system
+- [x] Gig management UI
+- [x] Basic invoicing
 
-### Phase 2: Core Features
-- [ ] Setlist builder with drag-and-drop
-- [ ] Repertoire management
-- [ ] Client CRM
-- [ ] Email templates
-- [ ] PDF generation
+### Phase 2: Core Features ✅
+- [x] Setlist builder with drag-and-drop
+- [x] Repertoire management
+- [x] Client CRM
+- [x] Email templates
+- [x] PDF generation
 - [ ] Public booking widget
+
+### Sprint 2: Enhancements ✅
+- [x] Energy Flow Chart (Recharts visualization)
+- [x] Bulk Operations (multi-select, batch actions)
+- [x] Calendar Integration (Google OAuth + Apple ICS)
+- [x] Stage Rider PDF v2 (logo, stage plot, timeline)
 
 ### Phase 3: AI Enhancement
 - [ ] MoodMatcherAI (Spotify integration)
@@ -379,9 +449,9 @@ pnpm build
 
 ### Phase 4: Growth
 - [ ] Mobile app (React Native)
-- [ ] Calendar integrations (Google, Apple)
+- [x] Calendar integrations (Google, Apple) ✅
 - [ ] Payment gateway (Stripe)
-- [ ] Analytics dashboard
+- [x] Analytics dashboard ✅
 - [ ] Multi-band management (for agencies)
 
 ## Contributing

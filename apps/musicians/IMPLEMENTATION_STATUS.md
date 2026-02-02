@@ -1,7 +1,7 @@
 # GigBook Implementation Status
 
-**Last Updated:** 2026-02-01
-**Status:** Phase 2 In Progress - 80% Overall
+**Last Updated:** 2026-02-02
+**Status:** Sprint 2 Complete - 90% Overall
 **Brand Colors:** Electric Purple (#8B5CF6) / Deep Blue (#1E3A8A)
 
 ---
@@ -141,6 +141,56 @@ GigBook is the **Musicians** vertical of the VertiGo SaaS platform, designed to 
 
 ---
 
+## Sprint 2: Gig Detail Enhancements - COMPLETE (100%)
+
+### Energy Flow Chart (100%)
+- [x] Recharts LineChart visualization of setlist energy
+- [x] Energy calculation from mood and BPM
+- [x] Displayed on setlist detail page
+- [x] Combined chart on gig detail page (multiple setlists)
+- [x] Tooltip with song details
+- [x] Energy analysis summary (avg, peak, dip detection)
+
+### Bulk Operations (100%)
+- [x] `useBulkSelection` hook for multi-select state management
+- [x] `BulkActionsBar` floating toolbar component
+- [x] `ConfirmDialog` confirmation modal
+- [x] CSV export utility with BOM for Excel compatibility
+- [x] Bulk API endpoints for all entities:
+  - `/api/gigs/bulk` - delete, status change
+  - `/api/setlists/bulk` - delete, status change
+  - `/api/clients/bulk` - delete
+  - `/api/invoices/bulk` - delete, status change
+  - `/api/repertoire/bulk` - delete
+- [x] Gigs page integration with checkboxes and bulk actions
+- [x] React Query mutations for bulk operations
+
+### Calendar Integration (100%)
+- [x] Prisma schema: `CalendarIntegration`, `CalendarEventSync`, `CalendarFeedToken`
+- [x] Google Calendar OAuth flow:
+  - `/api/calendar/google/auth` - initiate OAuth
+  - `/api/calendar/google/callback` - handle OAuth callback
+  - `/api/calendar/google/disconnect` - remove integration
+- [x] Google Calendar sync service (create, update, delete events)
+- [x] Apple Calendar ICS feed:
+  - `/api/calendar/feed/generate` - generate unique feed token
+  - `/api/calendar/feed/[token]` - ICS feed endpoint
+- [x] `CalendarSettings` component in Settings page
+- [x] Auto-sync on gig create/update
+- [x] `/api/calendar/status` - check integration status
+
+### Stage Rider PDF v2 (100%)
+- [x] Professional multi-page PDF layout
+- [x] Logo support in header (from tenant.logoUrl)
+- [x] Stage Plot SVG diagram with instrument positioning
+- [x] Color-coded input list table (grouped by instrument type)
+- [x] Timeline visualization (load-in, soundcheck, performance)
+- [x] Signature area for venue confirmation
+- [x] QR code placeholder for quick contact
+- [x] `?v2=true` query parameter to use new PDF version
+
+---
+
 ## Phase 3: AI Integration - IN PROGRESS (60%)
 
 ### OpenAI Integration
@@ -188,13 +238,14 @@ GigBook is the **Musicians** vertical of the VertiGo SaaS platform, designed to 
 
 ---
 
-## Phase 5: Integrations - PLANNED
+## Phase 5: Integrations - IN PROGRESS (60%)
 
-### Calendar
-- [ ] Google Calendar sync
-- [ ] Apple Calendar sync
-- [ ] iCal export
-- [ ] Reminder notifications
+### Calendar (100%)
+- [x] Google Calendar OAuth sync
+- [x] Apple Calendar ICS feed
+- [x] Auto-sync on gig changes
+- [x] Calendar settings UI
+- [ ] Reminder notifications (push)
 
 ### Email (50%)
 - [x] Email templates (Welcome, Password Reset, Invoice, Gig Confirmation)
@@ -225,16 +276,46 @@ GigBook is the **Musicians** vertical of the VertiGo SaaS platform, designed to 
 | Invoicing | 100% | Complete |
 | Landing Page | 100% | Complete |
 | Dashboard | 100% | Complete |
-| Calendar Sync | 0% | Planned |
+| Energy Flow Chart | 100% | Complete |
+| Bulk Operations | 100% | Complete |
+| Calendar Sync | 100% | Complete |
+| Stage Rider PDF v2 | 100% | Complete |
 | Stripe Payments | 0% | Planned |
 
-**Overall Progress: 80%**
+**Overall Progress: 90%**
 
 ---
 
-## Recent Updates (2026-02-01)
+## Recent Updates (2026-02-02)
 
-### Sprint 1 Completed
+### Sprint 2 Completed
+1. **Energy Flow Chart**
+   - Recharts LineChart showing setlist energy progression
+   - Energy calculated from song mood (energetic=9, party=8, romantic=5, chill=3) and BPM modifiers
+   - Displayed on setlist and gig detail pages
+   - Includes analysis summary (average, peak, dip detection)
+
+2. **Bulk Operations**
+   - Multi-select checkboxes on all list pages
+   - Floating action bar with delete, status change, CSV export
+   - Bulk API endpoints for gigs, setlists, clients, invoices, repertoire
+   - React Query mutations with optimistic updates
+
+3. **Calendar Integration**
+   - Google Calendar OAuth2 sync with auto-refresh tokens
+   - Apple Calendar ICS feed with unique token per user
+   - Auto-sync when creating/updating gigs
+   - Settings UI with connect/disconnect buttons
+   - Prisma models: CalendarIntegration, CalendarEventSync, CalendarFeedToken
+
+4. **Stage Rider PDF v2**
+   - Professional multi-page layout with sections
+   - Logo support, stage plot SVG diagram
+   - Color-coded input list, timeline visualization
+   - Signature area, QR code placeholder
+   - Accessed via `?v2=true` query parameter
+
+### Sprint 1 Completed (2026-02-01)
 1. **Dashboard Enhancements**
    - Added Revenue Chart widget (Recharts area chart, 6-month trend)
    - Added Quote Conversion Rate widget (circular progress)
@@ -250,11 +331,6 @@ GigBook is the **Musicians** vertical of the VertiGo SaaS platform, designed to 
    - Properly saves to database with all metadata
    - Redirects to setlist detail after save
 
-4. **Code Quality**
-   - Fixed ESLint errors (unescaped entities)
-   - Fixed React hooks rules violation in Checkbox
-   - Build passes successfully
-
 ---
 
 ## Priority Next Steps
@@ -262,16 +338,18 @@ GigBook is the **Musicians** vertical of the VertiGo SaaS platform, designed to 
 ### P0 - Critical
 1. ~~**Dashboard Widgets** - Revenue chart, conversion rate~~ ✅ DONE
 2. ~~**Invoice Email** - Send invoice button~~ ✅ DONE
+3. ~~**Calendar Sync** - Google Calendar integration~~ ✅ DONE
+4. ~~**Bulk Operations** - Multi-select on list pages~~ ✅ DONE
 
 ### P1 - High Priority
 1. **OpenAI Production** - Setup API key in production
-2. **Calendar Sync** - Google Calendar integration
-3. **Bulk Operations** - Multi-select on list pages
+2. **Google OAuth Setup** - Configure GOOGLE_CLIENT_ID/SECRET in production
+3. **Run Calendar Migration** - `prisma migrate deploy` on production
 
 ### P2 - Medium Priority
-1. **Energy Flow Chart** - Visual setlist energy display
-2. **Stage Rider PDF** - Improve PDF generation
-3. **Stripe Integration** - Payment processing
+1. **Stripe Integration** - Payment processing
+2. **Push Notifications** - Gig reminders
+3. **MoodMatcherAI** - Spotify integration for song matching
 
 ---
 
@@ -293,10 +371,11 @@ GigBook is the **Musicians** vertical of the VertiGo SaaS platform, designed to 
 |-------|-------------|-----------------|--------|
 | Phase 1: Foundation | 2026-01-22 | 2026-01-22 | Complete |
 | Phase 2: Core Features | 2026-01-23 | 2026-02-01 | Complete |
+| Sprint 2: Enhancements | 2026-02-02 | 2026-02-02 | Complete |
 | Phase 3: AI Integration | 2026-02-01 | 2026-02-08 | In Progress |
 | Phase 4: UI/UX Polish | 2026-02-01 | 2026-02-08 | 85% Complete |
-| Phase 5: Integrations | 2026-02-09 | 2026-02-20 | Planned |
-| **Production Ready** | - | **2026-02-28** | On Track |
+| Phase 5: Integrations | 2026-02-02 | 2026-02-20 | 60% Complete |
+| **Production Ready** | - | **2026-02-15** | On Track |
 
 ---
 
@@ -320,11 +399,26 @@ GigBook is the **Musicians** vertical of the VertiGo SaaS platform, designed to 
 
 ### Unique Features
 - AI-powered setlist generation with real repertoire
-- Stage rider with channel mapping
+- Stage rider with channel mapping and PDF v2
 - Multi-tier pricing calculator
 - Revenue trend visualization
 - Quote conversion analytics
+- Energy flow chart for setlists
+- Bulk operations across all entities
+- Google Calendar + Apple Calendar sync
+
+### New Dependencies (Sprint 2)
+- `googleapis@144` - Google Calendar API
+- `qrcode@1.5.3` - QR code generation for PDF
+
+### Environment Variables (New)
+```env
+# Google Calendar OAuth
+GOOGLE_CLIENT_ID=your-client-id
+GOOGLE_CLIENT_SECRET=your-client-secret
+GOOGLE_REDIRECT_URI=https://gigbook.muzx.cz/api/calendar/google/callback
+```
 
 ---
 
-**Status Summary:** GigBook has complete core functionality. Dashboard enhanced with revenue charts and conversion metrics. Invoice email sending implemented. Setlist AI now properly saves to database. Ready for production deployment with OpenAI API key setup.
+**Status Summary:** GigBook Sprint 2 complete with Energy Flow Chart, Bulk Operations, Calendar Integration (Google + Apple), and Stage Rider PDF v2. Overall progress at 90%. Ready for production with Google OAuth and database migration setup.
