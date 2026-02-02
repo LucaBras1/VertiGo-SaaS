@@ -64,10 +64,7 @@ jobs:
               cd apps/$app && npx prisma generate && cd ../..
             fi
           done
-          # Generate _shared-core if exists
-          if [ -d "_shared-core/prisma" ]; then
-            cd _shared-core && npx prisma generate && cd ..
-          fi
+          # Note: _shared-core is not part of pnpm workspace, skip its Prisma generation in CI
         env:
           DATABASE_URL: postgresql://user:password@localhost:5432/db
 
