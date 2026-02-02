@@ -51,16 +51,16 @@ export default function TermsPage() {
 
               <h3>1.1 Vymezení pojmů</h3>
               <p>
-                Tyto všeobecné obchodní podmínky (dále jen "VOP") upravují vztahy mezi:
+                Tyto všeobecné obchodní podmínky (dále jen &quot;VOP&quot;) upravují vztahy mezi:
               </p>
               <ul>
                 <li>
                   <strong>Poskytovatelem:</strong> VertiGo SaaS, IČO: XXXXXXXX, se sídlem
-                  [Adresa], provozovatel platformy TeamForge (dále jen "poskytovatel")
+                  [Adresa], provozovatel platformy TeamForge (dále jen &quot;poskytovatel&quot;)
                 </li>
                 <li>
                   <strong>Zákazníkem:</strong> Fyzická nebo právnická osoba využívající
-                  službu TeamForge (dále jen "zákazník")
+                  službu TeamForge (dále jen &quot;zákazník&quot;)
                 </li>
               </ul>
 
@@ -127,7 +127,7 @@ export default function TermsPage() {
                   <strong>Aktivovat placenou službu:</strong> Zvolíte tarif a zadáte platební údaje
                 </li>
                 <li>
-                  <strong>Neaktivovat službu:</strong> Účet přejde do režimu "pouze čtení" -
+                  <strong>Neaktivovat službu:</strong> Účet přejde do režimu &quot;pouze čtení&quot; -
                   data budou dostupná k prohlížení a exportu po dobu 30 dnů
                 </li>
               </ul>
@@ -202,7 +202,7 @@ export default function TermsPage() {
               </p>
               <ul>
                 <li>Poskytovatel zašle upomínku na e-mail zákazníka</li>
-                <li>Po 7 dnech může být účet pozastaven (režim "pouze čtení")</li>
+                <li>Po 7 dnech může být účet pozastaven (režim &quot;pouze čtení&quot;)</li>
                 <li>Po 30 dnech může být účet trvale zrušen a data smazána</li>
               </ul>
 

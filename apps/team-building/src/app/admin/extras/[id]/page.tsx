@@ -5,7 +5,7 @@
 
 'use client'
 
-import { useState, useEffect, use } from 'react'
+import { useState, useEffect, useCallback, use } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save, Trash2 } from 'lucide-react'
@@ -47,11 +47,7 @@ export default function ExtraDetailPage({ params }: { params: Promise<{ id: stri
     priceUnit: 'per_session',
   })
 
-  useEffect(() => {
-    fetchExtra()
-  }, [id])
-
-  const fetchExtra = async () => {
+  const fetchExtra = useCallback(async () => {
     try {
       const response = await fetch(`/api/extras/${id}`)
       const data = await response.json()
@@ -76,7 +72,11 @@ export default function ExtraDetailPage({ params }: { params: Promise<{ id: stri
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [id, router])
+
+  useEffect(() => {
+    fetchExtra()
+  }, [fetchExtra])
 
   const handleSave = async () => {
     setIsSaving(true)

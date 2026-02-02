@@ -133,7 +133,7 @@ export default function ObjectiveMatcherPage() {
           Objective Matcher AI
         </h1>
         <p className="mt-2 text-gray-600">
-          Find the perfect activities for your team's objectives
+          Find the perfect activities for your team&apos;s objectives
         </p>
       </div>
 

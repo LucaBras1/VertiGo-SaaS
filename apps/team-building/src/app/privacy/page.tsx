@@ -224,7 +224,7 @@ export default function PrivacyPage() {
                 Můžete požádat o opravu nepřesných nebo neúplných údajů.
               </p>
 
-              <h3>7.3 Právo na výmaz ("právo být zapomenut")</h3>
+              <h3>7.3 Právo na výmaz (&quot;právo být zapomenut&quot;)</h3>
               <p>
                 Můžete požádat o smazání vašich osobních údajů, pokud již nejsou potřebné
                 pro účely, pro které byly shromážděny.

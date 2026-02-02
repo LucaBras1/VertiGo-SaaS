@@ -87,10 +87,14 @@ TeamForge adapts the shared core schema with industry-specific terminology:
 
 ```
 apps/team-building/
+├── __tests__/
+│   ├── setup.ts                # Test setup and mocks
+│   └── api/                    # API tests
+│       ├── auth.test.ts        # Authentication tests
+│       └── programs.test.ts    # Programs API tests
 ├── prisma/
-│   └── schema.prisma           # Extended schema with TeamForge models
-├── scripts/
-│   └── create-admin.ts         # Admin user creation script
+│   ├── schema.prisma           # Extended schema with TeamForge models
+│   └── seed.ts                 # Database seed script
 ├── src/
 │   ├── app/
 │   │   ├── page.tsx            # Landing page (pricing, features)
@@ -128,6 +132,7 @@ apps/team-building/
 │       └── utils.ts            # Utilities
 ├── .env.example                # Environment variables template
 ├── .eslintrc.json              # ESLint configuration
+├── vitest.config.ts            # Vitest test configuration
 ├── package.json
 ├── tsconfig.json
 ├── tailwind.config.ts
@@ -190,6 +195,37 @@ pnpm dev
 ```
 
 Visit `http://localhost:3009`
+
+### 5. Seed Database (Optional)
+```bash
+pnpm prisma:seed
+```
+
+This creates sample data:
+- 1 admin user
+- 4 programs (Team Building Essentials, Leadership Challenge, Creative Workshop, Outdoor Adventure)
+- 8 activities (Trust Fall, Escape Room, Bridge Building, etc.)
+- 5 extras (facilitation, catering, transport, equipment)
+- 3 customers (TechCorp, Finance Plus, StartupIO)
+- 2 sessions (upcoming + completed)
+- 2 orders with invoices
+
+## Testing
+
+### Run Tests
+```bash
+pnpm test
+```
+
+### Run Tests with Coverage
+```bash
+pnpm test:coverage
+```
+
+### Test Structure
+- `__tests__/setup.ts` - Global mocks and test utilities
+- `__tests__/api/auth.test.ts` - Authentication tests (10 tests)
+- `__tests__/api/programs.test.ts` - Programs API tests (11 tests)
 
 ## API Endpoints
 
@@ -280,6 +316,22 @@ const costByFeature = await prisma.aIUsage.groupBy({
 })
 ```
 
+## Available Scripts
+
+| Script | Description |
+|--------|-------------|
+| `pnpm dev` | Start development server on port 3009 |
+| `pnpm build` | Build production bundle |
+| `pnpm start` | Start production server |
+| `pnpm lint` | Run ESLint |
+| `pnpm type-check` | Run TypeScript type checking |
+| `pnpm test` | Run tests with Vitest |
+| `pnpm test:coverage` | Run tests with coverage report |
+| `pnpm prisma:studio` | Open Prisma Studio |
+| `pnpm prisma:migrate` | Run database migrations |
+| `pnpm prisma:generate` | Generate Prisma client |
+| `pnpm prisma:seed` | Seed database with sample data |
+
 ## Development Status
 
 ### Completed (100%)
@@ -292,6 +344,8 @@ const costByFeature = await prisma.aIUsage.groupBy({
 - [x] Mobile navigation
 - [x] Email integration (Resend)
 - [x] Reports & analytics (Recharts + PDF export)
+- [x] Testing infrastructure (Vitest)
+- [x] Database seeding
 
 See [IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md) for detailed status.
 

@@ -5,7 +5,7 @@
 
 'use client'
 
-import { useState, useEffect, use } from 'react'
+import { useState, useEffect, useCallback, use } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -77,11 +77,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
     internalNotes: '',
   })
 
-  useEffect(() => {
-    fetchOrder()
-  }, [id])
-
-  const fetchOrder = async () => {
+  const fetchOrder = useCallback(async () => {
     try {
       const response = await fetch(`/api/orders/${id}`)
       const data = await response.json()
@@ -104,7 +100,11 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [id, router])
+
+  useEffect(() => {
+    fetchOrder()
+  }, [fetchOrder])
 
   const handleSave = async () => {
     setIsSaving(true)

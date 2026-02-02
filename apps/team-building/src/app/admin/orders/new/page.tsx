@@ -225,7 +225,7 @@ export default function NewOrderPage() {
 
           {formData.items.length === 0 ? (
             <p className="text-gray-500 text-center py-8">
-              Zatím nemáte žádné položky. Klikněte na "Přidat položku".
+              Zatím nemáte žádné položky. Klikněte na &quot;Přidat položku&quot;.
             </p>
           ) : (
             <div className="space-y-4">

@@ -5,7 +5,7 @@
 
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import {
   Package,
@@ -63,11 +63,7 @@ export default function ExtrasPage() {
   const [categoryFilter, setCategoryFilter] = useState('')
   const [deleteId, setDeleteId] = useState<string | null>(null)
 
-  useEffect(() => {
-    fetchExtras()
-  }, [categoryFilter])
-
-  const fetchExtras = async () => {
+  const fetchExtras = useCallback(async () => {
     try {
       const params = new URLSearchParams()
       if (categoryFilter) params.append('category', categoryFilter)
@@ -85,7 +81,11 @@ export default function ExtrasPage() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [categoryFilter])
+
+  useEffect(() => {
+    fetchExtras()
+  }, [fetchExtras])
 
   const handleDelete = async () => {
     if (!deleteId) return

@@ -5,7 +5,7 @@
 
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import {
   FileText,
@@ -67,11 +67,7 @@ export default function InvoicesPage() {
   const [statusFilter, setStatusFilter] = useState('')
   const [deleteId, setDeleteId] = useState<string | null>(null)
 
-  useEffect(() => {
-    fetchInvoices()
-  }, [statusFilter])
-
-  const fetchInvoices = async () => {
+  const fetchInvoices = useCallback(async () => {
     try {
       const params = new URLSearchParams()
       if (statusFilter) params.append('status', statusFilter)
@@ -89,7 +85,11 @@ export default function InvoicesPage() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [statusFilter])
+
+  useEffect(() => {
+    fetchInvoices()
+  }, [fetchInvoices])
 
   const handleDelete = async () => {
     if (!deleteId) return

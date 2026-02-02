@@ -5,7 +5,7 @@
 
 'use client'
 
-import { useState, useEffect, use } from 'react'
+import { useState, useEffect, useCallback, use } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -79,11 +79,7 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
     notes: '',
   })
 
-  useEffect(() => {
-    fetchInvoice()
-  }, [id])
-
-  const fetchInvoice = async () => {
+  const fetchInvoice = useCallback(async () => {
     try {
       const response = await fetch(`/api/invoices/${id}`)
       const data = await response.json()
@@ -105,7 +101,11 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [id, router])
+
+  useEffect(() => {
+    fetchInvoice()
+  }, [fetchInvoice])
 
   const handleSave = async () => {
     setIsSaving(true)
