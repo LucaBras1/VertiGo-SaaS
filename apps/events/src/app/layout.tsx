@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter, Poppins } from 'next/font/google'
 import { Toaster } from 'react-hot-toast'
 import { SessionProvider } from '@/components/providers/session-provider'
+import { QueryProvider } from '@/components/providers/query-provider'
 import './globals.css'
 
 const inter = Inter({
@@ -36,7 +37,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
       <body className="font-sans antialiased bg-gradient-to-br from-purple-50 via-white to-orange-50 min-h-screen">
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider>
+          <QueryProvider>{children}</QueryProvider>
+        </SessionProvider>
         <Toaster
           position="top-right"
           toastOptions={{

@@ -97,13 +97,27 @@ apps/events/
 │   │   └── dashboard/         # Main application
 │   │       ├── layout.tsx     # Session-aware navigation
 │   │       ├── page.tsx       # Dashboard overview (connected to API)
-│   │       ├── events/        # Event management
-│   │       ├── performers/    # Performer roster
-│   │       ├── venues/        # Venue management
-│   │       └── clients/       # Client management
+│   │       ├── events/
+│   │       │   ├── page.tsx   # Events list
+│   │       │   ├── new/       # Create event form
+│   │       │   └── [id]/      # Event detail with tabs (Overview, Timeline, Performers, Tasks)
+│   │       ├── performers/
+│   │       │   ├── page.tsx   # Performers list
+│   │       │   ├── new/       # Create performer form
+│   │       │   └── [id]/      # Performer detail with bookings, timing, rate
+│   │       ├── venues/
+│   │       │   ├── page.tsx   # Venues list
+│   │       │   ├── new/       # Create venue form
+│   │       │   └── [id]/      # Venue detail with events, restrictions
+│   │       ├── clients/
+│   │       │   ├── page.tsx   # Clients list
+│   │       │   ├── new/       # Create client form
+│   │       │   └── [id]/      # Client detail with events, contact info
+│   │       └── settings/      # User settings
 │   ├── components/
 │   │   ├── providers/
-│   │   │   └── session-provider.tsx  # NextAuth SessionProvider
+│   │   │   ├── session-provider.tsx  # NextAuth SessionProvider
+│   │   │   └── query-provider.tsx    # React Query provider
 │   │   ├── ui/
 │   │   │   ├── skeleton.tsx          # Skeleton loading components
 │   │   │   └── confirm-dialog.tsx    # Confirmation dialogs
@@ -112,7 +126,11 @@ apps/events/
 │   │   └── timeline-generator.tsx    # AI timeline UI
 │   ├── hooks/
 │   │   ├── use-toast.ts              # Toast notifications
-│   │   └── use-confirm.ts            # Confirmation dialogs
+│   │   ├── use-confirm.ts            # Confirmation dialogs
+│   │   ├── use-clients.ts            # React Query hooks for clients
+│   │   ├── use-venues.ts             # React Query hooks for venues
+│   │   ├── use-performers.ts         # React Query hooks for performers
+│   │   └── use-events.ts             # React Query hooks for events & tasks
 │   ├── lib/
 │   │   ├── prisma.ts          # Prisma client (build-time guard)
 │   │   ├── auth.ts            # NextAuth configuration
@@ -206,11 +224,37 @@ Predicts guest satisfaction:
 - Booking interface
 - Contact management
 
+### Detail & Create Pages
+All entities have full CRUD pages with:
+- **Create Forms**: Validated forms with react-hook-form + Zod
+- **Detail Pages**: Complete entity info with related data
+- **Edit Modals**: In-page editing without navigation
+- **Delete Confirmation**: Safe deletion with confirmation dialogs
+
+#### Client Pages
+- Create form with contact info, client type, tags
+- Detail page with events list, contact info, summary stats
+
+#### Venue Pages
+- Create form with type selector (indoor/outdoor/mixed), capacity, timing
+- Detail page with restrictions, events, contact info
+
+#### Performer Pages
+- Create form with type badges (fire, magic, circus, music, dance, comedy, interactive)
+- Detail page with bio, specialties, timing info, bookings history, rate card
+
+#### Event Detail Page
+- **Overview Tab**: Event info, venue/client links, budget progress, performers summary
+- **Timeline Tab**: AI timeline generator integration
+- **Performers Tab**: Booked performers with call times, rates, contract status
+- **Tasks Tab**: Task checklist with add/toggle functionality
+
 ### UX/UI Enhancements
 - **Toast Notifications**: Global feedback system with react-hot-toast
 - **Skeleton Loading**: Animated placeholders during data loading
 - **Error Boundaries**: Graceful error handling with retry functionality
 - **Confirmation Dialogs**: Safe delete operations with user confirmation
+- **React Query**: Server state management with caching and invalidation
 
 ## 🔌 API Endpoints
 
@@ -301,4 +345,4 @@ For issues or questions:
 
 ---
 
-**Built with**: Next.js 14, React, TypeScript, Tailwind CSS, Prisma, PostgreSQL
+**Built with**: Next.js 14, React, TypeScript, Tailwind CSS, Prisma, PostgreSQL, React Query, react-hook-form, Zod
