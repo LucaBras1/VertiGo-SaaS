@@ -23,13 +23,18 @@ model Tenant {
   updatedAt DateTime @updatedAt
   settings  Json?    // Business settings (website, phone, address, etc.)
 
-  users     User[]
-  packages  Package[]
-  shoots    Shoot[]
-  shotLists ShotList[]
-  galleries Gallery[]
-  clients   Client[]
-  invoices  Invoice[]
+  users               User[]
+  packages            Package[]
+  shoots              Shoot[]
+  shotLists           ShotList[]
+  galleries           Gallery[]
+  clients             Client[]
+  invoices            Invoice[]
+  contracts           Contract[]
+  contractTemplates   ContractTemplate[]
+  payments            Payment[]
+  calendarIntegration CalendarIntegration?
+  calendarEventSyncs  CalendarEventSync[]
 }
 
 model User {
@@ -68,6 +73,7 @@ model Client {
 
   packages  Package[]
   invoices  Invoice[]
+  contracts Contract[]
 
   @@index([tenantId])
   @@index([email])
@@ -110,6 +116,14 @@ model Package {
   travelCosts   Int?
   totalPrice    Int?
 
+  // Payment tracking
+  depositAmount     Int?
+  depositPaidAt     DateTime?
+  depositSessionId  String?
+  balancePaidAt     DateTime?
+  balanceSessionId  String?
+  paymentStatus     PaymentStatus @default(PENDING)
+
   // Metadata
   notes         String?
   createdAt     DateTime  @default(now())
@@ -120,6 +134,8 @@ model Package {
   addons        PackageAddon[]
   invoices      Invoice[]
   shotLists     ShotList[]
+  contracts     Contract[]
+  payments      Payment[]
 
   @@index([tenantId])
   @@index([clientId])
@@ -133,6 +149,14 @@ enum PackageStatus {
   CONFIRMED
   COMPLETED
   CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  DEPOSIT_PAID
+  PAID
+  REFUNDED
+  FAILED
 }
 
 model PackageAddon {
@@ -181,7 +205,8 @@ model Shoot {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  galleries   Gallery[]
+  galleries         Gallery[]
+  calendarEventSync CalendarEventSync?
 
   @@index([tenantId])
   @@index([packageId])
@@ -345,6 +370,8 @@ model Invoice {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
+  payments    Payment[]
+
   @@index([tenantId])
   @@index([clientId])
   @@index([packageId])
@@ -373,4 +400,189 @@ model PasswordResetToken {
 
   @@index([email])
   @@index([token])
+}
+
+// ============================================
+// CONTRACT MODELS
+// ============================================
+
+model Contract {
+  id         String         @id @default(cuid())
+  tenantId   String
+  tenant     Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  packageId  String?
+  package    Package?       @relation(fields: [packageId], references: [id], onDelete: SetNull)
+
+  clientId   String?
+  client     Client?        @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  templateId String?
+  template   ContractTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+
+  title      String
+  status     ContractStatus @default(DRAFT)
+
+  // Content
+  content    String         @db.Text
+  clauses    Json?          // Additional clauses
+
+  // Signing
+  signToken     String?     @unique  // Public signing token
+  signedAt      DateTime?
+  signedByName  String?
+  signedByEmail String?
+  signatureData String?     @db.Text  // Base64 signature image
+  signatureType String?     // 'draw' | 'type' | 'checkbox'
+  ipAddress     String?
+
+  // PDF
+  pdfUrl     String?
+
+  // Expiry
+  expiresAt  DateTime?
+
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  @@index([tenantId])
+  @@index([packageId])
+  @@index([clientId])
+  @@index([status])
+  @@index([signToken])
+}
+
+enum ContractStatus {
+  DRAFT
+  SENT
+  VIEWED
+  SIGNED
+  CANCELLED
+  EXPIRED
+}
+
+model ContractTemplate {
+  id         String   @id @default(cuid())
+  tenantId   String
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  name       String   // "Wedding Contract", "Portrait Contract"
+  eventType  String?  // wedding, portrait, corporate
+  content    String   @db.Text
+  clauses    Json?    // Default clauses
+  isDefault  Boolean  @default(false)
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  contracts  Contract[]
+
+  @@index([tenantId])
+  @@index([eventType])
+}
+
+// ============================================
+// PAYMENT MODELS
+// ============================================
+
+model Payment {
+  id              String        @id @default(cuid())
+  tenantId        String
+  tenant          Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  packageId       String?
+  package         Package?      @relation(fields: [packageId], references: [id], onDelete: SetNull)
+
+  invoiceId       String?
+  invoice         Invoice?      @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+
+  // Stripe data
+  stripeSessionId   String?     @unique
+  stripePaymentId   String?
+  stripeCustomerId  String?
+
+  // Payment details
+  amount          Int           // Amount in smallest currency unit (cents/hellers)
+  currency        String        @default("CZK")
+  status          PaymentStatus @default(PENDING)
+  type            PaymentType   // DEPOSIT | BALANCE | FULL | INVOICE
+
+  // Timestamps
+  paidAt          DateTime?
+  refundedAt      DateTime?
+  refundAmount    Int?
+
+  // Metadata
+  description     String?
+  metadata        Json?
+  receiptUrl      String?
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([tenantId])
+  @@index([packageId])
+  @@index([invoiceId])
+  @@index([stripeSessionId])
+  @@index([status])
+}
+
+enum PaymentType {
+  DEPOSIT
+  BALANCE
+  FULL
+  INVOICE
+}
+
+// ============================================
+// CALENDAR INTEGRATION
+// ============================================
+
+model CalendarIntegration {
+  id            String   @id @default(cuid())
+  tenantId      String   @unique
+  tenant        Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  provider      String   @default("google") // 'google' | 'outlook' | 'apple'
+
+  // OAuth tokens
+  accessToken   String   @db.Text
+  refreshToken  String   @db.Text
+  tokenExpiry   DateTime
+
+  // Settings
+  calendarId    String?  // Selected calendar ID
+  syncEnabled   Boolean  @default(true)
+  syncDirection String   @default("both") // 'both' | 'to_calendar' | 'from_calendar'
+
+  // Status
+  lastSyncAt    DateTime?
+  syncError     String?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model CalendarEventSync {
+  id              String   @id @default(cuid())
+  tenantId        String
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  shootId         String   @unique
+  shoot           Shoot    @relation(fields: [shootId], references: [id], onDelete: Cascade)
+
+  // External event data
+  googleEventId   String?
+  outlookEventId  String?
+
+  // Sync status
+  lastSyncedAt    DateTime?
+  syncStatus      String   @default("pending") // 'pending' | 'synced' | 'error' | 'deleted'
+  syncError       String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([tenantId])
+  @@index([googleEventId])
 }

@@ -5,7 +5,8 @@ import { useSession } from 'next-auth/react'
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { User, Building, CreditCard, Bell, Loader2, Check, AlertCircle } from 'lucide-react'
+import { User, Building, CreditCard, Bell, Calendar, Loader2, Check, AlertCircle, ChevronRight } from 'lucide-react'
+import Link from 'next/link'
 import toast from 'react-hot-toast'
 
 interface NotificationSettings {
@@ -373,6 +374,33 @@ export default function SettingsPage() {
             </Button>
           </div>
         )}
+      </Card>
+
+      {/* Calendar Integration */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+              <Calendar className="w-5 h-5 text-indigo-600" />
+            </div>
+            <div>
+              <CardTitle>Calendar Integration</CardTitle>
+              <CardDescription>Sync your shoots with Google Calendar</CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+
+        <div className="space-y-4">
+          <Link href="/dashboard/settings/calendar" className="block">
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+              <div>
+                <p className="font-semibold text-gray-900">Google Calendar</p>
+                <p className="text-sm text-gray-600">Automatically sync shoots to your calendar</p>
+              </div>
+              <ChevronRight className="w-5 h-5 text-gray-400" />
+            </div>
+          </Link>
+        </div>
       </Card>
 
       {/* Subscription */}

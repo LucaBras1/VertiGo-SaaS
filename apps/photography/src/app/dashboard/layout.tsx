@@ -11,6 +11,7 @@ import {
   Images,
   Users,
   FileText,
+  FileSignature,
   Settings,
   Menu,
   Bell,
@@ -84,6 +85,7 @@ export default function DashboardLayout({
           <NavItem href="/dashboard/shot-lists" icon={<ListChecks />} label="Shot Lists" active={pathname.startsWith('/dashboard/shot-lists')} />
           <NavItem href="/dashboard/galleries" icon={<Images />} label="Galleries" active={pathname.startsWith('/dashboard/galleries')} />
           <NavItem href="/dashboard/clients" icon={<Users />} label="Clients" active={pathname.startsWith('/dashboard/clients')} />
+          <NavItem href="/dashboard/contracts" icon={<FileSignature />} label="Contracts" active={pathname.startsWith('/dashboard/contracts')} />
           <NavItem href="/dashboard/invoices" icon={<FileText />} label="Invoices" active={pathname.startsWith('/dashboard/invoices')} />
 
           <div className="pt-6 pb-2">
