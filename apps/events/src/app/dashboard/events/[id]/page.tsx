@@ -67,6 +67,18 @@ export default function EventDetailPage({ params }: PageProps) {
   const [activeTab, setActiveTab] = useState<Tab>('overview')
   const [newTaskTitle, setNewTaskTitle] = useState('')
   const [isAddingTask, setIsAddingTask] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editForm, setEditForm] = useState({
+    name: '',
+    type: 'corporate' as string,
+    date: '',
+    startTime: '',
+    endTime: '',
+    guestCount: '',
+    description: '',
+    notes: '',
+    totalBudget: '',
+  })
 
   if (isLoading) {
     return <EventDetailSkeleton />
@@ -162,6 +174,45 @@ export default function EventDetailPage({ params }: PageProps) {
     }
   }
 
+  const handleEdit = () => {
+    if (!event) return
+    setEditForm({
+      name: event.name,
+      type: event.type,
+      date: event.date.split('T')[0],
+      startTime: event.startTime,
+      endTime: event.endTime,
+      guestCount: event.guestCount?.toString() || '',
+      description: event.description || '',
+      notes: event.notes || '',
+      totalBudget: event.totalBudget?.toString() || '',
+    })
+    setIsEditing(true)
+  }
+
+  const handleSaveEdit = async () => {
+    try {
+      await updateEvent.mutateAsync({
+        id,
+        data: {
+          name: editForm.name,
+          type: editForm.type as typeof event.type,
+          date: editForm.date,
+          startTime: editForm.startTime,
+          endTime: editForm.endTime,
+          guestCount: editForm.guestCount ? parseInt(editForm.guestCount) : undefined,
+          description: editForm.description || null,
+          notes: editForm.notes || null,
+          totalBudget: editForm.totalBudget ? parseFloat(editForm.totalBudget) : null,
+        },
+      })
+      toast.success('Event updated successfully')
+      setIsEditing(false)
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to update event')
+    }
+  }
+
   const budget = event.totalBudget ? Number(event.totalBudget) : 0
   const spent = event.spentAmount ? Number(event.spentAmount) : 0
   const remaining = budget - spent
@@ -221,13 +272,13 @@ export default function EventDetailPage({ params }: PageProps) {
                 </option>
               ))}
             </select>
-            <Link
-              href={`/dashboard/events/${id}/edit`}
+            <button
+              onClick={handleEdit}
               className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors inline-flex items-center"
             >
               <Edit className="w-4 h-4 mr-2" />
               Edit
-            </Link>
+            </button>
             <button
               onClick={handleDelete}
               disabled={deleteEvent.isPending}
@@ -680,6 +731,145 @@ export default function EventDetailPage({ params }: PageProps) {
               <p className="text-sm text-gray-500">Add tasks to track your event preparation</p>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {isEditing && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setIsEditing(false)}
+          />
+          <div className="relative bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 p-6 max-h-[90vh] overflow-y-auto">
+            <h3 className="text-lg font-semibold mb-4">Edit Event</h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Event Name
+                </label>
+                <input
+                  type="text"
+                  value={editForm.name}
+                  onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-primary-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Event Type
+                </label>
+                <select
+                  value={editForm.type}
+                  onChange={(e) => setEditForm({ ...editForm, type: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-primary-500"
+                >
+                  {Object.entries(eventTypeConfig).map(([value, cfg]) => (
+                    <option key={value} value={value}>
+                      {cfg.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Date
+                </label>
+                <input
+                  type="date"
+                  value={editForm.date}
+                  onChange={(e) => setEditForm({ ...editForm, date: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-primary-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Start Time
+                </label>
+                <input
+                  type="time"
+                  value={editForm.startTime}
+                  onChange={(e) => setEditForm({ ...editForm, startTime: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-primary-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  End Time
+                </label>
+                <input
+                  type="time"
+                  value={editForm.endTime}
+                  onChange={(e) => setEditForm({ ...editForm, endTime: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-primary-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Guest Count
+                </label>
+                <input
+                  type="number"
+                  value={editForm.guestCount}
+                  onChange={(e) => setEditForm({ ...editForm, guestCount: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-primary-500"
+                  min="0"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Total Budget
+                </label>
+                <input
+                  type="number"
+                  value={editForm.totalBudget}
+                  onChange={(e) => setEditForm({ ...editForm, totalBudget: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-primary-500"
+                  min="0"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description
+                </label>
+                <textarea
+                  value={editForm.description}
+                  onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                  rows={3}
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-primary-500 resize-none"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Notes
+                </label>
+                <textarea
+                  value={editForm.notes}
+                  onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
+                  rows={3}
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-primary-500 resize-none"
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setIsEditing(false)}
+                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveEdit}
+                disabled={updateEvent.isPending}
+                className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 inline-flex items-center"
+              >
+                {updateEvent.isPending && (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                )}
+                Save Changes
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -73,6 +73,20 @@ export interface Event {
   }
 }
 
+export interface CreateEventData {
+  name: string
+  type: EventType
+  status?: EventStatus
+  date: string
+  startTime: string
+  endTime: string
+  guestCount?: number
+  description?: string
+  venueId?: string
+  clientId?: string
+  totalBudget?: number
+}
+
 export interface UpdateEventData {
   name?: string
   type?: EventType
@@ -103,6 +117,20 @@ async function fetchEvent(id: string): Promise<Event> {
   if (!res.ok) throw new Error('Event not found')
   const data = await res.json()
   return data.event
+}
+
+async function createEvent(data: CreateEventData): Promise<Event> {
+  const res = await fetch('/api/events', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+  if (!res.ok) {
+    const error = await res.json()
+    throw new Error(error.error || 'Failed to create event')
+  }
+  const result = await res.json()
+  return result.event
 }
 
 async function updateEvent(id: string, data: UpdateEventData): Promise<Event> {
@@ -139,6 +167,17 @@ export function useEvent(id: string) {
     queryKey: ['events', id],
     queryFn: () => fetchEvent(id),
     enabled: !!id,
+  })
+}
+
+export function useCreateEvent() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: createEvent,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['events'] })
+    },
   })
 }
 

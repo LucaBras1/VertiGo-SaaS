@@ -243,11 +243,18 @@ All entities have full CRUD pages with:
 - Create form with type badges (fire, magic, circus, music, dance, comedy, interactive)
 - Detail page with bio, specialties, timing info, bookings history, rate card
 
-#### Event Detail Page
-- **Overview Tab**: Event info, venue/client links, budget progress, performers summary
-- **Timeline Tab**: AI timeline generator integration
-- **Performers Tab**: Booked performers with call times, rates, contract status
-- **Tasks Tab**: Task checklist with add/toggle functionality
+#### Event Pages
+- **Create form**: Multi-step wizard (Basic Info → Venue & Client → Performers & Budget)
+  - React Hook Form + Zod validation
+  - Dynamic venue/client/performer selection from API
+  - Budget estimation based on selected performers
+  - Redirect to detail page after creation
+- **Detail page** with tabbed interface:
+  - **Overview Tab**: Event info, venue/client links, budget progress, performers summary
+  - **Timeline Tab**: AI timeline generator integration
+  - **Performers Tab**: Booked performers with call times, rates, contract status
+  - **Tasks Tab**: Task checklist with add/toggle functionality
+- **Inline Edit Modal**: Edit event details without page navigation
 
 ### UX/UI Enhancements
 - **Toast Notifications**: Global feedback system with react-hot-toast
