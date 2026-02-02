@@ -133,8 +133,9 @@ jobs:
             echo "Running database migrations..."
             (cd packages/database && pnpm prisma migrate deploy 2>/dev/null || pnpm prisma db push) || echo "Warning: Migration skipped - verify database schema manually if needed"
 
-            # Build applications
+            # Build applications (with increased memory for large Next.js apps)
             echo "Building applications..."
+            export NODE_OPTIONS="--max-old-space-size=4096"
             pnpm run build
 
             # Reload PM2
