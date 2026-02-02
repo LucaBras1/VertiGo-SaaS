@@ -7,6 +7,7 @@ const DEFAULT_REMINDER_MINUTES = 60
 
 /**
  * Verify the cron secret for security
+ * Supports both Authorization header and query parameter (for VPS Centrum cron)
  */
 function verifyCronSecret(request: NextRequest): boolean {
   const cronSecret = process.env.CRON_SECRET
@@ -15,13 +16,23 @@ function verifyCronSecret(request: NextRequest): boolean {
     return false
   }
 
+  // Check Authorization header first
   const authHeader = request.headers.get('authorization')
-  if (!authHeader) {
-    return false
+  if (authHeader) {
+    const token = authHeader.replace('Bearer ', '')
+    if (token === cronSecret) {
+      return true
+    }
   }
 
-  const token = authHeader.replace('Bearer ', '')
-  return token === cronSecret
+  // Fallback to query parameter (for VPS Centrum cron which doesn't support headers)
+  const { searchParams } = new URL(request.url)
+  const queryToken = searchParams.get('secret')
+  if (queryToken === cronSecret) {
+    return true
+  }
+
+  return false
 }
 
 /**
