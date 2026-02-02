@@ -1,104 +1,104 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Loader2 } from 'lucide-react'
 import Link from 'next/link'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import toast from 'react-hot-toast'
+import { useClient, useUpdateClient } from '@/hooks/useClients'
 
-interface Client {
-  id: string
-  name: string
-  email: string
-  phone: string | null
-  address: string | null
-  type: string
-  tags: string[]
-  notes: string | null
-}
+const clientSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Invalid email address'),
+  phone: z.string().optional(),
+  address: z.string().optional(),
+  type: z.enum(['individual', 'couple', 'business']).default('individual'),
+  tags: z.string().optional(),
+  notes: z.string().optional(),
+})
+
+type ClientFormData = z.infer<typeof clientSchema>
 
 export default function EditClientPage() {
   const params = useParams()
   const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-  const [isFetching, setIsFetching] = useState(true)
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-    type: 'individual',
-    tags: '',
-    notes: ''
+  const clientId = params.id as string
+
+  const { data: client, isLoading: isFetching, error } = useClient(clientId)
+  const updateClientMutation = useUpdateClient()
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting }
+  } = useForm<ClientFormData>({
+    resolver: zodResolver(clientSchema),
+    defaultValues: {
+      type: 'individual',
+      name: '',
+      email: '',
+      phone: '',
+      address: '',
+      tags: '',
+      notes: '',
+    }
   })
 
+  // Pre-fill form when client data loads
   useEffect(() => {
-    fetchClient()
-  }, [params.id])
-
-  const fetchClient = async () => {
-    try {
-      const res = await fetch(`/api/clients/${params.id}`)
-      if (!res.ok) throw new Error('Client not found')
-      const client: Client = await res.json()
-
-      setFormData({
+    if (client) {
+      reset({
         name: client.name || '',
         email: client.email || '',
         phone: client.phone || '',
         address: client.address || '',
-        type: client.type || 'individual',
+        type: (client.type as 'individual' | 'couple' | 'business') || 'individual',
         tags: client.tags?.join(', ') || '',
-        notes: client.notes || ''
+        notes: client.notes || '',
       })
-    } catch (error) {
-      toast.error('Client not found')
-      router.push('/dashboard/clients')
-    } finally {
-      setIsFetching(false)
     }
-  }
+  }, [client, reset])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+  const onSubmit = async (data: ClientFormData) => {
+    const payload = {
+      id: clientId,
+      name: data.name,
+      email: data.email,
+      phone: data.phone || undefined,
+      address: data.address || undefined,
+      type: data.type,
+      tags: data.tags ? data.tags.split(',').map(s => s.trim()).filter(Boolean) : [],
+      notes: data.notes || undefined,
+    }
 
-    try {
-      const payload = {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone || null,
-        address: formData.address || null,
-        type: formData.type,
-        tags: formData.tags ? formData.tags.split(',').map(s => s.trim()) : [],
-        notes: formData.notes || null
+    updateClientMutation.mutate(payload, {
+      onSuccess: () => {
+        router.push(`/dashboard/clients/${clientId}`)
       }
-
-      const res = await fetch(`/api/clients/${params.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      })
-
-      if (!res.ok) throw new Error('Failed to update client')
-
-      toast.success('Client updated successfully!')
-      router.push(`/dashboard/clients/${params.id}`)
-    } catch (error) {
-      toast.error('Failed to update client')
-      console.error(error)
-    } finally {
-      setIsLoading(false)
-    }
+    })
   }
 
   if (isFetching) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div>
+        <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
+      </div>
+    )
+  }
+
+  if (error || !client) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-red-600">Client not found</p>
+        <Link href="/dashboard/clients">
+          <Button className="mt-4">Back to Clients</Button>
+        </Link>
       </div>
     )
   }
@@ -107,7 +107,7 @@ export default function EditClientPage() {
     <div className="space-y-6 max-w-2xl">
       {/* Header */}
       <div>
-        <Link href={`/dashboard/clients/${params.id}`} className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-4">
+        <Link href={`/dashboard/clients/${clientId}`} className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-4">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Client
         </Link>
@@ -116,42 +116,46 @@ export default function EditClientPage() {
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Contact Information */}
         <Card>
           <CardHeader>
             <CardTitle>Contact Information</CardTitle>
           </CardHeader>
           <div className="space-y-4">
-            <Input
-              label="Full Name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="John & Jane Smith"
-              required
-            />
+            <div>
+              <Input
+                label="Full Name"
+                {...register('name')}
+                placeholder="John & Jane Smith"
+              />
+              {errors.name && (
+                <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+              )}
+            </div>
 
-            <Input
-              type="email"
-              label="Email Address"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              placeholder="john@example.com"
-              required
-            />
+            <div>
+              <Input
+                type="email"
+                label="Email Address"
+                {...register('email')}
+                placeholder="john@example.com"
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+              )}
+            </div>
 
             <Input
               type="tel"
               label="Phone Number"
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              {...register('phone')}
               placeholder="+1 (555) 123-4567"
             />
 
             <Input
               label="Address"
-              value={formData.address}
-              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+              {...register('address')}
               placeholder="123 Main St, City, State"
             />
           </div>
@@ -166,8 +170,7 @@ export default function EditClientPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Client Type</label>
               <select
-                value={formData.type}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                {...register('type')}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
               >
                 <option value="individual">Individual</option>
@@ -178,8 +181,7 @@ export default function EditClientPage() {
 
             <Input
               label="Tags"
-              value={formData.tags}
-              onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+              {...register('tags')}
               placeholder="wedding, vip, referral"
               helperText="Comma-separated tags for organizing clients"
             />
@@ -187,8 +189,7 @@ export default function EditClientPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
               <textarea
-                value={formData.notes}
-                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                {...register('notes')}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
                 rows={4}
                 placeholder="Any additional notes about this client..."
@@ -199,10 +200,10 @@ export default function EditClientPage() {
 
         {/* Actions */}
         <div className="flex items-center gap-4">
-          <Button type="submit" isLoading={isLoading}>
+          <Button type="submit" isLoading={isSubmitting || updateClientMutation.isPending}>
             Update Client
           </Button>
-          <Link href={`/dashboard/clients/${params.id}`}>
+          <Link href={`/dashboard/clients/${clientId}`}>
             <Button type="button" variant="ghost">
               Cancel
             </Button>

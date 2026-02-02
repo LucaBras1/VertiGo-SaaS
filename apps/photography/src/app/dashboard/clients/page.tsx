@@ -1,52 +1,101 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
-import { Users, Plus, Search, Mail, Phone } from 'lucide-react'
+import { Users, Plus, Search, Mail, Phone, Filter, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Input } from '@/components/ui/Input'
+import { useClients, ClientFilters, CLIENT_TYPE_LABELS } from '@/hooks/useClients'
 
-interface Client {
-  id: string
-  name: string
-  email: string
-  phone: string | null
-  type: string
-  tags: string[]
-  packages: { id: string }[]
-}
+const TYPE_OPTIONS: { value: ClientFilters['type'] | ''; label: string }[] = [
+  { value: '', label: 'All Types' },
+  { value: 'individual', label: 'Individual' },
+  { value: 'couple', label: 'Couple' },
+  { value: 'business', label: 'Business' },
+]
+
+const SORT_OPTIONS = [
+  { value: 'createdAt', label: 'Date Added' },
+  { value: 'name', label: 'Name' },
+  { value: 'email', label: 'Email' },
+]
 
 export default function ClientsPage() {
-  const [clients, setClients] = useState<Client[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [search, setSearch] = useState('')
+  const [filters, setFilters] = useState<ClientFilters>({
+    page: 1,
+    limit: 12,
+    sortBy: 'createdAt',
+    sortOrder: 'desc',
+  })
+  const [searchInput, setSearchInput] = useState('')
+  const [showFilters, setShowFilters] = useState(false)
 
-  useEffect(() => {
-    fetchClients()
-  }, [])
+  const { data: clients = [], isLoading, error } = useClients(filters)
 
-  const fetchClients = async () => {
-    try {
-      const res = await fetch('/api/clients')
-      const data = await res.json()
-      setClients(data)
-    } catch (error) {
-      console.error('Failed to fetch clients:', error)
-    } finally {
-      setIsLoading(false)
+  const handleSearch = () => {
+    setFilters(prev => ({ ...prev, search: searchInput, page: 1 }))
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch()
     }
   }
 
-  const filteredClients = clients.filter(client =>
-    client.name.toLowerCase().includes(search.toLowerCase()) ||
-    client.email.toLowerCase().includes(search.toLowerCase())
-  )
-
-  if (isLoading) {
-    return <div className="text-center py-12">Loading clients...</div>
+  const getTypeVariant = (type: string) => {
+    switch (type) {
+      case 'individual': return 'default'
+      case 'couple': return 'info'
+      case 'business': return 'success'
+      default: return 'default'
+    }
   }
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-red-600">Failed to load clients. Please try again.</p>
+        <Button onClick={() => window.location.reload()} className="mt-4">
+          Retry
+        </Button>
+      </div>
+    )
+  }
+
+  // Client-side filtering for search and type (since API might not fully support it)
+  const filteredClients = clients.filter(client => {
+    const matchesSearch = !filters.search ||
+      client.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+      client.email.toLowerCase().includes(filters.search.toLowerCase())
+
+    const matchesType = !filters.type || client.type === filters.type
+
+    return matchesSearch && matchesType
+  })
+
+  // Client-side sorting
+  const sortedClients = [...filteredClients].sort((a, b) => {
+    const sortBy = filters.sortBy || 'createdAt'
+    const order = filters.sortOrder === 'asc' ? 1 : -1
+
+    if (sortBy === 'name') {
+      return a.name.localeCompare(b.name) * order
+    } else if (sortBy === 'email') {
+      return a.email.localeCompare(b.email) * order
+    } else {
+      return (new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) * order
+    }
+  })
+
+  // Client-side pagination
+  const page = filters.page || 1
+  const limit = filters.limit || 12
+  const totalCount = sortedClients.length
+  const totalPages = Math.ceil(totalCount / limit)
+  const paginatedClients = sortedClients.slice((page - 1) * limit, page * limit)
+  const hasMore = page < totalPages
 
   return (
     <div className="space-y-6">
@@ -54,7 +103,10 @@ export default function ClientsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Clients</h1>
-          <p className="text-gray-600 mt-1">Manage your photography clients</p>
+          <p className="text-gray-600 mt-1">
+            Manage your photography clients
+            {totalCount > 0 && ` (${totalCount} total)`}
+          </p>
         </div>
         <Link href="/dashboard/clients/new">
           <Button>
@@ -64,31 +116,102 @@ export default function ClientsPage() {
         </Link>
       </div>
 
-      {/* Search */}
+      {/* Search & Filters */}
       <Card>
-        <div className="flex items-center gap-4">
-          <div className="flex-1">
-            <Input
-              placeholder="Search clients by name or email..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+        <div className="space-y-4">
+          <div className="flex items-center gap-4">
+            <div className="flex-1">
+              <Input
+                placeholder="Search clients by name or email..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+              />
+            </div>
+            <Button onClick={handleSearch}>
+              <Search className="w-5 h-5 mr-2" />
+              Search
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              <Filter className="w-5 h-5 mr-2" />
+              Filters
+            </Button>
           </div>
-          <Button variant="secondary">
-            <Search className="w-5 h-5 mr-2" />
-            Search
-          </Button>
+
+          {showFilters && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-gray-200">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Client Type</label>
+                <select
+                  value={filters.type || ''}
+                  onChange={(e) => setFilters(prev => ({
+                    ...prev,
+                    type: e.target.value as ClientFilters['type'] || undefined,
+                    page: 1
+                  }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                >
+                  {TYPE_OPTIONS.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
+                <select
+                  value={filters.sortBy || 'createdAt'}
+                  onChange={(e) => setFilters(prev => ({
+                    ...prev,
+                    sortBy: e.target.value as ClientFilters['sortBy']
+                  }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                >
+                  {SORT_OPTIONS.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Order</label>
+                <select
+                  value={filters.sortOrder || 'desc'}
+                  onChange={(e) => setFilters(prev => ({
+                    ...prev,
+                    sortOrder: e.target.value as 'asc' | 'desc'
+                  }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                >
+                  <option value="desc">Newest First</option>
+                  <option value="asc">Oldest First</option>
+                </select>
+              </div>
+            </div>
+          )}
         </div>
       </Card>
 
+      {/* Loading State */}
+      {isLoading && (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
+        </div>
+      )}
+
       {/* Clients Grid */}
-      {filteredClients.length === 0 ? (
+      {!isLoading && paginatedClients.length === 0 ? (
         <Card>
           <div className="text-center py-12">
             <Users className="w-16 h-16 mx-auto mb-4 text-gray-300" />
             <h3 className="text-lg font-semibold text-gray-900 mb-2">No clients found</h3>
             <p className="text-gray-600 mb-4">
-              {search ? 'Try adjusting your search terms' : 'Add your first client to get started'}
+              {filters.search || filters.type
+                ? 'Try adjusting your search or filters'
+                : 'Add your first client to get started'}
             </p>
             <Link href="/dashboard/clients/new">
               <Button>
@@ -99,54 +222,87 @@ export default function ClientsPage() {
           </div>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredClients.map((client) => (
-            <Link key={client.id} href={`/dashboard/clients/${client.id}`}>
-              <Card hover className="h-full">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 mb-1">{client.name}</h3>
-                    <Badge variant="default" size="sm">
-                      {client.type}
-                    </Badge>
-                  </div>
-                  <div className="text-right">
-                    <Badge variant="info" size="sm">
-                      {client.packages.length} {client.packages.length === 1 ? 'pkg' : 'pkgs'}
-                    </Badge>
-                  </div>
-                </div>
-
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <Mail className="w-4 h-4" />
-                    <span className="truncate">{client.email}</span>
-                  </div>
-                  {client.phone && (
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Phone className="w-4 h-4" />
-                      <span>{client.phone}</span>
+        !isLoading && (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {paginatedClients.map((client) => (
+                <Link key={client.id} href={`/dashboard/clients/${client.id}`}>
+                  <Card hover className="h-full">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-900 mb-1">{client.name}</h3>
+                        <Badge variant={getTypeVariant(client.type)} size="sm">
+                          {CLIENT_TYPE_LABELS[client.type] || client.type}
+                        </Badge>
+                      </div>
                     </div>
-                  )}
-                  {client.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 pt-2">
-                      {client.tags.slice(0, 3).map((tag, idx) => (
-                        <Badge key={idx} variant="default" size="sm">
-                          {tag}
-                        </Badge>
-                      ))}
-                      {client.tags.length > 3 && (
-                        <Badge variant="default" size="sm">
-                          +{client.tags.length - 3}
-                        </Badge>
+
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <Mail className="w-4 h-4" />
+                        <span className="truncate">{client.email}</span>
+                      </div>
+                      {client.phone && (
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <Phone className="w-4 h-4" />
+                          <span>{client.phone}</span>
+                        </div>
+                      )}
+                      {client.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1 pt-2">
+                          {client.tags.slice(0, 3).map((tag, idx) => (
+                            <Badge key={idx} variant="default" size="sm">
+                              {tag}
+                            </Badge>
+                          ))}
+                          {client.tags.length > 3 && (
+                            <Badge variant="default" size="sm">
+                              +{client.tags.length - 3}
+                            </Badge>
+                          )}
+                        </div>
                       )}
                     </div>
-                  )}
+                  </Card>
+                </Link>
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-gray-600">
+                  Showing {((page - 1) * limit) + 1} to{' '}
+                  {Math.min(page * limit, totalCount)} of{' '}
+                  {totalCount} clients
+                </p>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    disabled={page === 1}
+                    onClick={() => setFilters(prev => ({ ...prev, page: (prev.page || 1) - 1 }))}
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    Previous
+                  </Button>
+                  <span className="px-3 py-1 text-sm text-gray-600">
+                    Page {page} of {totalPages}
+                  </span>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    disabled={!hasMore}
+                    onClick={() => setFilters(prev => ({ ...prev, page: (prev.page || 1) + 1 }))}
+                  >
+                    Next
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
                 </div>
-              </Card>
-            </Link>
-          ))}
-        </div>
+              </div>
+            )}
+          </>
+        )
       )}
     </div>
   )

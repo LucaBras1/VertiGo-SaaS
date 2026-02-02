@@ -1,54 +1,63 @@
 'use client'
 
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import toast from 'react-hot-toast'
+import { useCreateClient } from '@/hooks/useClients'
+
+const clientSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Invalid email address'),
+  phone: z.string().optional(),
+  address: z.string().optional(),
+  type: z.enum(['individual', 'couple', 'business']).default('individual'),
+  tags: z.string().optional(),
+  notes: z.string().optional(),
+})
+
+type ClientFormData = z.infer<typeof clientSchema>
 
 export default function NewClientPage() {
   const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-    type: 'individual',
-    tags: '',
-    notes: ''
+  const createClientMutation = useCreateClient()
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting }
+  } = useForm<ClientFormData>({
+    resolver: zodResolver(clientSchema),
+    defaultValues: {
+      type: 'individual',
+      name: '',
+      email: '',
+      phone: '',
+      address: '',
+      tags: '',
+      notes: '',
+    }
   })
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-
-    try {
-      const payload = {
-        ...formData,
-        tags: formData.tags ? formData.tags.split(',').map(s => s.trim()) : []
-      }
-
-      const res = await fetch('/api/clients', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      })
-
-      if (!res.ok) throw new Error('Failed to create client')
-
-      const data = await res.json()
-      toast.success('Client created successfully!')
-      router.push(`/dashboard/clients/${data.id}`)
-    } catch (error) {
-      toast.error('Failed to create client')
-      console.error(error)
-    } finally {
-      setIsLoading(false)
+  const onSubmit = async (data: ClientFormData) => {
+    const payload = {
+      ...data,
+      tags: data.tags ? data.tags.split(',').map(s => s.trim()).filter(Boolean) : [],
+      phone: data.phone || undefined,
+      address: data.address || undefined,
+      notes: data.notes || undefined,
     }
+
+    createClientMutation.mutate(payload, {
+      onSuccess: (newClient) => {
+        router.push(`/dashboard/clients/${newClient.id}`)
+      }
+    })
   }
 
   return (
@@ -64,42 +73,46 @@ export default function NewClientPage() {
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Contact Information */}
         <Card>
           <CardHeader>
             <CardTitle>Contact Information</CardTitle>
           </CardHeader>
           <div className="space-y-4">
-            <Input
-              label="Full Name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="John & Jane Smith"
-              required
-            />
+            <div>
+              <Input
+                label="Full Name"
+                {...register('name')}
+                placeholder="John & Jane Smith"
+              />
+              {errors.name && (
+                <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+              )}
+            </div>
 
-            <Input
-              type="email"
-              label="Email Address"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              placeholder="john@example.com"
-              required
-            />
+            <div>
+              <Input
+                type="email"
+                label="Email Address"
+                {...register('email')}
+                placeholder="john@example.com"
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+              )}
+            </div>
 
             <Input
               type="tel"
               label="Phone Number"
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              {...register('phone')}
               placeholder="+1 (555) 123-4567"
             />
 
             <Input
               label="Address"
-              value={formData.address}
-              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+              {...register('address')}
               placeholder="123 Main St, City, State"
             />
           </div>
@@ -114,8 +127,7 @@ export default function NewClientPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Client Type</label>
               <select
-                value={formData.type}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                {...register('type')}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
               >
                 <option value="individual">Individual</option>
@@ -126,8 +138,7 @@ export default function NewClientPage() {
 
             <Input
               label="Tags"
-              value={formData.tags}
-              onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+              {...register('tags')}
               placeholder="wedding, vip, referral"
               helperText="Comma-separated tags for organizing clients"
             />
@@ -135,8 +146,7 @@ export default function NewClientPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
               <textarea
-                value={formData.notes}
-                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                {...register('notes')}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
                 rows={4}
                 placeholder="Any additional notes about this client..."
@@ -147,7 +157,7 @@ export default function NewClientPage() {
 
         {/* Actions */}
         <div className="flex items-center gap-4">
-          <Button type="submit" isLoading={isLoading}>
+          <Button type="submit" isLoading={isSubmitting || createClientMutation.isPending}>
             Create Client
           </Button>
           <Link href="/dashboard/clients">
