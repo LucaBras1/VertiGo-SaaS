@@ -92,10 +92,13 @@ VertiGo-SaaS/
 │   └── performing-arts/           # StageManager - Performing arts (Planned)
 ├── packages/
 │   ├── ai-core/                   # AI utilities & OpenAI integration
+│   ├── auth/                      # Authentication (NextAuth.js) (NEW)
 │   ├── billing/                   # Global billing & payments platform
+│   ├── config/                    # Shared configurations
 │   ├── database/                  # Prisma schema & utilities
-│   ├── ui/                        # Shared React components
-│   └── config/                    # Shared configurations
+│   ├── email/                     # Email service (Resend) (NEW)
+│   ├── stripe/                    # Stripe payments (NEW)
+│   └── ui/                        # Shared React components
 ├── _docs/                         # Documentation
 │   ├── MASTER-GUIDE.md            # Development guide
 │   ├── AI-INTEGRATION.md          # AI implementation guide
@@ -205,6 +208,67 @@ See [AI Integration Guide](./_docs/AI-INTEGRATION.md) for detailed instructions 
 - Cost optimization strategies
 
 ## Packages
+
+### @vertigo/auth (NEW)
+
+Centralized authentication for all verticals:
+- NextAuth.js configuration factory
+- Multi-tenant support with tenant info in session
+- Configurable credentials provider
+- Middleware helpers (withAuth, withRole, withTenant)
+- Session utilities for Server Components
+- Localization support (English, Czech)
+
+```typescript
+import { createAuthOptions, hashPassword } from '@vertigo/auth'
+import { prisma } from './prisma'
+
+export const authOptions = createAuthOptions({
+  prisma,
+  pages: { signIn: '/auth/login' },
+  multiTenant: { enabled: true },
+  locale: 'cs',
+})
+```
+
+### @vertigo/email (NEW)
+
+Unified email service with vertical-specific branding:
+- Resend API integration
+- Pre-built templates (welcome, reminder, invoice, password reset)
+- Vertical-specific themes and colors
+- Customizable sender and branding
+
+```typescript
+import { createEmailService, VerticalTheme } from '@vertigo/email'
+
+const emailService = createEmailService({
+  apiKey: process.env.RESEND_API_KEY!,
+  defaultFrom: 'FitAdmin <noreply@fitadmin.app>',
+  theme: VerticalTheme.fitness,
+})
+
+await emailService.sendWelcome({ to: 'user@example.com', userName: 'John', ... })
+```
+
+### @vertigo/stripe (NEW)
+
+Stripe payment integration:
+- Lazy-loading client (build-time safe)
+- Checkout session creation
+- Payment intent management
+- Webhook signature verification
+- Currency formatting utilities
+
+```typescript
+import { createCheckoutSession, handleStripeEvent } from '@vertigo/stripe'
+
+const session = await createCheckoutSession({
+  lineItems: [{ name: 'Package', amount: 15000, currency: 'czk', quantity: 1 }],
+  successUrl: 'https://app.com/success',
+  cancelUrl: 'https://app.com/cancel',
+})
+```
 
 ### @vertigo/ai-core
 
@@ -336,6 +400,11 @@ docker-compose exec db psql -U postgres -d vertigo
 - [x] TeamForge - Admin panel with AI features (80%)
 - [x] ShootFlow - Core dashboard features (75%)
 - [x] Prisma 7 upgrade (all apps + packages)
+- [x] **Shared packages refactor** (NEW)
+  - [x] @vertigo/auth - Authentication factory with multi-tenant support
+  - [x] @vertigo/email - Email service with vertical themes
+  - [x] @vertigo/stripe - Stripe integration with lazy loading
+  - [x] Migration: fitness, photography, musicians apps
 
 ### In Progress
 - [ ] Complete Kids Entertainment (PartyPal) - 65%
