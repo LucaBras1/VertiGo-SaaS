@@ -1,0 +1,755 @@
+// StageManager - Performing Arts & Theater Production Management
+// Prisma schema for performing-arts vertical
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum Vertical {
+  MUSICIANS
+  PHOTOGRAPHY
+  FITNESS
+  EVENTS
+  PERFORMING_ARTS
+  TEAM_BUILDING
+  KIDS_ENTERTAINMENT
+}
+
+enum UserRole {
+  ADMIN
+  DIRECTOR
+  STAGE_MANAGER
+  CREW
+  PERFORMER
+}
+
+enum ProductionType {
+  THEATER
+  DANCE
+  CIRCUS
+  MUSICAL
+  OPERA
+  COMEDY
+  VARIETY
+  KIDS_SHOW
+  CONCERT
+  OTHER
+}
+
+enum ProductionStatus {
+  PLANNING
+  PRE_PRODUCTION
+  REHEARSING
+  TECH_WEEK
+  RUNNING
+  CLOSED
+  ARCHIVED
+}
+
+enum RehearsalType {
+  READ_THROUGH
+  BLOCKING
+  SCENE_WORK
+  RUN_THROUGH
+  TECH
+  DRESS
+  PREVIEW
+  NOTES
+  OTHER
+}
+
+enum PerformanceStatus {
+  SCHEDULED
+  ON_SALE
+  SOLD_OUT
+  CANCELLED
+  COMPLETED
+}
+
+enum EquipmentCategory {
+  COSTUMES
+  PROPS
+  SET_PIECES
+  LIGHTING
+  SOUND
+  RIGGING
+  FURNITURE
+  ELECTRONICS
+  SPECIALTY
+  OTHER
+}
+
+// ============================================
+// TENANT & ORGANIZATION
+// ============================================
+
+model Tenant {
+  id               String   @id @default(cuid())
+  vertical         Vertical @default(PERFORMING_ARTS)
+  name             String
+  slug             String   @unique
+  email            String?
+  phone            String?
+  website          String?
+  logo             String?
+  subscriptionTier String   @default("free") // free, pro, enterprise
+  aiCredits        Int      @default(100)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  users       User[]
+  productions Production[]
+  venues      Venue[]
+  equipment   Equipment[]
+  aiLogs      AILog[]
+
+  @@map("tenants")
+}
+
+// ============================================
+// AUTHENTICATION
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  tenantId      String
+  tenant        Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          UserRole  @default(PERFORMER)
+  phone         String?
+  bio           String?   @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  accounts         Account[]
+  sessions         UserSession[]
+  castRoles        CastMember[]
+  crewAssignments  CrewMember[]
+  rehearsalNotes   RehearsalNote[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model UserSession {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  email     String
+  token     String   @unique
+  expires   DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@map("password_reset_tokens")
+}
+
+// ============================================
+// PRODUCTION MANAGEMENT
+// ============================================
+
+model Production {
+  id          String           @id @default(cuid())
+  tenantId    String
+  tenant      Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  // Basic info
+  name        String
+  type        ProductionType
+  status      ProductionStatus @default(PLANNING)
+  synopsis    String?          @db.Text
+  tagline     String?
+
+  // Duration
+  duration       Int?     // minutes
+  hasIntermission Boolean @default(false)
+  intermissionLength Int? // minutes
+
+  // Dates
+  openingDate DateTime?
+  closingDate DateTime?
+
+  // Creative team
+  director     String?
+  playwright   String?
+  choreographer String?
+  musicalDirector String?
+  setDesigner  String?
+  costumeDesigner String?
+  lightingDesigner String?
+  soundDesigner String?
+
+  // Media
+  posterUrl    String?
+  images       String[]
+
+  // Notes
+  notes        String?  @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  performances Performance[]
+  castMembers  CastMember[]
+  crewMembers  CrewMember[]
+  rehearsals   Rehearsal[]
+  techRider    TechRider?
+  scenes       Scene[]
+  costumes     Costume[]
+
+  @@index([tenantId])
+  @@index([status])
+  @@map("productions")
+}
+
+model Scene {
+  id           String     @id @default(cuid())
+  productionId String
+  production   Production @relation(fields: [productionId], references: [id], onDelete: Cascade)
+
+  number       Int
+  name         String
+  act          Int        @default(1)
+  description  String?    @db.Text
+  duration     Int?       // estimated minutes
+  location     String?    // setting/location in the story
+  notes        String?    @db.Text
+
+  // Scene requirements
+  castRequired String[]   // character names needed
+  propsNeeded  String[]
+  setChanges   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([productionId, act, number])
+  @@map("scenes")
+}
+
+// ============================================
+// PERFORMANCES
+// ============================================
+
+model Performance {
+  id           String            @id @default(cuid())
+  productionId String
+  production   Production        @relation(fields: [productionId], references: [id], onDelete: Cascade)
+  venueId      String?
+  venue        Venue?            @relation(fields: [venueId], references: [id])
+
+  // Scheduling
+  date         DateTime
+  callTime     DateTime?         // crew/cast call
+  doorsOpen    DateTime?
+  curtainUp    DateTime?         // actual show start
+
+  status       PerformanceStatus @default(SCHEDULED)
+
+  // Ticketing
+  ticketPrice  Float?
+  capacity     Int?
+  ticketsSold  Int               @default(0)
+  ticketUrl    String?
+
+  // Notes
+  notes        String?           @db.Text
+  specialNotes String?           // for audience (e.g., "understudy performance")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productionId])
+  @@index([date])
+  @@map("performances")
+}
+
+// ============================================
+// CAST & CREW
+// ============================================
+
+model CastMember {
+  id           String     @id @default(cuid())
+  productionId String
+  production   Production @relation(fields: [productionId], references: [id], onDelete: Cascade)
+  userId       String?
+  user         User?      @relation(fields: [userId], references: [id])
+
+  // Character info
+  characterName String
+  role          String    // lead, supporting, ensemble, understudy, swing
+
+  // Performer info (if not linked to user)
+  performerName  String?
+  performerEmail String?
+  performerPhone String?
+
+  // Contract
+  contractStart  DateTime?
+  contractEnd    DateTime?
+  compensation   Float?
+  notes          String?   @db.Text
+
+  // Track usage
+  isUnderstudy   Boolean   @default(false)
+  understudyFor  String?   // character name they understudy
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productionId])
+  @@map("cast_members")
+}
+
+model CrewMember {
+  id           String     @id @default(cuid())
+  productionId String
+  production   Production @relation(fields: [productionId], references: [id], onDelete: Cascade)
+  userId       String?
+  user         User?      @relation(fields: [userId], references: [id])
+
+  // Position
+  department   String     // stage_management, lighting, sound, wardrobe, props, running_crew, etc.
+  position     String     // e.g., "Head Electrician", "ASM", "Dresser"
+
+  // Crew member info (if not linked to user)
+  crewName     String?
+  crewEmail    String?
+  crewPhone    String?
+
+  // Contract
+  contractStart DateTime?
+  contractEnd   DateTime?
+  compensation  Float?
+  notes         String?   @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productionId])
+  @@map("crew_members")
+}
+
+// ============================================
+// REHEARSALS
+// ============================================
+
+model Rehearsal {
+  id           String        @id @default(cuid())
+  productionId String
+  production   Production    @relation(fields: [productionId], references: [id], onDelete: Cascade)
+  venueId      String?
+  venue        Venue?        @relation(fields: [venueId], references: [id])
+
+  // Scheduling
+  date         DateTime
+  startTime    DateTime
+  endTime      DateTime
+  type         RehearsalType
+
+  // Content
+  title        String?
+  scenes       String[]      // scene numbers/names to rehearse
+  focus        String?       @db.Text
+  objectives   String[]
+
+  // Attendance
+  callList     String[]      // names/characters called
+
+  // Status
+  isCancelled  Boolean       @default(false)
+  cancelReason String?
+
+  // Location
+  location     String?       // room name if different from venue
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  attendance   RehearsalAttendance[]
+  notes        RehearsalNote[]
+
+  @@index([productionId])
+  @@index([date])
+  @@map("rehearsals")
+}
+
+model RehearsalAttendance {
+  id          String    @id @default(cuid())
+  rehearsalId String
+  rehearsal   Rehearsal @relation(fields: [rehearsalId], references: [id], onDelete: Cascade)
+
+  personName  String    // cast/crew member name
+  personType  String    // cast, crew
+  status      String    // present, absent, late, excused
+  arrivalTime DateTime?
+  notes       String?
+
+  createdAt DateTime @default(now())
+
+  @@unique([rehearsalId, personName])
+  @@map("rehearsal_attendance")
+}
+
+model RehearsalNote {
+  id          String    @id @default(cuid())
+  rehearsalId String
+  rehearsal   Rehearsal @relation(fields: [rehearsalId], references: [id], onDelete: Cascade)
+  authorId    String
+  author      User      @relation(fields: [authorId], references: [id])
+
+  department  String    // direction, choreography, music, tech, general
+  content     String    @db.Text
+  priority    String    @default("normal") // low, normal, high, urgent
+  resolved    Boolean   @default(false)
+  resolvedAt  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([rehearsalId])
+  @@map("rehearsal_notes")
+}
+
+// ============================================
+// VENUES
+// ============================================
+
+model Venue {
+  id        String @id @default(cuid())
+  tenantId  String
+  tenant    Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  // Basic info
+  name      String
+  type      String    // theater, black_box, outdoor, rehearsal_hall, concert_hall, etc.
+  address   String?
+  city      String?
+  country   String?
+  website   String?
+
+  // Contact
+  contactName  String?
+  contactEmail String?
+  contactPhone String?
+
+  // Technical specs
+  seatingCapacity Int?
+  stageWidth      Float?  // meters
+  stageDepth      Float?  // meters
+  stageHeight     Float?  // meters (grid height)
+  flySystem       Boolean @default(false)
+  orchestra Pit   Boolean @default(false)
+
+  // Facilities
+  dressingRooms   Int     @default(0)
+  loadInAccess    String? // description of load-in facilities
+  parkingSpaces   Int?
+  greenRoom       Boolean @default(false)
+
+  // Equipment
+  hasSound        Boolean @default(true)
+  hasLighting     Boolean @default(true)
+  hasPiano        Boolean @default(false)
+
+  notes     String?  @db.Text
+  images    String[]
+
+  isActive  Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  performances Performance[]
+  rehearsals   Rehearsal[]
+
+  @@index([tenantId])
+  @@map("venues")
+}
+
+// ============================================
+// TECH RIDER
+// ============================================
+
+model TechRider {
+  id           String     @id @default(cuid())
+  productionId String     @unique
+  production   Production @relation(fields: [productionId], references: [id], onDelete: Cascade)
+
+  version      String     @default("1.0")
+
+  // Stage requirements
+  stageMinWidth  Float?   // meters
+  stageMinDepth  Float?
+  stageMinHeight Float?
+  stageSurface   String?  // wood, marley, concrete, etc.
+  stageMasking   String?  // requirements for legs/borders
+
+  // Sound requirements
+  soundNotes      String?   @db.Text
+  microphoneCount Int?
+  monitorCount    Int?
+  playbackNeeded  Boolean   @default(true)
+  soundOperator   Boolean   @default(true)
+
+  // Lighting requirements
+  lightingNotes     String?  @db.Text
+  followSpotNeeded  Boolean  @default(false)
+  followSpotCount   Int?
+  dmxChannels       Int?
+  hazerNeeded       Boolean  @default(false)
+
+  // Rigging
+  riggingNotes    String?  @db.Text
+  riggingPoints   Int?
+  totalRigWeight  Float?   // kg
+
+  // Backline
+  backline        Json?    // array of equipment items
+
+  // Dressing rooms
+  dressingRooms   Int?
+  quickChangeAreas Int?
+  wardrobe         String? @db.Text
+
+  // Load-in
+  loadInHours     Float?   // hours needed
+  loadInAccess    String?  @db.Text
+  crewNeeded      Int?
+
+  // Schedule template
+  scheduleTemplate Json?   // typical show day schedule
+
+  // Hospitality
+  hospitalityNotes String? @db.Text
+  mealCount        Int?
+  parkingNeeded    Int?
+
+  // Safety
+  safetyNotes     String?  @db.Text
+  specialEffects  String[] // pyro, fog, flying, etc.
+
+  // Generated content
+  generatedRider  Json?    // full AI-generated rider
+  pdfUrl          String?  // stored PDF
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("tech_riders")
+}
+
+// ============================================
+// EQUIPMENT & INVENTORY
+// ============================================
+
+model Equipment {
+  id        String            @id @default(cuid())
+  tenantId  String
+  tenant    Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  name        String
+  category    EquipmentCategory
+  description String?         @db.Text
+
+  // Inventory
+  quantity    Int             @default(1)
+  available   Int             @default(1)
+
+  // Details
+  brand       String?
+  model       String?
+  serialNumber String?
+
+  // Storage
+  location    String?
+  condition   String?         // excellent, good, fair, poor, needs_repair
+
+  // Acquisition
+  purchaseDate   DateTime?
+  purchasePrice  Float?
+  vendor         String?
+
+  notes       String?         @db.Text
+  images      String[]
+
+  isActive    Boolean         @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tenantId])
+  @@index([category])
+  @@map("equipment")
+}
+
+model Costume {
+  id           String     @id @default(cuid())
+  productionId String
+  production   Production @relation(fields: [productionId], references: [id], onDelete: Cascade)
+
+  characterName String
+  description   String?   @db.Text
+
+  // Pieces
+  pieces        Json[]    // array of costume pieces with details
+
+  // Performer
+  performerName String?
+  size          String?
+  measurements  Json?     // actor measurements
+
+  // Quick changes
+  quickChangeScene String? // scene where quick change happens
+  quickChangeNotes String? @db.Text
+
+  // Maintenance
+  condition     String?   // excellent, good, fair, poor
+  cleaningNotes String?
+
+  notes         String?   @db.Text
+  images        String[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productionId])
+  @@map("costumes")
+}
+
+// ============================================
+// AI LOGGING
+// ============================================
+
+model AILog {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  feature  String // tech_rider_generator, rehearsal_scheduler, casting_assistant
+
+  // Model info
+  model            String  // gpt-4o, gpt-4o-mini
+  promptTokens     Int
+  completionTokens Int
+  totalTokens      Int
+  estimatedCost    Float
+
+  // Request/Response
+  input   Json
+  output  Json?
+
+  // Performance
+  latencyMs Int?
+  success   Boolean @default(true)
+  error     String?
+
+  createdAt DateTime @default(now())
+
+  @@index([tenantId])
+  @@index([feature])
+  @@map("ai_logs")
+}
+
+// ============================================
+// NOTIFICATIONS
+// ============================================
+
+model NotificationPreference {
+  id                   String  @id @default(cuid())
+  tenantId             String
+  userId               String?
+
+  rehearsalReminders   Boolean @default(true)
+  performanceReminders Boolean @default(true)
+  scheduleChanges      Boolean @default(true)
+  castingUpdates       Boolean @default(true)
+
+  reminderMinutesBefore Int     @default(60)
+  emailEnabled          Boolean @default(true)
+  pushEnabled           Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([tenantId, userId])
+  @@index([tenantId])
+  @@map("notification_preferences")
+}
+
+model NotificationLog {
+  id            String    @id @default(cuid())
+  tenantId      String
+  type          String    // rehearsal_reminder, performance_reminder, schedule_change, etc.
+  recipientType String    // user
+  recipientId   String
+  title         String
+  body          String
+  data          Json?     @db.JsonB
+  channel       String    // push, email, both
+  status        String    // pending, sent, failed, delivered
+  error         String?
+  sentAt        DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@index([tenantId])
+  @@index([recipientType, recipientId])
+  @@index([status])
+  @@map("notification_logs")
+}
