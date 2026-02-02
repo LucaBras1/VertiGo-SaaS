@@ -4,6 +4,7 @@ import Stripe from 'stripe'
 import { prisma } from '@/lib/db'
 import { verifyWebhookSignature } from '@/lib/stripe'
 import { sendPaymentConfirmationEmail } from '@/lib/email'
+import { onInvoicePaid } from '@/lib/email-sequences'
 
 // Force dynamic - prevent prerendering during build
 export const dynamic = 'force-dynamic'
@@ -143,6 +144,11 @@ async function handleInvoicePayment(
       items: [],
     })
   }
+
+  // Trigger email sequence for invoice paid
+  onInvoicePaid(invoiceId).catch((err) => {
+    console.error('Failed to trigger invoice paid email sequence:', err)
+  })
 
   console.log(`Invoice payment processed: ${invoiceId}, amount ${amountPaid}`)
 }

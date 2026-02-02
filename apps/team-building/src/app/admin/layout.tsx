@@ -3,7 +3,7 @@
  */
 
 import Link from 'next/link'
-import { Users, Activity, Calendar, FileText, Settings, BarChart3, Brain, Target, ShoppingCart, Receipt, Package } from 'lucide-react'
+import { Users, Activity, Calendar, FileText, Settings, BarChart3, Brain, Target, ShoppingCart, Receipt, Package, Mail, CalendarClock, TrendingUp } from 'lucide-react'
 
 export default function AdminLayout({
   children,
@@ -28,6 +28,17 @@ export default function AdminLayout({
       ]
     },
     { name: 'Reports', href: '/admin/reports', icon: FileText },
+    { name: 'Analytics', href: '/admin/analytics', icon: TrendingUp },
+    {
+      name: 'Marketing',
+      href: '#',
+      icon: Mail,
+      isSection: true,
+      children: [
+        { name: 'Email Sequences', href: '/admin/email-sequences', icon: Mail },
+      ]
+    },
+    { name: 'Calendar', href: '/admin/settings#calendar', icon: CalendarClock },
     {
       name: 'AI Tools',
       href: '#',

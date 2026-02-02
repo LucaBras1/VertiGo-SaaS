@@ -5,6 +5,8 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import { syncSessionToCalendars, deleteSessionFromCalendars } from '@/lib/calendar'
+import { onSessionCompleted } from '@/lib/email-sequences'
 
 /**
  * GET /api/sessions/[id]
@@ -74,6 +76,12 @@ export async function PUT(
       notes,
     } = body
 
+    // Get old session to check status change
+    const oldSession = await prisma.session.findUnique({
+      where: { id: params.id },
+      select: { status: true },
+    })
+
     // Update session
     const session = await prisma.session.update({
       where: { id: params.id },
@@ -104,6 +112,26 @@ export async function PUT(
       },
     })
 
+    // Check if session was marked as completed
+    if (status === 'completed' && oldSession?.status !== 'completed') {
+      // Trigger email sequence enrollment
+      onSessionCompleted(params.id).catch((err) => {
+        console.error('Failed to trigger session completed email sequence:', err)
+      })
+    }
+
+    // Sync to connected calendars (async, don't block response)
+    if (status !== 'cancelled') {
+      syncSessionToCalendars(session.id).catch((err) => {
+        console.error('Failed to sync session to calendars:', err)
+      })
+    } else {
+      // If cancelled, delete from calendars
+      deleteSessionFromCalendars(session.id).catch((err) => {
+        console.error('Failed to delete session from calendars:', err)
+      })
+    }
+
     return NextResponse.json({ success: true, data: session })
   } catch (error) {
     console.error('Error updating session:', error)
@@ -123,6 +151,11 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Delete from calendars first
+    await deleteSessionFromCalendars(params.id).catch((err) => {
+      console.error('Failed to delete session from calendars:', err)
+    })
+
     await prisma.session.delete({
       where: { id: params.id },
     })

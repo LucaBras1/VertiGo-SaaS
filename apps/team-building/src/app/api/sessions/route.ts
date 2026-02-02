@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { sendSessionConfirmationEmail } from '@/lib/email'
 import { format } from 'date-fns'
+import { syncSessionToCalendars } from '@/lib/calendar'
 
 /**
  * GET /api/sessions
@@ -132,6 +133,11 @@ export async function POST(request: NextRequest) {
         // Don't fail the request if email fails
       })
     }
+
+    // Sync to connected calendars (async, don't block response)
+    syncSessionToCalendars(session.id).catch((err) => {
+      console.error('Failed to sync session to calendars:', err)
+    })
 
     return NextResponse.json({ success: true, data: session }, { status: 201 })
   } catch (error) {

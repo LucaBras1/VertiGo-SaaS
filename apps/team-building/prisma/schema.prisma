@@ -325,8 +325,9 @@ model Customer {
   lastPaymentDate    DateTime?
 
   // Relations
-  orders   Order[]
-  invoices Invoice[]
+  orders           Order[]
+  invoices         Invoice[]
+  emailEnrollments EmailSequenceEnrollment[]
 
   @@index([email])
   @@index([organization])
@@ -497,8 +498,10 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts Account[]
-  sessions UserSession[]
+  accounts             Account[]
+  sessions             UserSession[]
+  calendarIntegrations CalendarIntegration[]
+  calendarFeedTokens   CalendarFeedToken[]
 
   @@map("users")
 }
@@ -601,4 +604,149 @@ model AIUsage {
   @@index([feature])
   @@index([createdAt])
   @@map("ai_usage")
+}
+
+// ========================================
+// ANALYTICS
+// ========================================
+
+model AnalyticsSnapshot {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  date      DateTime
+  period    String // daily | weekly | monthly
+  metrics   Json
+
+  @@unique([date, period])
+  @@index([date])
+  @@map("analytics_snapshots")
+}
+
+// ========================================
+// EMAIL SEQUENCES
+// ========================================
+
+model EmailSequence {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  name          String
+  description   String?
+  triggerType   String // session_completed | days_after_session | no_booking_days | invoice_paid | quote_sent | manual
+  triggerConfig Json? // { daysAfter: 3 } or { inactiveDays: 30 }
+  isActive      Boolean  @default(true)
+
+  steps       EmailSequenceStep[]
+  enrollments EmailSequenceEnrollment[]
+
+  @@index([triggerType, isActive])
+  @@map("email_sequences")
+}
+
+model EmailSequenceStep {
+  id          String        @id @default(cuid())
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  sequenceId  String
+  sequence    EmailSequence @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+  stepOrder   Int
+  delayDays   Int           @default(0)
+  delayHours  Int           @default(0)
+  subject     String
+  htmlContent String
+  textContent String?
+
+  @@index([sequenceId])
+  @@map("email_sequence_steps")
+}
+
+model EmailSequenceEnrollment {
+  id          String        @id @default(cuid())
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  sequenceId  String
+  sequence    EmailSequence @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+  customerId  String
+  customer    Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  currentStep Int           @default(0)
+  status      String        @default("active") // active | paused | completed | unsubscribed
+  enrolledAt  DateTime      @default(now())
+  nextEmailAt DateTime?
+  completedAt DateTime?
+  emailsSent  Int           @default(0)
+
+  emails EmailSequenceEmail[]
+
+  @@unique([sequenceId, customerId])
+  @@index([status, nextEmailAt])
+  @@map("email_sequence_enrollments")
+}
+
+model EmailSequenceEmail {
+  id           String                  @id @default(cuid())
+  createdAt    DateTime                @default(now())
+  enrollmentId String
+  enrollment   EmailSequenceEnrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  stepOrder    Int
+  sentAt       DateTime?
+  openedAt     DateTime?
+  clickedAt    DateTime?
+  status       String                  @default("pending") // pending | sent | delivered | opened | clicked | bounced | failed
+  resendId     String?
+
+  @@index([enrollmentId])
+  @@map("email_sequence_emails")
+}
+
+// ========================================
+// CALENDAR INTEGRATION
+// ========================================
+
+model CalendarIntegration {
+  id           String    @id @default(cuid())
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider     String // google | apple
+  accessToken  String?
+  refreshToken String?
+  tokenExpiry  DateTime?
+  calendarId   String?
+  syncEnabled  Boolean   @default(true)
+  lastSyncAt   DateTime?
+
+  eventSyncs CalendarEventSync[]
+
+  @@unique([userId, provider])
+  @@index([userId])
+  @@map("calendar_integrations")
+}
+
+model CalendarEventSync {
+  id              String              @id @default(cuid())
+  createdAt       DateTime            @default(now())
+  integrationId   String
+  integration     CalendarIntegration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+  entityType      String // session
+  entityId        String
+  externalEventId String
+  lastSyncedAt    DateTime
+  syncHash        String
+
+  @@unique([integrationId, entityType, entityId])
+  @@index([entityType, entityId])
+  @@map("calendar_event_syncs")
+}
+
+model CalendarFeedToken {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String    @unique
+  expiresAt DateTime?
+
+  @@index([userId])
+  @@map("calendar_feed_tokens")
 }

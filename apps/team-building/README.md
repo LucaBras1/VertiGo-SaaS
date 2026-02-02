@@ -45,6 +45,30 @@ TeamForge is an AI-powered management system for corporate team building compani
 - Demo request notifications with confirmations
 - Powered by Resend SDK
 
+### Email Sequences (Automated Follow-ups)
+- Automated email campaigns with multi-step sequences
+- Trigger types: session_completed, days_after_session, no_booking_days, invoice_paid, quote_sent, manual
+- Visual sequence builder with drag-and-drop steps
+- Enrollment management and statistics
+- Template library with TeamForge-specific templates
+- Cron-based email processor for scheduled delivery
+
+### Advanced Analytics
+- Real-time dashboard with key metrics
+- Customer analytics (total, active, by industry, by team size)
+- Revenue breakdown (by program, by month, growth rate)
+- Session analytics (completion rate, average team size, by objective)
+- Retention analysis (repeat customers, churn rate, LTV calculation)
+- Cohort analysis (monthly, industry, team size cohorts)
+- Interactive charts powered by Recharts
+
+### Calendar Integration
+- Google Calendar OAuth sync for sessions
+- Automatic event creation/update/deletion when sessions change
+- ICS/iCalendar feed for Apple Calendar, Outlook, and other apps
+- Per-user calendar settings and connection management
+- Support for multiple calendars per user
+
 ### AI Features
 
 #### 1. TeamDynamicsAI
@@ -85,6 +109,7 @@ TeamForge adapts the shared core schema with industry-specific terminology:
 - **Charts:** Recharts
 - **PDF:** jsPDF + jspdf-autotable
 - **UI:** HeadlessUI (mobile menu), Lucide React (icons)
+- **Calendar:** googleapis (Google Calendar API)
 
 ### Shared Packages
 
@@ -137,6 +162,19 @@ apps/team-building/
 │   │       │   ├── create-order-checkout/   # Order checkout
 │   │       │   ├── create-invoice-checkout/ # Invoice checkout
 │   │       │   └── webhook/    # Stripe webhook handler
+│   │       ├── analytics/      # Analytics API
+│   │       │   ├── overview/   # Overview metrics
+│   │       │   ├── trends/     # Time series data
+│   │       │   ├── retention/  # Retention analysis
+│   │       │   ├── cohorts/    # Cohort analysis
+│   │       │   └── revenue/    # Revenue breakdown
+│   │       ├── email-sequences/ # Email automation API
+│   │       │   ├── [id]/       # Sequence CRUD + steps + enroll
+│   │       │   ├── cron/       # Cron processor
+│   │       │   └── templates/  # Template library
+│   │       ├── calendar/       # Calendar integration API
+│   │       │   ├── google/     # Google Calendar OAuth
+│   │       │   └── feed/       # ICS feed endpoints
 │   │       └── ai/             # AI endpoints
 │   ├── components/
 │   │   ├── admin/              # Admin-specific components
@@ -144,6 +182,23 @@ apps/team-building/
 │   │   │   └── Navigation.tsx  # Mobile navigation
 │   │   ├── payments/           # Payment components
 │   │   │   └── PayButton.tsx   # Payment button component
+│   │   ├── analytics/          # Analytics dashboard components
+│   │   │   ├── MetricCard.tsx
+│   │   │   ├── RevenueChart.tsx
+│   │   │   ├── TrendChart.tsx
+│   │   │   ├── RetentionChart.tsx
+│   │   │   ├── CohortTable.tsx
+│   │   │   ├── IndustryDistribution.tsx
+│   │   │   └── ObjectiveAnalysis.tsx
+│   │   ├── email-sequences/    # Email sequence components
+│   │   │   ├── SequenceFormModal.tsx
+│   │   │   ├── StepEditor.tsx
+│   │   │   ├── EnrollmentList.tsx
+│   │   │   └── SequenceStats.tsx
+│   │   ├── calendar/           # Calendar integration components
+│   │   │   ├── CalendarSettings.tsx
+│   │   │   ├── GoogleCalendarConnect.tsx
+│   │   │   └── ICSFeedSettings.tsx
 │   │   └── ui/                 # Reusable UI components
 │   └── lib/
 │       ├── auth.ts             # NextAuth configuration (via @vertigo/auth)
@@ -152,6 +207,26 @@ apps/team-building/
 │       ├── stripe.ts           # Stripe integration (via @vertigo/stripe)
 │       ├── ai-client.ts        # AI client initialization
 │       ├── utils.ts            # Utilities
+│       ├── analytics/          # Analytics calculations
+│       │   ├── index.ts
+│       │   ├── metrics-aggregator.ts
+│       │   ├── retention-calculator.ts
+│       │   ├── cohort-analyzer.ts
+│       │   └── revenue-analyzer.ts
+│       ├── email-sequences/    # Email automation
+│       │   ├── index.ts
+│       │   ├── trigger-service.ts
+│       │   ├── processor.ts
+│       │   └── templates.ts
+│       ├── calendar/           # Calendar integration
+│       │   ├── index.ts
+│       │   ├── sync-service.ts
+│       │   ├── google/
+│       │   │   ├── auth.ts
+│       │   │   ├── events.ts
+│       │   │   └── types.ts
+│       │   └── apple/
+│       │       └── ics-generator.ts
 │       └── ai/                 # AI modules
 │           ├── index.ts        # AI exports
 │           ├── team-dynamics.ts
@@ -218,6 +293,11 @@ EMAIL_FROM="TeamForge <noreply@teamforge.ai>"
 STRIPE_SECRET_KEY="sk_test_..."
 STRIPE_WEBHOOK_SECRET="whsec_..."
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_..."
+
+# Google Calendar (for calendar sync)
+GOOGLE_CLIENT_ID="your-client-id.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET="your-client-secret"
+GOOGLE_REDIRECT_URI="http://localhost:3009/api/calendar/google/callback"
 ```
 
 ### 3. Initialize Database
@@ -314,6 +394,36 @@ pnpm test:coverage
 - `POST /api/payments/create-invoice-checkout` - Create checkout for invoice payment
 - `POST /api/payments/webhook` - Stripe webhook handler
 
+### Analytics
+- `GET /api/analytics/overview` - Overview metrics (customers, revenue, sessions)
+- `GET /api/analytics/trends` - Time series data (daily/weekly/monthly)
+- `GET /api/analytics/retention` - Retention analysis (churn, LTV, segments)
+- `GET /api/analytics/cohorts` - Cohort analysis (monthly, industry, team size)
+- `GET /api/analytics/revenue` - Revenue breakdown (by program, objectives)
+
+### Email Sequences
+- `GET /api/email-sequences` - List all sequences
+- `POST /api/email-sequences` - Create sequence
+- `GET /api/email-sequences/:id` - Get sequence details
+- `PATCH /api/email-sequences/:id` - Update sequence
+- `DELETE /api/email-sequences/:id` - Delete sequence
+- `POST /api/email-sequences/:id/enroll` - Enroll customer
+- `GET /api/email-sequences/:id/steps` - List steps
+- `POST /api/email-sequences/:id/steps` - Add step
+- `PATCH /api/email-sequences/:id/steps/:stepId` - Update step
+- `DELETE /api/email-sequences/:id/steps/:stepId` - Delete step
+- `POST /api/email-sequences/cron` - Process pending emails (for Vercel cron)
+- `GET /api/email-sequences/templates` - Get template library
+
+### Calendar Integration
+- `GET /api/calendar/google/auth` - Start Google OAuth flow
+- `GET /api/calendar/google/callback` - OAuth callback handler
+- `GET /api/calendar/google/status` - Get connection status
+- `POST /api/calendar/google/disconnect` - Disconnect Google Calendar
+- `PATCH /api/calendar/google/settings` - Update calendar settings
+- `POST /api/calendar/feed/generate` - Generate ICS feed token
+- `GET /api/calendar/feed/:token` - Public ICS feed endpoint
+
 ### Health & Monitoring
 - `GET /api/health` - Health check endpoint (database, memory, uptime)
 - `HEAD /api/health` - Simple health check for load balancers
@@ -351,6 +461,20 @@ EMAIL_FROM="TeamForge <noreply@teamforge.ai>"
 STRIPE_SECRET_KEY="sk_live_..."
 STRIPE_WEBHOOK_SECRET="whsec_..."
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_live_..."
+GOOGLE_CLIENT_ID="your-client-id.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET="your-client-secret"
+GOOGLE_REDIRECT_URI="https://teamforge.yourdomain.com/api/calendar/google/callback"
+```
+
+### Vercel Cron (for Email Sequences)
+Add to `vercel.json`:
+```json
+{
+  "crons": [{
+    "path": "/api/email-sequences/cron",
+    "schedule": "*/15 * * * *"
+  }]
+}
 ```
 
 ## Monitoring & Analytics
@@ -412,6 +536,9 @@ const costByFeature = await prisma.aIUsage.groupBy({
 - [x] Database seeding
 - [x] Health check endpoint for monitoring
 - [x] Migration to shared VertiGo packages
+- [x] **Advanced Analytics** (dashboard, retention, cohorts, revenue)
+- [x] **Email Sequences** (automated follow-up campaigns)
+- [x] **Calendar Integration** (Google Calendar sync + ICS feed)
 
 See [IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md) for detailed status.
 

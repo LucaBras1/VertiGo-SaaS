@@ -8,8 +8,9 @@
 import { useState, useEffect } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import { Save, Settings as SettingsIcon, Mail, Globe, Loader2 } from 'lucide-react'
+import { Save, Settings as SettingsIcon, Mail, Globe, Loader2, Calendar } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { CalendarSettings } from '@/components/calendar'
 
 export default function SettingsPage() {
   const [isSaving, setIsSaving] = useState(false)
@@ -232,6 +233,21 @@ export default function SettingsPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Calendar Integration */}
+        <div id="calendar">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Calendar className="w-5 h-5" />
+                Integrace kalendáře
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CalendarSettings />
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Save Button */}
         <div className="flex justify-end">
