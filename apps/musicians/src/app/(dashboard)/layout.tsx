@@ -15,6 +15,7 @@ import {
   Menu,
   X,
   CreditCard,
+  Inbox,
 } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
@@ -22,10 +23,12 @@ import { cn } from '@/lib/utils'
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: Calendar },
   { name: 'Gigs', href: '/dashboard/gigs', icon: Music },
+  { name: 'Inquiries', href: '/dashboard/inquiries', icon: Inbox },
   { name: 'Setlists', href: '/dashboard/setlists', icon: List },
   { name: 'Repertoire', href: '/dashboard/repertoire', icon: Sparkles },
   { name: 'Clients', href: '/dashboard/clients', icon: Users },
   { name: 'Invoices', href: '/dashboard/invoices', icon: FileText },
+  { name: 'Contracts', href: '/dashboard/contracts', icon: FileText },
   { name: 'Billing', href: '/dashboard/billing', icon: CreditCard },
 ]
 

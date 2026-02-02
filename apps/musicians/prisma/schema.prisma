@@ -145,6 +145,10 @@ model Gig {
   extras     GigExtra[]
   invoices   Invoice[]
 
+  // Booking & Contracts
+  bookingInquiry BookingInquiry?
+  contracts      Contract[]
+
   @@index([tenantId])
   @@index([status])
   @@index([eventDate])
@@ -398,6 +402,12 @@ model Tenant {
   expenseCategories         ExpenseCategory[]
   expenses                  Expense[]
   recurringInvoiceTemplates RecurringInvoiceTemplate[]
+
+  // Booking Widget & Contracts
+  bookingWidget             BookingWidget?
+  contractTemplates         ContractTemplate[]
+  contractClauses           ContractClause[]
+  contracts                 Contract[]
 
   @@index([slug])
   @@index([vertical])
@@ -1017,4 +1027,246 @@ model CalendarFeedToken {
   @@unique([tenantId, userId])
   @@index([token])
   @@map("calendar_feed_tokens")
+}
+
+// ========================================
+// PUBLIC BOOKING WIDGET MODELS
+// ========================================
+
+model BookingWidget {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  tenantId      String   @unique
+  tenant        Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  token         String   @unique @default(cuid())
+  isActive      Boolean  @default(true)
+
+  // Branding
+  displayName      String?
+  displayBio       String?
+  displayPhoto     String?
+  primaryColor     String  @default("#2563eb")
+  backgroundColor  String  @default("#ffffff")
+
+  // Settings
+  allowedEventTypes String[] @default(["wedding", "corporate", "party"])
+  minNoticeHours    Int      @default(48)
+  maxSubmissionsPerDay Int   @default(50)
+  successMessage    String?
+
+  inquiries BookingInquiry[]
+
+  @@index([token])
+  @@map("booking_widgets")
+}
+
+enum BookingInquiryStatus {
+  NEW
+  REVIEWED
+  CONVERTED
+  REJECTED
+}
+
+model BookingInquiry {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  widgetId     String
+  widget       BookingWidget @relation(fields: [widgetId], references: [id], onDelete: Cascade)
+  tenantId     String
+
+  // Client info
+  clientName   String
+  clientEmail  String
+  clientPhone  String?
+
+  // Event details
+  eventType    String
+  eventDate    DateTime
+  venue        Json?     // { name, address, city }
+  message      String?   @db.Text
+
+  // Conversion tracking
+  gigId        String?   @unique  // Auto-created gig
+  gig          Gig?      @relation(fields: [gigId], references: [id])
+  status       BookingInquiryStatus @default(NEW)
+
+  // Spam prevention
+  ipAddress    String?
+  userAgent    String?
+
+  @@index([widgetId])
+  @@index([tenantId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("booking_inquiries")
+}
+
+// ========================================
+// SMART REMINDERS MODELS
+// ========================================
+
+enum ReminderType {
+  GIG_UPCOMING
+  INVOICE_DUE
+  INVOICE_OVERDUE
+  QUOTE_FOLLOWUP
+}
+
+model SentReminder {
+  id            String       @id @default(cuid())
+  createdAt     DateTime     @default(now())
+
+  tenantId      String
+  type          ReminderType
+  entityId      String       // gig.id or invoice.id
+  entityType    String       // 'gig' | 'invoice'
+  reminderLevel Int          @default(1)  // 1st, 2nd, 3rd reminder
+  daysOffset    Int          // e.g., -7, -1, 0 for gigs; -3, 0, 7 for invoices
+
+  // Recipients
+  sentTo        String[]     // Email addresses sent to
+  success       Boolean      @default(true)
+  errorMessage  String?
+
+  // User actions
+  dismissed     Boolean      @default(false)
+  dismissedAt   DateTime?
+  snoozedUntil  DateTime?
+
+  @@index([tenantId])
+  @@index([entityId])
+  @@index([type])
+  @@unique([tenantId, entityId, type, daysOffset])
+  @@map("sent_reminders")
+}
+
+// ========================================
+// CONTRACT GENERATION MODELS
+// ========================================
+
+enum ContractStatus {
+  DRAFT
+  SENT
+  SIGNED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum ContractLanguage {
+  CS  // Czech
+  EN  // English
+}
+
+model ContractTemplate {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  name        String
+  language    ContractLanguage @default(CS)
+  description String?
+
+  // Template structure
+  sections    Json     // Array of section definitions
+  defaultClauses String[]  // IDs of default clauses to include
+
+  isDefault   Boolean  @default(false)
+
+  contracts   Contract[]
+
+  @@index([tenantId])
+  @@map("contract_templates")
+}
+
+model ContractClause {
+  id         String  @id @default(cuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  tenantId   String
+  tenant     Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  title      String
+  category   String  // payment, cancellation, technical, liability, force_majeure, copyright
+
+  // Bilingual content
+  contentCs  String  @db.Text
+  contentEn  String  @db.Text
+
+  // Dynamic variables used
+  variables  String[]  // e.g., ["CLIENT_NAME", "EVENT_DATE", "TOTAL_PRICE"]
+
+  // Flags
+  isRequired Boolean @default(false)
+  isDefault  Boolean @default(true)
+  isSystem   Boolean @default(false)  // System-provided clauses
+
+  @@index([tenantId])
+  @@index([category])
+  @@map("contract_clauses")
+}
+
+model Contract {
+  id             String   @id @default(cuid())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  tenantId       String
+  tenant         Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  contractNumber String   @unique
+  version        Int      @default(1)
+  status         ContractStatus @default(DRAFT)
+  language       ContractLanguage @default(CS)
+
+  // References
+  templateId     String?
+  template       ContractTemplate? @relation(fields: [templateId], references: [id])
+  gigId          String?
+  gig            Gig?     @relation(fields: [gigId], references: [id])
+
+  // Contract parties
+  performerInfo  Json     // { name, address, ico, dic, phone, email }
+  clientInfo     Json     // { name, address, phone, email, company }
+
+  // Event details
+  eventDetails   Json     // { title, date, time, venue, duration, description }
+
+  // Financial terms
+  financialTerms Json     // { totalPrice, deposit, depositDue, paymentDue, currency }
+
+  // Content
+  title          String
+  sections       Json     // Array of { title, content, order }
+  clauses        Json     // Array of { clauseId, content, order }
+
+  // AI generation metadata
+  aiGenerated    Boolean  @default(false)
+  aiPrompt       String?  @db.Text
+
+  // PDF
+  pdfUrl         String?
+
+  // Version history
+  parentId       String?
+  parent         Contract? @relation("ContractVersions", fields: [parentId], references: [id])
+  versions       Contract[] @relation("ContractVersions")
+
+  // Dates
+  sentAt         DateTime?
+  signedAt       DateTime?
+
+  @@index([tenantId])
+  @@index([gigId])
+  @@index([status])
+  @@index([contractNumber])
+  @@map("contracts")
 }

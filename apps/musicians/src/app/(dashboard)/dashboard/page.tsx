@@ -16,6 +16,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts'
+import RemindersWidget from '@/components/dashboard/RemindersWidget'
 
 interface DashboardStats {
   upcomingGigs: number
@@ -425,40 +426,44 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* AI Suggestions */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-primary-600" />
-              Doporučení
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {aiSuggestions.map((suggestion, index) => (
-                <div
-                  key={index}
-                  className="p-4 border rounded-lg hover:border-primary-300 transition"
-                >
-                  <h4 className="font-medium text-gray-900 text-sm">
-                    {suggestion.title}
-                  </h4>
-                  <p className="text-xs text-gray-600 mt-1">
-                    {suggestion.description}
-                  </p>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="mt-2 w-full"
-                    asChild
+        {/* Reminders & AI Suggestions */}
+        <div className="space-y-6">
+          <RemindersWidget />
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-primary-600" />
+                Doporučení
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {aiSuggestions.map((suggestion, index) => (
+                  <div
+                    key={index}
+                    className="p-4 border rounded-lg hover:border-primary-300 transition"
                   >
-                    <Link href={suggestion.href}>{suggestion.action}</Link>
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                    <h4 className="font-medium text-gray-900 text-sm">
+                      {suggestion.title}
+                    </h4>
+                    <p className="text-xs text-gray-600 mt-1">
+                      {suggestion.description}
+                    </p>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="mt-2 w-full"
+                      asChild
+                    >
+                      <Link href={suggestion.href}>{suggestion.action}</Link>
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   )

@@ -199,6 +199,115 @@ export async function sendInvoicePaymentEmail({
   })
 }
 
+// Smart Reminder emails
+
+export async function sendGigReminderEmail({
+  to,
+  clientName,
+  gigTitle,
+  gigDate,
+  daysUntil,
+  bandName,
+  venue,
+  isSelfReminder = false,
+}: {
+  to: string
+  clientName: string
+  gigTitle: string
+  gigDate: string
+  daysUntil: number
+  bandName: string
+  venue?: string
+  isSelfReminder?: boolean
+}): Promise<EmailResult> {
+  const timeText = daysUntil === 0 ? 'dnes' : daysUntil === 1 ? 'zítra' : `za ${daysUntil} dní`
+
+  const gigDetails = `
+    <p style="margin: 5px 0;"><strong>Akce:</strong> ${gigTitle}</p>
+    <p style="margin: 5px 0;"><strong>Datum:</strong> ${gigDate}</p>
+    ${venue ? `<p style="margin: 5px 0;"><strong>Místo:</strong> ${venue}</p>` : ''}
+    <p style="margin: 5px 0;"><strong>Kapela:</strong> ${bandName}</p>
+  `
+
+  const greeting = isSelfReminder
+    ? `<p style="font-size: 16px;">Připomínka: Váš koncert je <strong>${timeText}</strong>!</p>`
+    : `<p style="font-size: 16px;">Dobrý den, <strong>${clientName}</strong>!</p>
+       <p>Připomínáme Vám, že Váš koncert s ${bandName} je <strong>${timeText}</strong>.</p>`
+
+  const content = `
+    ${greeting}
+    ${generateInfoBox(gigDetails, musiciansTheme.primaryColor)}
+    <p style="color: #666; font-size: 14px;">${isSelfReminder ? 'Hodně štěstí!' : 'Těšíme se na Vás!'}</p>
+  `
+
+  const html = wrapInBaseTemplate(musiciansTheme, content, { title: 'Připomínka koncertu' })
+
+  const subject = isSelfReminder
+    ? `Připomínka: ${gigTitle} - ${timeText}`
+    : `Připomínka koncertu ${timeText} - ${bandName}`
+
+  return emailService.sendCustom({
+    to,
+    subject,
+    html,
+    text: `${isSelfReminder ? 'Připomínka' : `Dobrý den, ${clientName}!`} Váš koncert "${gigTitle}" je ${timeText} (${gigDate}).${venue ? ` Místo: ${venue}.` : ''} ${bandName}`,
+  })
+}
+
+export async function sendInvoiceReminderEmail({
+  to,
+  clientName,
+  invoiceNumber,
+  amount,
+  dueDate,
+  bandName,
+  isOverdue,
+  daysOverdue,
+}: {
+  to: string
+  clientName: string
+  invoiceNumber: string
+  amount: string
+  dueDate: string
+  bandName: string
+  isOverdue: boolean
+  daysOverdue: number
+}): Promise<EmailResult> {
+  const invoiceDetails = `
+    <p style="margin: 5px 0;"><strong>Faktura:</strong> ${invoiceNumber}</p>
+    <p style="margin: 5px 0;"><strong>Částka:</strong> ${amount} Kč</p>
+    <p style="margin: 5px 0;"><strong>Splatnost:</strong> ${dueDate}</p>
+  `
+
+  let message: string
+  let subject: string
+
+  if (isOverdue) {
+    const daysText = daysOverdue === 1 ? '1 den' : daysOverdue < 5 ? `${daysOverdue} dny` : `${daysOverdue} dní`
+    message = `Vaše faktura je <strong>po splatnosti ${daysText}</strong>. Prosíme o co nejrychlejší úhradu.`
+    subject = `Upomínka: Faktura ${invoiceNumber} po splatnosti ${daysText}`
+  } else {
+    message = `Připomínáme Vám blížící se splatnost faktury.`
+    subject = `Připomínka: Faktura ${invoiceNumber} - splatnost ${dueDate}`
+  }
+
+  const content = `
+    <p style="font-size: 16px;">Dobrý den, <strong>${clientName}</strong>!</p>
+    <p>${message}</p>
+    ${generateInfoBox(invoiceDetails, isOverdue ? '#dc2626' : musiciansTheme.primaryColor)}
+    <p style="color: #666; font-size: 14px;">Pokud jste již platbu provedli, ignorujte prosím tuto zprávu. Děkujeme! ${bandName}</p>
+  `
+
+  const html = wrapInBaseTemplate(musiciansTheme, content, { title: isOverdue ? 'Upomínka faktury' : 'Připomínka faktury' })
+
+  return emailService.sendCustom({
+    to,
+    subject,
+    html,
+    text: `Dobrý den, ${clientName}! ${message.replace(/<[^>]*>/g, '')} Faktura: ${invoiceNumber}, Částka: ${amount} Kč, Splatnost: ${dueDate}. ${bandName}`,
+  })
+}
+
 // Generic email sending (for backwards compatibility)
 export async function sendEmail({
   to,

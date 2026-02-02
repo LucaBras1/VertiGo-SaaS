@@ -8,7 +8,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Tabs, TabList, TabTrigger, TabPanels, TabPanel } from '@/components/ui/tabs'
-import { User, Building, CreditCard, Bell, Calendar } from 'lucide-react'
+import { User, Building, CreditCard, Bell, Calendar, Globe, ChevronRight, Clock } from 'lucide-react'
+import Link from 'next/link'
 import CalendarSettings from '@/components/calendar/CalendarSettings'
 import toast from 'react-hot-toast'
 
@@ -293,6 +294,10 @@ export default function SettingsPage() {
             <Calendar className="h-4 w-4 mr-2" />
             Kalendář
           </TabTrigger>
+          <TabTrigger>
+            <Globe className="h-4 w-4 mr-2" />
+            Widget
+          </TabTrigger>
         </TabList>
 
         <TabPanels>
@@ -573,11 +578,59 @@ export default function SettingsPage() {
                 </div>
               </CardContent>
             </Card>
+
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle>Automatické připomínky</CardTitle>
+                <CardDescription>
+                  Pokročilé nastavení automatických emailových připomínek
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 mb-4">
+                  Nastavte si automatické připomínky před gigy, upomínky faktur
+                  a follow-up emaily pro nepotrvzené nabídky.
+                </p>
+                <Link href="/dashboard/settings/reminders">
+                  <Button variant="outline">
+                    <Clock className="h-4 w-4 mr-2" />
+                    Nastavit připomínky
+                    <ChevronRight className="h-4 w-4 ml-2" />
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
           </TabPanel>
 
           {/* Calendar */}
           <TabPanel>
             <CalendarSettings />
+          </TabPanel>
+
+          {/* Widget */}
+          <TabPanel>
+            <Card>
+              <CardHeader>
+                <CardTitle>Rezervační widget</CardTitle>
+                <CardDescription>
+                  Embeddable formulář pro přijímání poptávek na vašem webu
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 mb-4">
+                  Vytvořte si vlastní rezervační formulář, který můžete vložit na svůj web
+                  nebo sdílet jako samostatnou stránku. Klienti vám mohou posílat poptávky
+                  přímo a vy je uvidíte jako nové gigy v dashboardu.
+                </p>
+                <Link href="/dashboard/settings/widget">
+                  <Button>
+                    <Globe className="h-4 w-4 mr-2" />
+                    Nastavit widget
+                    <ChevronRight className="h-4 w-4 ml-2" />
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
           </TabPanel>
         </TabPanels>
       </Tabs>
