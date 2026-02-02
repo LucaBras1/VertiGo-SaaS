@@ -321,8 +321,9 @@ model Party {
   feedbackRating  Int? // 1-5 stars
   feedbackComment String?
 
-  // Reminder tracking
+  // Email tracking
   reminderSentAt  DateTime? // When 24h reminder was sent
+  feedbackSentAt  DateTime? // When post-party feedback email was sent
 
   // Additional Info
   ticketUrl String?
@@ -509,6 +510,9 @@ model Invoice {
   currency    String  @default("CZK")
   pdfUrl      String?
   notes       String?
+
+  // Email tracking
+  reminderSentAt DateTime? // When payment reminder was sent
 
   @@index([customerId])
   @@index([orderId])

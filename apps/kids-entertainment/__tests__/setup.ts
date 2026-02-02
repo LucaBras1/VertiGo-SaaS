@@ -14,6 +14,8 @@ process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_mock_secret'
 process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = 'pk_test_mock_key'
 process.env.RESEND_API_KEY = 're_test_mock_key'
 process.env.OPENAI_API_KEY = 'sk-test-mock-key'
+process.env.CRON_SECRET = 'test-cron-secret'
+process.env.NEXT_PUBLIC_APP_URL = 'http://localhost:3002'
 
 // Mock Prisma client
 vi.mock('@/lib/prisma', () => ({
@@ -119,6 +121,9 @@ vi.mock('@/lib/email', () => ({
   sendBookingConfirmationEmail: vi.fn().mockResolvedValue({ success: true }),
   sendPaymentReceiptEmail: vi.fn().mockResolvedValue({ success: true }),
   sendPartyReminderEmail: vi.fn().mockResolvedValue({ success: true }),
+  sendOrderCancellationEmail: vi.fn().mockResolvedValue({ success: true }),
+  sendPaymentReminderEmail: vi.fn().mockResolvedValue({ success: true }),
+  sendPostPartyFeedbackEmail: vi.fn().mockResolvedValue({ success: true }),
   sendEmail: vi.fn().mockResolvedValue({ success: true }),
 }))
 
