@@ -7,7 +7,9 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { verifyWebhookSignature } from '@/lib/stripe'
+import { verifyWebhookSignature, formatAmountForDisplay } from '@/lib/stripe'
+import { createInvoiceFromOrder, generateInvoicePDF } from '@/lib/services/invoices'
+import { sendPaymentReceiptEmail } from '@/lib/email'
 import type Stripe from 'stripe'
 
 export async function POST(request: NextRequest) {
@@ -98,6 +100,17 @@ export async function POST(request: NextRequest) {
         }
 
         console.log(`Payment processed for order ${orderId} (${paymentType})`)
+
+        // Generate invoice and send email
+        try {
+          await handlePaymentSuccess({
+            orderId,
+            session,
+            paymentType: paymentType as 'deposit' | 'full_payment',
+          })
+        } catch (invoiceError) {
+          console.error('Invoice/email error (non-fatal):', invoiceError)
+        }
         break
       }
 
@@ -174,5 +187,77 @@ export async function POST(request: NextRequest) {
       },
       { status: 500 }
     )
+  }
+}
+
+// Handle successful payment - create invoice and send email
+async function handlePaymentSuccess({
+  orderId,
+  session,
+  paymentType,
+}: {
+  orderId: string
+  session: Stripe.Checkout.Session
+  paymentType: 'deposit' | 'full_payment'
+}) {
+  // 1. Fetch order with customer and party details
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    include: {
+      customer: true,
+      linkedParty: true,
+    },
+  })
+
+  if (!order || !order.customer) {
+    console.warn('Order or customer not found for invoice generation:', orderId)
+    return
+  }
+
+  // 2. Create Invoice record
+  const invoice = await createInvoiceFromOrder(orderId, paymentType)
+  console.log(`Invoice created: ${invoice.invoiceNumber}`)
+
+  // 3. Generate PDF
+  const pdfBuffer = await generateInvoicePDF(invoice.id)
+
+  // 4. Format amount for display
+  const amount = formatAmountForDisplay(session.amount_total || 0, 'CZK')
+
+  // 5. Format party date if available
+  let partyDate: string | undefined
+  if (order.linkedParty?.date) {
+    partyDate = order.linkedParty.date.toLocaleDateString('cs-CZ', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    })
+  }
+
+  // 6. Send payment receipt email with PDF attachment
+  const emailResult = await sendPaymentReceiptEmail({
+    to: order.customer.email,
+    parentName: `${order.customer.firstName} ${order.customer.lastName}`,
+    invoiceNumber: invoice.invoiceNumber,
+    amount,
+    paymentType,
+    partyDate,
+    pdfBuffer,
+  })
+
+  if (emailResult.success) {
+    console.log(`Payment receipt email sent: ${emailResult.messageId}`)
+
+    // 7. Update invoice status to SENT
+    await prisma.invoice.update({
+      where: { id: invoice.id },
+      data: {
+        invoiceStatus: 'SENT',
+        status: 'sent',
+      },
+    })
+  } else {
+    console.error('Failed to send payment receipt email:', emailResult.error)
   }
 }

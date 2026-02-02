@@ -1,69 +1,39 @@
 /**
- * Stripe Server-Side Integration for PartyPal
- * Lazy-loaded to avoid build-time errors when STRIPE_SECRET_KEY is not set
+ * Stripe Integration - PartyPal
+ * Payment processing for party bookings and invoices
+ * Using @vertigo/stripe shared package
  */
 
-import Stripe from 'stripe'
+import {
+  stripe,
+  getStripeClient,
+  createCheckoutSession,
+  verifyWebhookSignature,
+  getPaymentStatus as getPaymentStatusBase,
+  createRefund,
+  toStripeAmount,
+  fromStripeAmount,
+  type StripeEvent,
+} from '@vertigo/stripe'
 
-// Lazy-loaded Stripe client - only created when actually accessed
-let _stripe: Stripe | null = null
-
-/**
- * Get the Stripe client - lazily initialized to avoid build-time errors
- * when STRIPE_SECRET_KEY is not set
- */
-export function getStripeClient(): Stripe {
-  if (!_stripe) {
-    const apiKey = process.env.STRIPE_SECRET_KEY
-    if (!apiKey) {
-      console.warn('STRIPE_SECRET_KEY is not set - payments will not work')
-      throw new Error('STRIPE_SECRET_KEY environment variable is not set')
-    }
-    _stripe = new Stripe(apiKey, {
-      apiVersion: '2025-02-24.acacia',
-      typescript: true,
-    })
-  }
-  return _stripe
+// Re-export for convenience
+export {
+  stripe,
+  getStripeClient,
+  verifyWebhookSignature,
+  toStripeAmount,
+  fromStripeAmount,
 }
+export type { StripeEvent }
 
-// For backwards compatibility - using a getter ensures lazy initialization
-export const stripe: Stripe = new Proxy({} as Stripe, {
-  get(target, prop) {
-    // Allow typeof checks and symbol access
-    if (prop === 'then' || prop === 'catch' || typeof prop === 'symbol') {
-      return undefined
-    }
-    // Lazy load the actual stripe client
-    const client = getStripeClient()
-    const value = client[prop as keyof Stripe]
-    if (typeof value === 'function') {
-      return value.bind(client)
-    }
-    return value
-  },
-})
+// Aliases for backwards compatibility
+export const formatAmountForStripe = toStripeAmount
+export const formatStripeAmount = fromStripeAmount
 
-// Helper to format amount for Stripe (converts to haléře/cents)
-export function formatAmountForStripe(amount: number, currency: string = 'czk'): number {
-  const zeroDecimalCurrencies = ['jpy', 'krw']
-
-  if (zeroDecimalCurrencies.includes(currency.toLowerCase())) {
-    return Math.round(amount)
-  }
-
-  return Math.round(amount * 100)
-}
-
-// Helper to format Stripe amount back to display (converts from haléře/cents)
-export function formatStripeAmount(amount: number, currency: string = 'czk'): number {
-  const zeroDecimalCurrencies = ['jpy', 'krw']
-
-  if (zeroDecimalCurrencies.includes(currency.toLowerCase())) {
-    return amount
-  }
-
-  return amount / 100
+// Format amount for display with currency symbol
+export function formatAmountForDisplay(amount: number, currency: string = 'CZK'): string {
+  const displayAmount = fromStripeAmount(amount, 'czk')
+  return `${displayAmount.toLocaleString('cs-CZ', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currency}`
 }
 
 // Create checkout session for party booking deposit
@@ -92,21 +62,16 @@ export async function createBookingDepositCheckout({
   successUrl: string
   cancelUrl: string
 }) {
-  const session = await stripe.checkout.sessions.create({
+  // depositAmount is already in haléře
+  return createCheckoutSession({
     mode: 'payment',
-    payment_method_types: ['card'],
-    customer_email: customerEmail,
-    line_items: [
+    customerEmail,
+    lineItems: [
       {
-        price_data: {
-          currency: 'czk',
-          product_data: {
-            name: `Záloha na oslavu - ${packageName}`,
-            description: `Záloha za oslavu dne ${partyDate}. Celková cena: ${(totalAmount / 100).toLocaleString('cs-CZ')} Kč`,
-          },
-          unit_amount: depositAmount, // Already in haléře
-        },
-        quantity: 1,
+        name: `Záloha na oslavu - ${packageName}`,
+        description: `Záloha za oslavu dne ${partyDate}. Celková cena: ${(totalAmount / 100).toLocaleString('cs-CZ')} Kč`,
+        amount: depositAmount / 100, // Convert from haléře to CZK for the shared package
+        currency: 'czk',
       },
     ],
     metadata: {
@@ -116,11 +81,9 @@ export async function createBookingDepositCheckout({
       type: 'deposit',
       partyDate,
     },
-    success_url: successUrl,
-    cancel_url: cancelUrl,
+    successUrl,
+    cancelUrl,
   })
-
-  return session
 }
 
 // Create checkout session for full party payment
@@ -149,21 +112,15 @@ export async function createBookingFullPaymentCheckout({
 }) {
   const remainingAmount = totalAmount - paidDeposit
 
-  const session = await stripe.checkout.sessions.create({
+  return createCheckoutSession({
     mode: 'payment',
-    payment_method_types: ['card'],
-    customer_email: customerEmail,
-    line_items: [
+    customerEmail,
+    lineItems: [
       {
-        price_data: {
-          currency: 'czk',
-          product_data: {
-            name: `Doplatek za oslavu - ${packageName}`,
-            description: `Doplatek za oslavu dne ${partyDate}. Záloha: ${(paidDeposit / 100).toLocaleString('cs-CZ')} Kč`,
-          },
-          unit_amount: remainingAmount, // Already in haléře
-        },
-        quantity: 1,
+        name: `Doplatek za oslavu - ${packageName}`,
+        description: `Doplatek za oslavu dne ${partyDate}. Záloha: ${(paidDeposit / 100).toLocaleString('cs-CZ')} Kč`,
+        amount: remainingAmount / 100, // Convert from haléře to CZK
+        currency: 'czk',
       },
     ],
     metadata: {
@@ -173,11 +130,9 @@ export async function createBookingFullPaymentCheckout({
       type: 'full_payment',
       partyDate,
     },
-    success_url: successUrl,
-    cancel_url: cancelUrl,
+    successUrl,
+    cancelUrl,
   })
-
-  return session
 }
 
 // Create invoice checkout session
@@ -200,21 +155,15 @@ export async function createInvoiceCheckoutSession({
   successUrl: string
   cancelUrl: string
 }) {
-  const session = await stripe.checkout.sessions.create({
+  return createCheckoutSession({
     mode: 'payment',
-    payment_method_types: ['card'],
-    customer_email: customerEmail,
-    line_items: [
+    customerEmail,
+    lineItems: [
       {
-        price_data: {
-          currency: 'czk',
-          product_data: {
-            name: `Faktura ${invoiceNumber}`,
-            description,
-          },
-          unit_amount: total, // Already in haléře
-        },
-        quantity: 1,
+        name: `Faktura ${invoiceNumber}`,
+        description,
+        amount: total / 100, // Convert from haléře to CZK
+        currency: 'czk',
       },
     ],
     metadata: {
@@ -223,48 +172,26 @@ export async function createInvoiceCheckoutSession({
       customerId,
       type: 'invoice',
     },
-    success_url: successUrl,
-    cancel_url: cancelUrl,
+    successUrl,
+    cancelUrl,
   })
-
-  return session
-}
-
-// Verify webhook signature
-export function verifyWebhookSignature(
-  payload: string | Buffer,
-  signature: string,
-  webhookSecret: string
-): Stripe.Event {
-  return stripe.webhooks.constructEvent(payload, signature, webhookSecret)
 }
 
 // Get payment status from Stripe
 export async function getPaymentStatus(sessionId: string) {
-  try {
-    const session = await stripe.checkout.sessions.retrieve(sessionId)
-    return {
-      status: session.payment_status,
-      amountTotal: session.amount_total ?? 0,
-      customerEmail: session.customer_email,
-      metadata: session.metadata,
-    }
-  } catch (error) {
-    console.error('Error retrieving Stripe session:', error)
-    throw error
+  const result = await getPaymentStatusBase(sessionId, 'czk')
+  return {
+    status: result.status,
+    amountTotal: result.amountTotal * 100, // Convert back to haléře for backwards compatibility
+    customerEmail: result.customerEmail,
+    metadata: result.metadata,
   }
 }
 
 // Refund a payment
 export async function refundPayment(paymentIntentId: string, amount?: number) {
-  try {
-    const refund = await stripe.refunds.create({
-      payment_intent: paymentIntentId,
-      amount: amount ?? undefined,
-    })
-    return refund
-  } catch (error) {
-    console.error('Error creating refund:', error)
-    throw error
-  }
+  return createRefund(paymentIntentId, {
+    amount: amount ? amount / 100 : undefined, // Convert from haléře to CZK
+    currency: 'czk',
+  })
 }

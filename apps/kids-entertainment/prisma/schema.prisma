@@ -321,6 +321,9 @@ model Party {
   feedbackRating  Int? // 1-5 stars
   feedbackComment String?
 
+  // Reminder tracking
+  reminderSentAt  DateTime? // When 24h reminder was sent
+
   // Additional Info
   ticketUrl String?
   notes     String?
