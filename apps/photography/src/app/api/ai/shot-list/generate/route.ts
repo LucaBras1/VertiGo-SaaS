@@ -3,6 +3,9 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { generateShotList, ShotListInputSchema } from '@/lib/ai/shot-list-generator'
 
+// Force dynamic to avoid build-time Prisma proxy issues
+export const dynamic = 'force-dynamic'
+
 /**
  * POST /api/ai/shot-list/generate
  *

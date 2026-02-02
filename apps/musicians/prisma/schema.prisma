@@ -357,7 +357,22 @@ model Tenant {
   // Settings
   settings     Json?    // Vertical-specific settings
 
-  // Subscription
+  // Subscription & Billing
+  subscriptionTier     String   @default("FREE") // FREE, STARTER, PROFESSIONAL, BUSINESS, ENTERPRISE
+  subscriptionStatus   String?  // active, past_due, canceled, trialing, incomplete
+  subscriptionEnds     DateTime?
+  billingInterval      String?  // month, year
+  trialEndsAt          DateTime?
+
+  // Stripe Integration
+  stripeCustomerId     String?  @unique
+  stripeSubscriptionId String?  @unique
+
+  // AI Usage (tier-based limits)
+  aiCreditsUsed        Int      @default(0)
+  aiCreditsLimit       Int      @default(100)  // FREE tier default
+
+  // Legacy fields (deprecated, use subscriptionTier)
   plan         String   @default("starter") // 'starter' | 'professional' | 'business'
   planExpiry   DateTime?
 

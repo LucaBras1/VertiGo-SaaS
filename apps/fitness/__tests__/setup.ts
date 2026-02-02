@@ -3,18 +3,15 @@
  */
 import { beforeAll, afterAll, beforeEach, afterEach, vi } from 'vitest'
 
-// Mock environment variables
-Object.defineProperty(process.env, 'NODE_ENV', {
-  value: 'test',
-  writable: true,
-  configurable: true,
-})
-process.env.NEXTAUTH_URL = 'http://localhost:3006'
-process.env.NEXTAUTH_SECRET = 'test-secret-key-for-testing-only'
-process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/test_db'
+// Mock environment variables using vi.stubEnv for proper Vitest compatibility
+// This avoids Object.defineProperty issues with process.env
+vi.stubEnv('NODE_ENV', 'test')
+vi.stubEnv('NEXTAUTH_URL', 'http://localhost:3006')
+vi.stubEnv('NEXTAUTH_SECRET', 'test-secret-key-for-testing-only')
+vi.stubEnv('DATABASE_URL', 'postgresql://test:test@localhost:5432/test_db')
 
-// Mock OpenAI API Key (will be mocked anyway, but prevents warnings)
-delete process.env.OPENAI_API_KEY
+// Set empty string for OPENAI_API_KEY to prevent warnings (will be mocked anyway)
+vi.stubEnv('OPENAI_API_KEY', '')
 
 // Global mocks
 beforeAll(() => {

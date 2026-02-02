@@ -4,6 +4,9 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { z } from 'zod'
 
+
+// Force dynamic to avoid build-time Prisma proxy issues
+export const dynamic = 'force-dynamic'
 const UpdateNotificationsSchema = z.object({
   enableInquiries: z.boolean().optional(),
   enableConfirmations: z.boolean().optional(),

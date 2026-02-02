@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogHeader, DialogTitle, DialogContent, DialogFooter } from '@/components/ui/dialog'
 import EnergyFlowChart from '@/components/charts/EnergyFlowChart'
+import { DepositPaymentButton } from '@/components/payments'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import toast from 'react-hot-toast'
 
@@ -326,6 +327,17 @@ export default function GigDetailPage() {
                   <span className={gig.depositPaid ? 'text-green-600' : ''}>
                     {formatCurrency(gig.deposit / 100)} {gig.depositPaid && '(zaplaceno)'}
                   </span>
+                </div>
+              )}
+              {gig.deposit && gig.deposit > 0 && (
+                <div className="pt-3 border-t">
+                  <DepositPaymentButton
+                    gigId={gig.id}
+                    depositAmount={gig.deposit}
+                    depositPaid={gig.depositPaid || false}
+                    gigStatus={gig.status}
+                    className="w-full"
+                  />
                 </div>
               )}
             </CardContent>

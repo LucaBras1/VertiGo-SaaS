@@ -3,6 +3,9 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { z } from 'zod'
 
+// Force dynamic to avoid build-time Prisma proxy issues
+export const dynamic = 'force-dynamic'
+
 const NotificationSettingsSchema = z.object({
   upcomingShoots: z.boolean(),
   newInquiries: z.boolean(),

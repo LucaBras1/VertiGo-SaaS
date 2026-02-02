@@ -4,6 +4,9 @@ import { prisma } from '@/lib/db'
 import { StripeClient } from '@vertigo/billing/integrations'
 import type Stripe from 'stripe'
 
+
+// Force dynamic to avoid build-time Prisma proxy issues
+export const dynamic = 'force-dynamic'
 // Initialize Stripe client with webhook secret
 function getStripeClient(): StripeClient {
   const secretKey = process.env.STRIPE_SECRET_KEY

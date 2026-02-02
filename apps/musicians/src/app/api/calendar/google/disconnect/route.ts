@@ -4,6 +4,9 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { deleteAllSyncedEvents } from '@/lib/calendar/sync-service'
 
+
+// Force dynamic to avoid build-time Prisma proxy issues
+export const dynamic = 'force-dynamic'
 // POST /api/calendar/google/disconnect - Disconnect Google Calendar
 export async function POST(request: NextRequest) {
   try {

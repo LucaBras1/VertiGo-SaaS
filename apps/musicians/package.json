@@ -43,6 +43,7 @@
     "@vertigo/config": "workspace:*",
     "@vertigo/database": "workspace:*",
     "@vertigo/email": "workspace:*",
+    "@vertigo/stripe": "workspace:*",
     "@vertigo/ui": "workspace:*",
     "bcryptjs": "^3.0.3",
     "class-variance-authority": "^0.7.0",

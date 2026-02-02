@@ -4,6 +4,9 @@ import { authOptions } from '@/lib/auth'
 import { calculateGigPrice, GigPriceInputSchema } from '@/lib/ai/gig-price-calculator'
 import { z } from 'zod'
 
+
+// Force dynamic to avoid build-time issues
+export const dynamic = 'force-dynamic'
 export async function POST(request: NextRequest) {
   try {
     // Get session and validate

@@ -16,15 +16,43 @@
  * })
  *
  * @example
- * // Webhook handler
- * import { createWebhookHandler } from '@vertigo/stripe'
+ * // Subscription checkout
+ * import { createSubscriptionCheckout } from '@vertigo/stripe'
  *
- * export const POST = createWebhookHandler(process.env.STRIPE_WEBHOOK_SECRET!, {
- *   'checkout.session.completed': async (event) => {
- *     const session = event.data.object
- *     // Handle successful payment
+ * const checkout = await createSubscriptionCheckout({
+ *   tenantId: 'tenant_123',
+ *   tier: 'PROFESSIONAL',
+ *   interval: 'month',
+ *   successUrl: 'https://app.example.com/billing?success=true',
+ *   cancelUrl: 'https://app.example.com/billing',
+ * })
+ *
+ * @example
+ * // Subscription management
+ * import { updateSubscription, cancelSubscription } from '@vertigo/stripe'
+ *
+ * await updateSubscription({ subscriptionId: 'sub_xxx', newTier: 'BUSINESS' })
+ * await cancelSubscription({ subscriptionId: 'sub_xxx', cancelAtPeriodEnd: true })
+ *
+ * @example
+ * // Customer portal
+ * import { createCustomerPortalSession } from '@vertigo/stripe'
+ *
+ * const portal = await createCustomerPortalSession({
+ *   customerId: 'cus_xxx',
+ *   returnUrl: 'https://app.example.com/billing',
+ * })
+ *
+ * @example
+ * // Subscription webhook handler
+ * import { createSubscriptionWebhookHandlers, createWebhookHandler } from '@vertigo/stripe'
+ *
+ * const handlers = createSubscriptionWebhookHandlers({
+ *   onSubscriptionCreated: async (data) => {
+ *     await db.tenant.update({ ... })
  *   },
  * })
+ * export const POST = createWebhookHandler(process.env.STRIPE_WEBHOOK_SECRET!, handlers)
  *
  * @example
  * // Direct Stripe client access
@@ -96,3 +124,54 @@ export {
   getRefund,
   listRefunds,
 } from './payments/index'
+
+// Subscriptions
+export {
+  // Types
+  type SubscriptionTier,
+  type SubscriptionStatus,
+  type CreateSubscriptionCheckoutOptions,
+  type SubscriptionCheckoutResult,
+  type UpdateSubscriptionOptions,
+  type CancelSubscriptionOptions,
+  type SubscriptionInfo,
+  type CustomerPortalOptions,
+  type CustomerPortalResult,
+  type SubscriptionWebhookData,
+  type InvoiceWebhookData,
+  type BillingInterval,
+  type TierPriceConfig,
+  type SubscriptionEventCallback,
+  type InvoiceEventCallback,
+  type SubscriptionWebhookCallbacks,
+  // Prices
+  getSubscriptionPrices,
+  getPriceId,
+  getTierFromPriceId,
+  arePricesConfigured,
+  getMissingPriceConfigs,
+  // Create
+  createSubscriptionCheckout,
+  getOrCreateCustomer,
+  getSubscriptionCheckoutSession,
+  createSetupIntent,
+  previewSubscriptionChange,
+  // Manage
+  getSubscription,
+  updateSubscription,
+  cancelSubscription,
+  reactivateSubscription,
+  pauseSubscription,
+  resumeSubscription,
+  listCustomerSubscriptions,
+  getSubscriptionUsage,
+  // Portal
+  createCustomerPortalSession,
+  createPortalConfiguration,
+  getCustomerPaymentMethod,
+  listCustomerPaymentMethods,
+  setDefaultPaymentMethod,
+  // Webhook Handlers
+  createSubscriptionWebhookHandlers,
+  defaultSubscriptionWebhookHandlers,
+} from './subscriptions/index'

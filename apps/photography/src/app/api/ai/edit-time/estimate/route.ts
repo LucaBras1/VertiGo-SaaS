@@ -3,6 +3,9 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { createEditTimePredictorAI, EditTimeInputSchema } from '@/lib/ai/edit-time-predictor'
 
+// Force dynamic to avoid build-time Prisma proxy issues
+export const dynamic = 'force-dynamic'
+
 /**
  * POST /api/ai/edit-time/estimate
  *

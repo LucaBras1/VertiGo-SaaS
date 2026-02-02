@@ -4,6 +4,9 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { z } from 'zod'
 
+
+// Force dynamic to avoid build-time Prisma proxy issues
+export const dynamic = 'force-dynamic'
 const UpdateTenantSettingsSchema = z.object({
   bandName: z.string().max(200).optional(),
   bandBio: z.string().max(2000).optional(),

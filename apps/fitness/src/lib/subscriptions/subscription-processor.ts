@@ -7,7 +7,7 @@
 import { prisma } from '@/lib/prisma'
 import { Prisma } from '@/generated/prisma'
 import { sendBillingReminderEmail } from '@/lib/email'
-import { stripe, formatAmountForStripe } from '@/lib/stripe'
+import { stripe, formatAmountForStripe, type Currency } from '@/lib/stripe'
 
 export type SubscriptionFrequency = 'WEEKLY' | 'BIWEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY'
 export type SubscriptionStatus = 'active' | 'paused' | 'cancelled' | 'expired' | 'past_due'
@@ -450,7 +450,7 @@ export async function retryPayment(subscriptionId: string): Promise<{
   try {
     // Create PaymentIntent for off-session payment
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: formatAmountForStripe(Number(subscription.amount), subscription.currency),
+      amount: formatAmountForStripe(Number(subscription.amount), subscription.currency as Currency),
       currency: subscription.currency.toLowerCase(),
       customer: subscription.stripeCustomerId,
       payment_method: subscription.stripePaymentMethodId,

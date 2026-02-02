@@ -4,6 +4,9 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { z } from 'zod'
 
+
+// Force dynamic to avoid build-time Prisma proxy issues
+export const dynamic = 'force-dynamic'
 const UpdateProfileSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100),
 })

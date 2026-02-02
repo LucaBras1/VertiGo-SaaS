@@ -4,6 +4,9 @@ import { authOptions } from '@/lib/auth'
 import { getSongs, createSong, getRepertoireStats, bulkCreateSongs } from '@/lib/services/repertoire'
 import { z } from 'zod'
 
+
+// Force dynamic to avoid build-time issues
+export const dynamic = 'force-dynamic'
 const createSongSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   artist: z.string().optional(),

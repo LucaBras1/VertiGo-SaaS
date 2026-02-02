@@ -81,11 +81,16 @@ model Tenant {
 
   // AI Usage
   aiCreditsUsed     Int              @default(0)
-  aiCreditsLimit    Int              @default(1000)
+  aiCreditsLimit    Int              @default(100) // FREE tier default
 
-  // Stripe
-  stripeCustomerId  String?          @unique
-  stripeSubscriptionId String?
+  // Stripe Billing
+  stripeCustomerId     String?          @unique
+  stripeSubscriptionId String?          @unique
+  subscriptionStatus   String?          // active, past_due, canceled, trialing, incomplete
+  billingInterval      String?          // month, year
+
+  // Trial
+  trialEndsAt          DateTime?
 
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt

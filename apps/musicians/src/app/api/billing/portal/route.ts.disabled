@@ -1,0 +1,77 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { prisma } from '@/lib/db'
+import { createCustomerPortalSession } from '@vertigo/stripe'
+
+// Force dynamic to avoid build-time Prisma proxy issues
+export const dynamic = 'force-dynamic'
+
+/**
+ * POST /api/billing/portal
+ * Create a Stripe Customer Portal session for self-service billing management
+ *
+ * The portal allows users to:
+ * - Update payment methods
+ * - View invoices and billing history
+ * - Change subscription plan (if configured)
+ * - Cancel subscription (if configured)
+ */
+export async function POST(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.tenantId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const tenant = await prisma.tenant.findUnique({
+      where: { id: session.user.tenantId },
+      select: {
+        stripeCustomerId: true,
+        stripeSubscriptionId: true,
+      },
+    })
+
+    if (!tenant?.stripeCustomerId) {
+      return NextResponse.json(
+        { error: 'No billing account found. Please subscribe first.' },
+        { status: 400 }
+      )
+    }
+
+    // Parse optional flow type from request body
+    let flowType: 'payment_method_update' | 'subscription_cancel' | 'subscription_update' | undefined
+    let subscriptionId: string | undefined
+
+    try {
+      const body = await request.json()
+      flowType = body.flowType
+      subscriptionId = body.subscriptionId || tenant.stripeSubscriptionId || undefined
+    } catch {
+      // No body provided, use defaults
+    }
+
+    const origin = request.headers.get('origin') || process.env.NEXTAUTH_URL || ''
+    const returnUrl = `${origin}/dashboard/settings/billing`
+
+    const portal = await createCustomerPortalSession({
+      customerId: tenant.stripeCustomerId,
+      returnUrl,
+      flowType,
+      subscriptionId,
+    })
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        url: portal.url,
+      },
+    })
+  } catch (error) {
+    console.error('POST /api/billing/portal error:', error)
+    return NextResponse.json(
+      { error: 'Failed to create customer portal session' },
+      { status: 500 }
+    )
+  }
+}

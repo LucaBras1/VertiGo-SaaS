@@ -122,6 +122,11 @@ model Venue {
 
   notes         String?  @db.Text
 
+  // UI Enhancement fields
+  rating        Decimal?  @db.Decimal(3, 2)  // 0.00-5.00
+  priceRange    String?   // $, $$, $$$, $$$$
+  amenities     String[]  // Array: Wifi, Parking, Catering, AV Equipment, etc.
+
   tenantId      String
   tenant        Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 

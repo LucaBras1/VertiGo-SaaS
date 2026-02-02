@@ -9,6 +9,9 @@ import { StageRiderPDFV2 } from '@/lib/pdf/stage-rider-pdf-v2'
 import { prisma } from '@/lib/db'
 import React from 'react'
 
+
+// Force dynamic to avoid build-time Prisma proxy issues
+export const dynamic = 'force-dynamic'
 interface Venue {
   name?: string
   address?: string

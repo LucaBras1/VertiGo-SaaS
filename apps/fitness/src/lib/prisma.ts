@@ -2,55 +2,29 @@ import { PrismaClient } from '../generated/prisma'
 import { PrismaPg } from '@prisma/adapter-pg'
 import { Pool } from 'pg'
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined
-  pool: Pool | undefined
+// Global storage for singleton pattern
+declare global {
+  // eslint-disable-next-line no-var
+  var __fitnessPrisma: PrismaClient | undefined
+  // eslint-disable-next-line no-var
+  var __fitnessPool: Pool | undefined
 }
 
 /**
- * Create a nested proxy that throws on any method call
- * This allows code like prisma.user.findUnique() to be evaluated at build time
- * without failing, but will throw at runtime if DATABASE_URL is missing
+ * Create Prisma client with PostgreSQL adapter
  */
-function createBuildTimeProxy(): PrismaClient {
-  const createNestedProxy = (path: string[] = []): unknown => {
-    return new Proxy(() => {}, {
-      get(target, prop: string | symbol) {
-        if (prop === 'then' || prop === 'catch' || prop === 'finally' || typeof prop === 'symbol') {
-          return undefined
-        }
-        // Return another proxy for chained access (prisma.user.findUnique)
-        return createNestedProxy([...path, String(prop)])
-      },
-      apply() {
-        // When called as a function, throw an error
-        const fullPath = path.join('.')
-        throw new Error(
-          `DATABASE_URL environment variable is not set. Cannot call prisma.${fullPath}()`
-        )
-      },
-    })
-  }
-
-  return createNestedProxy() as PrismaClient
-}
-
 function createPrismaClient(): PrismaClient {
-  const connectionString = process.env.DATABASE_URL
+  const connectionString = process.env.DATABASE_URL!
 
-  // During build time (no DATABASE_URL), return a proxy that will throw on actual usage
-  // This allows the build to complete but prevents runtime errors if database isn't configured
-  if (!connectionString) {
-    console.warn('[Prisma] DATABASE_URL not set - database operations will fail at runtime')
-    return createBuildTimeProxy()
-  }
+  // Create PostgreSQL connection pool
+  const pool = global.__fitnessPool ?? new Pool({ connectionString })
 
-  // Create connection pool for Prisma 7 adapter
-  const pool = globalForPrisma.pool ?? new Pool({ connectionString })
+  // Store pool for reuse in development
   if (process.env.NODE_ENV !== 'production') {
-    globalForPrisma.pool = pool
+    global.__fitnessPool = pool
   }
 
+  // Create Prisma adapter
   const adapter = new PrismaPg(pool)
 
   return new PrismaClient({
@@ -59,10 +33,70 @@ function createPrismaClient(): PrismaClient {
   })
 }
 
-export const prisma = globalForPrisma.prisma ?? createPrismaClient()
-
-if (process.env.NODE_ENV !== 'production') {
-  globalForPrisma.prisma = prisma
+/**
+ * Get the Prisma client (creates on first access)
+ */
+export function db(): PrismaClient {
+  if (!global.__fitnessPrisma) {
+    global.__fitnessPrisma = createPrismaClient()
+  }
+  return global.__fitnessPrisma
 }
+
+// Detect build time
+function isBuildTime(): boolean {
+  const dbUrl = process.env.DATABASE_URL
+  return !dbUrl || dbUrl.includes('dummy') || dbUrl.includes('localhost:5432/dummy')
+}
+
+// Create a stub that can handle chained property access and method calls
+function createBuildTimeStub(): any {
+  const handler: ProxyHandler<any> = {
+    get(target, prop) {
+      if (prop === 'then' || prop === 'catch' || prop === 'finally') {
+        return undefined
+      }
+      if (typeof prop === 'symbol') {
+        return undefined
+      }
+      return createBuildTimeStub()
+    },
+    apply() {
+      return Promise.resolve(null)
+    },
+  }
+  return new Proxy(function() {}, handler)
+}
+
+// Create a proxy for backwards compatibility
+// At build time: returns a stub that handles property access without creating client
+// At runtime: delegates to real PrismaClient
+const prismaProxy = new Proxy({} as PrismaClient, {
+  get(target, prop) {
+    // Handle promise-like properties
+    if (prop === 'then' || prop === 'catch' || prop === 'finally') {
+      return undefined
+    }
+    // Handle Symbol properties
+    if (typeof prop === 'symbol') {
+      return undefined
+    }
+
+    // At build time, return a chainable stub
+    if (isBuildTime()) {
+      return createBuildTimeStub()
+    }
+
+    // At runtime, delegate to real client
+    const client = db()
+    const value = (client as any)[prop]
+    if (typeof value === 'function') {
+      return value.bind(client)
+    }
+    return value
+  },
+})
+
+export const prisma: PrismaClient = prismaProxy
 
 export default prisma

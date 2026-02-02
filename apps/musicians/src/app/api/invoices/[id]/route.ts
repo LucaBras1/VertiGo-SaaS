@@ -4,6 +4,9 @@ import { authOptions } from '@/lib/auth'
 import { getInvoiceById, updateInvoice, deleteInvoice } from '@/lib/services/invoices'
 import { z } from 'zod'
 
+
+// Force dynamic to avoid build-time issues
+export const dynamic = 'force-dynamic'
 const invoiceItemSchema = z.object({
   description: z.string().min(1),
   quantity: z.number().min(1),

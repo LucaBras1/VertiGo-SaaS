@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+
+// Force dynamic to avoid build-time issues
+export const dynamic = 'force-dynamic'
 /**
  * POST /api/billing/bank-transactions/[id]/match
  * Match a transaction with an invoice

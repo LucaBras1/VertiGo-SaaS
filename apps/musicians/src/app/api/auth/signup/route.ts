@@ -4,6 +4,9 @@ import { hashPassword } from '@/lib/auth'
 import { z } from 'zod'
 import { sendWelcomeEmail } from '@/lib/email'
 
+
+// Force dynamic to avoid build-time Prisma proxy issues
+export const dynamic = 'force-dynamic'
 const signupSchema = z.object({
   bandName: z.string().min(2, 'Band name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),

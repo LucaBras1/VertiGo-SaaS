@@ -66,7 +66,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       checkoutUrl: checkoutSession.url,
-      sessionId: checkoutSession.id,
+      sessionId: checkoutSession.sessionId,
     })
   } catch (error) {
     if (error instanceof z.ZodError) {

@@ -3,6 +3,9 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { createStyleMatcherAI, StyleAnalysisInputSchema } from '@/lib/ai/style-matcher'
 
+// Force dynamic to avoid build-time import issues
+export const dynamic = 'force-dynamic'
+
 /**
  * POST /api/ai/style/analyze
  *

@@ -32,7 +32,12 @@ export default function ClientsPage() {
   const [searchInput, setSearchInput] = useState('')
   const [showFilters, setShowFilters] = useState(false)
 
-  const { data: clients = [], isLoading, error } = useClients(filters)
+  const { data, isLoading, error } = useClients(filters)
+
+  // Extract clients and pagination from server response
+  const clients = data?.clients ?? []
+  const pagination = data?.pagination ?? { page: 1, limit: 12, totalCount: 0, totalPages: 0, hasMore: false }
+  const { page, totalCount, totalPages, hasMore, limit } = pagination
 
   const handleSearch = () => {
     setFilters(prev => ({ ...prev, search: searchInput, page: 1 }))
@@ -63,39 +68,6 @@ export default function ClientsPage() {
       </div>
     )
   }
-
-  // Client-side filtering for search and type (since API might not fully support it)
-  const filteredClients = clients.filter(client => {
-    const matchesSearch = !filters.search ||
-      client.name.toLowerCase().includes(filters.search.toLowerCase()) ||
-      client.email.toLowerCase().includes(filters.search.toLowerCase())
-
-    const matchesType = !filters.type || client.type === filters.type
-
-    return matchesSearch && matchesType
-  })
-
-  // Client-side sorting
-  const sortedClients = [...filteredClients].sort((a, b) => {
-    const sortBy = filters.sortBy || 'createdAt'
-    const order = filters.sortOrder === 'asc' ? 1 : -1
-
-    if (sortBy === 'name') {
-      return a.name.localeCompare(b.name) * order
-    } else if (sortBy === 'email') {
-      return a.email.localeCompare(b.email) * order
-    } else {
-      return (new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) * order
-    }
-  })
-
-  // Client-side pagination
-  const page = filters.page || 1
-  const limit = filters.limit || 12
-  const totalCount = sortedClients.length
-  const totalPages = Math.ceil(totalCount / limit)
-  const paginatedClients = sortedClients.slice((page - 1) * limit, page * limit)
-  const hasMore = page < totalPages
 
   return (
     <div className="space-y-6">
@@ -203,7 +175,7 @@ export default function ClientsPage() {
       )}
 
       {/* Clients Grid */}
-      {!isLoading && paginatedClients.length === 0 ? (
+      {!isLoading && clients.length === 0 ? (
         <Card>
           <div className="text-center py-12">
             <Users className="w-16 h-16 mx-auto mb-4 text-gray-300" />
@@ -225,7 +197,7 @@ export default function ClientsPage() {
         !isLoading && (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {paginatedClients.map((client) => (
+              {clients.map((client) => (
                 <Link key={client.id} href={`/dashboard/clients/${client.id}`}>
                   <Card hover className="h-full">
                     <div className="flex items-start justify-between mb-4">

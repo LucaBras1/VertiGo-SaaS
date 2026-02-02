@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getTokensFromCode, getCalendarList } from '@/lib/calendar/google/auth'
 
+
+// Force dynamic to avoid build-time Prisma proxy issues
+export const dynamic = 'force-dynamic'
 // GET /api/calendar/google/callback - OAuth callback
 export async function GET(request: NextRequest) {
   try {

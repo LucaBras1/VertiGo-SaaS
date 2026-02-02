@@ -1,28 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
+import { getClients, createClient as createClientService } from '@/lib/services/clients'
+
+// Force dynamic to avoid build-time Prisma proxy issues
+export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
-    if (!session) {
+    if (!session?.user?.tenantId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const clients = await prisma.client.findMany({
-      where: {
-        tenantId: session.user.tenantId
-      },
-      include: {
-        packages: true
-      },
-      orderBy: {
-        createdAt: 'desc'
-      }
+    // Parse query params
+    const { searchParams } = new URL(req.url)
+    const search = searchParams.get('search') || undefined
+    const type = searchParams.get('type') as 'individual' | 'couple' | 'business' | undefined
+    const page = parseInt(searchParams.get('page') || '1', 10)
+    const limit = parseInt(searchParams.get('limit') || '20', 10)
+    const sortBy = (searchParams.get('sortBy') || 'createdAt') as 'createdAt' | 'name' | 'email'
+    const sortOrder = (searchParams.get('sortOrder') || 'desc') as 'asc' | 'desc'
+
+    const result = await getClients(session.user.tenantId, {
+      search,
+      type,
+      page,
+      limit,
+      sortBy,
+      sortOrder,
     })
 
-    return NextResponse.json(clients)
+    return NextResponse.json(result)
   } catch (error) {
     console.error('GET /api/clients error:', error)
     return NextResponse.json({ error: 'Failed to fetch clients' }, { status: 500 })
@@ -32,7 +41,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
-    if (!session) {
+    if (!session?.user?.tenantId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -46,37 +55,22 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Check if client with this email already exists
-    const existing = await prisma.client.findFirst({
-      where: {
-        tenantId: session.user.tenantId,
-        email
-      }
-    })
-
-    if (existing) {
-      return NextResponse.json(
-        { error: 'Client with this email already exists' },
-        { status: 400 }
-      )
-    }
-
-    const client = await prisma.client.create({
-      data: {
-        tenantId: session.user.tenantId,
-        name,
-        email,
-        phone,
-        address,
-        type: type || 'individual',
-        tags: tags || [],
-        notes
-      }
+    const client = await createClientService({
+      tenantId: session.user.tenantId,
+      name,
+      email,
+      phone,
+      address,
+      type,
+      tags,
+      notes,
     })
 
     return NextResponse.json(client, { status: 201 })
   } catch (error) {
     console.error('POST /api/clients error:', error)
-    return NextResponse.json({ error: 'Failed to create client' }, { status: 500 })
+    const message = error instanceof Error ? error.message : 'Failed to create client'
+    const status = message.includes('already exists') ? 400 : 500
+    return NextResponse.json({ error: message }, { status })
   }
 }

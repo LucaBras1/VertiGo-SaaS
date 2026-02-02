@@ -5,6 +5,9 @@ import { getInvoiceById, updateInvoice } from '@/lib/services/invoices'
 import { sendInvoiceEmail } from '@/lib/email'
 import { formatCurrency, formatDate } from '@/lib/utils'
 
+
+// Force dynamic to avoid build-time issues
+export const dynamic = 'force-dynamic'
 export async function POST(
   request: Request,
   { params }: { params: { id: string } }

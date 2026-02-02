@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
+
+
+// Force dynamic to avoid build-time issues
+export const dynamic = 'force-dynamic'
+// Dynamic import to avoid build-time issues
+async function getPrisma() {
+  const { prisma } = await import('@/lib/prisma')
+  return prisma
+}
 
 // POST /api/calendar/feed/generate - Generate or regenerate ICS feed token
 export async function POST(request: NextRequest) {
@@ -12,6 +20,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Upsert feed token
+    const prisma = await getPrisma()
     const feedToken = await prisma.calendarFeedToken.upsert({
       where: {
         tenantId_userId: {
@@ -55,6 +64,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const prisma = await getPrisma()
     const feedToken = await prisma.calendarFeedToken.findUnique({
       where: {
         tenantId_userId: {

@@ -79,11 +79,22 @@ TeamForge adapts the shared core schema with industry-specific terminology:
 - **Styling:** Tailwind CSS (blue/green theme)
 - **Forms:** React Hook Form + Zod validation
 - **State:** Zustand (for client state)
-- **Auth:** NextAuth.js
-- **Email:** Resend SDK
+- **Auth:** NextAuth.js (via `@vertigo/auth`)
+- **Email:** Resend SDK (via `@vertigo/email`)
+- **Payments:** Stripe (via `@vertigo/stripe`)
 - **Charts:** Recharts
 - **PDF:** jsPDF + jspdf-autotable
 - **UI:** HeadlessUI (mobile menu), Lucide React (icons)
+
+### Shared Packages
+
+TeamForge uses the following shared VertiGo packages:
+- `@vertigo/auth` - Authentication with NextAuth.js
+- `@vertigo/email` - Email templates and delivery via Resend
+- `@vertigo/stripe` - Payment processing via Stripe
+- `@vertigo/ai-core` - AI client and utilities
+- `@vertigo/ui` - Shared UI components
+- `@vertigo/database` - Database utilities
 
 ## Project Structure
 
@@ -122,16 +133,23 @@ apps/team-building/
 │   │       ├── customers/      # Customers CRUD
 │   │       ├── orders/         # Orders CRUD
 │   │       ├── invoices/       # Invoices CRUD
+│   │       ├── payments/       # Payment endpoints
+│   │       │   ├── create-order-checkout/   # Order checkout
+│   │       │   ├── create-invoice-checkout/ # Invoice checkout
+│   │       │   └── webhook/    # Stripe webhook handler
 │   │       └── ai/             # AI endpoints
 │   ├── components/
 │   │   ├── admin/              # Admin-specific components
 │   │   ├── landing/            # Landing page components
 │   │   │   └── Navigation.tsx  # Mobile navigation
+│   │   ├── payments/           # Payment components
+│   │   │   └── PayButton.tsx   # Payment button component
 │   │   └── ui/                 # Reusable UI components
 │   └── lib/
-│       ├── auth.ts             # NextAuth configuration
-│       ├── db.ts               # Prisma client
-│       ├── email.ts            # Resend email service (7 templates)
+│       ├── auth.ts             # NextAuth configuration (via @vertigo/auth)
+│       ├── db.ts               # Prisma client with build-time proxy
+│       ├── email.ts            # Email service (via @vertigo/email)
+│       ├── stripe.ts           # Stripe integration (via @vertigo/stripe)
 │       ├── ai-client.ts        # AI client initialization
 │       ├── utils.ts            # Utilities
 │       └── ai/                 # AI modules
@@ -195,6 +213,11 @@ OPENAI_API_KEY="sk-..."
 # Email (Resend)
 RESEND_API_KEY="re_..."
 EMAIL_FROM="TeamForge <noreply@teamforge.ai>"
+
+# Stripe (for payments)
+STRIPE_SECRET_KEY="sk_test_..."
+STRIPE_WEBHOOK_SECRET="whsec_..."
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_..."
 ```
 
 ### 3. Initialize Database
@@ -286,13 +309,18 @@ pnpm test:coverage
 - `PUT /api/customers/:id` - Update customer
 - `DELETE /api/customers/:id` - Delete customer
 
+### Payments (Stripe)
+- `POST /api/payments/create-order-checkout` - Create checkout for order payment
+- `POST /api/payments/create-invoice-checkout` - Create checkout for invoice payment
+- `POST /api/payments/webhook` - Stripe webhook handler
+
 ### Health & Monitoring
 - `GET /api/health` - Health check endpoint (database, memory, uptime)
 - `HEAD /api/health` - Simple health check for load balancers
 
 ## Email Templates
 
-TeamForge includes 7 email templates powered by Resend:
+TeamForge includes 8 email templates powered by `@vertigo/email` with custom `teamBuildingTheme`:
 
 | Template | Trigger | Description |
 |----------|---------|-------------|
@@ -303,6 +331,7 @@ TeamForge includes 7 email templates powered by Resend:
 | `sendContactFormEmail` | Contact form submission | Notification to admin with inquiry details |
 | `sendDemoRequestEmail` | Demo request | Notification to sales team |
 | `sendDemoConfirmationEmail` | Demo request | Confirmation to requester |
+| `sendPaymentConfirmationEmail` | Payment received | Stripe payment confirmation |
 
 ## Deployment
 
@@ -319,6 +348,9 @@ NEXTAUTH_SECRET="production-secret"
 OPENAI_API_KEY="sk-..."
 RESEND_API_KEY="re_..."
 EMAIL_FROM="TeamForge <noreply@teamforge.ai>"
+STRIPE_SECRET_KEY="sk_live_..."
+STRIPE_WEBHOOK_SECRET="whsec_..."
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_live_..."
 ```
 
 ## Monitoring & Analytics
@@ -367,17 +399,19 @@ const costByFeature = await prisma.aIUsage.groupBy({
 ### Completed (100%)
 - [x] Infrastructure & configuration
 - [x] Database schema (Prisma 7 + PostgreSQL)
-- [x] Authentication (NextAuth.js)
+- [x] Authentication (NextAuth.js via `@vertigo/auth`)
 - [x] Admin dashboard with all CRUD operations
 - [x] AI integration (all 4 modules)
 - [x] AI module tests (58 tests, 96%+ coverage)
 - [x] Landing page with pricing
 - [x] Mobile navigation
-- [x] Email integration (7 templates via Resend)
+- [x] Email integration (8 templates via `@vertigo/email`)
+- [x] **Payment integration (Stripe via `@vertigo/stripe`)**
 - [x] Reports & analytics (Recharts + PDF export)
 - [x] Testing infrastructure (Vitest, 79 total tests)
 - [x] Database seeding
 - [x] Health check endpoint for monitoring
+- [x] Migration to shared VertiGo packages
 
 See [IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md) for detailed status.
 

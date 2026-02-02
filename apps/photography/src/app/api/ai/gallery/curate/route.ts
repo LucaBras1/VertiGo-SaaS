@@ -3,6 +3,9 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { createGalleryCuratorAI, GalleryCurationInputSchema } from '@/lib/ai/gallery-curator'
 
+// Force dynamic to avoid build-time Prisma proxy issues
+export const dynamic = 'force-dynamic'
+
 /**
  * POST /api/ai/gallery/curate
  *

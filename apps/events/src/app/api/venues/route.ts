@@ -17,6 +17,9 @@ const createVenueSchema = z.object({
   contactEmail: z.string().email().optional().nullable(),
   contactPhone: z.string().optional(),
   notes: z.string().optional(),
+  rating: z.number().min(0).max(5).optional(),
+  priceRange: z.string().optional(),
+  amenities: z.array(z.string()).default([]),
 })
 
 export async function GET(req: Request) {
@@ -28,21 +31,54 @@ export async function GET(req: Request) {
 
     const { searchParams } = new URL(req.url)
     const type = searchParams.get('type')
+    const search = searchParams.get('search')
 
     const venues = await prisma.venue.findMany({
       where: {
         tenantId: session.user.tenantId,
         ...(type && { type }),
+        ...(search && {
+          OR: [
+            { name: { contains: search, mode: 'insensitive' } },
+            { address: { contains: search, mode: 'insensitive' } },
+            { city: { contains: search, mode: 'insensitive' } },
+          ],
+        }),
       },
       orderBy: { name: 'asc' },
       include: {
         _count: {
           select: { events: true },
         },
+        events: {
+          where: {
+            date: { gte: new Date() },
+          },
+          select: {
+            id: true,
+            date: true,
+          },
+        },
       },
     })
 
-    return NextResponse.json({ venues })
+    // Add availability computed field
+    const venuesWithAvailability = venues.map((venue) => {
+      const upcomingEventsCount = venue.events?.length || 0
+
+      return {
+        ...venue,
+        events: undefined, // Don't expose full events array in list
+        availability:
+          upcomingEventsCount === 0
+            ? 'available'
+            : upcomingEventsCount < 3
+              ? 'limited'
+              : 'booked',
+      }
+    })
+
+    return NextResponse.json({ venues: venuesWithAvailability })
   } catch (error) {
     console.error('Error fetching venues:', error)
     return NextResponse.json({ error: 'Error fetching venues' }, { status: 500 })
@@ -74,6 +110,9 @@ export async function POST(req: Request) {
         contactEmail: data.contactEmail,
         contactPhone: data.contactPhone,
         notes: data.notes,
+        rating: data.rating,
+        priceRange: data.priceRange,
+        amenities: data.amenities,
       },
     })
 

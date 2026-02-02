@@ -44,7 +44,8 @@ const EVENT_TYPES = [
 
 export default function NewPackagePage() {
   const router = useRouter()
-  const { data: clients = [], isLoading: clientsLoading } = useClients()
+  const { data, isLoading: clientsLoading } = useClients()
+  const clients = data?.clients ?? []
   const createPackage = useCreatePackage()
 
   const {

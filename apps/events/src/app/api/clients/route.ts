@@ -26,10 +26,11 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url)
     const clientType = searchParams.get('type')
     const search = searchParams.get('search')
+    const tenantId = session.user.tenantId
 
     const clients = await prisma.client.findMany({
       where: {
-        tenantId: session.user.tenantId,
+        tenantId,
         ...(clientType && { clientType }),
         ...(search && {
           OR: [
@@ -44,10 +45,49 @@ export async function GET(req: Request) {
         _count: {
           select: { events: true },
         },
+        events: {
+          select: {
+            date: true,
+            totalBudget: true,
+            status: true,
+          },
+          orderBy: { date: 'desc' },
+        },
       },
     })
 
-    return NextResponse.json({ clients })
+    // Add computed fields for each client
+    const now = new Date()
+    const clientsWithStats = clients.map((client) => {
+      const pastEvents = client.events.filter((e) => new Date(e.date) < now)
+      const futureEvents = client.events.filter((e) => new Date(e.date) >= now)
+
+      return {
+        ...client,
+        events: undefined, // Don't expose full events array in list
+        totalEvents: client.events.length,
+        upcomingEvents: futureEvents.length,
+        totalRevenue: pastEvents.reduce(
+          (sum, e) => sum + Number(e.totalBudget || 0),
+          0
+        ),
+        lastEvent: pastEvents[0]?.date
+          ? new Date(pastEvents[0].date).toISOString()
+          : null,
+        nextEvent: futureEvents.sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        )[0]?.date
+          ? new Date(
+              futureEvents.sort(
+                (a, b) =>
+                  new Date(a.date).getTime() - new Date(b.date).getTime()
+              )[0].date
+            ).toISOString()
+          : null,
+      }
+    })
+
+    return NextResponse.json({ clients: clientsWithStats })
   } catch (error) {
     console.error('Error fetching clients:', error)
     return NextResponse.json({ error: 'Error fetching clients' }, { status: 500 })

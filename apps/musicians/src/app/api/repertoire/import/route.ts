@@ -5,6 +5,9 @@ import { parseRepertoireCSV } from '@/lib/utils/csv-parser'
 import { prisma } from '@/lib/db'
 import { Vertical } from '@/generated/prisma'
 
+
+// Force dynamic to avoid build-time Prisma proxy issues
+export const dynamic = 'force-dynamic'
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)

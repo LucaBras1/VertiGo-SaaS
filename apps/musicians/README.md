@@ -64,6 +64,20 @@ Multi-select and batch actions:
 - Bulk status change
 - CSV export for Excel
 
+#### 8. Stripe Payments 💳
+Accept online payments via Stripe:
+- **Gig Deposits** - Collect upfront deposits for confirmed gigs
+- **Invoice Payments** - Allow clients to pay invoices online
+- **Webhook Integration** - Automatic payment status updates
+- **Email Notifications** - Confirmation emails on successful payments
+
+**Payment Flow:**
+1. Client clicks "Pay Deposit" or "Pay Invoice"
+2. Redirected to Stripe Checkout
+3. After payment, redirected to success page
+4. Webhook updates `Gig.depositPaid` or `Invoice.status`
+5. Email confirmation sent to client
+
 #### 3. GigPriceAI 💰
 Smart pricing suggestions with three tiers:
 - **Economy** - Budget-friendly entry point
@@ -239,6 +253,11 @@ OPENAI_API_KEY="sk-..."
 GOOGLE_CLIENT_ID="your-google-client-id"
 GOOGLE_CLIENT_SECRET="your-google-client-secret"
 GOOGLE_REDIRECT_URI="http://localhost:3002/api/calendar/google/callback"
+
+# Stripe (for payments)
+STRIPE_SECRET_KEY="sk_..."
+STRIPE_WEBHOOK_SECRET="whsec_..."
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_..."
 ```
 
 ## Project Structure
@@ -261,6 +280,7 @@ apps/musicians/
 │   │   ├── charts/       # EnergyFlowChart
 │   │   ├── bulk/         # BulkActionsBar
 │   │   ├── calendar/     # CalendarSettings
+│   │   ├── payments/     # DepositPaymentButton, InvoicePaymentButton
 │   │   └── ai/           # AI assistant widgets
 │   ├── lib/
 │   │   ├── ai/           # AI modules
@@ -277,7 +297,8 @@ apps/musicians/
 │   │   ├── utils/        # Utilities
 │   │   │   ├── energy.ts # Energy calculation
 │   │   │   └── export.ts # CSV export
-│   │   ├── prisma.ts     # Prisma client
+│   │   ├── db.ts         # Prisma client (lazy-loaded)
+│   │   ├── stripe.ts     # Stripe payment helpers
 │   │   └── utils.ts      # Helpers
 │   └── hooks/            # React hooks
 │       ├── useBulkSelection.ts
@@ -336,6 +357,12 @@ apps/musicians/
 - `POST /api/clients/bulk` - Bulk delete clients
 - `POST /api/invoices/bulk` - Bulk delete invoices
 - `PATCH /api/invoices/bulk` - Bulk update invoice status
+
+### Payments (Stripe)
+- `POST /api/payments/create-deposit-checkout` - Create Stripe checkout for gig deposit
+- `POST /api/payments/create-invoice-checkout` - Create Stripe checkout for invoice payment
+- `POST /api/payments/webhook` - Handle Stripe webhook events
+- `GET /api/payments/verify` - Verify payment status by session ID
 
 ## User Flows
 
@@ -450,7 +477,7 @@ pnpm build
 ### Phase 4: Growth
 - [ ] Mobile app (React Native)
 - [x] Calendar integrations (Google, Apple) ✅
-- [ ] Payment gateway (Stripe)
+- [x] Payment gateway (Stripe) ✅
 - [x] Analytics dashboard ✅
 - [ ] Multi-band management (for agencies)
 

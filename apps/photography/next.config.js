@@ -16,6 +16,10 @@ const nextConfig = {
       'cloudfront.net',
     ],
   },
+  experimental: {
+    // Exclude Prisma and pg from bundling - they'll be available at runtime
+    serverComponentsExternalPackages: ['@prisma/client', '@prisma/adapter-pg', 'pg'],
+  },
 }
 
 module.exports = nextConfig

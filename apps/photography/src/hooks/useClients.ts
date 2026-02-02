@@ -13,6 +13,16 @@ export interface Client {
   notes?: string
   createdAt: string
   updatedAt: string
+  packages?: Array<{
+    id: string
+    title: string
+    status: string
+    totalPrice: number | null
+  }>
+  _count?: {
+    packages: number
+    invoices: number
+  }
 }
 
 export interface ClientsResponse {
@@ -47,8 +57,37 @@ export interface CreateClientInput {
 
 export interface UpdateClientInput extends Partial<CreateClientInput> {}
 
+export interface ClientStats {
+  total: number
+  byType: {
+    individual: number
+    couple: number
+    business: number
+  }
+  active: number
+  newThisMonth: number
+  lifetimeValue: number
+  topClients: Array<{
+    id: string
+    name: string
+    email: string
+    revenue: number
+    packageCount: number
+  }>
+}
+
+export interface BulkDeleteResult {
+  success: boolean
+  deleted: number
+  failed: Array<{
+    id: string
+    name: string
+    reason: string
+  }>
+}
+
 // API functions
-async function fetchClients(filters: ClientFilters = {}): Promise<Client[]> {
+async function fetchClients(filters: ClientFilters = {}): Promise<ClientsResponse> {
   const params = new URLSearchParams()
 
   if (filters.search) params.set('search', filters.search)
@@ -62,9 +101,28 @@ async function fetchClients(filters: ClientFilters = {}): Promise<Client[]> {
   if (!response.ok) {
     throw new Error('Failed to fetch clients')
   }
-  const data = await response.json()
-  // API might return array directly or with pagination wrapper
-  return Array.isArray(data) ? data : data.data || []
+  return response.json()
+}
+
+async function fetchClientStats(): Promise<ClientStats> {
+  const response = await fetch('/api/clients/stats')
+  if (!response.ok) {
+    throw new Error('Failed to fetch client stats')
+  }
+  return response.json()
+}
+
+async function bulkDeleteClients(ids: string[]): Promise<BulkDeleteResult> {
+  const response = await fetch('/api/clients/bulk', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'delete', ids }),
+  })
+  if (!response.ok) {
+    const error = await response.json()
+    throw new Error(error.error || 'Failed to delete clients')
+  }
+  return response.json()
 }
 
 async function fetchClient(id: string): Promise<Client> {
@@ -116,6 +174,17 @@ export function useClients(filters: ClientFilters = {}) {
   return useQuery({
     queryKey: ['clients', filters],
     queryFn: () => fetchClients(filters),
+    select: (data) => ({
+      clients: data.data,
+      pagination: data.pagination,
+    }),
+  })
+}
+
+export function useClientStats() {
+  return useQuery({
+    queryKey: ['clients', 'stats'],
+    queryFn: fetchClientStats,
   })
 }
 
@@ -166,6 +235,25 @@ export function useDeleteClient() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clients'] })
       toast.success('Client deleted successfully')
+    },
+    onError: (error: Error) => {
+      toast.error(error.message)
+    },
+  })
+}
+
+export function useBulkDeleteClients() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: bulkDeleteClients,
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ['clients'] })
+      if (result.failed.length > 0) {
+        toast.success(`Deleted ${result.deleted} clients. ${result.failed.length} could not be deleted.`)
+      } else {
+        toast.success(`Successfully deleted ${result.deleted} clients`)
+      }
     },
     onError: (error: Error) => {
       toast.error(error.message)

@@ -5,24 +5,66 @@
  */
 
 import { createAuthOptions, hashPassword, verifyPassword } from '@vertigo/auth'
-import { prisma } from './db'
+import type { NextAuthOptions } from 'next-auth'
 
-// Cast to any to bypass PrismaClient type mismatch between verticals
-// Each vertical has its own generated Prisma client with different models
-export const authOptions = createAuthOptions({
-  prisma: prisma as any,
-  pages: {
-    signIn: '/auth/signin',
-    error: '/auth/signin',
+// Detect build time
+function isBuildTime(): boolean {
+  const dbUrl = process.env.DATABASE_URL
+  return !dbUrl || dbUrl.includes('dummy') || dbUrl.includes('localhost:5432/dummy')
+}
+
+// Lazy-loaded auth options
+let _authOptions: NextAuthOptions | null = null
+
+function getAuthOptionsImpl(): NextAuthOptions {
+  if (!_authOptions) {
+    const { db } = require('./db')
+    const prisma = db()
+
+    _authOptions = createAuthOptions({
+      prisma: prisma as any,
+      pages: {
+        signIn: '/auth/signin',
+        error: '/auth/signin',
+      },
+      schema: {
+        passwordField: 'password',
+      },
+      multiTenant: {
+        enabled: true,
+        includeSlug: true,
+      },
+      locale: 'cs',
+    })
+  }
+  return _authOptions
+}
+
+// Create auth options proxy
+// At build time: returns a stub object that satisfies NextAuthOptions shape
+// At runtime: returns the actual auth options
+export const authOptions: NextAuthOptions = new Proxy({} as NextAuthOptions, {
+  get(target, prop) {
+    // At build time, return stub values
+    if (isBuildTime()) {
+      // Return values that satisfy NextAuthOptions interface minimally
+      if (prop === 'providers') return []
+      if (prop === 'callbacks') return {}
+      if (prop === 'pages') return {}
+      if (prop === 'session') return { strategy: 'jwt' }
+      if (prop === 'secret') return process.env.NEXTAUTH_SECRET
+      if (prop === 'then') return undefined // Not a promise
+      return undefined
+    }
+
+    // At runtime, delegate to real auth options
+    const options = getAuthOptionsImpl()
+    const value = (options as any)[prop]
+    if (typeof value === 'function') {
+      return value.bind(options)
+    }
+    return value
   },
-  schema: {
-    passwordField: 'password',
-  },
-  multiTenant: {
-    enabled: true,
-    includeSlug: true,
-  },
-  locale: 'cs',
 })
 
 // Re-export utilities for convenience

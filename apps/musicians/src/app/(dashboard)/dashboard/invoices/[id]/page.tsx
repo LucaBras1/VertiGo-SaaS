@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogHeader, DialogTitle, DialogContent, DialogFooter } from '@/components/ui/dialog'
+import { InvoicePaymentButton } from '@/components/payments'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import toast from 'react-hot-toast'
 
@@ -213,6 +214,12 @@ export default function InvoiceDetailPage() {
                   <Button size="sm" onClick={() => handleStatusChange('paid')}>
                     <CheckCircle className="h-4 w-4 mr-2" />Označit jako zaplaceno
                   </Button>
+                  <InvoicePaymentButton
+                    invoiceId={invoice.id}
+                    totalAmount={invoice.totalAmount}
+                    paidAmount={invoice.paidAmount}
+                    status={invoice.status}
+                  />
                   <Button
                     size="sm"
                     variant="outline"

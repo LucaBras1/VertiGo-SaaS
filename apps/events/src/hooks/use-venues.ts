@@ -14,6 +14,10 @@ export interface Venue {
   contactEmail?: string | null
   contactPhone?: string | null
   notes?: string | null
+  rating?: number | null
+  priceRange?: string | null
+  amenities: string[]
+  availability?: 'available' | 'limited' | 'booked'
   createdAt: string
   updatedAt: string
   events?: Array<{
@@ -41,6 +45,9 @@ export interface CreateVenueData {
   contactEmail?: string
   contactPhone?: string
   notes?: string
+  rating?: number
+  priceRange?: string
+  amenities?: string[]
 }
 
 export interface UpdateVenueData extends Partial<CreateVenueData> {}

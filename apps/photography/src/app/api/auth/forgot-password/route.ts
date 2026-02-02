@@ -4,6 +4,9 @@ import { randomBytes } from 'crypto'
 import { prisma } from '@/lib/prisma'
 import { sendPasswordResetEmail } from '@/lib/email'
 
+// Force dynamic to avoid build-time Prisma proxy issues
+export const dynamic = 'force-dynamic'
+
 const forgotPasswordSchema = z.object({
   email: z.string().email('Invalid email address'),
 })

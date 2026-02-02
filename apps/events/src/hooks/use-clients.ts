@@ -23,6 +23,12 @@ export interface Client {
   _count?: {
     events: number
   }
+  // Computed fields from API
+  totalEvents?: number
+  upcomingEvents?: number
+  totalRevenue?: number
+  lastEvent?: string | null
+  nextEvent?: string | null
 }
 
 export interface CreateClientData {

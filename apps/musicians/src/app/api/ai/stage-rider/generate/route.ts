@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/db'
 import { generateStageRider, StageRiderInputSchema } from '@/lib/ai/stage-rider-generator'
 import { z } from 'zod'
+
+
+// Force dynamic to avoid build-time issues
+export const dynamic = 'force-dynamic'
+// Dynamic import to avoid build-time issues
+async function getPrisma() {
+  const { prisma } = await import('@/lib/db')
+  return prisma
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,6 +27,7 @@ export async function POST(request: NextRequest) {
     const input = StageRiderInputSchema.parse(body)
 
     // Fetch tenant for contact info
+    const prisma = await getPrisma()
     const tenant = await prisma.tenant.findUnique({
       where: { id: session.user.tenantId },
       select: {

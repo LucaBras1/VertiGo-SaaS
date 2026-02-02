@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+
+// Force dynamic to avoid build-time issues
+export const dynamic = 'force-dynamic'
 /**
  * GET /api/billing/bank-transactions
  * List bank transactions with filtering options

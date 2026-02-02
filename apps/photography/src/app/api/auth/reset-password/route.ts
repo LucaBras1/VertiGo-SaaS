@@ -3,6 +3,9 @@ import { z } from 'zod'
 import { hash } from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
 
+// Force dynamic to avoid build-time Prisma proxy issues
+export const dynamic = 'force-dynamic'
+
 const resetPasswordSchema = z.object({
   token: z.string().min(1, 'Token is required'),
   password: z.string().min(8, 'Password must be at least 8 characters'),

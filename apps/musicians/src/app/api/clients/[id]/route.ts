@@ -4,6 +4,9 @@ import { authOptions } from '@/lib/auth'
 import { getClientById, updateClient, deleteClient } from '@/lib/services/clients'
 import { z } from 'zod'
 
+
+// Force dynamic to avoid build-time issues
+export const dynamic = 'force-dynamic'
 const updateClientSchema = z.object({
   email: z.string().email().optional(),
   firstName: z.string().min(1).optional(),

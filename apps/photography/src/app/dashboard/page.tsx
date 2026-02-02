@@ -9,6 +9,9 @@ import { GalleryStatus } from '@/components/dashboard/GalleryStatus'
 import { RevenueOverview } from '@/components/dashboard/RevenueOverview'
 import { prisma } from '@/lib/prisma'
 
+// Force dynamic to avoid build-time Prisma proxy issues
+export const dynamic = 'force-dynamic'
+
 async function getDashboardStats(tenantId: string) {
   const now = new Date()
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)

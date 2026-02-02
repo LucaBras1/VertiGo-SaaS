@@ -4,6 +4,9 @@ import { authOptions } from '@/lib/auth'
 import { getGigById, updateGig, deleteGig } from '@/lib/services/gigs'
 import { z } from 'zod'
 
+
+// Force dynamic to avoid build-time issues
+export const dynamic = 'force-dynamic'
 const updateGigSchema = z.object({
   title: z.string().min(1).optional(),
   status: z.enum(['INQUIRY', 'QUOTE_SENT', 'CONFIRMED', 'COMPLETED', 'CANCELLED']).optional(),

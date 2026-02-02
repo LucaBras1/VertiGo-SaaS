@@ -3,6 +3,9 @@ import { prisma } from '@/lib/db'
 import crypto from 'crypto'
 import { sendPasswordResetEmail } from '@/lib/email'
 
+
+// Force dynamic to avoid build-time Prisma proxy issues
+export const dynamic = 'force-dynamic'
 export async function POST(request: NextRequest) {
   try {
     const { email } = await request.json()

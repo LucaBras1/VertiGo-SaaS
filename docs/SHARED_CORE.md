@@ -679,30 +679,67 @@ pnpm test --filter=fitness
 
 ### Prisma Build-time Guard
 
-When building without `DATABASE_URL` (e.g., in CI), use the nested proxy pattern:
+When building Next.js apps, the build process evaluates modules during "Collecting page data". Without `DATABASE_URL`, Prisma initialization fails. The solution is a two-part approach:
 
-```typescript
-// apps/[vertical]/src/lib/prisma.ts
-function createBuildTimeProxy(): PrismaClient {
-  const createNestedProxy = (): unknown => {
-    const handler: ProxyHandler<() => void> = {
-      get(target, prop) {
-        if (prop === 'then' || prop === 'catch' || typeof prop === 'symbol') {
-          return undefined
-        }
-        if (prop === '$connect' || prop === '$disconnect') {
-          return () => Promise.resolve()
-        }
-        return createNestedProxy()
-      },
-      apply() {
-        return Promise.reject(new Error('DATABASE_URL not set'))
-      },
-    }
-    return new Proxy(() => {}, handler)
-  }
-  return createNestedProxy() as unknown as PrismaClient
+**1. Set dummy DATABASE_URL in next.config.js:**
+```javascript
+// apps/[vertical]/next.config.js
+if (!process.env.DATABASE_URL) {
+  process.env.DATABASE_URL = 'postgresql://dummy:dummy@localhost:5432/dummy'
 }
+```
+
+**2. Use lazy proxy pattern in db.ts:**
+```typescript
+// apps/[vertical]/src/lib/db.ts
+function isBuildTime(): boolean {
+  const dbUrl = process.env.DATABASE_URL
+  return !dbUrl || dbUrl.includes('dummy')
+}
+
+function createBuildTimeStub(): any {
+  const handler: ProxyHandler<any> = {
+    get(target, prop) {
+      if (prop === 'then' || prop === 'catch' || prop === 'finally') return undefined
+      if (typeof prop === 'symbol') return undefined
+      return createBuildTimeStub()
+    },
+    apply() {
+      return Promise.resolve(null)
+    },
+  }
+  return new Proxy(function() {}, handler)
+}
+
+const prismaProxy = new Proxy({} as PrismaClient, {
+  get(target, prop) {
+    if (prop === 'then' || prop === 'catch' || prop === 'finally') return undefined
+    if (typeof prop === 'symbol') return undefined
+    if (isBuildTime()) return createBuildTimeStub()
+
+    const client = db() // Lazy-load actual client
+    const value = (client as any)[prop]
+    return typeof value === 'function' ? value.bind(client) : value
+  },
+})
+
+export const prisma = prismaProxy
+```
+
+**3. Lazy-load authOptions:**
+```typescript
+// apps/[vertical]/src/lib/auth.ts
+export const authOptions: NextAuthOptions = new Proxy({} as NextAuthOptions, {
+  get(target, prop) {
+    if (isBuildTime()) {
+      if (prop === 'providers') return []
+      if (prop === 'callbacks') return {}
+      if (prop === 'then') return undefined
+      return undefined
+    }
+    return getAuthOptionsImpl()[prop]
+  },
+})
 ```
 
 ### Stripe Lazy Loading
@@ -738,8 +775,8 @@ const customer = await stripe.customers.create({ email: 'test@example.com' })
 | Package | Version | Status | Apps Using |
 |---------|---------|--------|------------|
 | @vertigo/auth | 1.0.0 | ✅ Complete | fitness, photography, musicians |
-| @vertigo/email | 1.0.0 | ✅ Complete | fitness, photography |
-| @vertigo/stripe | 1.0.0 | ✅ Complete | fitness |
+| @vertigo/email | 1.0.0 | ✅ Complete | fitness, photography, musicians |
+| @vertigo/stripe | 1.0.0 | ✅ Complete | fitness, musicians |
 | @vertigo/ai-core | 1.0.0 | ✅ Stable | all |
 | @vertigo/billing | 1.0.0 | ✅ Stable | fitness |
 | @vertigo/database | 1.0.0 | ✅ Stable | all |

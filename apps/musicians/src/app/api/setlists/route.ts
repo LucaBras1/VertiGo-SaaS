@@ -4,6 +4,9 @@ import { authOptions } from '@/lib/auth'
 import { getSetlists, createSetlist, getSetlistStats } from '@/lib/services/setlists'
 import { z } from 'zod'
 
+
+// Force dynamic to avoid build-time issues
+export const dynamic = 'force-dynamic'
 const songSchema = z.object({
   id: z.string(),
   title: z.string(),

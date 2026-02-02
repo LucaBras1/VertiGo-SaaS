@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import {
   Users,
@@ -11,75 +11,65 @@ import {
   Phone,
   Mail,
   DollarSign,
+  AlertCircle,
+  Trash2,
 } from 'lucide-react'
+import { useConfirm } from '@/hooks/use-confirm'
+import { useToast } from '@/hooks/use-toast'
+import { usePerformers, useDeletePerformer, type Performer, type PerformerType } from '@/hooks/use-performers'
 import { SkeletonPerformerCard, SkeletonQuickStats, Skeleton } from '@/components/ui/skeleton'
-
-const MOCK_PERFORMERS = [
-  {
-    id: '1',
-    name: 'Fire Phoenix',
-    stageName: 'The Inferno Master',
-    type: 'fire',
-    rating: 4.9,
-    bookings: 45,
-    rate: 800,
-    phone: '+1 234 567 8900',
-    email: 'fire@phoenix.com',
-    specialties: ['Fire Dancing', 'Fire Breathing', 'LED Performance']
-  },
-  {
-    id: '2',
-    name: 'Alex Wonder',
-    stageName: 'Alex the Magnificent',
-    type: 'magic',
-    rating: 4.8,
-    bookings: 62,
-    rate: 600,
-    phone: '+1 234 567 8901',
-    email: 'alex@wonder.com',
-    specialties: ['Close-up Magic', 'Stage Illusions', 'Mentalism']
-  },
-  {
-    id: '3',
-    name: 'Aerial Silk Duo',
-    type: 'circus',
-    rating: 5.0,
-    bookings: 38,
-    rate: 1200,
-    phone: '+1 234 567 8902',
-    email: 'contact@aerialsilk.com',
-    specialties: ['Aerial Silks', 'Acrobatics', 'Contortion']
-  },
-  {
-    id: '4',
-    name: 'DJ Rhythm',
-    type: 'music',
-    rating: 4.7,
-    bookings: 89,
-    rate: 400,
-    phone: '+1 234 567 8903',
-    email: 'dj@rhythm.com',
-    specialties: ['Electronic', 'House', 'Corporate Events']
-  },
-]
 
 export default function PerformersPage() {
   const [searchQuery, setSearchQuery] = useState('')
-  const [typeFilter, setTypeFilter] = useState('all')
-  const [isLoading, setIsLoading] = useState(true)
+  const [typeFilter, setTypeFilter] = useState<PerformerType | 'all'>('all')
+  const { confirmDelete } = useConfirm()
+  const toast = useToast()
 
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 500)
-    return () => clearTimeout(timer)
-  }, [])
+  const { data: performers = [], isLoading, isError } = usePerformers(
+    typeFilter !== 'all' ? typeFilter : undefined
+  )
+  const deletePerformer = useDeletePerformer()
 
-  const filteredPerformers = MOCK_PERFORMERS.filter((performer) => {
-    const matchesSearch =
-      performer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      performer.stageName?.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesType = typeFilter === 'all' || performer.type === typeFilter
-    return matchesSearch && matchesType
-  })
+  const handleDeletePerformer = async (id: string, name: string) => {
+    const confirmed = await confirmDelete(name)
+    if (confirmed) {
+      try {
+        await deletePerformer.mutateAsync(id)
+        toast.success(`Performer "${name}" deleted`)
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : 'Failed to delete performer')
+      }
+    }
+  }
+
+  const filteredPerformers = useMemo(() => {
+    return performers.filter((performer) => {
+      const matchesSearch =
+        performer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        performer.stageName?.toLowerCase().includes(searchQuery.toLowerCase())
+      return matchesSearch
+    })
+  }, [performers, searchQuery])
+
+  // Calculate stats from real data
+  const stats = useMemo(() => {
+    const activeBookings = performers.reduce((sum, p) => {
+      const pending = p.bookings?.filter((b) => b.status === 'pending' || b.status === 'confirmed').length || 0
+      return sum + pending
+    }, 0)
+
+    const avgRating =
+      performers.length > 0
+        ? performers.reduce((sum, p) => sum + (p.rating || 0), 0) / performers.filter((p) => p.rating).length
+        : 0
+
+    return {
+      total: performers.length,
+      activeBookings,
+      avgRating: avgRating ? avgRating.toFixed(1) : '-',
+      totalBookings: performers.reduce((sum, p) => sum + p.totalBookings, 0),
+    }
+  }, [performers])
 
   if (isLoading) {
     return (
@@ -102,6 +92,24 @@ export default function PerformersPage() {
           {Array.from({ length: 4 }).map((_, i) => (
             <SkeletonPerformerCard key={i} />
           ))}
+        </div>
+      </div>
+    )
+  }
+
+  if (isError) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-3xl font-display font-bold mb-2">Performers</h1>
+            <p className="text-gray-600">Manage your talent roster</p>
+          </div>
+        </div>
+        <div className="card text-center py-12">
+          <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
+          <p className="text-gray-500 text-lg mb-2">Failed to load performers</p>
+          <p className="text-gray-400 text-sm">Please try again later</p>
         </div>
       </div>
     )
@@ -142,7 +150,7 @@ export default function PerformersPage() {
             <Filter className="w-5 h-5 text-gray-400" />
             <select
               value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
+              onChange={(e) => setTypeFilter(e.target.value as PerformerType | 'all')}
               className="px-4 py-2 border border-gray-200 rounded-lg outline-none focus:border-primary-500"
             >
               <option value="all">All Types</option>
@@ -160,16 +168,16 @@ export default function PerformersPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <QuickStat label="Total Performers" value={MOCK_PERFORMERS.length.toString()} />
-        <QuickStat label="Active Bookings" value="12" />
-        <QuickStat label="Avg Rating" value="4.9" />
-        <QuickStat label="This Month" value="24" />
+        <QuickStat label="Total Performers" value={stats.total.toString()} />
+        <QuickStat label="Active Bookings" value={stats.activeBookings.toString()} />
+        <QuickStat label="Avg Rating" value={stats.avgRating} />
+        <QuickStat label="Total Bookings" value={stats.totalBookings.toString()} />
       </div>
 
       {/* Performers Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredPerformers.map((performer) => (
-          <PerformerCard key={performer.id} performer={performer} />
+          <PerformerCard key={performer.id} performer={performer} onDelete={handleDeletePerformer} />
         ))}
       </div>
 
@@ -184,8 +192,14 @@ export default function PerformersPage() {
   )
 }
 
-function PerformerCard({ performer }: { performer: typeof MOCK_PERFORMERS[0] }) {
-  const typeColors = {
+function PerformerCard({
+  performer,
+  onDelete,
+}: {
+  performer: Performer
+  onDelete: (id: string, name: string) => void
+}) {
+  const typeColors: Record<string, string> = {
     fire: 'from-orange-500 to-red-500',
     magic: 'from-purple-500 to-pink-500',
     circus: 'from-blue-500 to-cyan-500',
@@ -195,21 +209,23 @@ function PerformerCard({ performer }: { performer: typeof MOCK_PERFORMERS[0] }) 
     interactive: 'from-indigo-500 to-purple-500',
   }
 
-  const typeIcons = {
-    fire: '🔥',
-    magic: '✨',
-    circus: '🎪',
-    music: '🎵',
-    dance: '💃',
-    comedy: '😄',
-    interactive: '🎮',
+  const typeIcons: Record<string, string> = {
+    fire: '\ud83d\udd25',
+    magic: '\u2728',
+    circus: '\ud83c\udfaa',
+    music: '\ud83c\udfb5',
+    dance: '\ud83d\udc83',
+    comedy: '\ud83d\ude04',
+    interactive: '\ud83c\udfae',
   }
 
   return (
     <div className="card group hover:scale-105 cursor-pointer">
       {/* Header with gradient */}
-      <div className={`h-24 bg-gradient-to-br ${typeColors[performer.type as keyof typeof typeColors]} rounded-t-xl -m-6 mb-4 flex items-center justify-center text-5xl`}>
-        {typeIcons[performer.type as keyof typeof typeIcons]}
+      <div
+        className={`h-24 bg-gradient-to-br ${typeColors[performer.type] || 'from-gray-500 to-gray-600'} rounded-t-xl -m-6 mb-4 flex items-center justify-center text-5xl`}
+      >
+        {typeIcons[performer.type] || '\ud83c\udfad'}
       </div>
 
       {/* Content */}
@@ -230,10 +246,10 @@ function PerformerCard({ performer }: { performer: typeof MOCK_PERFORMERS[0] }) 
         <div className="flex items-center space-x-4 mb-4 pb-4 border-b border-gray-100">
           <div className="flex items-center space-x-1">
             <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-            <span className="font-semibold text-gray-900">{performer.rating}</span>
+            <span className="font-semibold text-gray-900">{performer.rating || '-'}</span>
           </div>
           <div className="text-sm text-gray-600">
-            <span className="font-medium">{performer.bookings}</span> bookings
+            <span className="font-medium">{performer.totalBookings}</span> bookings
           </div>
         </div>
 
@@ -253,21 +269,27 @@ function PerformerCard({ performer }: { performer: typeof MOCK_PERFORMERS[0] }) 
 
         {/* Contact Info */}
         <div className="space-y-2 text-sm mb-4">
-          <div className="flex items-center space-x-2 text-gray-600">
-            <Mail className="w-4 h-4" />
-            <span className="truncate">{performer.email}</span>
-          </div>
-          <div className="flex items-center space-x-2 text-gray-600">
-            <Phone className="w-4 h-4" />
-            <span>{performer.phone}</span>
-          </div>
+          {performer.email && (
+            <div className="flex items-center space-x-2 text-gray-600">
+              <Mail className="w-4 h-4" />
+              <span className="truncate">{performer.email}</span>
+            </div>
+          )}
+          {performer.phone && (
+            <div className="flex items-center space-x-2 text-gray-600">
+              <Phone className="w-4 h-4" />
+              <span>{performer.phone}</span>
+            </div>
+          )}
         </div>
 
         {/* Rate & Actions */}
         <div className="flex items-center justify-between pt-4 border-t border-gray-100">
           <div className="flex items-center space-x-1">
             <DollarSign className="w-4 h-4 text-gray-600" />
-            <span className="font-semibold text-gray-900">${performer.rate}</span>
+            <span className="font-semibold text-gray-900">
+              ${performer.standardRate ? Number(performer.standardRate).toLocaleString() : '-'}
+            </span>
             <span className="text-sm text-gray-500">/event</span>
           </div>
 
@@ -284,6 +306,16 @@ function PerformerCard({ performer }: { performer: typeof MOCK_PERFORMERS[0] }) 
             >
               Book
             </Link>
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                onDelete(performer.id, performer.name)
+              }}
+              className="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-sm font-medium transition-colors"
+              title="Delete"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </div>

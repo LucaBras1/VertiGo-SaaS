@@ -125,6 +125,80 @@ export async function sendGigConfirmationEmail({
   })
 }
 
+// Payment confirmation emails
+
+export async function sendDepositPaymentEmail({
+  to,
+  clientName,
+  gigTitle,
+  amount,
+  bandName,
+}: {
+  to: string
+  clientName: string
+  gigTitle: string
+  amount: string
+  bandName: string
+}): Promise<EmailResult> {
+  const paymentDetails = `
+    <p style="margin: 5px 0;"><strong>Koncert:</strong> ${gigTitle}</p>
+    <p style="margin: 5px 0;"><strong>Zaplacená záloha:</strong> ${amount} Kč</p>
+    <p style="margin: 5px 0;"><strong>Datum platby:</strong> ${new Date().toLocaleDateString('cs-CZ')}</p>
+  `
+
+  const content = `
+    <p style="font-size: 16px;">Dobrý den, <strong>${clientName}</strong>!</p>
+    <p>Vaše záloha za koncert byla úspěšně přijata.</p>
+    ${generateInfoBox(paymentDetails, musiciansTheme.primaryColor)}
+    <p style="color: #666; font-size: 14px;">Děkujeme za Vaši platbu! Těšíme se na spolupráci.</p>
+  `
+
+  const html = wrapInBaseTemplate(musiciansTheme, content, { title: 'Potvrzení platby zálohy' })
+
+  return emailService.sendCustom({
+    to,
+    subject: `Potvrzení platby zálohy - ${gigTitle}`,
+    html,
+    text: `Dobrý den, ${clientName}! Vaše záloha za koncert "${gigTitle}" ve výši ${amount} Kč byla úspěšně přijata. Děkujeme! ${bandName}`,
+  })
+}
+
+export async function sendInvoicePaymentEmail({
+  to,
+  clientName,
+  invoiceNumber,
+  amount,
+  bandName,
+}: {
+  to: string
+  clientName: string
+  invoiceNumber: string
+  amount: string
+  bandName: string
+}): Promise<EmailResult> {
+  const paymentDetails = `
+    <p style="margin: 5px 0;"><strong>Faktura:</strong> ${invoiceNumber}</p>
+    <p style="margin: 5px 0;"><strong>Zaplacená částka:</strong> ${amount} Kč</p>
+    <p style="margin: 5px 0;"><strong>Datum platby:</strong> ${new Date().toLocaleDateString('cs-CZ')}</p>
+  `
+
+  const content = `
+    <p style="font-size: 16px;">Dobrý den, <strong>${clientName}</strong>!</p>
+    <p>Vaše platba faktury byla úspěšně přijata.</p>
+    ${generateInfoBox(paymentDetails, musiciansTheme.primaryColor)}
+    <p style="color: #666; font-size: 14px;">Děkujeme za Vaši platbu!</p>
+  `
+
+  const html = wrapInBaseTemplate(musiciansTheme, content, { title: 'Potvrzení platby faktury' })
+
+  return emailService.sendCustom({
+    to,
+    subject: `Potvrzení platby faktury ${invoiceNumber}`,
+    html,
+    text: `Dobrý den, ${clientName}! Vaše platba faktury ${invoiceNumber} ve výši ${amount} Kč byla úspěšně přijata. Děkujeme! ${bandName}`,
+  })
+}
+
 // Generic email sending (for backwards compatibility)
 export async function sendEmail({
   to,

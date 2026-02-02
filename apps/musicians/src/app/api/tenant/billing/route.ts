@@ -4,6 +4,9 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { z } from 'zod'
 
+
+// Force dynamic to avoid build-time Prisma proxy issues
+export const dynamic = 'force-dynamic'
 const UpdateBillingSchema = z.object({
   billingName: z.string().max(200).optional(),
   ico: z.string().max(20).optional(),

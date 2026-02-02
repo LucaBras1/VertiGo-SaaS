@@ -4,6 +4,9 @@ import { authOptions } from '@/lib/auth'
 import { getGigs, createGig, getGigStats } from '@/lib/services/gigs'
 import { z } from 'zod'
 
+
+// Force dynamic to avoid build-time issues
+export const dynamic = 'force-dynamic'
 const createGigSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   clientName: z.string().optional(),

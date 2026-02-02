@@ -7,6 +7,9 @@ import { InvoicePDF, InvoiceData } from '@/lib/pdf/invoice-pdf'
 import { prisma } from '@/lib/db'
 import React from 'react'
 
+
+// Force dynamic to avoid build-time Prisma proxy issues
+export const dynamic = 'force-dynamic'
 interface Invoice {
   id: string
   invoiceNumber: string

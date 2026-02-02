@@ -3,6 +3,9 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { getAuthUrl } from '@/lib/calendar/google/auth'
 
+
+// Force dynamic to avoid build-time issues
+export const dynamic = 'force-dynamic'
 // GET /api/calendar/google/auth - Get Google OAuth URL
 export async function GET(request: NextRequest) {
   try {

@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { generateIcsCalendar, gigToIcsEvent } from '@/lib/calendar/apple/ics-generator'
 
+
+// Force dynamic to avoid build-time Prisma proxy issues
+export const dynamic = 'force-dynamic'
 // GET /api/calendar/feed/[token] - Get ICS feed for Apple Calendar
 export async function GET(
   request: NextRequest,

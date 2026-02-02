@@ -4,6 +4,9 @@ import { authOptions } from '@/lib/auth'
 import { getClients, createClient, getClientStats } from '@/lib/services/clients'
 import { z } from 'zod'
 
+
+// Force dynamic to avoid build-time issues
+export const dynamic = 'force-dynamic'
 const createClientSchema = z.object({
   email: z.string().email('Invalid email'),
   firstName: z.string().min(1, 'First name is required'),
