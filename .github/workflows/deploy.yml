@@ -134,10 +134,11 @@ jobs:
             echo "Running database migrations..."
             (cd packages/database && pnpm prisma migrate deploy 2>/dev/null || pnpm prisma db push) || echo "Warning: Migration skipped - verify database schema manually if needed"
 
-            # Build applications (with increased memory for large Next.js apps)
+            # Build applications (with increased memory and limited concurrency for VPS)
             echo "Building applications..."
             export NODE_OPTIONS="--max-old-space-size=4096"
-            pnpm run build
+            # Limit turborepo concurrency to 2 to prevent OOM on VPS
+            pnpm run build --concurrency=2
 
             # Reload PM2
             echo "Reloading PM2 processes..."
