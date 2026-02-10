@@ -7,9 +7,7 @@
 
 import { useState, useEffect } from 'react'
 import { Shield, AlertTriangle, CheckCircle, Loader2, AlertCircle } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { Card } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
+import { Badge, Button, Card } from '@vertigo/ui'
 
 interface SafetyReviewProps {
   packageId?: string
@@ -136,7 +134,7 @@ export function SafetyReview({
       </div>
 
       {error && (
-        <Card variant="outlined" className="p-4 border-amber-300 bg-amber-50">
+        <Card className="p-4 border-amber-300 bg-amber-50">
           <div className="flex items-start">
             <AlertCircle className="h-5 w-5 text-amber-500 mt-0.5 mr-3" />
             <p className="text-sm text-amber-800">{error}</p>
@@ -147,7 +145,7 @@ export function SafetyReview({
       {safetyResult && (
         <>
           {/* Overall Risk Level */}
-          <Card variant="outlined" className="p-6">
+          <Card className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">
@@ -167,7 +165,7 @@ export function SafetyReview({
           </Card>
 
           {/* Age Appropriateness */}
-          <Card variant="outlined" className="p-6">
+          <Card className="p-6">
             <div className="flex items-start">
               {safetyResult.ageAppropriate ? (
                 <CheckCircle className="h-6 w-6 text-green-500 mr-3" />
@@ -189,7 +187,7 @@ export function SafetyReview({
 
           {/* Allergen Warnings */}
           {safetyResult.allergenWarnings.length > 0 && (
-            <Card variant="outlined" className="p-6 border-amber-300 bg-amber-50">
+            <Card className="p-6 border-amber-300 bg-amber-50">
               <div className="flex items-start">
                 <AlertTriangle className="h-6 w-6 text-amber-500 mr-3 flex-shrink-0" />
                 <div>
@@ -210,7 +208,7 @@ export function SafetyReview({
 
           {/* Recommendations */}
           {safetyResult.recommendations.length > 0 && (
-            <Card variant="outlined" className="p-6">
+            <Card className="p-6">
               <h3 className="font-semibold text-gray-900 mb-3">
                 Doporučení pro bezpečnost
               </h3>
@@ -227,7 +225,7 @@ export function SafetyReview({
 
           {/* Safety Notes */}
           {safetyResult.safetyNotes.length > 0 && (
-            <Card variant="outlined" className="p-6">
+            <Card className="p-6">
               <h3 className="font-semibold text-gray-900 mb-3">
                 Bezpečnostní poznámky k programu
               </h3>
@@ -242,7 +240,7 @@ export function SafetyReview({
           )}
 
           {/* Acknowledgment */}
-          <Card variant="outlined" className="p-6 bg-gray-50">
+          <Card className="p-6 bg-gray-50">
             <label className="flex items-start cursor-pointer">
               <input
                 type="checkbox"

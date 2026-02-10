@@ -1,8 +1,8 @@
 'use client'
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { chartTheme } from '@vertigo/admin'
+import { Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
 
 interface RevenueChartProps {
   data: Array<{ name: string; value: number; percentage: number }>

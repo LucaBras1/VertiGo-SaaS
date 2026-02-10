@@ -7,10 +7,8 @@
 
 import { useState } from 'react'
 import { Check, Clock, Users, Star, Sparkles } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Badge } from '@/components/ui/Badge'
 import { cn } from '@/lib/utils'
+import { Badge, Button, Card } from '@vertigo/ui'
 
 interface Package {
   id: string
@@ -104,7 +102,6 @@ export function PackageSelector({
             {packages.map((pkg) => (
               <Card
                 key={pkg.id}
-                variant="outlined"
                 className={cn(
                   'cursor-pointer transition-all hover:shadow-lg relative',
                   selectedPackageId === pkg.id
@@ -120,7 +117,7 @@ export function PackageSelector({
                 )}
                 {pkg.featured && (
                   <div className="absolute top-3 left-3">
-                    <Badge variant="pink" size="sm">
+                    <Badge size="sm" className="bg-partypal-pink-100 text-partypal-pink-800">
                       <Star className="h-3 w-3 mr-1" />
                       Doporučeno
                     </Badge>
@@ -191,7 +188,6 @@ export function PackageSelector({
               return (
                 <Card
                   key={activity.id}
-                  variant="outlined"
                   className={cn(
                     'cursor-pointer transition-all hover:shadow-md relative p-4',
                     isSelected

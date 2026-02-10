@@ -6,8 +6,6 @@ Loading skeleton components for the GigBook musicians app. These provide visual 
 
 ### Base Skeleton
 ```tsx
-import { Skeleton } from '@/components/ui/skeleton'
-
 <Skeleton className="h-4 w-full" />
 ```
 
@@ -104,6 +102,7 @@ import { DashboardSkeleton } from '@/components/skeletons'
 ### Table Loading State
 ```tsx
 import { TableRowSkeleton } from '@/components/skeletons'
+import { Skeleton } from '@vertigo/ui'
 
 <table className="w-full">
   <thead>

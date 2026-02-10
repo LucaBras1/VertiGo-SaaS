@@ -13,11 +13,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Plus, Clock, Users, Layers, Star, Calendar, Package } from 'lucide-react'
-import { staggerContainer, staggerItem, hoverLift } from '@vertigo/ui'
+import { Button, Card, ConfirmDialog, hoverLift, staggerContainer, staggerItem } from '@vertigo/ui'
 import { formatDuration, getObjectiveLabel } from '@/lib/utils'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { StatusBadge, ActionButtons, SearchFilterBar, ListPageHeader } from '@vertigo/admin'
 import toast from 'react-hot-toast'
 
@@ -328,15 +325,15 @@ export function ProgramsList({ initialPrograms }: ProgramsListProps) {
 
       {/* Delete Confirmation Dialog */}
       <ConfirmDialog
-        isOpen={deleteDialog.isOpen}
+        open={deleteDialog.isOpen}
         onClose={() => setDeleteDialog({ isOpen: false, program: null })}
         onConfirm={handleDelete}
         title="Smazat program"
-        message={`Opravdu chcete smazat program "${deleteDialog.program?.title}"? Tato akce je nevratná.`}
-        confirmText="Smazat"
-        cancelText="Zrušit"
+        description={`Opravdu chcete smazat program "${deleteDialog.program?.title}"? Tato akce je nevratná.`}
+        confirmLabel="Smazat"
+        cancelLabel="Zrušit"
         variant="danger"
-        isLoading={isDeleting}
+        loading={isDeleting}
       />
     </div>
   )

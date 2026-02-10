@@ -3,12 +3,9 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Package, Plus, Search, Filter, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Badge } from '@/components/ui/Badge'
-import { Input } from '@/components/ui/Input'
 import { format } from 'date-fns'
 import { usePackages, PackageFilters, PackageStatus, STATUS_LABELS } from '@/hooks/usePackages'
+import { Badge, Button, Card, Input } from '@vertigo/ui'
 
 const EVENT_TYPES = [
   { value: '', label: 'All Events' },

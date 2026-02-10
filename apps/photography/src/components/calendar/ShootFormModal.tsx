@@ -5,11 +5,9 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { format } from 'date-fns'
-import { Modal } from '@/components/ui/Modal'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import { usePackages } from '@/hooks/usePackages'
 import { useCreateShoot, useUpdateShoot, VENUE_TYPE_OPTIONS, Shoot } from '@/hooks/useShoots'
+import { Button, Input, Modal, ModalBody, ModalContent, ModalHeader, ModalTitle } from '@vertigo/ui'
 
 const shootSchema = z.object({
   packageId: z.string().min(1, 'Package is required'),
@@ -124,11 +122,12 @@ export function ShootFormModal({
   const packages = packagesData?.data || []
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={isEditing ? 'Edit Shoot' : 'Schedule New Shoot'}
-    >
+    <Modal open={isOpen} onOpenChange={(open: boolean) => { if (!open) onClose() }}>
+        <ModalContent>
+          <ModalHeader>
+            <ModalTitle>{isEditing ? 'Edit Shoot' : 'Schedule New Shoot'}</ModalTitle>
+          </ModalHeader>
+          <ModalBody>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Package Selector */}
         <div>
@@ -253,12 +252,14 @@ export function ShootFormModal({
           </Button>
           <Button
             type="submit"
-            isLoading={isSubmitting || createShootMutation.isPending || updateShootMutation.isPending}
+            loading={isSubmitting || createShootMutation.isPending || updateShootMutation.isPending}
           >
             {isEditing ? 'Update Shoot' : 'Schedule Shoot'}
           </Button>
         </div>
       </form>
-    </Modal>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
   )
 }

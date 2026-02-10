@@ -4,10 +4,8 @@ import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Package, Calendar, DollarSign, User, MoreVertical, Eye, Edit, Trash2, Camera } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
-import { Button } from '@/components/ui/Button'
 import { PackageFilters, PackageFiltersState } from './PackageFilters'
+import { Badge, Button, Card } from '@vertigo/ui'
 
 interface PackageData {
   id: string

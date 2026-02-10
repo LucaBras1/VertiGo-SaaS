@@ -3,11 +3,8 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Users, Plus, Search, Mail, Phone, Filter, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Badge } from '@/components/ui/Badge'
-import { Input } from '@/components/ui/Input'
 import { useClients, ClientFilters, CLIENT_TYPE_LABELS } from '@/hooks/useClients'
+import { Badge, Button, Card, Input } from '@vertigo/ui'
 
 const TYPE_OPTIONS: { value: ClientFilters['type'] | ''; label: string }[] = [
   { value: '', label: 'All Types' },

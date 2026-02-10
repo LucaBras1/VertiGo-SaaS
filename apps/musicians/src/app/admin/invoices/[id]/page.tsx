@@ -4,13 +4,11 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft, Edit, Trash2, Download, Send, CheckCircle, FileText, Mail, Loader2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogHeader, DialogTitle, DialogContent, DialogFooter } from '@/components/ui/dialog'
 import { InvoicePaymentButton } from '@/components/payments'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import toast from 'react-hot-toast'
+import { Button, Card, CardContent, CardHeader, CardTitle, Badge } from '@vertigo/ui'
 
 interface InvoiceItem {
   description: string
@@ -345,7 +343,7 @@ export default function InvoiceDetailPage() {
         <DialogContent><p>Opravdu chcete smazat fakturu {invoice.invoiceNumber}?</p></DialogContent>
         <DialogFooter>
           <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>Zrušit</Button>
-          <Button variant="destructive" onClick={handleDelete} isLoading={isDeleting}>Smazat</Button>
+          <Button variant="destructive" onClick={handleDelete} loading={isDeleting}>Smazat</Button>
         </DialogFooter>
       </Dialog>
     </div>

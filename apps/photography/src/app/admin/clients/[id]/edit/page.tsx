@@ -7,10 +7,8 @@ import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import { useClient, useUpdateClient } from '@/hooks/useClients'
+import { Button, Card, CardHeader, CardTitle, Input } from '@vertigo/ui'
 
 const clientSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -183,7 +181,7 @@ export default function EditClientPage() {
               label="Tags"
               {...register('tags')}
               placeholder="wedding, vip, referral"
-              helperText="Comma-separated tags for organizing clients"
+              hint="Comma-separated tags for organizing clients"
             />
 
             <div>
@@ -200,7 +198,7 @@ export default function EditClientPage() {
 
         {/* Actions */}
         <div className="flex items-center gap-4">
-          <Button type="submit" isLoading={isSubmitting || updateClientMutation.isPending}>
+          <Button type="submit" loading={isSubmitting || updateClientMutation.isPending}>
             Update Client
           </Button>
           <Link href={`/admin/clients/${clientId}`}>

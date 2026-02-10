@@ -9,8 +9,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
 import toast from 'react-hot-toast'
+import { Button } from '@vertigo/ui'
 
 export default function NewExtraPage() {
   const router = useRouter()

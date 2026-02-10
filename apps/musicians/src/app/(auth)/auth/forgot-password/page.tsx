@@ -2,10 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Music } from 'lucide-react'
+import { Button, Input, Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
@@ -102,7 +100,7 @@ export default function ForgotPasswordPage() {
                 />
               </div>
 
-              <Button type="submit" className="w-full" isLoading={isLoading}>
+              <Button type="submit" className="w-full" loading={isLoading}>
                 Send reset link
               </Button>
             </form>

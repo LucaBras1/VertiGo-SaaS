@@ -3,11 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Plus, Search, FileText, Clock, CheckCircle, AlertCircle, XCircle, DollarSign } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { Badge } from '@/components/ui/Badge'
-
+import { Badge, Button, Card, Input } from '@vertigo/ui'
 interface Invoice {
   id: string
   invoiceNumber: string
@@ -28,11 +24,11 @@ interface Invoice {
 }
 
 const statusConfig = {
-  DRAFT: { label: 'Draft', color: 'gray' as const, icon: FileText },
-  SENT: { label: 'Sent', color: 'blue' as const, icon: Clock },
-  PAID: { label: 'Paid', color: 'green' as const, icon: CheckCircle },
-  OVERDUE: { label: 'Overdue', color: 'red' as const, icon: AlertCircle },
-  CANCELLED: { label: 'Cancelled', color: 'gray' as const, icon: XCircle }
+  DRAFT: { label: 'Draft', color: 'secondary' as const, icon: FileText },
+  SENT: { label: 'Sent', color: 'info' as const, icon: Clock },
+  PAID: { label: 'Paid', color: 'success' as const, icon: CheckCircle },
+  OVERDUE: { label: 'Overdue', color: 'danger' as const, icon: AlertCircle },
+  CANCELLED: { label: 'Cancelled', color: 'secondary' as const, icon: XCircle }
 }
 
 export default function InvoicesPage() {

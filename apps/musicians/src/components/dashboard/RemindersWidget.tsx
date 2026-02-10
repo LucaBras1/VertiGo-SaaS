@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import {
   Bell,
   Calendar,
@@ -13,6 +11,7 @@ import {
   ChevronRight,
   Loader2,
 } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle, Button } from '@vertigo/ui'
 
 interface UpcomingReminder {
   type: 'gig' | 'invoice'

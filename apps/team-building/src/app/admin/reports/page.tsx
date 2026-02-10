@@ -6,7 +6,6 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Card } from '@/components/ui/Card'
 import {
   BarChart3,
   TrendingUp,
@@ -18,9 +17,8 @@ import {
   Download,
   RefreshCw,
 } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
 import { motion } from 'framer-motion'
-import { staggerContainer, staggerItem, fadeIn } from '@vertigo/ui'
+import { Button, Card, fadeIn, staggerContainer, staggerItem } from '@vertigo/ui'
 import { chartTheme } from '@vertigo/admin'
 import toast from 'react-hot-toast'
 import {

@@ -7,10 +7,6 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Card } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import {
   Calendar,
   MapPin,
@@ -25,6 +21,7 @@ import {
   CheckCircle,
   Clock,
 } from 'lucide-react'
+import { Badge, Button, Card, Input } from '@vertigo/ui'
 
 interface Party {
   id: string
@@ -188,23 +185,23 @@ export default function AdminPartiesPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card variant="outlined" className="p-4">
+        <Card className="p-4">
           <p className="text-sm text-neutral-500 dark:text-neutral-400">Celkem</p>
           <p className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">{parties.length}</p>
         </Card>
-        <Card variant="outlined" className="p-4 border-amber-200 bg-amber-50">
+        <Card className="p-4 border-amber-200 bg-amber-50">
           <p className="text-sm text-amber-700">Poptávky</p>
           <p className="text-2xl font-bold text-amber-600">
             {parties.filter((p) => p.status === 'inquiry').length}
           </p>
         </Card>
-        <Card variant="outlined" className="p-4 border-green-200 bg-green-50">
+        <Card className="p-4 border-green-200 bg-green-50">
           <p className="text-sm text-green-700">Potvrzeno</p>
           <p className="text-2xl font-bold text-green-600">
             {parties.filter((p) => p.status === 'confirmed').length}
           </p>
         </Card>
-        <Card variant="outlined" className="p-4 border-blue-200 bg-blue-50">
+        <Card className="p-4 border-blue-200 bg-blue-50">
           <p className="text-sm text-blue-700">Nadcházející</p>
           <p className="text-2xl font-bold text-blue-600">
             {parties.filter((p) => isUpcoming(p.date)).length}
@@ -219,7 +216,7 @@ export default function AdminPartiesPage() {
           const hasAllergies = party.allergies && party.allergies.length > 0
 
           return (
-            <Card key={party.id} variant="outlined" className="hover:shadow-md transition-shadow">
+            <Card key={party.id} className="hover:shadow-md transition-shadow">
               <div className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-start gap-4">

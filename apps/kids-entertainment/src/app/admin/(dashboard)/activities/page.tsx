@@ -7,10 +7,8 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/Button'
-import { Card } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
 import { Plus, Edit, Trash2, Eye, Zap } from 'lucide-react'
+import { Badge, Button, Card } from '@vertigo/ui'
 
 interface Activity {
   id: string
@@ -113,7 +111,7 @@ export default function AdminActivitiesPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {activities.map((activity) => (
-          <Card key={activity.id} variant="outlined" className="flex flex-col">
+          <Card key={activity.id} className="flex flex-col">
             <div className="p-6 flex-1">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">

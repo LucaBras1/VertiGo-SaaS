@@ -2,10 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
 import {
   Sparkles,
   Music,
@@ -21,6 +17,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
+import { Card, CardContent, CardHeader, CardTitle, Button, Input, Badge } from '@vertigo/ui'
 
 interface RepertoireSong {
   id: string

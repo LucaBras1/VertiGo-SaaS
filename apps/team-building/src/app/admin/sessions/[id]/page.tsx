@@ -10,9 +10,8 @@ import { SessionForm } from '@/components/admin/SessionForm'
 import { ArrowLeft, Trash2, FileText, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
-import { Button } from '@/components/ui/Button'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { format } from 'date-fns'
+import { Button, Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
 
 export default function EditSessionPage({ params }: { params: { id: string } }) {
   const router = useRouter()
@@ -185,9 +184,9 @@ export default function EditSessionPage({ params }: { params: { id: string } }) 
             </p>
           </div>
           <Button
-            variant="danger"
+            variant="destructive"
             onClick={handleDelete}
-            isLoading={isDeleting}
+            loading={isDeleting}
           >
             <Trash2 className="w-4 h-4 mr-2" />
             Smazat workshop
@@ -250,7 +249,7 @@ export default function EditSessionPage({ params }: { params: { id: string } }) 
 
                 <Button
                   onClick={handleGenerateDebrief}
-                  isLoading={isGeneratingDebrief}
+                  loading={isGeneratingDebrief}
                   variant="secondary"
                 >
                   <Sparkles className="w-5 h-5 mr-2" />
@@ -264,7 +263,7 @@ export default function EditSessionPage({ params }: { params: { id: string } }) 
                 </p>
                 <Button
                   onClick={handleGenerateDebrief}
-                  isLoading={isGeneratingDebrief}
+                  loading={isGeneratingDebrief}
                   variant="secondary"
                 >
                   <Sparkles className="w-5 h-5 mr-2" />

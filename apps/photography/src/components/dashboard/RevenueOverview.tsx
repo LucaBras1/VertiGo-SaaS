@@ -1,7 +1,6 @@
 import { prisma } from '@/lib/prisma'
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
 import { DollarSign, TrendingUp, TrendingDown } from 'lucide-react'
+import { Badge, Card, CardDescription, CardHeader, CardTitle } from '@vertigo/ui'
 
 async function getRevenueData(tenantId: string) {
   const now = new Date()

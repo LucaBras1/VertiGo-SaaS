@@ -5,9 +5,6 @@
 export const dynamic = 'force-dynamic'
 
 import { prisma } from '@/lib/prisma'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
-import { Button } from '@/components/ui/Button'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -22,6 +19,7 @@ import {
   Home,
   TreePine,
 } from 'lucide-react'
+import { Badge, Button, Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
 
 async function getPackage(slug: string) {
   const pkg = await prisma.package.findUnique({
@@ -71,11 +69,11 @@ export default async function PackageDetailPage({
           <div className="text-white">
             <div className="flex items-center space-x-3 mb-4">
               {pkg.featured && (
-                <Badge variant="yellow" size="lg">
+                <Badge size="lg" className="bg-partypal-yellow-100 text-partypal-yellow-800">
                   ⭐ Doporučujeme
                 </Badge>
               )}
-              <Badge variant="pink" size="lg">
+              <Badge size="lg" className="bg-partypal-pink-100 text-partypal-pink-800">
                 {pkg.category}
               </Badge>
             </div>

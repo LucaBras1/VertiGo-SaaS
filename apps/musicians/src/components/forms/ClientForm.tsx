@@ -6,11 +6,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import toast from 'react-hot-toast'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button, Input, Textarea, Label, Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
 
 const clientSchema = z.object({
   firstName: z.string().min(1, 'Jméno je povinné'),
@@ -211,7 +207,7 @@ export function ClientForm({ initialData, onSuccess }: ClientFormProps) {
         >
           Zrušit
         </Button>
-        <Button type="submit" isLoading={isLoading}>
+        <Button type="submit" loading={isLoading}>
           {isEdit ? 'Uložit změny' : 'Vytvořit klienta'}
         </Button>
       </div>

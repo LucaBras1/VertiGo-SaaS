@@ -4,14 +4,12 @@ import { useEffect, useState, useMemo } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft, Edit, Trash2, Mail, FileText, Music, Calendar, MapPin, Users, DollarSign, Download, Loader2, Activity } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogHeader, DialogTitle, DialogContent, DialogFooter } from '@/components/ui/dialog'
 import EnergyFlowChart from '@/components/charts/EnergyFlowChart'
 import { DepositPaymentButton } from '@/components/payments'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import toast from 'react-hot-toast'
+import { Button, Card, CardContent, CardHeader, CardTitle, Badge } from '@vertigo/ui'
 
 interface Gig {
   id: string
@@ -441,7 +439,7 @@ export default function GigDetailPage() {
           <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
             Zrušit
           </Button>
-          <Button variant="destructive" onClick={handleDelete} isLoading={isDeleting}>
+          <Button variant="destructive" onClick={handleDelete} loading={isDeleting}>
             Smazat
           </Button>
         </DialogFooter>

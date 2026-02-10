@@ -6,9 +6,8 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Card } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
 import { Eye, ShoppingCart } from 'lucide-react'
+import { Badge, Card } from '@vertigo/ui'
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<any[]>([])

@@ -2,8 +2,7 @@
 
 import { Search, Filter } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { fadeIn } from '@vertigo/ui'
-import { Card } from '@/components/ui/Card'
+import { Card, fadeIn } from '@vertigo/ui'
 
 interface FilterOption {
   label: string

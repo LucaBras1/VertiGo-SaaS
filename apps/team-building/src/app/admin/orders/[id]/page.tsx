@@ -18,9 +18,8 @@ import {
   FileText,
   Plus,
 } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import toast from 'react-hot-toast'
+import { Button, ConfirmDialog } from '@vertigo/ui'
 
 interface Order {
   id: string
@@ -402,12 +401,12 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
       </div>
 
       <ConfirmDialog
-        isOpen={showDeleteDialog}
+        open={showDeleteDialog}
         onClose={() => setShowDeleteDialog(false)}
         onConfirm={handleDelete}
         title="Smazat objednávku"
-        message="Opravdu chcete smazat tuto objednávku? Tato akce je nevratná."
-        confirmText="Smazat"
+        description="Opravdu chcete smazat tuto objednávku? Tato akce je nevratná."
+        confirmLabel="Smazat"
         variant="danger"
       />
     </div>

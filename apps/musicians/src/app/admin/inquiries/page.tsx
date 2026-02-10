@@ -3,9 +3,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import {
   Inbox,
   Search,
@@ -26,6 +23,7 @@ import {
   FileText,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { Card, CardContent, CardHeader, CardTitle, Button, Badge } from '@vertigo/ui'
 
 interface Inquiry {
   id: string
@@ -395,7 +393,7 @@ export default function InquiriesPage() {
                           <Button
                             size="sm"
                             onClick={() => handleConvert(inquiry.id)}
-                            isLoading={converting === inquiry.id}
+                            loading={converting === inquiry.id}
                           >
                             <ArrowRight className="w-4 h-4 mr-1" />
                             Převést na gig
@@ -424,7 +422,7 @@ export default function InquiriesPage() {
                           <Button
                             size="sm"
                             onClick={() => handleConvert(inquiry.id)}
-                            isLoading={converting === inquiry.id}
+                            loading={converting === inquiry.id}
                           >
                             <ArrowRight className="w-4 h-4 mr-1" />
                             Převést na gig

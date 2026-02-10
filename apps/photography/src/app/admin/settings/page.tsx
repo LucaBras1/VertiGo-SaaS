@@ -2,12 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import { User, Building, CreditCard, Bell, Calendar, Loader2, Check, AlertCircle, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
+import { Button, Card, CardDescription, CardHeader, CardTitle, Input } from '@vertigo/ui'
 
 interface NotificationSettings {
   upcomingShoots: boolean
@@ -202,7 +200,7 @@ export default function SettingsPage() {
             value={session?.user?.email || ''}
             placeholder="your@email.com"
             disabled
-            helperText="Email cannot be changed"
+            hint="Email cannot be changed"
           />
           <Button onClick={handleSaveProfile} disabled={isSavingProfile}>
             {isSavingProfile ? (
@@ -423,7 +421,7 @@ export default function SettingsPage() {
               <p className="font-semibold text-neutral-900 dark:text-neutral-100">Free Plan</p>
               <p className="text-sm text-neutral-600 dark:text-neutral-400">5 packages per month | Basic features</p>
             </div>
-            <Button variant="primary">Upgrade to Pro</Button>
+            <Button variant="default">Upgrade to Pro</Button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
@@ -463,7 +461,7 @@ export default function SettingsPage() {
               <p className="font-medium text-neutral-900 dark:text-neutral-100">Delete Account</p>
               <p className="text-sm text-neutral-600 dark:text-neutral-400">Permanently delete your account and all data</p>
             </div>
-            <Button variant="danger" onClick={handleDeleteAccount}>Delete Account</Button>
+            <Button variant="destructive" onClick={handleDeleteAccount}>Delete Account</Button>
           </div>
         </div>
       </Card>

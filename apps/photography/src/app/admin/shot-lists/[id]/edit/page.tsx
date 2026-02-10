@@ -4,10 +4,8 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
-import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import toast from 'react-hot-toast'
+import { Button, Card, CardHeader, CardTitle, Input } from '@vertigo/ui'
 
 interface Package {
   id: string
@@ -202,7 +200,7 @@ export default function EditShotListPage() {
               value={formData.equipmentList}
               onChange={(e) => setFormData({ ...formData, equipmentList: e.target.value })}
               placeholder="Canon R5, 24-70mm, flash"
-              helperText="Comma-separated list of equipment"
+              hint="Comma-separated list of equipment"
             />
 
             <div>
@@ -220,7 +218,7 @@ export default function EditShotListPage() {
 
         {/* Actions */}
         <div className="flex items-center gap-4">
-          <Button type="submit" isLoading={isLoading}>
+          <Button type="submit" loading={isLoading}>
             Update Shot List
           </Button>
           <Link href={`/admin/shot-lists/${params.id}`}>

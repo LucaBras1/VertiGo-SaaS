@@ -8,9 +8,6 @@
 import { useState, useEffect, use } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Card } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
-import { Button } from '@/components/ui/Button'
 import {
   ArrowLeft,
   Calendar,
@@ -29,6 +26,7 @@ import {
   Save,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { Badge, Button, Card } from '@vertigo/ui'
 
 interface Party {
   id: string
@@ -261,7 +259,7 @@ export default function PartyDetailPage({ params }: { params: Promise<{ id: stri
         {/* Main Info */}
         <div className="lg:col-span-2 space-y-6">
           {/* Date & Venue */}
-          <Card variant="outlined" className="p-6">
+          <Card className="p-6">
             <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Termín a místo</h3>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-3">
@@ -297,7 +295,7 @@ export default function PartyDetailPage({ params }: { params: Promise<{ id: stri
           </Card>
 
           {/* Guests */}
-          <Card variant="outlined" className="p-6">
+          <Card className="p-6">
             <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Hosté</h3>
             <div className="grid md:grid-cols-2 gap-6">
               <div>
@@ -330,7 +328,7 @@ export default function PartyDetailPage({ params }: { params: Promise<{ id: stri
 
           {/* Allergies & Dietary */}
           {(hasAllergies || party.dietaryRestrictions?.length || party.specialNeeds) && (
-            <Card variant="outlined" className="p-6 border-amber-200 bg-amber-50">
+            <Card className="p-6 border-amber-200 bg-amber-50">
               <h3 className="text-lg font-semibold text-amber-800 mb-4 flex items-center">
                 <AlertTriangle className="h-5 w-5 mr-2" />
                 Bezpečnostní informace
@@ -363,7 +361,7 @@ export default function PartyDetailPage({ params }: { params: Promise<{ id: stri
           )}
 
           {/* Contact */}
-          <Card variant="outlined" className="p-6">
+          <Card className="p-6">
             <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Kontakty</h3>
             <div className="grid md:grid-cols-2 gap-6">
               <div>
@@ -411,7 +409,7 @@ export default function PartyDetailPage({ params }: { params: Promise<{ id: stri
 
           {/* Special Requests */}
           {party.specialRequests && (
-            <Card variant="outlined" className="p-6">
+            <Card className="p-6">
               <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-2">Speciální požadavky</h3>
               <p className="text-neutral-700 dark:text-neutral-300">{party.specialRequests}</p>
             </Card>
@@ -421,7 +419,7 @@ export default function PartyDetailPage({ params }: { params: Promise<{ id: stri
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Status Actions */}
-          <Card variant="outlined" className="p-6">
+          <Card className="p-6">
             <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Akce</h3>
             <div className="space-y-3">
               {party.status === 'inquiry' && (
@@ -459,7 +457,7 @@ export default function PartyDetailPage({ params }: { params: Promise<{ id: stri
           </Card>
 
           {/* Assign Entertainer */}
-          <Card variant="outlined" className="p-6">
+          <Card className="p-6">
             <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Přiřadit animátora</h3>
             <select
               value={assignedEntertainerId}
@@ -480,7 +478,7 @@ export default function PartyDetailPage({ params }: { params: Promise<{ id: stri
           </Card>
 
           {/* Safety Checklist */}
-          <Card variant="outlined" className="p-6">
+          <Card className="p-6">
             <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4 flex items-center">
               <Shield className="h-5 w-5 mr-2 text-partypal-pink-500" />
               Bezpečnostní checklist

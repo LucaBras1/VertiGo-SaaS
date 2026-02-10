@@ -4,9 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Camera } from 'lucide-react'
-import { Input } from '@/components/ui/Input'
-import { Button } from '@/components/ui/Button'
 import toast from 'react-hot-toast'
+import { Button, Input } from '@vertigo/ui'
 
 export default function SignupPage() {
   const router = useRouter()
@@ -108,7 +107,7 @@ export default function SignupPage() {
               value={formData.businessName}
               onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
               required
-              helperText="This will be your workspace name"
+              hint="This will be your workspace name"
             />
 
             <Input
@@ -133,7 +132,7 @@ export default function SignupPage() {
               autoComplete="new-password"
             />
 
-            <Button type="submit" isLoading={isLoading} className="w-full">
+            <Button type="submit" loading={isLoading} className="w-full">
               {isLoading ? 'Creating account...' : 'Create Account'}
             </Button>
           </form>

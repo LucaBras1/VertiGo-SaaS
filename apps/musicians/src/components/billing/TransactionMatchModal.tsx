@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { Dialog, DialogHeader, DialogTitle, DialogContent, DialogFooter } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { Loader2, Check, AlertCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { Button, Badge } from '@vertigo/ui'
 
 interface Transaction {
   id: string
@@ -209,7 +208,7 @@ export function TransactionMatchModal({
                     size="sm"
                     onClick={() => handleMatch(suggestion.invoiceId)}
                     disabled={isMatching !== null}
-                    isLoading={isMatching === suggestion.invoiceId}
+                    loading={isMatching === suggestion.invoiceId}
                   >
                     Spárovat
                   </Button>

@@ -2,9 +2,9 @@
 
 import { format } from 'date-fns'
 import { cs } from 'date-fns/locale'
-import { Card } from '@/components/ui/Card'
 import { ContractStatusBadge } from './ContractStatusBadge'
 import type { Contract, Client, Package, Tenant } from '@/generated/prisma'
+import { Card } from '@vertigo/ui'
 
 interface ContractPreviewProps {
   contract: Contract & {

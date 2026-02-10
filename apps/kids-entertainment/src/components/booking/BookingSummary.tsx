@@ -7,9 +7,7 @@
 
 import { useState } from 'react'
 import { Calendar, Clock, MapPin, Users, Baby, AlertTriangle, Phone, Package, Loader2, CheckCircle } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { Card } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
+import { Badge, Button, Card } from '@vertigo/ui'
 
 interface BookingSummaryProps {
   packageData?: {
@@ -129,7 +127,7 @@ export function BookingSummary({
           a dalšími detaily.
         </p>
         <div className="space-y-4">
-          <Card variant="outlined" className="p-6 max-w-md mx-auto text-left">
+          <Card className="p-6 max-w-md mx-auto text-left">
             <h3 className="font-semibold text-gray-900 mb-3">Co se stane dál?</h3>
             <ol className="space-y-2 text-sm text-gray-600">
               <li className="flex items-start">
@@ -164,14 +162,14 @@ export function BookingSummary({
       </div>
 
       {/* Party Name */}
-      <Card variant="outlined" className="p-6 bg-gradient-to-r from-partypal-pink-50 to-partypal-yellow-50">
+      <Card className="p-6 bg-gradient-to-r from-partypal-pink-50 to-partypal-yellow-50">
         <h3 className="text-2xl font-bold text-center text-gray-900">
           {childInfo.childName} slaví {childInfo.childAge}. narozeniny!
         </h3>
       </Card>
 
       {/* Package/Activities */}
-      <Card variant="outlined" className="p-6">
+      <Card className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
           <Package className="h-5 w-5 mr-2 text-partypal-pink-500" />
           Vybraný program
@@ -208,7 +206,7 @@ export function BookingSummary({
       </Card>
 
       {/* Date & Time */}
-      <Card variant="outlined" className="p-6">
+      <Card className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
           <Calendar className="h-5 w-5 mr-2 text-partypal-pink-500" />
           Termín
@@ -226,7 +224,7 @@ export function BookingSummary({
       </Card>
 
       {/* Venue */}
-      <Card variant="outlined" className="p-6">
+      <Card className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
           <MapPin className="h-5 w-5 mr-2 text-partypal-pink-500" />
           Místo konání
@@ -239,7 +237,7 @@ export function BookingSummary({
       </Card>
 
       {/* Guests & Child */}
-      <Card variant="outlined" className="p-6">
+      <Card className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
           <Users className="h-5 w-5 mr-2 text-partypal-pink-500" />
           Hosté
@@ -266,7 +264,7 @@ export function BookingSummary({
       </Card>
 
       {/* Contact */}
-      <Card variant="outlined" className="p-6">
+      <Card className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
           <Phone className="h-5 w-5 mr-2 text-partypal-pink-500" />
           Kontakt
@@ -280,7 +278,7 @@ export function BookingSummary({
 
       {/* Special Requests */}
       {partyDetails.specialRequests && (
-        <Card variant="outlined" className="p-6">
+        <Card className="p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
             Speciální požadavky
           </h3>
@@ -289,7 +287,7 @@ export function BookingSummary({
       )}
 
       {/* Price Summary */}
-      <Card variant="outlined" className="p-6 bg-gray-50">
+      <Card className="p-6 bg-gray-50">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
           Cenový souhrn
         </h3>
@@ -329,7 +327,7 @@ export function BookingSummary({
       </Card>
 
       {error && (
-        <Card variant="outlined" className="p-4 border-red-300 bg-red-50">
+        <Card className="p-4 border-red-300 bg-red-50">
           <p className="text-sm text-red-800">{error}</p>
         </Card>
       )}

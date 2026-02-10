@@ -9,11 +9,8 @@ import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ShoppingCart, Plus, Calendar, Building2, Users } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { ListPageHeader, SearchFilterBar, ActionButtons, StatusBadge } from '@vertigo/admin'
-import { staggerContainer, staggerItem } from '@vertigo/ui'
+import { Button, Card, ConfirmDialog, staggerContainer, staggerItem } from '@vertigo/ui'
 import toast from 'react-hot-toast'
 
 interface Order {
@@ -177,12 +174,12 @@ export default function OrdersPage() {
       )}
 
       <ConfirmDialog
-        isOpen={!!deleteId}
+        open={!!deleteId}
         onClose={() => setDeleteId(null)}
         onConfirm={handleDelete}
         title="Smazat objednávku"
-        message="Opravdu chcete smazat tuto objednávku? Tato akce je nevratná."
-        confirmText="Smazat"
+        description="Opravdu chcete smazat tuto objednávku? Tato akce je nevratná."
+        confirmLabel="Smazat"
         variant="danger"
       />
     </div>

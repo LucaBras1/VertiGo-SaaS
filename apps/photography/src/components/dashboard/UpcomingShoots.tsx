@@ -1,9 +1,8 @@
 import { prisma } from '@/lib/prisma'
-import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
 import { Calendar, Clock, MapPin } from 'lucide-react'
 import { format } from 'date-fns'
 import Link from 'next/link'
+import { Badge, Card, CardHeader, CardTitle } from '@vertigo/ui'
 
 export async function UpcomingShoots({ tenantId }: { tenantId: string }) {
   const shoots = await prisma.shoot.findMany({

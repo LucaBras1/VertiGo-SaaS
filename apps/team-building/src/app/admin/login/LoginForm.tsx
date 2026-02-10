@@ -8,9 +8,8 @@
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Button } from '@/components/ui/Button'
-import { Card } from '@/components/ui/Card'
 import { Users, AlertCircle } from 'lucide-react'
+import { Button, Card } from '@vertigo/ui'
 
 export default function LoginForm() {
   const router = useRouter()
@@ -104,9 +103,9 @@ export default function LoginForm() {
 
           <Button
             type="submit"
-            isLoading={isLoading}
+            loading={isLoading}
             className="w-full"
-            variant="primary"
+            variant="default"
           >
             {isLoading ? 'Přihlašuji...' : 'Přihlásit se'}
           </Button>

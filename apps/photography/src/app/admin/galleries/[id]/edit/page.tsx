@@ -4,10 +4,8 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
-import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import toast from 'react-hot-toast'
+import { Button, Card, CardHeader, CardTitle, Input } from '@vertigo/ui'
 
 interface Shoot {
   id: string
@@ -188,7 +186,7 @@ export default function EditGalleryPage() {
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               placeholder="Leave empty for no password"
-              helperText="Clients will need this password to access the gallery"
+              hint="Clients will need this password to access the gallery"
             />
 
             <Input
@@ -196,7 +194,7 @@ export default function EditGalleryPage() {
               label="Expiration Date"
               value={formData.expiresAt}
               onChange={(e) => setFormData({ ...formData, expiresAt: e.target.value })}
-              helperText="Leave empty for no expiration"
+              hint="Leave empty for no expiration"
             />
 
             <label className="flex items-center">
@@ -213,7 +211,7 @@ export default function EditGalleryPage() {
 
         {/* Actions */}
         <div className="flex items-center gap-4">
-          <Button type="submit" isLoading={isLoading}>
+          <Button type="submit" loading={isLoading}>
             Update Gallery
           </Button>
           <Link href={`/admin/galleries/${params.id}`}>

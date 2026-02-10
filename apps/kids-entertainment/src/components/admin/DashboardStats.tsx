@@ -5,8 +5,8 @@
 
 'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Calendar, DollarSign, Users, TrendingUp } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
 
 interface StatCardProps {
   title: string
@@ -18,7 +18,7 @@ interface StatCardProps {
 
 function StatCard({ title, value, change, icon, trend }: StatCardProps) {
   return (
-    <Card variant="hover" className="border-2 border-gray-100">
+    <Card className="border-2 border-gray-100">
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div>

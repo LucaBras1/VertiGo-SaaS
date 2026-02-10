@@ -7,10 +7,8 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/Button'
-import { Card } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
 import { Plus, Edit, Trash2, Eye } from 'lucide-react'
+import { Badge, Button, Card } from '@vertigo/ui'
 
 interface Package {
   id: string
@@ -99,7 +97,7 @@ export default function AdminPackagesPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {packages.map((pkg) => (
-          <Card key={pkg.id} variant="outlined" className="flex flex-col">
+          <Card key={pkg.id} className="flex flex-col">
             <div className="p-6 flex-1">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
@@ -113,7 +111,7 @@ export default function AdminPackagesPage() {
                 <div className="flex flex-col items-end space-y-2">
                   {getStatusBadge(pkg.status)}
                   {pkg.featured && (
-                    <Badge variant="pink" size="sm">
+                    <Badge size="sm" className="bg-partypal-pink-100 text-partypal-pink-800">
                       Doporučeno
                     </Badge>
                   )}

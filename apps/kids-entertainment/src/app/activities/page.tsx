@@ -6,8 +6,8 @@
 import Link from 'next/link'
 import { ArrowLeft, Filter } from 'lucide-react'
 import { ActivityCard } from '@/components/activities/ActivityCard'
-import { Button } from '@/components/ui/Button'
 import { prisma } from '@/lib/prisma'
+import { Button } from '@vertigo/ui'
 
 export const dynamic = 'force-dynamic'
 

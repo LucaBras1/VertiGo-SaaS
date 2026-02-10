@@ -9,10 +9,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Baby, Heart, AlertTriangle, Phone } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { Card } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
+import { Badge, Button, Card, Input } from '@vertigo/ui'
 
 const childInfoSchema = z.object({
   childName: z.string().min(2, 'Zadejte jméno dítěte'),
@@ -84,7 +81,7 @@ export function ChildInfoForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <Card variant="outlined" className="p-6">
+      <Card className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
           <Baby className="h-5 w-5 mr-2 text-partypal-pink-500" />
           Informace o narozeninovém dítěti
@@ -150,7 +147,7 @@ export function ChildInfoForm({
         </div>
       </Card>
 
-      <Card variant="outlined" className="p-6">
+      <Card className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
           <AlertTriangle className="h-5 w-5 mr-2 text-amber-500" />
           Alergie a zdravotní omezení
@@ -213,7 +210,7 @@ export function ChildInfoForm({
         </div>
       </Card>
 
-      <Card variant="outlined" className="p-6">
+      <Card className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
           <Phone className="h-5 w-5 mr-2 text-partypal-pink-500" />
           Kontaktní údaje

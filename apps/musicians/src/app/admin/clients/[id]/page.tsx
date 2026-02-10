@@ -4,11 +4,10 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft, Edit, Trash2, Mail, Phone, Building, MapPin } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Dialog, DialogHeader, DialogTitle, DialogContent, DialogFooter } from '@/components/ui/dialog'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import toast from 'react-hot-toast'
+import { Button, Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
 
 interface Client {
   id: string
@@ -174,7 +173,7 @@ export default function ClientDetailPage() {
         </DialogContent>
         <DialogFooter>
           <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>Zrušit</Button>
-          <Button variant="destructive" onClick={handleDelete} isLoading={isDeleting}>Smazat</Button>
+          <Button variant="destructive" onClick={handleDelete} loading={isDeleting}>Smazat</Button>
         </DialogFooter>
       </Dialog>
     </div>

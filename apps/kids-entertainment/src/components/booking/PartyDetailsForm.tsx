@@ -9,9 +9,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Calendar, Clock, MapPin, Users } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { Card } from '@/components/ui/Card'
+import { Button, Card, Input } from '@vertigo/ui'
 
 const partyDetailsSchema = z.object({
   date: z.string().min(1, 'Vyberte datum oslavy'),
@@ -60,7 +58,7 @@ export function PartyDetailsForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <Card variant="outlined" className="p-6">
+      <Card className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
           <Calendar className="h-5 w-5 mr-2 text-partypal-pink-500" />
           Datum a čas
@@ -90,7 +88,7 @@ export function PartyDetailsForm({
         </div>
       </Card>
 
-      <Card variant="outlined" className="p-6">
+      <Card className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
           <MapPin className="h-5 w-5 mr-2 text-partypal-pink-500" />
           Místo konání
@@ -165,7 +163,7 @@ export function PartyDetailsForm({
         </div>
       </Card>
 
-      <Card variant="outlined" className="p-6">
+      <Card className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
           <Users className="h-5 w-5 mr-2 text-partypal-pink-500" />
           Hosté
@@ -189,7 +187,7 @@ export function PartyDetailsForm({
         </div>
       </Card>
 
-      <Card variant="outlined" className="p-6">
+      <Card className="p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
           Speciální požadavky
         </h3>

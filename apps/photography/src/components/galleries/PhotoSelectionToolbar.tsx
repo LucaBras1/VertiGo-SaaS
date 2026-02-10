@@ -4,8 +4,8 @@ import { clsx } from 'clsx'
 import {
   Check, X, Star, RotateCcw, Square, CheckSquare, Grid3X3, Grid2X2, LayoutGrid
 } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
 import type { FilterMode, GridSize } from '@/hooks/usePhotoSelection'
+import { Button } from '@vertigo/ui'
 
 interface PhotoSelectionToolbarProps {
   stats: {

@@ -4,10 +4,8 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
-import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import toast from 'react-hot-toast'
+import { Button, Card, CardHeader, CardTitle, Input } from '@vertigo/ui'
 
 interface Client {
   id: string
@@ -258,7 +256,7 @@ export default function EditPackagePage() {
               value={formData.styleTags}
               onChange={(e) => setFormData({ ...formData, styleTags: e.target.value })}
               placeholder="moody, bright, documentary"
-              helperText="Comma-separated"
+              hint="Comma-separated"
             />
 
             <Input
@@ -266,7 +264,7 @@ export default function EditPackagePage() {
               value={formData.equipment}
               onChange={(e) => setFormData({ ...formData, equipment: e.target.value })}
               placeholder="Canon R5, 24-70mm"
-              helperText="Comma-separated"
+              hint="Comma-separated"
             />
 
             <div className="space-y-3">
@@ -341,7 +339,7 @@ export default function EditPackagePage() {
 
         {/* Actions */}
         <div className="flex items-center gap-4">
-          <Button type="submit" isLoading={isLoading}>
+          <Button type="submit" loading={isLoading}>
             Update Package
           </Button>
           <Link href={`/admin/packages/${params.id}`}>

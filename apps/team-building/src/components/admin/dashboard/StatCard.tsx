@@ -1,8 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Card } from '@/components/ui/Card'
-import { staggerItem, hoverLift } from '@vertigo/ui'
+import { Card, hoverLift, staggerItem } from '@vertigo/ui'
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 

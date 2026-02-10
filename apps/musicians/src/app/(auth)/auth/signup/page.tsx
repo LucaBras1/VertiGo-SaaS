@@ -4,10 +4,8 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Music } from 'lucide-react'
+import { Button, Input, Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
 
 export default function SignUpPage() {
   const router = useRouter()
@@ -172,7 +170,7 @@ export default function SignUpPage() {
                 />
               </div>
 
-              <Button type="submit" className="w-full" isLoading={isLoading}>
+              <Button type="submit" className="w-full" loading={isLoading}>
                 Create Account
               </Button>
             </form>

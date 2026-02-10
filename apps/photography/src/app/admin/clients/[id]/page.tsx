@@ -7,11 +7,8 @@ import {
   ArrowLeft, Edit, Trash2, Mail, Phone, MapPin,
   Package, Calendar, FileText, Plus, Loader2
 } from 'lucide-react'
-import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Badge } from '@/components/ui/Badge'
-import { Modal } from '@/components/ui/Modal'
 import { useClient, useDeleteClient, CLIENT_TYPE_LABELS } from '@/hooks/useClients'
+import { Badge, Button, Card, CardHeader, CardTitle, Modal, ModalBody, ModalContent, ModalHeader, ModalTitle } from '@vertigo/ui'
 
 interface ClientWithRelations {
   id: string
@@ -116,7 +113,7 @@ export default function ClientDetailPage() {
               Edit
             </Button>
           </Link>
-          <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
+          <Button variant="destructive" onClick={() => setShowDeleteModal(true)}>
             <Trash2 className="w-4 h-4 mr-2" />
             Delete
           </Button>
@@ -307,7 +304,12 @@ export default function ClientDetailPage() {
       </div>
 
       {/* Delete Modal */}
-      <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)} title="Delete Client">
+      <Modal open={showDeleteModal} onOpenChange={(open: boolean) => { if (!open) setShowDeleteModal(false) }}>
+        <ModalContent>
+          <ModalHeader>
+            <ModalTitle>Delete Client</ModalTitle>
+          </ModalHeader>
+          <ModalBody>
         <div className="space-y-4">
           <p className="text-neutral-600 dark:text-neutral-400">
             Are you sure you want to delete &quot;{client.name}&quot;? This will also delete all associated packages, shoots, and invoices.
@@ -316,11 +318,13 @@ export default function ClientDetailPage() {
             <Button variant="ghost" onClick={() => setShowDeleteModal(false)}>
               Cancel
             </Button>
-            <Button variant="danger" onClick={handleDelete} isLoading={deleteClientMutation.isPending}>
+            <Button variant="destructive" onClick={handleDelete} loading={deleteClientMutation.isPending}>
               Delete Client
             </Button>
           </div>
         </div>
+      </ModalBody>
+        </ModalContent>
       </Modal>
     </div>
   )

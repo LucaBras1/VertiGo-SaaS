@@ -7,10 +7,6 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Card } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import {
   Sparkles,
   Mail,
@@ -28,6 +24,7 @@ import {
   Users,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { Badge, Button, Card, Input } from '@vertigo/ui'
 
 interface Entertainer {
   id: string
@@ -167,7 +164,7 @@ export default function AdminEntertainersPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card variant="outlined" className="p-4">
+        <Card className="p-4">
           <div className="flex items-center">
             <Users className="h-8 w-8 text-partypal-pink-500 mr-3" />
             <div>
@@ -176,7 +173,7 @@ export default function AdminEntertainersPage() {
             </div>
           </div>
         </Card>
-        <Card variant="outlined" className="p-4 border-green-200 bg-green-50">
+        <Card className="p-4 border-green-200 bg-green-50">
           <div className="flex items-center">
             <CheckCircle className="h-8 w-8 text-green-500 mr-3" />
             <div>
@@ -185,7 +182,7 @@ export default function AdminEntertainersPage() {
             </div>
           </div>
         </Card>
-        <Card variant="outlined" className="p-4 border-amber-200 bg-amber-50">
+        <Card className="p-4 border-amber-200 bg-amber-50">
           <div className="flex items-center">
             <AlertTriangle className="h-8 w-8 text-amber-500 mr-3" />
             <div>
@@ -194,7 +191,7 @@ export default function AdminEntertainersPage() {
             </div>
           </div>
         </Card>
-        <Card variant="outlined" className="p-4">
+        <Card className="p-4">
           <div className="flex items-center">
             <XCircle className="h-8 w-8 text-neutral-400 dark:text-neutral-500 mr-3" />
             <div>
@@ -230,7 +227,6 @@ export default function AdminEntertainersPage() {
           return (
             <Card
               key={entertainer.id}
-              variant="outlined"
               className={!entertainer.isActive ? 'opacity-60' : ''}
             >
               <div className="p-6">
@@ -296,7 +292,7 @@ export default function AdminEntertainersPage() {
                   <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-1">Specializace:</p>
                   <div className="flex flex-wrap gap-1">
                     {entertainer.specializations.slice(0, 4).map((spec: string) => (
-                      <Badge key={spec} variant="pink" size="sm">
+                      <Badge key={spec} size="sm" className="bg-partypal-pink-100 text-partypal-pink-800">
                         {spec}
                       </Badge>
                     ))}

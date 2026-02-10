@@ -7,10 +7,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { staggerContainer, staggerItem, slideUp } from '@vertigo/ui'
+import { Button, Card, CardContent, CardHeader, CardTitle, Input, slideUp, staggerContainer, staggerItem } from '@vertigo/ui'
 import {
   Target,
   Lightbulb,
@@ -350,7 +347,7 @@ export default function ObjectiveMatcherPage() {
             {/* Find Activities Button */}
             <Button
               onClick={handleFindActivities}
-              isLoading={isLoading}
+              loading={isLoading}
               className="w-full"
               size="lg"
             >

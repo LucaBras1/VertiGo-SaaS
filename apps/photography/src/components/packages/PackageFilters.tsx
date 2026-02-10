@@ -2,8 +2,7 @@
 
 import { useState } from 'react'
 import { Search, Filter, X, ChevronDown } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-
+import { Button } from '@vertigo/ui'
 interface PackageFiltersProps {
   onFilterChange: (filters: PackageFiltersState) => void
   clients?: { id: string; name: string }[]

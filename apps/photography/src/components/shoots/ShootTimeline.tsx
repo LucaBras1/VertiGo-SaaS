@@ -2,9 +2,7 @@
 
 import { useState } from 'react'
 import { Plus, Trash2, GripVertical, Edit2, Check, X, Clock } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
-
+import { Button, Card, CardHeader, CardTitle } from '@vertigo/ui'
 export interface TimelineEvent {
   id: string
   time: string

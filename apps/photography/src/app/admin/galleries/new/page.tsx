@@ -4,10 +4,8 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
-import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import toast from 'react-hot-toast'
+import { Button, Card, CardHeader, CardTitle, Input } from '@vertigo/ui'
 
 interface Shoot {
   id: string
@@ -147,7 +145,7 @@ export default function NewGalleryPage() {
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               placeholder="Leave empty for no password"
-              helperText="Clients will need this password to access the gallery"
+              hint="Clients will need this password to access the gallery"
             />
 
             <Input
@@ -156,7 +154,7 @@ export default function NewGalleryPage() {
               value={formData.expiresInDays}
               onChange={(e) => setFormData({ ...formData, expiresInDays: e.target.value })}
               placeholder="e.g., 30"
-              helperText="Leave empty for no expiration"
+              hint="Leave empty for no expiration"
             />
 
             <label className="flex items-center">
@@ -173,7 +171,7 @@ export default function NewGalleryPage() {
 
         {/* Actions */}
         <div className="flex items-center gap-4">
-          <Button type="submit" isLoading={isLoading}>
+          <Button type="submit" loading={isLoading}>
             Create Gallery
           </Button>
           <Link href="/admin/galleries">

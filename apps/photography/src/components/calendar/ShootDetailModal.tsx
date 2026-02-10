@@ -14,10 +14,8 @@ import {
   X,
   FileText,
 } from 'lucide-react'
-import { Modal } from '@/components/ui/Modal'
-import { Button } from '@/components/ui/Button'
-import { Badge } from '@/components/ui/Badge'
 import { Shoot, useDeleteShoot, SHOOT_STATUS_COLORS } from '@/hooks/useShoots'
+import { Badge, Button, Modal, ModalBody, ModalContent, ModalHeader, ModalTitle } from '@vertigo/ui'
 
 interface ShootDetailModalProps {
   isOpen: boolean
@@ -74,7 +72,12 @@ export function ShootDetailModal({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Shoot Details">
+    <Modal open={isOpen} onOpenChange={(open: boolean) => { if (!open) onClose() }}>
+        <ModalContent>
+          <ModalHeader>
+            <ModalTitle>Shoot Details</ModalTitle>
+          </ModalHeader>
+          <ModalBody>
       {showDeleteConfirm ? (
         <div className="space-y-4">
           <p className="text-gray-600">
@@ -85,9 +88,9 @@ export function ShootDetailModal({
               Cancel
             </Button>
             <Button
-              variant="danger"
+              variant="destructive"
               onClick={handleDelete}
-              isLoading={deleteShootMutation.isPending}
+              loading={deleteShootMutation.isPending}
             >
               Delete Shoot
             </Button>
@@ -204,7 +207,7 @@ export function ShootDetailModal({
 
           {/* Actions */}
           <div className="border-t border-gray-200 pt-4 flex justify-between">
-            <Button variant="danger" onClick={() => setShowDeleteConfirm(true)}>
+            <Button variant="destructive" onClick={() => setShowDeleteConfirm(true)}>
               <Trash2 className="w-4 h-4 mr-2" />
               Delete
             </Button>
@@ -220,6 +223,8 @@ export function ShootDetailModal({
           </div>
         </div>
       )}
-    </Modal>
+    </ModalBody>
+        </ModalContent>
+      </Modal>
   )
 }

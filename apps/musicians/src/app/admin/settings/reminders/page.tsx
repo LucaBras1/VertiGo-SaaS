@@ -2,10 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import {
   ArrowLeft,
   Bell,
@@ -21,6 +17,7 @@ import {
   AlertTriangle,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { Button, Input, Label, Card, CardContent, CardHeader, CardTitle, CardDescription } from '@vertigo/ui'
 
 interface ReminderSettings {
   enabled: boolean
@@ -589,7 +586,7 @@ export default function ReminderSettingsPage() {
 
       {/* Save button */}
       <div className="flex justify-end">
-        <Button onClick={handleSave} isLoading={saving}>
+        <Button onClick={handleSave} loading={saving}>
           Uložit nastavení
         </Button>
       </div>

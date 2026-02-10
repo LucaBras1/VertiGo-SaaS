@@ -3,9 +3,7 @@
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { ChevronLeft, ChevronRight, Plus, MapPin, Clock, Camera } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { Badge } from '@/components/ui/Badge'
-
+import { Badge, Button } from '@vertigo/ui'
 interface Shoot {
   id: string
   date: string

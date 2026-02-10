@@ -1,9 +1,6 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Calendar, Music, DollarSign, TrendingUp, Plus, Sparkles, FileText, Users, Target } from 'lucide-react'
 import Link from 'next/link'
 import { formatCurrency, formatDate } from '@/lib/utils'
@@ -17,6 +14,7 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import RemindersWidget from '@/components/dashboard/RemindersWidget'
+import { Card, CardContent, CardHeader, CardTitle, Button, Badge } from '@vertigo/ui'
 
 interface DashboardStats {
   upcomingGigs: number

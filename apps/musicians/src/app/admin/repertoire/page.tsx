@@ -2,13 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
 import { Plus, Search, Music, Clock, TrendingUp } from 'lucide-react'
 import { formatDuration } from '@/lib/utils'
 import toast from 'react-hot-toast'
+import { Button, Card, Input, Badge } from '@vertigo/ui'
 
 interface Song {
   id: string

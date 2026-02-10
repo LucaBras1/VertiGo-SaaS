@@ -9,11 +9,8 @@ import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { FileText, Plus, Search, Eye, Trash2, Calendar, Building2, DollarSign, Download } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { ListPageHeader, SearchFilterBar, ActionButtons, StatusBadge } from '@vertigo/admin'
-import { staggerContainer, staggerItem } from '@vertigo/ui'
+import { Button, Card, ConfirmDialog, staggerContainer, staggerItem } from '@vertigo/ui'
 import toast from 'react-hot-toast'
 
 interface Invoice {
@@ -214,12 +211,12 @@ export default function InvoicesPage() {
       )}
 
       <ConfirmDialog
-        isOpen={!!deleteId}
+        open={!!deleteId}
         onClose={() => setDeleteId(null)}
         onConfirm={handleDelete}
         title="Smazat fakturu"
-        message="Opravdu chcete smazat tento koncept faktury? Tato akce je nevratná."
-        confirmText="Smazat"
+        description="Opravdu chcete smazat tento koncept faktury? Tato akce je nevratná."
+        confirmLabel="Smazat"
         variant="danger"
       />
     </div>

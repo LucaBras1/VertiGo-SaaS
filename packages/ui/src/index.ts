@@ -39,6 +39,24 @@ export { Skeleton, SkeletonText, SkeletonCard, SkeletonTable, SkeletonDashboard 
 export { EmptyState } from './components/EmptyState';
 export type { EmptyStateProps } from './components/EmptyState';
 
+export { Badge, badgeVariants } from './components/Badge';
+export type { BadgeProps } from './components/Badge';
+
+export { Label } from './components/Label';
+export type { LabelProps } from './components/Label';
+
+export { Textarea } from './components/Textarea';
+export type { TextareaProps } from './components/Textarea';
+
+export { Checkbox } from './components/Checkbox';
+export type { CheckboxProps } from './components/Checkbox';
+
+export { Select } from './components/Select';
+export type { SelectProps, SelectOption, SelectOptionType } from './components/Select';
+
+export { ConfirmDialog } from './components/ConfirmDialog';
+export type { ConfirmDialogProps } from './components/ConfirmDialog';
+
 // --- AI Components ---
 export { AIAssistantWidget } from './components/AIAssistantWidget';
 export { AIQuoteSuggestion } from './components/AIQuoteSuggestion';

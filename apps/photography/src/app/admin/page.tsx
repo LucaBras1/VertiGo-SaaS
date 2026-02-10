@@ -2,12 +2,12 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { Calendar, Package, Images, DollarSign } from 'lucide-react'
-import { Card, CardTitle, CardDescription } from '@/components/ui/Card'
 import { UpcomingShoots } from '@/components/dashboard/UpcomingShoots'
 import { RecentClients } from '@/components/dashboard/RecentClients'
 import { GalleryStatus } from '@/components/dashboard/GalleryStatus'
 import { RevenueOverview } from '@/components/dashboard/RevenueOverview'
 import { prisma } from '@/lib/prisma'
+import { Card, CardDescription, CardTitle } from '@vertigo/ui'
 
 // Force dynamic to avoid build-time Prisma proxy issues
 export const dynamic = 'force-dynamic'

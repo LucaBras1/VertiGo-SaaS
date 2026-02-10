@@ -2,12 +2,11 @@
 
 import { useState, useEffect, use } from 'react'
 import { CheckCircle, XCircle, Clock, Loader2, FileText } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
 import { ContractSignature } from '@/components/contracts/ContractSignature'
 import { format } from 'date-fns'
 import { cs } from 'date-fns/locale'
 import toast from 'react-hot-toast'
+import { Button, Card } from '@vertigo/ui'
 
 interface ContractData {
   id: string

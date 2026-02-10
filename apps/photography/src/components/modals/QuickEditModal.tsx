@@ -1,10 +1,8 @@
 'use client'
 
 import { useState, useEffect, ReactNode } from 'react'
-import { Modal } from '@/components/ui/Modal'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import { Loader2 } from 'lucide-react'
+import { Button, Input, Modal, ModalBody, ModalContent, ModalHeader, ModalTitle } from '@vertigo/ui'
 
 interface Field {
   name: string
@@ -71,7 +69,12 @@ export function QuickEditModal({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title={title} size="md">
+    <Modal open={isOpen} onOpenChange={(open: boolean) => { if (!open) handleClose() }}>
+        <ModalContent size="md">
+          <ModalHeader>
+            <ModalTitle>{title}</ModalTitle>
+          </ModalHeader>
+          <ModalBody>
       <form onSubmit={handleSubmit} className="space-y-4">
         {fields.map(field => (
           <div key={field.name}>
@@ -150,6 +153,8 @@ export function QuickEditModal({
           </Button>
         </div>
       </form>
-    </Modal>
+    </ModalBody>
+        </ModalContent>
+      </Modal>
   )
 }

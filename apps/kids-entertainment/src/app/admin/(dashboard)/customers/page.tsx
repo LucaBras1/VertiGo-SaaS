@@ -6,10 +6,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import {
   Mail,
   Phone,
@@ -23,6 +19,7 @@ import {
   AlertTriangle,
   Star,
 } from 'lucide-react'
+import { Badge, Button, Card, Input } from '@vertigo/ui'
 
 interface Child {
   name: string
@@ -91,7 +88,7 @@ export default function AdminCustomersPage() {
 
   const getTierBadge = (lifetimeValue: number) => {
     if (lifetimeValue >= 5000000) {
-      return <Badge variant="pink" size="sm"><Star className="h-3 w-3 mr-1" />VIP</Badge>
+      return <Badge size="sm" className="bg-partypal-pink-100 text-partypal-pink-800"><Star className="h-3 w-3 mr-1" />VIP</Badge>
     }
     if (lifetimeValue >= 2000000) {
       return <Badge variant="success" size="sm">Premium</Badge>
@@ -124,7 +121,7 @@ export default function AdminCustomersPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card variant="outlined" className="p-4">
+        <Card className="p-4">
           <div className="flex items-center">
             <Users className="h-8 w-8 text-partypal-pink-500 mr-3" />
             <div>
@@ -133,7 +130,7 @@ export default function AdminCustomersPage() {
             </div>
           </div>
         </Card>
-        <Card variant="outlined" className="p-4">
+        <Card className="p-4">
           <div className="flex items-center">
             <DollarSign className="h-8 w-8 text-green-500 mr-3" />
             <div>
@@ -144,7 +141,7 @@ export default function AdminCustomersPage() {
             </div>
           </div>
         </Card>
-        <Card variant="outlined" className="p-4">
+        <Card className="p-4">
           <div className="flex items-center">
             <Star className="h-8 w-8 text-amber-500 mr-3" />
             <div>
@@ -153,7 +150,7 @@ export default function AdminCustomersPage() {
             </div>
           </div>
         </Card>
-        <Card variant="outlined" className="p-4">
+        <Card className="p-4">
           <div className="flex items-center">
             <DollarSign className="h-8 w-8 text-blue-500 mr-3" />
             <div>
@@ -184,7 +181,7 @@ export default function AdminCustomersPage() {
           const children = customer.children as Child[] | undefined
 
           return (
-            <Card key={customer.id} variant="outlined" className="overflow-hidden">
+            <Card key={customer.id} className="overflow-hidden">
               <div
                 className="p-6 cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
                 onClick={() => toggleExpanded(customer.id)}

@@ -1,8 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Modal } from '@/components/ui/Modal'
-import { Button } from '@/components/ui/Button'
 import {
   Loader2,
   Sparkles,
@@ -13,6 +11,7 @@ import {
   ThumbsUp,
   ThumbsDown
 } from 'lucide-react'
+import { Button, Modal, ModalBody, ModalContent, ModalHeader, ModalTitle } from '@vertigo/ui'
 
 interface AIGalleryCurationModalProps {
   isOpen: boolean
@@ -138,7 +137,12 @@ export function AIGalleryCurationModal({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title="AI Gallery Curation" size="lg">
+    <Modal open={isOpen} onOpenChange={(open: boolean) => { if (!open) handleClose() }}>
+        <ModalContent size="lg">
+          <ModalHeader>
+            <ModalTitle>AI Gallery Curation</ModalTitle>
+          </ModalHeader>
+          <ModalBody>
       {step === 'config' && (
         <div className="space-y-6">
           <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-4 border border-purple-200">
@@ -382,6 +386,8 @@ export function AIGalleryCurationModal({
           </div>
         </div>
       )}
-    </Modal>
+    </ModalBody>
+        </ModalContent>
+      </Modal>
   )
 }

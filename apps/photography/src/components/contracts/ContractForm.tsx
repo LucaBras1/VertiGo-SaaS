@@ -2,11 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Card } from '@/components/ui/Card'
-import { Input } from '@/components/ui/Input'
-import { Button } from '@/components/ui/Button'
 import toast from 'react-hot-toast'
 import type { Contract, ContractTemplate, Client, Package } from '@/generated/prisma'
+import { Button, Card, Input } from '@vertigo/ui'
 
 interface ContractFormProps {
   contract?: Contract & { client?: Client | null; package?: Package | null }
