@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * @vertigo/ui
  * Shared UI components for VertiGo SaaS platform
