@@ -12,10 +12,7 @@ import { FileText, Plus, Search, Eye, Trash2, Calendar, Building2, DollarSign, D
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
-import { ListPageHeader } from '@/components/admin/shared/ListPageHeader'
-import { SearchFilterBar } from '@/components/admin/shared/SearchFilterBar'
-import { ActionButtons } from '@/components/admin/shared/ActionButtons'
-import { StatusBadge } from '@/components/admin/shared/StatusBadge'
+import { ListPageHeader, SearchFilterBar, ActionButtons, StatusBadge } from '@vertigo/admin'
 import { staggerContainer, staggerItem } from '@vertigo/ui'
 import toast from 'react-hot-toast'
 

@@ -2,7 +2,7 @@
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
-import { chartTheme } from '@/lib/chart-theme'
+import { chartTheme } from '@vertigo/admin'
 
 interface RevenueChartProps {
   data: Array<{ name: string; value: number; percentage: number }>

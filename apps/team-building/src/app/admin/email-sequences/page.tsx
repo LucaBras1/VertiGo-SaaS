@@ -6,9 +6,7 @@ import { motion } from 'framer-motion'
 import { Mail, Plus, Play, Pause, Trash2, Users, Send, Loader2, Clock, CheckCircle2, FileText } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import { ListPageHeader } from '@/components/admin/shared/ListPageHeader'
-import { StatusBadge } from '@/components/admin/shared/StatusBadge'
-import { ActionButtons } from '@/components/admin/shared/ActionButtons'
+import { ListPageHeader, StatusBadge, ActionButtons } from '@vertigo/admin'
 import { staggerContainer, staggerItem } from '@vertigo/ui'
 
 interface SequenceStep { id: string; stepOrder: number; delayDays: number; delayHours: number; subject: string }

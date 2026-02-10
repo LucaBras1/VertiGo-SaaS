@@ -2,7 +2,7 @@
 
 import { Target } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
-import { chartTheme } from '@/lib/chart-theme'
+import { chartTheme } from '@vertigo/admin'
 
 interface ObjectiveData {
   objective: string

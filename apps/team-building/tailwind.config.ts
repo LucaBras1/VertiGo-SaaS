@@ -15,6 +15,7 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     '../../_shared-core/src/components/**/*.{js,ts,jsx,tsx,mdx}',
     '../../packages/ui/src/**/*.{js,ts,jsx,tsx}',
+    '../../packages/admin/src/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
