@@ -7,12 +7,9 @@ import {
   ArrowLeft, Edit, Trash2, ListChecks, Camera, Clock,
   CheckCircle, Circle, Sparkles, Printer, Eye, Pencil
 } from 'lucide-react'
-import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Badge } from '@/components/ui/Badge'
-import { Modal } from '@/components/ui/Modal'
 import { ShotListEditor, ShotCategory } from '@/components/shot-lists/ShotListEditor'
 import toast from 'react-hot-toast'
+import { Badge, Button, Card, CardHeader, CardTitle, Modal, ModalBody, ModalContent, ModalHeader, ModalTitle } from '@vertigo/ui'
 
 interface Shot {
   id: string
@@ -61,15 +58,15 @@ interface ShotList {
 }
 
 const statusConfig = {
-  DRAFT: { label: 'Draft', color: 'gray' as const },
-  FINALIZED: { label: 'Finalized', color: 'blue' as const },
-  COMPLETED: { label: 'Completed', color: 'green' as const }
+  DRAFT: { label: 'Draft', color: 'secondary' as const },
+  FINALIZED: { label: 'Finalized', color: 'info' as const },
+  COMPLETED: { label: 'Completed', color: 'success' as const }
 }
 
 const priorityConfig = {
-  'must-have': { label: 'Must Have', color: 'red' as const },
-  'nice-to-have': { label: 'Nice to Have', color: 'yellow' as const },
-  'optional': { label: 'Optional', color: 'gray' as const }
+  'must-have': { label: 'Must Have', color: 'danger' as const },
+  'nice-to-have': { label: 'Nice to Have', color: 'warning' as const },
+  'optional': { label: 'Optional', color: 'secondary' as const }
 }
 
 // Color mapping for categories
@@ -329,7 +326,7 @@ export default function ShotListDetailPage() {
             <Printer className="w-4 h-4 mr-2" />
             Print
           </Button>
-          <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
+          <Button variant="destructive" onClick={() => setShowDeleteModal(true)}>
             <Trash2 className="w-4 h-4 mr-2" />
             Delete
           </Button>
@@ -540,7 +537,12 @@ export default function ShotListDetailPage() {
       )}
 
       {/* Delete Modal */}
-      <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)} title="Delete Shot List">
+      <Modal open={showDeleteModal} onOpenChange={(open: boolean) => { if (!open) setShowDeleteModal(false) }}>
+        <ModalContent>
+          <ModalHeader>
+            <ModalTitle>Delete Shot List</ModalTitle>
+          </ModalHeader>
+          <ModalBody>
         <div className="space-y-4">
           <p className="text-neutral-600 dark:text-neutral-400">
             Are you sure you want to delete "{shotList.name}"?
@@ -549,11 +551,13 @@ export default function ShotListDetailPage() {
             <Button variant="ghost" onClick={() => setShowDeleteModal(false)}>
               Cancel
             </Button>
-            <Button variant="danger" onClick={handleDelete} isLoading={isDeleting}>
+            <Button variant="destructive" onClick={handleDelete} loading={isDeleting}>
               Delete Shot List
             </Button>
           </div>
         </div>
+      </ModalBody>
+        </ModalContent>
       </Modal>
     </div>
   )

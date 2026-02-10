@@ -7,9 +7,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { staggerContainer, staggerItem, fadeIn } from '@vertigo/ui'
+import { Button, Card, fadeIn, staggerContainer, staggerItem } from '@vertigo/ui'
 import { Save, Settings as SettingsIcon, Mail, Globe, Loader2, Calendar } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { CalendarSettings } from '@/components/calendar'
@@ -249,7 +247,7 @@ export default function SettingsPage() {
 
         {/* Save Button */}
         <motion.div variants={staggerItem} className="flex justify-end">
-          <Button onClick={handleSave} isLoading={isSaving}>
+          <Button onClick={handleSave} loading={isSaving}>
             <Save className="w-5 h-5 mr-2" />
             Uložit nastavení
           </Button>

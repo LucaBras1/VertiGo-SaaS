@@ -3,11 +3,6 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 import {
   ArrowLeft,
   Sparkles,
@@ -20,6 +15,7 @@ import {
   ChevronLeft,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, Button, Input, Label, Textarea } from '@vertigo/ui'
 
 interface GigData {
   id: string
@@ -574,7 +570,7 @@ export default function NewContractPage() {
 
               <Button
                 onClick={handleGenerate}
-                isLoading={generating}
+                loading={generating}
                 className="w-full"
                 size="lg"
               >
@@ -624,7 +620,7 @@ export default function NewContractPage() {
 
               <Button
                 onClick={handleCreate}
-                isLoading={loading}
+                loading={loading}
                 className="w-full"
                 size="lg"
               >

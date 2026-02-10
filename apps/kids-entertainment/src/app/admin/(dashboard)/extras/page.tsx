@@ -5,10 +5,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
-import { Button } from '@/components/ui/Button'
 import { Gift, Plus } from 'lucide-react'
+import { Badge, Button, Card } from '@vertigo/ui'
 
 export default function AdminExtrasPage() {
   const [extras, setExtras] = useState<any[]>([])
@@ -32,8 +30,8 @@ export default function AdminExtrasPage() {
 
   const getCategoryBadge = (category: string) => {
     const variants: Record<string, any> = {
-      costume: 'pink',
-      decoration: 'yellow',
+      costume: 'default',
+      decoration: 'default',
       food: 'success',
       photo: 'info',
       other: 'default',
@@ -64,7 +62,7 @@ export default function AdminExtrasPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {extras.map((extra) => (
-          <Card key={extra.id} variant="outlined">
+          <Card key={extra.id}>
             <div className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center space-x-3">

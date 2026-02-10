@@ -14,8 +14,7 @@ import {
   PieChart as PieChartIcon,
   Table2,
 } from 'lucide-react'
-import { fadeIn, staggerContainer, staggerItem } from '@vertigo/ui'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
+import { Card, CardContent, CardHeader, CardTitle, fadeIn, staggerContainer, staggerItem } from '@vertigo/ui'
 import {
   MetricCard,
   RevenueChart,

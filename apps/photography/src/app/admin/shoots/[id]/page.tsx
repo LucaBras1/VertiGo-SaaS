@@ -7,11 +7,8 @@ import {
   ArrowLeft, Edit, Trash2, Calendar, Clock, MapPin,
   User, Camera, Sun, ListChecks, Images, Plus
 } from 'lucide-react'
-import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Badge } from '@/components/ui/Badge'
-import { Modal } from '@/components/ui/Modal'
 import toast from 'react-hot-toast'
+import { Badge, Button, Card, CardHeader, CardTitle, Modal, ModalBody, ModalContent, ModalHeader, ModalTitle } from '@vertigo/ui'
 
 interface Shoot {
   id: string
@@ -127,7 +124,7 @@ export default function ShootDetailPage() {
             <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
               {shoot.package.eventType} Shoot
             </h1>
-            <Badge variant={isUpcoming ? 'blue' : 'gray'}>
+            <Badge variant={isUpcoming ? 'info' : 'secondary'}>
               {isUpcoming ? 'Upcoming' : 'Past'}
             </Badge>
           </div>
@@ -140,7 +137,7 @@ export default function ShootDetailPage() {
               Edit
             </Button>
           </Link>
-          <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
+          <Button variant="destructive" onClick={() => setShowDeleteModal(true)}>
             <Trash2 className="w-4 h-4 mr-2" />
             Delete
           </Button>
@@ -254,7 +251,7 @@ export default function ShootDetailPage() {
                     <p className="font-medium">{shoot.shotList.name}</p>
                     <p className="text-sm text-neutral-500 dark:text-neutral-400">{shoot.shotList.totalShots} shots</p>
                   </div>
-                  <Badge variant={shoot.shotList.status === 'COMPLETED' ? 'green' : 'blue'}>
+                  <Badge variant={shoot.shotList.status === 'COMPLETED' ? 'success' : 'info'}>
                     {shoot.shotList.status}
                   </Badge>
                 </div>
@@ -291,7 +288,7 @@ export default function ShootDetailPage() {
                       <p className="font-medium">{gallery.name}</p>
                       <p className="text-sm text-neutral-500 dark:text-neutral-400">{gallery.totalPhotos} photos</p>
                     </div>
-                    <Badge variant={gallery.status === 'DELIVERED' ? 'green' : gallery.status === 'READY' ? 'blue' : 'yellow'}>
+                    <Badge variant={gallery.status === 'DELIVERED' ? 'success' : gallery.status === 'READY' ? 'info' : 'warning'}>
                       {gallery.status}
                     </Badge>
                   </Link>
@@ -351,7 +348,12 @@ export default function ShootDetailPage() {
       </div>
 
       {/* Delete Modal */}
-      <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)} title="Delete Shoot">
+      <Modal open={showDeleteModal} onOpenChange={(open: boolean) => { if (!open) setShowDeleteModal(false) }}>
+        <ModalContent>
+          <ModalHeader>
+            <ModalTitle>Delete Shoot</ModalTitle>
+          </ModalHeader>
+          <ModalBody>
         <div className="space-y-4">
           <p className="text-neutral-600 dark:text-neutral-400">
             Are you sure you want to delete this shoot? This will also delete associated galleries.
@@ -360,11 +362,13 @@ export default function ShootDetailPage() {
             <Button variant="ghost" onClick={() => setShowDeleteModal(false)}>
               Cancel
             </Button>
-            <Button variant="danger" onClick={handleDelete} isLoading={isDeleting}>
+            <Button variant="destructive" onClick={handleDelete} loading={isDeleting}>
               Delete Shoot
             </Button>
           </div>
         </div>
+      </ModalBody>
+        </ModalContent>
       </Modal>
     </div>
   )

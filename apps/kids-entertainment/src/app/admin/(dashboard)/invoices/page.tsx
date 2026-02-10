@@ -5,10 +5,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
 import { FileText, Download, Mail, Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { Badge, Card } from '@vertigo/ui'
 
 export default function AdminInvoicesPage() {
   const [invoices, setInvoices] = useState<any[]>([])

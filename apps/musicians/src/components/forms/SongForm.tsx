@@ -6,12 +6,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import toast from 'react-hot-toast'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectOption } from '@/components/ui/select'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button, Input, Textarea, Select, SelectOption, Label, Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
 
 const songSchema = z.object({
   title: z.string().min(1, 'Název je povinný'),
@@ -301,7 +296,7 @@ export function SongForm({ initialData, onSuccess }: SongFormProps) {
         >
           Zrušit
         </Button>
-        <Button type="submit" isLoading={isLoading}>
+        <Button type="submit" loading={isLoading}>
           {isEdit ? 'Uložit změny' : 'Přidat píseň'}
         </Button>
       </div>

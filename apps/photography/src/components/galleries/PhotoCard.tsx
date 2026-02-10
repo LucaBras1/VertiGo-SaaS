@@ -3,8 +3,8 @@
 import { memo } from 'react'
 import { clsx } from 'clsx'
 import { Check, X, Star, ZoomIn, Images } from 'lucide-react'
-import { Badge } from '@/components/ui/Badge'
 import type { Photo } from '@/hooks/usePhotoSelection'
+import { Badge } from '@vertigo/ui'
 
 interface PhotoCardProps {
   photo: Photo
@@ -104,7 +104,7 @@ function PhotoCardComponent({
         {/* Highlight Badge */}
         {photo.isHighlight && (
           <div className="absolute top-2 right-2">
-            <Badge variant="yellow" size="sm">
+            <Badge variant="warning" size="sm">
               <Star className="w-3 h-3 mr-1 fill-current" />
               Highlight
             </Badge>
@@ -114,7 +114,7 @@ function PhotoCardComponent({
         {/* Rejected Badge */}
         {photo.rejected && (
           <div className="absolute top-2 right-2">
-            <Badge variant="red" size="sm">
+            <Badge variant="danger" size="sm">
               <X className="w-3 h-3 mr-1" />
               Rejected
             </Badge>

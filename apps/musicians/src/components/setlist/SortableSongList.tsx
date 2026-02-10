@@ -3,7 +3,7 @@
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd'
 import { GripVertical, X, Clock } from 'lucide-react'
 import { formatDuration } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
+import { Button } from '@vertigo/ui'
 
 interface Song {
   id: string

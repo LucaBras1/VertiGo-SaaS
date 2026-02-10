@@ -3,8 +3,7 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { CheckCircle, Clock, AlertCircle } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
-import { staggerContainer, staggerItem } from '@vertigo/ui'
+import { Card, staggerContainer, staggerItem } from '@vertigo/ui'
 
 interface SessionData {
   id: string

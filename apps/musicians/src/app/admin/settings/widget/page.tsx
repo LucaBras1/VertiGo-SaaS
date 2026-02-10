@@ -2,11 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import {
   ArrowLeft,
   Globe,
@@ -22,6 +17,7 @@ import {
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
+import { Button, Input, Textarea, Label, Card, CardContent, CardHeader, CardTitle, CardDescription } from '@vertigo/ui'
 
 interface WidgetData {
   id: string
@@ -243,7 +239,7 @@ export default function WidgetSettingsPage() {
             <p className="text-neutral-600 dark:text-neutral-400 mb-6 text-center max-w-md">
               Vytvořte si vlastní rezervační formulář, který můžete vložit na svůj web nebo sdílet jako samostatnou stránku.
             </p>
-            <Button onClick={handleCreate} isLoading={saving}>
+            <Button onClick={handleCreate} loading={saving}>
               <Globe className="w-4 h-4 mr-2" />
               Vytvořit widget
             </Button>
@@ -309,7 +305,7 @@ export default function WidgetSettingsPage() {
                 <Button
                   variant="outline"
                   onClick={handleRegenerateToken}
-                  isLoading={regenerating}
+                  loading={regenerating}
                 >
                   <RefreshCw className="w-4 h-4 mr-2" />
                   Vygenerovat nový token
@@ -495,7 +491,7 @@ export default function WidgetSettingsPage() {
 
           {/* Save button */}
           <div className="flex justify-end">
-            <Button onClick={handleSave} isLoading={saving}>
+            <Button onClick={handleSave} loading={saving}>
               Uložit změny
             </Button>
           </div>

@@ -4,11 +4,9 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft, Edit, Trash2, Music, Clock, Gauge, ExternalLink } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogHeader, DialogTitle, DialogContent, DialogFooter } from '@/components/ui/dialog'
 import toast from 'react-hot-toast'
+import { Button, Card, CardContent, CardHeader, CardTitle, Badge } from '@vertigo/ui'
 
 interface Song {
   id: string
@@ -194,7 +192,7 @@ export default function SongDetailPage() {
         <DialogContent><p>Opravdu chcete smazat píseň &quot;{song.title}&quot;?</p></DialogContent>
         <DialogFooter>
           <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>Zrušit</Button>
-          <Button variant="destructive" onClick={handleDelete} isLoading={isDeleting}>Smazat</Button>
+          <Button variant="destructive" onClick={handleDelete} loading={isDeleting}>Smazat</Button>
         </DialogFooter>
       </Dialog>
     </div>

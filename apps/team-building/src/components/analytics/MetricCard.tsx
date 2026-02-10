@@ -2,8 +2,7 @@
 
 import { LucideIcon, TrendingUp, TrendingDown } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { staggerItem } from '@vertigo/ui'
-import { Card } from '@/components/ui/Card'
+import { Card, staggerItem } from '@vertigo/ui'
 
 interface MetricCardProps {
   title: string

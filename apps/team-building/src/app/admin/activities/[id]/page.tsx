@@ -10,7 +10,7 @@ import { ActivityForm } from '@/components/admin/ActivityForm'
 import { ArrowLeft, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@vertigo/ui'
 
 export default function EditActivityPage({ params }: { params: { id: string } }) {
   const router = useRouter()
@@ -125,9 +125,9 @@ export default function EditActivityPage({ params }: { params: { id: string } })
             <p className="text-neutral-600 dark:text-neutral-400 mt-2">{activity.title}</p>
           </div>
           <Button
-            variant="danger"
+            variant="destructive"
             onClick={handleDelete}
-            isLoading={isDeleting}
+            loading={isDeleting}
           >
             <Trash2 className="w-4 h-4 mr-2" />
             Smazat aktivitu

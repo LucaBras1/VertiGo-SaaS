@@ -5,9 +5,8 @@
 export const dynamic = 'force-dynamic'
 
 import { prisma } from '@/lib/prisma'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
 import { notFound } from 'next/navigation'
+import { Badge, Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
 
 async function getOrder(id: string) {
   const order = await prisma.order.findUnique({

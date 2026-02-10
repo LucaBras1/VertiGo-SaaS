@@ -10,7 +10,7 @@ import { CustomerForm } from '@/components/admin/CustomerForm'
 import { ArrowLeft, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@vertigo/ui'
 
 export default function EditCustomerPage({ params }: { params: { id: string } }) {
   const router = useRouter()
@@ -126,9 +126,9 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
             </p>
           </div>
           <Button
-            variant="danger"
+            variant="destructive"
             onClick={handleDelete}
-            isLoading={isDeleting}
+            loading={isDeleting}
           >
             <Trash2 className="w-4 h-4 mr-2" />
             Smazat zákazníka

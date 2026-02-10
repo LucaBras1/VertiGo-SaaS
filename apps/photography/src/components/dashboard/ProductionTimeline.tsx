@@ -1,9 +1,8 @@
 'use client'
 
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
 import { Clock, Camera, Check, AlertTriangle } from 'lucide-react'
 import Link from 'next/link'
+import { Badge, Card, CardDescription, CardHeader, CardTitle } from '@vertigo/ui'
 
 interface TimelineItem {
   id: string

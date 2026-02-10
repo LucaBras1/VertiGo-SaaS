@@ -7,8 +7,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/Button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
+import { Button, Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
 
 interface PackageFormProps {
   initialData?: any
@@ -531,7 +530,7 @@ export default function PackageForm({ initialData, packageId }: PackageFormProps
         >
           Zrušit
         </Button>
-        <Button type="submit" isLoading={isLoading}>
+        <Button type="submit" loading={isLoading}>
           {packageId ? 'Uložit změny' : 'Vytvořit balíček'}
         </Button>
       </div>

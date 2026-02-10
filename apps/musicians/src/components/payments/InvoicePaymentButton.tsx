@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { CreditCard, Loader2, CheckCircle } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import toast from 'react-hot-toast'
+import { Button } from '@vertigo/ui'
 
 interface InvoicePaymentButtonProps {
   invoiceId: string

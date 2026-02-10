@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, Button } from '@vertigo/ui';
 import { DollarSign, CreditCard, TrendingUp, AlertCircle, Plus } from 'lucide-react';
 import Link from 'next/link';
 

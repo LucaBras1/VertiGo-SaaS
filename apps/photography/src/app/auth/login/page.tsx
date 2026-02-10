@@ -5,9 +5,8 @@ import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Camera } from 'lucide-react'
-import { Input } from '@/components/ui/Input'
-import { Button } from '@/components/ui/Button'
 import toast from 'react-hot-toast'
+import { Button, Input } from '@vertigo/ui'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -94,7 +93,7 @@ export default function LoginPage() {
               </Link>
             </div>
 
-            <Button type="submit" isLoading={isLoading} className="w-full">
+            <Button type="submit" loading={isLoading} className="w-full">
               {isLoading ? 'Signing in...' : 'Sign In'}
             </Button>
           </form>

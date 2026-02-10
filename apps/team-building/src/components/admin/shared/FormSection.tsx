@@ -1,8 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Card } from '@/components/ui/Card'
-import { staggerItem } from '@vertigo/ui'
+import { Card, staggerItem } from '@vertigo/ui'
 
 interface FormSectionProps {
   title: string

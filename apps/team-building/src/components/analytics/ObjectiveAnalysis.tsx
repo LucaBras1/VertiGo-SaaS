@@ -1,8 +1,8 @@
 'use client'
 
 import { Target } from 'lucide-react'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { chartTheme } from '@vertigo/admin'
+import { Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
 
 interface ObjectiveData {
   objective: string

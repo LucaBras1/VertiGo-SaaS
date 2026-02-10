@@ -1,8 +1,7 @@
 import { prisma } from '@/lib/prisma'
-import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
 import { Images, Clock, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
+import { Badge, Card, CardHeader, CardTitle } from '@vertigo/ui'
 
 export async function GalleryStatus({ tenantId }: { tenantId: string }) {
   const galleries = await prisma.gallery.findMany({

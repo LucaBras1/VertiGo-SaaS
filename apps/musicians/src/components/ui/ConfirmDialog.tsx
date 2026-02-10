@@ -1,8 +1,8 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
 import { Dialog, DialogHeader, DialogTitle, DialogContent, DialogFooter } from '@/components/ui/dialog'
 import { AlertTriangle } from 'lucide-react'
+import { Button } from '@vertigo/ui'
 
 interface ConfirmDialogProps {
   open: boolean
@@ -46,7 +46,7 @@ export function ConfirmDialog({
         <Button
           variant={variant === 'danger' ? 'destructive' : 'default'}
           onClick={onConfirm}
-          isLoading={isLoading}
+          loading={isLoading}
         >
           {confirmLabel}
         </Button>

@@ -2,16 +2,12 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useSession } from 'next-auth/react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Tabs, TabList, TabTrigger, TabPanels, TabPanel } from '@/components/ui/tabs'
 import { User, Building, CreditCard, Bell, Calendar, Globe, ChevronRight, Clock } from 'lucide-react'
 import Link from 'next/link'
 import CalendarSettings from '@/components/calendar/CalendarSettings'
 import toast from 'react-hot-toast'
+import { Button, Input, Textarea, Label, Card, CardContent, CardHeader, CardTitle, CardDescription } from '@vertigo/ui'
 
 interface BillingData {
   billingName: string
@@ -323,7 +319,7 @@ export default function SettingsPage() {
                   </div>
                 </div>
                 <div className="flex justify-end">
-                  <Button onClick={handleSaveProfile} isLoading={isLoadingProfile}>
+                  <Button onClick={handleSaveProfile} loading={isLoadingProfile}>
                     Uložit změny
                   </Button>
                 </div>
@@ -366,7 +362,7 @@ export default function SettingsPage() {
                   <Button
                     variant="outline"
                     onClick={handleChangePassword}
-                    isLoading={isLoadingPassword}
+                    loading={isLoadingPassword}
                     disabled={!currentPassword || !newPassword || !confirmPassword}
                   >
                     Změnit heslo
@@ -428,7 +424,7 @@ export default function SettingsPage() {
                   />
                 </div>
                 <div className="flex justify-end">
-                  <Button onClick={handleSaveTenant} isLoading={isLoadingTenant}>
+                  <Button onClick={handleSaveTenant} loading={isLoadingTenant}>
                     Uložit změny
                   </Button>
                 </div>
@@ -505,7 +501,7 @@ export default function SettingsPage() {
                   />
                 </div>
                 <div className="flex justify-end">
-                  <Button onClick={handleSaveBilling} isLoading={isLoadingBilling}>
+                  <Button onClick={handleSaveBilling} loading={isLoadingBilling}>
                     Uložit změny
                   </Button>
                 </div>
@@ -572,7 +568,7 @@ export default function SettingsPage() {
                   </label>
                 </div>
                 <div className="flex justify-end">
-                  <Button onClick={handleSaveNotifications} isLoading={isLoadingNotifications}>
+                  <Button onClick={handleSaveNotifications} loading={isLoadingNotifications}>
                     Uložit změny
                   </Button>
                 </div>

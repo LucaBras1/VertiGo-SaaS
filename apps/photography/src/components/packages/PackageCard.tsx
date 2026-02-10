@@ -1,7 +1,6 @@
 import Link from 'next/link'
-import { Card } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
 import { format } from 'date-fns'
+import { Badge, Card } from '@vertigo/ui'
 
 interface PackageCardProps {
   id: string

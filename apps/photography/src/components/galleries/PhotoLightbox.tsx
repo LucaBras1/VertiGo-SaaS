@@ -5,8 +5,8 @@ import { clsx } from 'clsx'
 import {
   X, ChevronLeft, ChevronRight, Check, Star, RotateCcw, Download
 } from 'lucide-react'
-import { Badge } from '@/components/ui/Badge'
 import type { Photo } from '@/hooks/usePhotoSelection'
+import { Badge } from '@vertigo/ui'
 
 interface PhotoLightboxProps {
   photo: Photo | null
@@ -127,19 +127,19 @@ export function PhotoLightbox({
             </span>
           )}
           {photo.isHighlight && (
-            <Badge variant="yellow" size="sm">
+            <Badge variant="warning" size="sm">
               <Star className="w-3 h-3 mr-1 fill-current" />
               Highlight
             </Badge>
           )}
           {photo.rejected && (
-            <Badge variant="red" size="sm">
+            <Badge variant="danger" size="sm">
               <X className="w-3 h-3 mr-1" />
               Rejected
             </Badge>
           )}
           {photo.selected && !photo.rejected && (
-            <Badge variant="green" size="sm">
+            <Badge variant="success" size="sm">
               <Check className="w-3 h-3 mr-1" />
               Selected
             </Badge>

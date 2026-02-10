@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, ImagePlus } from 'lucide-react'
-import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
 import { PhotoUploader } from '@/components/galleries/PhotoUploader'
 import toast from 'react-hot-toast'
+import { Card, CardHeader, CardTitle } from '@vertigo/ui'
 
 interface Gallery {
   id: string

@@ -2,8 +2,7 @@
 
 import { useState, useCallback, useRef } from 'react'
 import { Upload, X, Image, Loader2, CheckCircle, AlertCircle } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-
+import { Button } from '@vertigo/ui'
 interface UploadedPhoto {
   id: string
   filename: string
@@ -299,7 +298,7 @@ export function PhotoUploader({
               <Button
                 onClick={uploadFiles}
                 disabled={isUploading}
-                isLoading={isUploading}
+                loading={isUploading}
               >
                 <Upload className="w-4 h-4 mr-2" />
                 Upload {pendingCount} {pendingCount === 1 ? 'Photo' : 'Photos'}

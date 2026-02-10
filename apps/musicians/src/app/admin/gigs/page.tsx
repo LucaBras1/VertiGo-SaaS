@@ -2,11 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Checkbox } from '@/components/ui/checkbox'
 import {
   Plus,
   Search,
@@ -25,6 +20,7 @@ import { useBulkDeleteGigs, useBulkUpdateGigStatus } from '@/hooks/useGigs'
 import { BulkActionsBar, createDeleteAction, createExportAction, createStatusChangeAction } from '@/components/bulk/BulkActionsBar'
 import { toCsv, downloadCsv, gigCsvColumns, type GigExport } from '@/lib/utils/export'
 import toast from 'react-hot-toast'
+import { Button, Card, Input, Badge, Checkbox } from '@vertigo/ui'
 
 interface Gig {
   id: string

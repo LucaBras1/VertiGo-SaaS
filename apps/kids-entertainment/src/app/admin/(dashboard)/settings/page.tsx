@@ -4,9 +4,8 @@
 
 'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
 import { Settings, Bell, Users, DollarSign, Globe } from 'lucide-react'
+import { Button, Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
 
 export default function AdminSettingsPage() {
   return (

@@ -9,9 +9,8 @@ import { useState, useEffect, useCallback, use } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save, Trash2 } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import toast from 'react-hot-toast'
+import { Button, ConfirmDialog } from '@vertigo/ui'
 
 interface Extra {
   id: string
@@ -300,12 +299,12 @@ export default function ExtraDetailPage({ params }: { params: Promise<{ id: stri
       </div>
 
       <ConfirmDialog
-        isOpen={showDeleteDialog}
+        open={showDeleteDialog}
         onClose={() => setShowDeleteDialog(false)}
         onConfirm={handleDelete}
         title="Smazat doplňkovou službu"
-        message="Opravdu chcete smazat tuto doplňkovou službu? Tato akce je nevratná."
-        confirmText="Smazat"
+        description="Opravdu chcete smazat tuto doplňkovou službu? Tato akce je nevratná."
+        confirmLabel="Smazat"
         variant="danger"
       />
     </div>

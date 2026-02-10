@@ -8,10 +8,8 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
 import { ListPageHeader, SearchFilterBar } from '@vertigo/admin'
-import { staggerContainer, staggerItem } from '@vertigo/ui'
+import { Button, Card, staggerContainer, staggerItem } from '@vertigo/ui'
 import { Plus, Mail, Phone, Building2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 

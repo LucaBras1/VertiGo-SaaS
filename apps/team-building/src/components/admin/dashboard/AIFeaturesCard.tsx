@@ -3,8 +3,7 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Brain, Target, Sparkles, ArrowRight } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
-import { fadeIn, hoverLift, pulseAttention } from '@vertigo/ui'
+import { Card, fadeIn, hoverLift, pulseAttention } from '@vertigo/ui'
 
 const aiFeatures = [
   {

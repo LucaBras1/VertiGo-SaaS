@@ -19,11 +19,10 @@ import {
   verticalListSortingStrategy
 } from '@dnd-kit/sortable'
 import { Plus, Save, FileDown, Sparkles, Trash2, GripVertical } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
 import { ShotListCategory } from './ShotListCategory'
 import { ShotListItem, ShotItem } from './ShotListItem'
 import { ShotListTemplates } from './ShotListTemplates'
+import { Button, Card, CardHeader, CardTitle } from '@vertigo/ui'
 
 export interface ShotCategory {
   id: string

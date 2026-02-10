@@ -6,10 +6,8 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Cake, Clock, Users, Star, Heart } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
-import { Button } from '@/components/ui/Button'
 import { formatPrice, getAgeGroupLabel } from '@/lib/utils'
+import { Badge, Button, Card } from '@vertigo/ui'
 
 interface PackageCardProps {
   id: string
@@ -49,7 +47,7 @@ export function PackageCard({
   featured = false,
 }: PackageCardProps) {
   return (
-    <Card variant="hover" padding="none" className="overflow-hidden">
+    <Card className="overflow-hidden">
       {/* Image */}
       <div className="relative h-48 bg-gradient-to-br from-partypal-pink-100 to-partypal-yellow-100">
         {featuredImageUrl ? (
@@ -66,7 +64,7 @@ export function PackageCard({
         )}
         {featured && (
           <div className="absolute top-4 right-4">
-            <Badge variant="yellow" size="sm" className="shadow-lg">
+            <Badge size="sm" className="bg-partypal-yellow-100 text-partypal-yellow-800 shadow-lg">
               <Star className="h-3 w-3 mr-1" />
               Popular
             </Badge>
@@ -74,7 +72,7 @@ export function PackageCard({
         )}
         {themeName && (
           <div className="absolute bottom-4 left-4">
-            <Badge variant="pink" className="shadow-lg">
+            <Badge className="bg-partypal-pink-100 text-partypal-pink-800 shadow-lg">
               {themeName}
             </Badge>
           </div>

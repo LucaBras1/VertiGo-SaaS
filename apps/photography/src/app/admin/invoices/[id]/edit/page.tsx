@@ -4,10 +4,8 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react'
 import Link from 'next/link'
-import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import toast from 'react-hot-toast'
+import { Button, Card, CardHeader, CardTitle, Input } from '@vertigo/ui'
 
 interface Client {
   id: string
@@ -364,7 +362,7 @@ export default function EditInvoicePage() {
 
         {/* Actions */}
         <div className="flex items-center gap-4">
-          <Button type="submit" isLoading={isLoading}>
+          <Button type="submit" loading={isLoading}>
             Update Invoice
           </Button>
           <Link href={`/admin/invoices/${params.id}`}>

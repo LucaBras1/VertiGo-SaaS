@@ -1,9 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Modal } from '@/components/ui/Modal'
-import { Button } from '@/components/ui/Button'
 import { AlertTriangle, Loader2 } from 'lucide-react'
+import { Button, Modal, ModalBody, ModalContent, ModalHeader, ModalTitle } from '@vertigo/ui'
 
 interface ConfirmDeleteModalProps {
   isOpen: boolean
@@ -49,7 +48,12 @@ export function ConfirmDeleteModal({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title={title} size="sm">
+    <Modal open={isOpen} onOpenChange={(open: boolean) => { if (!open) handleClose() }}>
+        <ModalContent size="sm">
+          <ModalHeader>
+            <ModalTitle>{title}</ModalTitle>
+          </ModalHeader>
+          <ModalBody>
       <div className="space-y-4">
         <div className="flex items-start gap-4">
           <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
@@ -94,7 +98,7 @@ export function ConfirmDeleteModal({
           </Button>
           <Button
             type="button"
-            variant="danger"
+            variant="destructive"
             onClick={handleConfirm}
             disabled={isDeleting}
           >
@@ -109,6 +113,8 @@ export function ConfirmDeleteModal({
           </Button>
         </div>
       </div>
-    </Modal>
+    </ModalBody>
+        </ModalContent>
+      </Modal>
   )
 }

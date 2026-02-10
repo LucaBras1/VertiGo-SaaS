@@ -1,8 +1,7 @@
 import { prisma } from '@/lib/prisma'
-import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
 import { Users, Mail, Phone } from 'lucide-react'
 import Link from 'next/link'
+import { Badge, Card, CardHeader, CardTitle } from '@vertigo/ui'
 
 export async function RecentClients({ tenantId }: { tenantId: string }) {
   const clients = await prisma.client.findMany({

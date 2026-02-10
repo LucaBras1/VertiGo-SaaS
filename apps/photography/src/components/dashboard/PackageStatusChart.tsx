@@ -1,7 +1,5 @@
+import { Badge, Card, CardDescription, CardHeader, CardTitle } from '@vertigo/ui'
 'use client'
-
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
 
 interface PackageStatusChartProps {
   data: {

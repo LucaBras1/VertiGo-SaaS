@@ -1,9 +1,9 @@
 'use client'
 
 import { X, Heart, Users, Camera, Briefcase, Baby, GraduationCap } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
 import { ShotCategory } from './ShotListEditor'
 import { ShotItem } from './ShotListItem'
+import { Button } from '@vertigo/ui'
 
 interface ShotListTemplatesProps {
   onSelect: (template: ShotCategory[]) => void

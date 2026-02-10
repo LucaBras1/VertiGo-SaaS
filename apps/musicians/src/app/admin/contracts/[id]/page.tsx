@@ -3,9 +3,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import {
   ArrowLeft,
   Download,
@@ -23,6 +20,7 @@ import {
   CheckCircle,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { Card, CardContent, CardHeader, CardTitle, Button, Badge } from '@vertigo/ui'
 
 interface Contract {
   id: string
@@ -253,12 +251,12 @@ export default function ContractDetailPage() {
               Stáhnout PDF
             </Button>
           </a>
-          <Button variant="outline" onClick={handleDuplicate} isLoading={duplicating}>
+          <Button variant="outline" onClick={handleDuplicate} loading={duplicating}>
             <Copy className="w-4 h-4 mr-2" />
             Duplikovat
           </Button>
           {statusConfig.nextStatus && (
-            <Button onClick={() => handleStatusChange(statusConfig.nextStatus!)} isLoading={updating}>
+            <Button onClick={() => handleStatusChange(statusConfig.nextStatus!)} loading={updating}>
               <CheckCircle className="w-4 h-4 mr-2" />
               {statusConfig.nextLabel}
             </Button>
@@ -469,7 +467,7 @@ export default function ContractDetailPage() {
                   variant="outline"
                   className="w-full border-orange-300 text-orange-700 hover:bg-orange-50"
                   onClick={() => handleStatusChange('CANCELLED')}
-                  isLoading={updating}
+                  loading={updating}
                 >
                   Zrušit smlouvu
                 </Button>
@@ -478,7 +476,7 @@ export default function ContractDetailPage() {
                 variant="outline"
                 className="w-full border-red-300 text-red-700 hover:bg-red-50"
                 onClick={handleDelete}
-                isLoading={deleting}
+                loading={deleting}
               >
                 <Trash2 className="w-4 h-4 mr-2" />
                 Smazat smlouvu

@@ -1,9 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { TransactionMatchModal } from '@/components/billing/TransactionMatchModal'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import {
@@ -17,6 +14,7 @@ import {
   Loader2,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { Card, CardContent, CardHeader, CardTitle, Button, Badge } from '@vertigo/ui'
 
 interface BankAccount {
   id: string
@@ -244,7 +242,7 @@ export default function ReconciliationPage() {
               <Button
                 onClick={handleSync}
                 disabled={isSyncing || !selectedAccountId}
-                isLoading={isSyncing}
+                loading={isSyncing}
               >
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Synchronizovat

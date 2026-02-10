@@ -6,10 +6,8 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Clock, Users, Shield, Zap } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
-import { Button } from '@/components/ui/Button'
 import { formatPrice, getAgeGroupLabel, getSafetyRatingColor, getEnergyLevelEmoji } from '@/lib/utils'
+import { Badge, Button, Card } from '@vertigo/ui'
 
 interface ActivityCardProps {
   id: string
@@ -64,7 +62,7 @@ export function ActivityCard({
   }
 
   return (
-    <Card variant="hover" padding="none" className="overflow-hidden">
+    <Card className="overflow-hidden">
       {/* Image */}
       <div className="relative h-40 bg-gradient-to-br from-partypal-purple-100 to-partypal-pink-100">
         {featuredImageUrl ? (

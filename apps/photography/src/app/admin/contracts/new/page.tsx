@@ -4,10 +4,9 @@ import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import Link from 'next/link'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
 import { ContractForm } from '@/components/contracts/ContractForm'
 import type { ContractTemplate, Client, Package } from '@/generated/prisma'
+import { Button, Card } from '@vertigo/ui'
 
 function NewContractPageContent() {
   const searchParams = useSearchParams()

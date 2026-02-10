@@ -1,8 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { slideUp } from '@vertigo/ui'
-import { Button } from '@/components/ui/Button'
+import { Button, slideUp } from '@vertigo/ui'
 import type { LucideIcon } from 'lucide-react'
 
 interface ListPageHeaderProps {

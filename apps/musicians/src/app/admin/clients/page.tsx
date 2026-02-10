@@ -2,13 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
 import { Plus, Search, Users, Mail, Phone, MapPin, Building } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
 import toast from 'react-hot-toast'
+import { Button, Card, Input, Badge } from '@vertigo/ui'
 
 interface Client {
   id: string

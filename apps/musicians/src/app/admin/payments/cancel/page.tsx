@@ -3,8 +3,7 @@
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { XCircle, ArrowRight, RefreshCw } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+import { Button, Card, CardContent } from '@vertigo/ui'
 
 export default function PaymentCancelPage() {
   const searchParams = useSearchParams()

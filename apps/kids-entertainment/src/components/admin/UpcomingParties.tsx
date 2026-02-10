@@ -5,10 +5,9 @@
 
 'use client'
 
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
 import { Calendar, MapPin, Users } from 'lucide-react'
 import Link from 'next/link'
+import { Badge, Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
 
 interface Party {
   id: string

@@ -1,10 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Card } from '@/components/ui/Card'
-import { Input } from '@/components/ui/Input'
-import { Button } from '@/components/ui/Button'
-
+import { Button, Card, Input } from '@vertigo/ui'
 interface ContractSignatureProps {
   onSign: (data: {
     signedByName: string

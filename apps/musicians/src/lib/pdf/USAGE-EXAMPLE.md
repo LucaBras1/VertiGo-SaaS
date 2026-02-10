@@ -8,7 +8,6 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
 import { Download, Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -230,6 +229,7 @@ export async function POST(request: NextRequest) {
 import { renderToBuffer } from '@react-pdf/renderer'
 import { InvoicePDF } from '@/lib/pdf'
 import React from 'react'
+import { Button } from '@vertigo/ui'
 
 describe('InvoicePDF', () => {
   it('should generate a PDF buffer', async () => {

@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import { Music, Home } from 'lucide-react'
+import { Button } from '@vertigo/ui'
 
 export default function NotFound() {
   return (

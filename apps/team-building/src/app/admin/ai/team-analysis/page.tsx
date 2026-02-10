@@ -14,10 +14,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { staggerContainer, staggerItem } from '@vertigo/ui'
+import { Button, Card, CardContent, CardHeader, CardTitle, Input, staggerContainer, staggerItem } from '@vertigo/ui'
 import {
   Brain,
   Target,
@@ -384,7 +381,7 @@ export default function TeamAnalysisPage() {
               {/* Analyze Button */}
               <Button
                 onClick={handleAnalyze}
-                isLoading={isLoading}
+                loading={isLoading}
                 variant="ai"
                 className="w-full"
                 size="lg"

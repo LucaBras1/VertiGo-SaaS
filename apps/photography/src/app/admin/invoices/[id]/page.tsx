@@ -7,12 +7,9 @@ import {
   ArrowLeft, Edit, Trash2, Send, Download, CheckCircle,
   Clock, AlertCircle, XCircle, FileText, User, Package
 } from 'lucide-react'
-import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Badge } from '@/components/ui/Badge'
-import { Modal } from '@/components/ui/Modal'
 import toast from 'react-hot-toast'
 import { downloadInvoicePDF } from '@/lib/pdf/invoice-pdf'
+import { Badge, Button, Card, CardHeader, CardTitle, Modal, ModalBody, ModalContent, ModalHeader, ModalTitle } from '@vertigo/ui'
 
 interface LineItem {
   description: string
@@ -47,11 +44,11 @@ interface Invoice {
 }
 
 const statusConfig = {
-  DRAFT: { label: 'Draft', color: 'gray' as const, icon: FileText },
-  SENT: { label: 'Sent', color: 'blue' as const, icon: Clock },
-  PAID: { label: 'Paid', color: 'green' as const, icon: CheckCircle },
-  OVERDUE: { label: 'Overdue', color: 'red' as const, icon: AlertCircle },
-  CANCELLED: { label: 'Cancelled', color: 'gray' as const, icon: XCircle }
+  DRAFT: { label: 'Draft', color: 'secondary' as const, icon: FileText },
+  SENT: { label: 'Sent', color: 'info' as const, icon: Clock },
+  PAID: { label: 'Paid', color: 'success' as const, icon: CheckCircle },
+  OVERDUE: { label: 'Overdue', color: 'danger' as const, icon: AlertCircle },
+  CANCELLED: { label: 'Cancelled', color: 'secondary' as const, icon: XCircle }
 }
 
 export default function InvoiceDetailPage() {
@@ -225,7 +222,7 @@ export default function InvoiceDetailPage() {
             <Download className="w-4 h-4 mr-2" />
             Download PDF
           </Button>
-          <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
+          <Button variant="destructive" onClick={() => setShowDeleteModal(true)}>
             <Trash2 className="w-4 h-4 mr-2" />
             Delete
           </Button>
@@ -394,7 +391,12 @@ export default function InvoiceDetailPage() {
       </div>
 
       {/* Send Modal */}
-      <Modal isOpen={showSendModal} onClose={() => setShowSendModal(false)} title="Send Invoice">
+      <Modal open={showSendModal} onOpenChange={(open: boolean) => { if (!open) setShowSendModal(false) }}>
+        <ModalContent>
+          <ModalHeader>
+            <ModalTitle>Send Invoice</ModalTitle>
+          </ModalHeader>
+          <ModalBody>
         <div className="space-y-4">
           <p className="text-neutral-600 dark:text-neutral-400">
             Send invoice {invoice.invoiceNumber} to <strong>{invoice.client.email}</strong>?
@@ -403,16 +405,23 @@ export default function InvoiceDetailPage() {
             <Button variant="ghost" onClick={() => setShowSendModal(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSendInvoice} isLoading={isSending}>
+            <Button onClick={handleSendInvoice} loading={isSending}>
               <Send className="w-4 h-4 mr-2" />
               Send Invoice
             </Button>
           </div>
         </div>
+      </ModalBody>
+        </ModalContent>
       </Modal>
 
       {/* Delete Modal */}
-      <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)} title="Delete Invoice">
+      <Modal open={showDeleteModal} onOpenChange={(open: boolean) => { if (!open) setShowDeleteModal(false) }}>
+        <ModalContent>
+          <ModalHeader>
+            <ModalTitle>Delete Invoice</ModalTitle>
+          </ModalHeader>
+          <ModalBody>
         <div className="space-y-4">
           <p className="text-neutral-600 dark:text-neutral-400">
             Are you sure you want to delete invoice {invoice.invoiceNumber}?
@@ -421,11 +430,13 @@ export default function InvoiceDetailPage() {
             <Button variant="ghost" onClick={() => setShowDeleteModal(false)}>
               Cancel
             </Button>
-            <Button variant="danger" onClick={handleDelete} isLoading={isDeleting}>
+            <Button variant="destructive" onClick={handleDelete} loading={isDeleting}>
               Delete Invoice
             </Button>
           </div>
         </div>
+      </ModalBody>
+        </ModalContent>
       </Modal>
     </div>
   )

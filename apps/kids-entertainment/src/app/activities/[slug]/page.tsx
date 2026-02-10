@@ -5,9 +5,6 @@
 export const dynamic = 'force-dynamic'
 
 import { prisma } from '@/lib/prisma'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
-import { Button } from '@/components/ui/Button'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -20,6 +17,7 @@ import {
   AlertTriangle,
   CheckCircle,
 } from 'lucide-react'
+import { Badge, Button, Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
 
 async function getActivity(slug: string) {
   const activity = await prisma.activity.findUnique({
@@ -85,7 +83,7 @@ export default async function ActivityDetailPage({
           <div className="text-white">
             <div className="flex items-center space-x-3 mb-4">
               {activity.featured && (
-                <Badge variant="yellow" size="lg">
+                <Badge size="lg" className="bg-partypal-yellow-100 text-partypal-yellow-800">
                   ⭐ Doporučujeme
                 </Badge>
               )}

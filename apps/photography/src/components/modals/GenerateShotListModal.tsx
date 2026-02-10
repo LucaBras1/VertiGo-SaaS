@@ -1,10 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Modal } from '@/components/ui/Modal'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import { Loader2, Sparkles, CheckCircle, AlertCircle } from 'lucide-react'
+import { Button, Input, Modal, ModalBody, ModalContent, ModalHeader, ModalTitle } from '@vertigo/ui'
 
 interface GenerateShotListModalProps {
   isOpen: boolean
@@ -106,7 +104,12 @@ export function GenerateShotListModal({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title="AI Shot List Generator" size="lg">
+    <Modal open={isOpen} onOpenChange={(open: boolean) => { if (!open) handleClose() }}>
+        <ModalContent size="lg">
+          <ModalHeader>
+            <ModalTitle>AI Shot List Generator</ModalTitle>
+          </ModalHeader>
+          <ModalBody>
       {step === 'form' && (
         <div className="space-y-4">
           <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-4 border border-amber-200">
@@ -290,6 +293,8 @@ export function GenerateShotListModal({
           </div>
         </div>
       )}
-    </Modal>
+    </ModalBody>
+        </ModalContent>
+      </Modal>
   )
 }

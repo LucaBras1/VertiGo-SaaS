@@ -11,7 +11,6 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from 'recharts'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Activity } from 'lucide-react'
 import {
   calculateEnergyFlow,
@@ -21,6 +20,7 @@ import {
   getEnergyColor,
   type EnergyDataPoint,
 } from '@/lib/utils/energy'
+import { Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
 
 interface Song {
   id: string

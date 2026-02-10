@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect } from 'react'
-import { Button } from '@/components/ui/button'
 import { AlertCircle } from 'lucide-react'
+import { Button } from '@vertigo/ui'
 
 export default function Error({
   error,

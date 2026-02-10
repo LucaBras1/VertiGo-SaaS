@@ -14,12 +14,11 @@ import {
   Download,
   ExternalLink,
 } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
 import { ContractStatusBadge } from './ContractStatusBadge'
 import { ConfirmDeleteModal } from '@/components/modals/ConfirmDeleteModal'
 import toast from 'react-hot-toast'
 import type { Contract, Client, Package } from '@/generated/prisma'
+import { Button, Card } from '@vertigo/ui'
 
 interface ContractWithRelations extends Contract {
   client: Client | null

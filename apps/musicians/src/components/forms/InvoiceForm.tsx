@@ -6,15 +6,10 @@ import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import toast from 'react-hot-toast'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectOption } from '@/components/ui/select'
-import { Label } from '@/components/ui/label'
 import { DatePicker } from '@/components/ui/date-picker'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Plus, Trash2 } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
+import { Button, Input, Textarea, Select, SelectOption, Label, Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
 
 const invoiceItemSchema = z.object({
   description: z.string().min(1, 'Popis je povinný'),
@@ -286,7 +281,7 @@ export function InvoiceForm({ initialData, clients = [], gigs = [], onSuccess }:
         >
           Zrušit
         </Button>
-        <Button type="submit" isLoading={isLoading}>
+        <Button type="submit" loading={isLoading}>
           {isEdit ? 'Uložit změny' : 'Vytvořit fakturu'}
         </Button>
       </div>

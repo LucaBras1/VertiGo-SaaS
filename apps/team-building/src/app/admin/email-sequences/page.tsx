@@ -4,10 +4,8 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Mail, Plus, Play, Pause, Trash2, Users, Send, Loader2, Clock, CheckCircle2, FileText } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
 import { ListPageHeader, StatusBadge, ActionButtons } from '@vertigo/admin'
-import { staggerContainer, staggerItem } from '@vertigo/ui'
+import { Button, Card, staggerContainer, staggerItem } from '@vertigo/ui'
 
 interface SequenceStep { id: string; stepOrder: number; delayDays: number; delayHours: number; subject: string }
 interface SequenceStats { totalEnrollments: number; activeEnrollments: number; completedEnrollments: number; totalEmailsSent: number; openRate: number; clickRate: number }

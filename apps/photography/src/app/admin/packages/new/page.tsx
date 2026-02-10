@@ -6,11 +6,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import Link from 'next/link'
-import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import { useClients } from '@/hooks/useClients'
 import { useCreatePackage } from '@/hooks/usePackages'
+import { Button, Card, CardHeader, CardTitle, Input } from '@vertigo/ui'
 
 const packageSchema = z.object({
   clientId: z.string().min(1, 'Please select a client'),

@@ -5,7 +5,7 @@ import { format } from 'date-fns'
 import { cs } from 'date-fns/locale'
 import { cn } from '@/lib/utils'
 import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react'
-import { Button } from './button'
+import { Button } from '@vertigo/ui'
 
 interface DatePickerProps {
   value?: Date

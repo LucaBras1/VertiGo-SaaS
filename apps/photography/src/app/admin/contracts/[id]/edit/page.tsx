@@ -3,11 +3,10 @@
 import { useState, useEffect, use } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Loader2 } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
 import { ContractForm } from '@/components/contracts/ContractForm'
 import toast from 'react-hot-toast'
 import type { Contract, Client, Package, ContractTemplate } from '@/generated/prisma'
+import { Button, Card } from '@vertigo/ui'
 
 interface ContractWithRelations extends Contract {
   client: Client | null

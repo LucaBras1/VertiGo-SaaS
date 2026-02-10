@@ -8,9 +8,8 @@
 import { Suspense, useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Button } from '@/components/ui/Button'
-import { Card } from '@/components/ui/Card'
 import { PartyPopper, AlertCircle } from 'lucide-react'
+import { Button, Card } from '@vertigo/ui'
 
 function LoginForm() {
   const router = useRouter()
@@ -96,7 +95,7 @@ function LoginForm() {
 
       <Button
         type="submit"
-        isLoading={isLoading}
+        loading={isLoading}
         className="w-full"
         size="lg"
       >
@@ -109,7 +108,7 @@ function LoginForm() {
 export default function AdminLoginPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-partypal-pink-100 via-white to-sky-100 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md" padding="lg">
+      <Card className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-partypal-pink-500 to-partypal-yellow-500 rounded-2xl mb-4">
             <PartyPopper className="w-8 h-8 text-white" />

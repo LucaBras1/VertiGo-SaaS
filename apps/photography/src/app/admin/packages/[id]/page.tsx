@@ -7,21 +7,18 @@ import {
   ArrowLeft, Edit, Trash2, Calendar, User, DollarSign,
   Camera, FileText, ListChecks, ChevronRight, Loader2
 } from 'lucide-react'
-import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Badge } from '@/components/ui/Badge'
-import { Modal } from '@/components/ui/Modal'
 import {
   usePackage, useDeletePackage, useUpdatePackageStatus,
   PackageStatus, STATUS_LABELS, getNextStatuses
 } from '@/hooks/usePackages'
+import { Badge, Button, Card, CardHeader, CardTitle, Modal, ModalBody, ModalContent, ModalHeader, ModalTitle } from '@vertigo/ui'
 
-const statusConfig: Record<PackageStatus, { label: string; color: 'gray' | 'blue' | 'green' | 'red' }> = {
-  INQUIRY: { label: 'Inquiry', color: 'gray' },
-  QUOTE_SENT: { label: 'Quote Sent', color: 'blue' },
-  CONFIRMED: { label: 'Confirmed', color: 'green' },
-  COMPLETED: { label: 'Completed', color: 'green' },
-  CANCELLED: { label: 'Cancelled', color: 'red' }
+const statusConfig: Record<PackageStatus, { label: string; color: 'secondary' | 'info' | 'success' | 'danger' }> = {
+  INQUIRY: { label: 'Inquiry', color: 'secondary' },
+  QUOTE_SENT: { label: 'Quote Sent', color: 'info' },
+  CONFIRMED: { label: 'Confirmed', color: 'success' },
+  COMPLETED: { label: 'Completed', color: 'success' },
+  CANCELLED: { label: 'Cancelled', color: 'danger' }
 }
 
 export default function PackageDetailPage() {
@@ -96,7 +93,7 @@ export default function PackageDetailPage() {
               Edit
             </Button>
           </Link>
-          <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
+          <Button variant="destructive" onClick={() => setShowDeleteModal(true)}>
             <Trash2 className="w-4 h-4 mr-2" />
             Delete
           </Button>
@@ -120,7 +117,7 @@ export default function PackageDetailPage() {
                   <Button
                     key={status}
                     size="sm"
-                    variant={status === 'CANCELLED' ? 'danger' : 'secondary'}
+                    variant={status === 'CANCELLED' ? 'destructive' : 'secondary'}
                     onClick={() => handleStatusChange(status)}
                     disabled={updateStatus.isPending}
                   >
@@ -317,7 +314,7 @@ export default function PackageDetailPage() {
                   <Link key={list.id} href={`/admin/shot-lists/${list.id}`}
                     className="flex items-center justify-between p-2 rounded hover:bg-neutral-50 dark:bg-neutral-800">
                     <span className="font-medium text-sm">{list.name}</span>
-                    <Badge variant={list.status === 'FINALIZED' ? 'green' : 'gray'} size="sm">
+                    <Badge variant={list.status === 'FINALIZED' ? 'success' : 'secondary'} size="sm">
                       {list.status}
                     </Badge>
                   </Link>
@@ -342,7 +339,7 @@ export default function PackageDetailPage() {
                   <Link key={invoice.id} href={`/admin/invoices/${invoice.id}`}
                     className="flex items-center justify-between p-2 rounded hover:bg-neutral-50 dark:bg-neutral-800">
                     <span className="font-medium text-sm">{invoice.invoiceNumber}</span>
-                    <Badge variant={invoice.status === 'PAID' ? 'green' : 'gray'} size="sm">
+                    <Badge variant={invoice.status === 'PAID' ? 'success' : 'secondary'} size="sm">
                       {invoice.status}
                     </Badge>
                   </Link>
@@ -354,7 +351,12 @@ export default function PackageDetailPage() {
       </div>
 
       {/* Delete Modal */}
-      <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)} title="Delete Package">
+      <Modal open={showDeleteModal} onOpenChange={(open: boolean) => { if (!open) setShowDeleteModal(false) }}>
+        <ModalContent>
+          <ModalHeader>
+            <ModalTitle>Delete Package</ModalTitle>
+          </ModalHeader>
+          <ModalBody>
         <div className="space-y-4">
           <p className="text-neutral-600 dark:text-neutral-400">
             Are you sure you want to delete &quot;{pkg.title}&quot;? This action cannot be undone.
@@ -363,11 +365,13 @@ export default function PackageDetailPage() {
             <Button variant="ghost" onClick={() => setShowDeleteModal(false)}>
               Cancel
             </Button>
-            <Button variant="danger" onClick={handleDelete} isLoading={deletePackage.isPending}>
+            <Button variant="destructive" onClick={handleDelete} loading={deletePackage.isPending}>
               Delete Package
             </Button>
           </div>
         </div>
+      </ModalBody>
+        </ModalContent>
       </Modal>
     </div>
   )

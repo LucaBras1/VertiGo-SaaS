@@ -4,15 +4,10 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft, Plus, Trash2, GripVertical } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Select, SelectOption } from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { SortableSongList } from '@/components/setlist/SortableSongList'
 import { formatDuration } from '@/lib/utils'
 import toast from 'react-hot-toast'
+import { Button, Input, Select, SelectOption, Textarea, Label, Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
 
 interface Song {
   id: string
@@ -213,7 +208,7 @@ export default function EditSetlistPage() {
               <Button type="button" variant="outline" onClick={() => router.back()}>
                 Zrušit
               </Button>
-              <Button type="submit" isLoading={isLoading}>
+              <Button type="submit" loading={isLoading}>
                 Uložit změny
               </Button>
             </div>

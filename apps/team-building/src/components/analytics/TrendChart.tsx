@@ -10,8 +10,8 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { chartTheme } from '@vertigo/admin'
+import { Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
 
 interface TrendChartProps {
   labels: string[]

@@ -1,7 +1,7 @@
 'use client'
 
-import { Badge } from '@/components/ui/Badge'
 import type { ContractStatus } from '@/generated/prisma'
+import { Badge } from '@vertigo/ui'
 
 interface ContractStatusBadgeProps {
   status: ContractStatus

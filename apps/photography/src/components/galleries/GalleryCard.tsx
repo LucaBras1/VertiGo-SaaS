@@ -1,7 +1,6 @@
 import Link from 'next/link'
-import { Card } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
 import { Images, Clock, CheckCircle } from 'lucide-react'
+import { Badge, Card } from '@vertigo/ui'
 
 interface GalleryCardProps {
   id: string

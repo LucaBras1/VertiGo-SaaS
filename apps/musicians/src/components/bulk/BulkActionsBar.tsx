@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { Trash2, Download, CheckCircle, XCircle, X } from 'lucide-react'
+import { Button } from '@vertigo/ui'
 
 export interface BulkAction {
   id: string

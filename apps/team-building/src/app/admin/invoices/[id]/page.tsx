@@ -17,9 +17,8 @@ import {
   Check,
   Download,
 } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import toast from 'react-hot-toast'
+import { Button, ConfirmDialog } from '@vertigo/ui'
 
 interface Invoice {
   id: string
@@ -447,12 +446,12 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
       </div>
 
       <ConfirmDialog
-        isOpen={showDeleteDialog}
+        open={showDeleteDialog}
         onClose={() => setShowDeleteDialog(false)}
         onConfirm={handleDelete}
         title="Smazat fakturu"
-        message="Opravdu chcete smazat tento koncept faktury? Tato akce je nevratná."
-        confirmText="Smazat"
+        description="Opravdu chcete smazat tento koncept faktury? Tato akce je nevratná."
+        confirmLabel="Smazat"
         variant="danger"
       />
     </div>

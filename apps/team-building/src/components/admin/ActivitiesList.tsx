@@ -11,11 +11,9 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Plus, Trash2 } from 'lucide-react'
 import { formatDuration, getObjectiveLabel, getPhysicalLevelLabel } from '@/lib/utils'
-import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
+
 import { StatusBadge, ListPageHeader, SearchFilterBar, ActionButtons } from '@vertigo/admin'
-import { staggerContainer, staggerItem, hoverLift } from '@vertigo/ui'
+import { Button, Card, ConfirmDialog, staggerContainer, staggerItem, hoverLift } from '@vertigo/ui'
 import toast from 'react-hot-toast'
 
 interface Activity {
@@ -276,15 +274,15 @@ export function ActivitiesList({ initialActivities }: ActivitiesListProps) {
       )}
 
       <ConfirmDialog
-        isOpen={deleteDialog.isOpen}
+        open={deleteDialog.isOpen}
         onClose={() => setDeleteDialog({ isOpen: false, activity: null })}
         onConfirm={handleDelete}
         title="Smazat aktivitu"
-        message={`Opravdu chcete smazat aktivitu "${deleteDialog.activity?.title}"? Tato akce je nevratn\u00e1.`}
-        confirmText="Smazat"
-        cancelText="Zru\u0161it"
+        description={`Opravdu chcete smazat aktivitu "${deleteDialog.activity?.title}"? Tato akce je nevratn\u00e1.`}
+        confirmLabel="Smazat"
+        cancelLabel="Zru\u0161it"
         variant="danger"
-        isLoading={isDeleting}
+        loading={isDeleting}
       />
     </div>
   )

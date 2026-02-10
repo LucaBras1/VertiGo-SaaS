@@ -1,6 +1,6 @@
 'use client'
 
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@vertigo/ui'
 
 interface CohortData {
   cohortLabel: string

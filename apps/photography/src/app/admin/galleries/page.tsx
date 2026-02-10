@@ -3,11 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Plus, Search, Images, Eye, Download, Clock, CheckCircle, Truck, Sparkles } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { Badge } from '@/components/ui/Badge'
-
+import { Badge, Button, Card, Input } from '@vertigo/ui'
 interface Gallery {
   id: string
   name: string
@@ -29,9 +25,9 @@ interface Gallery {
 }
 
 const statusConfig = {
-  PROCESSING: { label: 'Processing', color: 'yellow' as const, icon: Clock },
-  READY: { label: 'Ready', color: 'green' as const, icon: CheckCircle },
-  DELIVERED: { label: 'Delivered', color: 'blue' as const, icon: Truck }
+  PROCESSING: { label: 'Processing', color: 'warning' as const, icon: Clock },
+  READY: { label: 'Ready', color: 'success' as const, icon: CheckCircle },
+  DELIVERED: { label: 'Delivered', color: 'info' as const, icon: Truck }
 }
 
 export default function GalleriesPage() {

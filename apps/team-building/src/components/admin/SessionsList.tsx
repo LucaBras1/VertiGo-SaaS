@@ -11,11 +11,8 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Plus, Calendar, CheckCircle, Clock, XCircle, FileText } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
-import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
 import { StatusBadge, ListPageHeader, SearchFilterBar, ActionButtons } from '@vertigo/admin'
-import { staggerContainer, staggerItem } from '@vertigo/ui'
+import { Button, Card, ConfirmDialog, staggerContainer, staggerItem } from '@vertigo/ui'
 import toast from 'react-hot-toast'
 
 interface Program {
@@ -290,15 +287,15 @@ export function SessionsList({ initialSessions, programs }: SessionsListProps) {
       )}
 
       <ConfirmDialog
-        isOpen={deleteDialog.isOpen}
+        open={deleteDialog.isOpen}
         onClose={() => setDeleteDialog({ isOpen: false, session: null })}
         onConfirm={handleDelete}
         title="Delete session"
-        message={`Are you sure you want to delete session "${deleteDialog.session?.companyName || 'this session'}"? This action cannot be undone.`}
-        confirmText="Delete"
-        cancelText="Cancel"
+        description={`Are you sure you want to delete session "${deleteDialog.session?.companyName || 'this session'}"? This action cannot be undone.`}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
         variant="danger"
-        isLoading={isDeleting}
+        loading={isDeleting}
       />
     </div>
   )

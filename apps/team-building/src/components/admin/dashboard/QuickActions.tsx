@@ -3,8 +3,7 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Users, Activity, Calendar } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
-import { staggerItem, hoverLift } from '@vertigo/ui'
+import { Card, hoverLift, staggerItem } from '@vertigo/ui'
 
 const actions = [
   {

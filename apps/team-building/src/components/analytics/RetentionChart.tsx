@@ -1,8 +1,8 @@
 'use client'
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell, ResponsiveContainer } from 'recharts'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { chartTheme } from '@vertigo/admin'
+import { Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
 
 interface RetentionData {
   period: string

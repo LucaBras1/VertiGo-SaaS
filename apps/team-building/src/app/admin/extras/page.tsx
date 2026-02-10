@@ -9,11 +9,8 @@ import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Package, Plus, Search, Edit, Trash2, DollarSign } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { ListPageHeader, SearchFilterBar, ActionButtons, StatusBadge } from '@vertigo/admin'
-import { staggerContainer, staggerItem } from '@vertigo/ui'
+import { Button, Card, ConfirmDialog, staggerContainer, staggerItem } from '@vertigo/ui'
 import toast from 'react-hot-toast'
 
 interface Extra {
@@ -143,12 +140,12 @@ export default function ExtrasPage() {
       )}
 
       <ConfirmDialog
-        isOpen={!!deleteId}
+        open={!!deleteId}
         onClose={() => setDeleteId(null)}
         onConfirm={handleDelete}
         title="Smazat doplňkovou službu"
-        message="Opravdu chcete smazat tuto doplňkovou službu? Tato akce je nevratná."
-        confirmText="Smazat"
+        description="Opravdu chcete smazat tuto doplňkovou službu? Tato akce je nevratná."
+        confirmLabel="Smazat"
         variant="danger"
       />
     </div>

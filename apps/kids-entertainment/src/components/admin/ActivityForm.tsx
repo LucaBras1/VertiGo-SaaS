@@ -7,9 +7,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/Button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Zap } from 'lucide-react'
+import { Button, Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
 
 interface ActivityFormProps {
   initialData?: any
@@ -422,7 +421,7 @@ export default function ActivityForm({ initialData, activityId }: ActivityFormPr
         >
           Zrušit
         </Button>
-        <Button type="submit" isLoading={isLoading}>
+        <Button type="submit" loading={isLoading}>
           {activityId ? 'Uložit změny' : 'Vytvořit aktivitu'}
         </Button>
       </div>

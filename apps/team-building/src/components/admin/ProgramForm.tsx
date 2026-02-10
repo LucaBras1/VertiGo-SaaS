@@ -9,11 +9,9 @@ import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Button } from '@/components/ui/Button'
-import { Card } from '@/components/ui/Card'
 import { Save, X } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { staggerContainer, staggerItem } from '@vertigo/ui'
+import { Button, Card, staggerContainer, staggerItem } from '@vertigo/ui'
 
 const objectiveTypes = [
   { value: 'COMMUNICATION', label: 'Komunikace' },
@@ -510,7 +508,7 @@ export function ProgramForm({
       {/* Actions */}
       <motion.div variants={staggerItem}>
       <div className="flex gap-4">
-        <Button type="submit" isLoading={isLoading} className="flex-1">
+        <Button type="submit" loading={isLoading} className="flex-1">
           <Save className="w-5 h-5 mr-2" />
           {initialData ? 'Uložit změny' : 'Vytvořit program'}
         </Button>

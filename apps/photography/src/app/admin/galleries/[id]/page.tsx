@@ -7,13 +7,10 @@ import {
   ArrowLeft, Edit, Trash2, Images, Share2,
   Sparkles, CheckCircle, Clock, Truck, Upload
 } from 'lucide-react'
-import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Badge } from '@/components/ui/Badge'
-import { Modal } from '@/components/ui/Modal'
 import { AIGalleryCurationModal } from '@/components/modals/AIGalleryCurationModal'
 import { PhotoSelectionGrid } from '@/components/galleries/PhotoSelectionGrid'
 import toast from 'react-hot-toast'
+import { Badge, Button, Card, CardHeader, CardTitle, Modal, ModalBody, ModalContent, ModalHeader, ModalTitle } from '@vertigo/ui'
 
 interface Gallery {
   id: string
@@ -57,9 +54,9 @@ interface Gallery {
 }
 
 const statusConfig = {
-  PROCESSING: { label: 'Processing', color: 'yellow' as const, icon: Clock },
-  READY: { label: 'Ready', color: 'green' as const, icon: CheckCircle },
-  DELIVERED: { label: 'Delivered', color: 'blue' as const, icon: Truck }
+  PROCESSING: { label: 'Processing', color: 'warning' as const, icon: Clock },
+  READY: { label: 'Ready', color: 'success' as const, icon: CheckCircle },
+  DELIVERED: { label: 'Delivered', color: 'info' as const, icon: Truck }
 }
 
 export default function GalleryDetailPage() {
@@ -207,7 +204,7 @@ export default function GalleryDetailPage() {
             <Share2 className="w-4 h-4 mr-2" />
             Share
           </Button>
-          <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
+          <Button variant="destructive" onClick={() => setShowDeleteModal(true)}>
             <Trash2 className="w-4 h-4 mr-2" />
             Delete
           </Button>
@@ -330,13 +327,13 @@ export default function GalleryDetailPage() {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-neutral-600 dark:text-neutral-400">Password Protected</span>
-                <Badge variant={gallery.password ? 'green' : 'gray'}>
+                <Badge variant={gallery.password ? 'success' : 'secondary'}>
                   {gallery.password ? 'Yes' : 'No'}
                 </Badge>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-neutral-600 dark:text-neutral-400">Downloads</span>
-                <Badge variant={gallery.downloadEnabled ? 'green' : 'gray'}>
+                <Badge variant={gallery.downloadEnabled ? 'success' : 'secondary'}>
                   {gallery.downloadEnabled ? 'Enabled' : 'Disabled'}
                 </Badge>
               </div>
@@ -354,7 +351,12 @@ export default function GalleryDetailPage() {
       </div>
 
       {/* Share Modal */}
-      <Modal isOpen={showShareModal} onClose={() => setShowShareModal(false)} title="Share Gallery">
+      <Modal open={showShareModal} onOpenChange={(open: boolean) => { if (!open) setShowShareModal(false) }}>
+        <ModalContent>
+          <ModalHeader>
+            <ModalTitle>Share Gallery</ModalTitle>
+          </ModalHeader>
+          <ModalBody>
         <div className="space-y-4">
           {gallery.publicUrl ? (
             <>
@@ -386,10 +388,17 @@ export default function GalleryDetailPage() {
             </Button>
           </div>
         </div>
+      </ModalBody>
+        </ModalContent>
       </Modal>
 
       {/* Delete Modal */}
-      <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)} title="Delete Gallery">
+      <Modal open={showDeleteModal} onOpenChange={(open: boolean) => { if (!open) setShowDeleteModal(false) }}>
+        <ModalContent>
+          <ModalHeader>
+            <ModalTitle>Delete Gallery</ModalTitle>
+          </ModalHeader>
+          <ModalBody>
         <div className="space-y-4">
           <p className="text-neutral-600 dark:text-neutral-400">
             Are you sure you want to delete "{gallery.name}"? This will also delete all photos.
@@ -398,11 +407,13 @@ export default function GalleryDetailPage() {
             <Button variant="ghost" onClick={() => setShowDeleteModal(false)}>
               Cancel
             </Button>
-            <Button variant="danger" onClick={handleDelete} isLoading={isDeleting}>
+            <Button variant="destructive" onClick={handleDelete} loading={isDeleting}>
               Delete Gallery
             </Button>
           </div>
         </div>
+      </ModalBody>
+        </ModalContent>
       </Modal>
 
       {/* AI Curation Modal */}

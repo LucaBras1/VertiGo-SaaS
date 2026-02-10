@@ -4,11 +4,8 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Plus, Search, ListChecks, FileText, CheckCircle, Sparkles, Clock, Edit } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { Badge } from '@/components/ui/Badge'
 import { GenerateShotListModal } from '@/components/modals'
+import { Badge, Button, Card, Input } from '@vertigo/ui'
 
 interface ShotList {
   id: string
@@ -29,9 +26,9 @@ interface ShotList {
 }
 
 const statusConfig = {
-  DRAFT: { label: 'Draft', color: 'gray' as const, icon: Edit },
-  FINALIZED: { label: 'Finalized', color: 'blue' as const, icon: FileText },
-  COMPLETED: { label: 'Completed', color: 'green' as const, icon: CheckCircle }
+  DRAFT: { label: 'Draft', color: 'secondary' as const, icon: Edit },
+  FINALIZED: { label: 'Finalized', color: 'info' as const, icon: FileText },
+  COMPLETED: { label: 'Completed', color: 'success' as const, icon: CheckCircle }
 }
 
 export default function ShotListsPage() {

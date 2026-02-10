@@ -4,12 +4,11 @@ import { useState, useEffect, use } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Send, Edit, XCircle, Download, ExternalLink, Loader2, Copy } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
 import { ContractPreview } from '@/components/contracts/ContractPreview'
 import { ConfirmDeleteModal } from '@/components/modals/ConfirmDeleteModal'
 import toast from 'react-hot-toast'
 import type { Contract, Client, Package, ContractTemplate, Tenant } from '@/generated/prisma'
+import { Button, Card } from '@vertigo/ui'
 
 interface ContractWithRelations extends Contract {
   client: Client | null
@@ -176,7 +175,7 @@ export default function ContractDetailPage({ params }: PageProps) {
                 </Button>
               </Link>
               <Button
-                variant="danger"
+                variant="destructive"
                 onClick={() => setDeleteModal(true)}
               >
                 Delete
@@ -200,7 +199,7 @@ export default function ContractDetailPage({ params }: PageProps) {
                 </Button>
               </Link>
               <Button
-                variant="danger"
+                variant="destructive"
                 onClick={handleCancel}
                 disabled={actionLoading === 'cancel'}
               >
