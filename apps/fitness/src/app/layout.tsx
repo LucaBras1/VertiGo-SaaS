@@ -3,9 +3,10 @@ import { Inter } from 'next/font/google'
 import { Toaster } from 'react-hot-toast'
 import { SessionProvider } from '@/components/providers/SessionProvider'
 import { PWAProvider } from '@/components/providers/PWAProvider'
+import { ThemeProvider } from '@vertigo/admin'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
   title: 'FitAdmin - Smart Management for Fitness Pros',
@@ -17,12 +18,8 @@ export const metadata: Metadata = {
     statusBarStyle: 'black-translucent',
     title: 'FitAdmin',
   },
-  formatDetection: {
-    telephone: true,
-  },
-  other: {
-    'mobile-web-app-capable': 'yes',
-  },
+  formatDetection: { telephone: true },
+  other: { 'mobile-web-app-capable': 'yes' },
 }
 
 export const viewport: Viewport = {
@@ -40,35 +37,31 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="cs">
-      <body className={inter.className}>
-        <SessionProvider>
-          <PWAProvider>
-            {children}
-          </PWAProvider>
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 4000,
-              style: {
-                background: '#1E293B',
-                color: '#fff',
-              },
-              success: {
-                iconTheme: {
-                  primary: '#10B981',
-                  secondary: '#fff',
-                },
-              },
-              error: {
-                iconTheme: {
-                  primary: '#EF4444',
-                  secondary: '#fff',
-                },
-              },
-            }}
-          />
-        </SessionProvider>
+    <html lang="cs" className={inter.variable} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var d=document.documentElement;var c=localStorage.getItem('theme');if(c==='dark'||(c!=='light'&&matchMedia('(prefers-color-scheme:dark)').matches)){d.classList.add('dark')}else{d.classList.remove('dark')}}catch(e){}})()`,
+          }}
+        />
+      </head>
+      <body className={`${inter.className} antialiased`}>
+        <ThemeProvider>
+          <SessionProvider>
+            <PWAProvider>
+              {children}
+            </PWAProvider>
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
+                style: { background: '#1E293B', color: '#fff' },
+                success: { iconTheme: { primary: '#10B981', secondary: '#fff' } },
+                error: { iconTheme: { primary: '#EF4444', secondary: '#fff' } },
+              }}
+            />
+          </SessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

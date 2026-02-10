@@ -21,7 +21,7 @@ import {
 import { Button } from '@/components/ui/Button'
 import { motion } from 'framer-motion'
 import { staggerContainer, staggerItem, fadeIn } from '@vertigo/ui'
-import { chartTheme } from '@/lib/chart-theme'
+import { chartTheme } from '@vertigo/admin'
 import toast from 'react-hot-toast'
 import {
   BarChart,

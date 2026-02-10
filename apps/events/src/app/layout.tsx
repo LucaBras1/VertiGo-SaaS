@@ -3,6 +3,7 @@ import { Inter, Poppins } from 'next/font/google'
 import { Toaster } from 'react-hot-toast'
 import { SessionProvider } from '@/components/providers/session-provider'
 import { QueryProvider } from '@/components/providers/query-provider'
+import { ThemeProvider } from '@vertigo/admin'
 import './globals.css'
 
 const inter = Inter({
@@ -35,11 +36,29 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
-      <body className="font-sans antialiased bg-gradient-to-br from-purple-50 via-white to-orange-50 min-h-screen">
-        <SessionProvider>
-          <QueryProvider>{children}</QueryProvider>
-        </SessionProvider>
+    <html lang="en" className={`${inter.variable} ${poppins.variable}`} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('theme');
+                  if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                  }
+                } catch(e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className="font-sans antialiased min-h-screen">
+        <ThemeProvider>
+          <SessionProvider>
+            <QueryProvider>{children}</QueryProvider>
+          </SessionProvider>
+        </ThemeProvider>
         <Toaster
           position="top-right"
           toastOptions={{

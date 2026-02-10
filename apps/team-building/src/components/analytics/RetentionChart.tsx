@@ -2,7 +2,7 @@
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell, ResponsiveContainer } from 'recharts'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
-import { chartTheme } from '@/lib/chart-theme'
+import { chartTheme } from '@vertigo/admin'
 
 interface RetentionData {
   period: string

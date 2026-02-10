@@ -44,12 +44,21 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.90.9
         version: 5.90.19(react@18.3.1)
+      '@vertigo/admin':
+        specifier: workspace:*
+        version: link:../../packages/admin
       '@vertigo/ai-core':
         specifier: workspace:*
         version: link:../../packages/ai-core
+      '@vertigo/config':
+        specifier: workspace:*
+        version: link:../../packages/config
       '@vertigo/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@vertigo/design-tokens':
+        specifier: workspace:*
+        version: link:../../packages/design-tokens
       '@vertigo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -65,6 +74,9 @@ importers:
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
+      framer-motion:
+        specifier: ^11.0.0
+        version: 11.18.2(react-dom@18.3.1)(react@18.3.1)
       lucide-react:
         specifier: ^0.453.0
         version: 0.453.0(react@18.3.1)
@@ -162,6 +174,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.90.9
         version: 5.90.19(react@18.3.1)
+      '@vertigo/admin':
+        specifier: workspace:*
+        version: link:../../packages/admin
       '@vertigo/ai-core':
         specifier: workspace:*
         version: link:../../packages/ai-core
@@ -171,9 +186,15 @@ importers:
       '@vertigo/billing':
         specifier: workspace:*
         version: link:../../packages/billing
+      '@vertigo/config':
+        specifier: workspace:*
+        version: link:../../packages/config
       '@vertigo/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@vertigo/design-tokens':
+        specifier: workspace:*
+        version: link:../../packages/design-tokens
       '@vertigo/email':
         specifier: workspace:*
         version: link:../../packages/email
@@ -195,6 +216,9 @@ importers:
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
+      framer-motion:
+        specifier: ^11.0.0
+        version: 11.18.2(react-dom@18.3.1)(react@18.3.1)
       google-auth-library:
         specifier: ^9.15.0
         version: 9.15.1
@@ -253,6 +277,12 @@ importers:
         specifier: ^5.0.8
         version: 5.0.10(@types/react@18.3.27)(react@18.3.1)
     devDependencies:
+      '@tailwindcss/forms':
+        specifier: ^0.5.11
+        version: 0.5.11(tailwindcss@3.4.19)
+      '@tailwindcss/typography':
+        specifier: ^0.5.19
+        version: 0.5.19(tailwindcss@3.4.19)
       '@types/bcryptjs':
         specifier: ^2.4.6
         version: 2.4.6
@@ -355,18 +385,30 @@ importers:
       '@tiptap/starter-kit':
         specifier: ^3.10.7
         version: 3.16.0
+      '@vertigo/admin':
+        specifier: workspace:*
+        version: link:../../packages/admin
       '@vertigo/ai-core':
         specifier: workspace:*
         version: link:../../packages/ai-core
       '@vertigo/auth':
         specifier: workspace:*
         version: link:../../packages/auth
+      '@vertigo/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@vertigo/design-tokens':
+        specifier: workspace:*
+        version: link:../../packages/design-tokens
       '@vertigo/email':
         specifier: workspace:*
         version: link:../../packages/email
       '@vertigo/stripe':
         specifier: workspace:*
         version: link:../../packages/stripe
+      '@vertigo/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       bcryptjs:
         specifier: ^3.0.3
         version: 3.0.3
@@ -379,6 +421,9 @@ importers:
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
+      framer-motion:
+        specifier: ^11.0.0
+        version: 11.18.2(react-dom@18.3.1)(react@18.3.1)
       lucide-react:
         specifier: ^0.453.0
         version: 0.453.0(react@18.3.1)
@@ -428,6 +473,12 @@ importers:
       '@playwright/test':
         specifier: ^1.58.1
         version: 1.58.1
+      '@tailwindcss/forms':
+        specifier: ^0.5.11
+        version: 0.5.11(tailwindcss@3.4.19)
+      '@tailwindcss/typography':
+        specifier: ^0.5.19
+        version: 0.5.19(tailwindcss@3.4.19)
       '@testing-library/jest-dom':
         specifier: ^6.9.1
         version: 6.9.1
@@ -542,6 +593,9 @@ importers:
       '@types/qrcode':
         specifier: ^1.5.5
         version: 1.5.6
+      '@vertigo/admin':
+        specifier: workspace:*
+        version: link:../../packages/admin
       '@vertigo/ai-core':
         specifier: workspace:*
         version: link:../../packages/ai-core
@@ -557,6 +611,9 @@ importers:
       '@vertigo/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@vertigo/design-tokens':
+        specifier: workspace:*
+        version: link:../../packages/design-tokens
       '@vertigo/email':
         specifier: workspace:*
         version: link:../../packages/email
@@ -578,6 +635,9 @@ importers:
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
+      framer-motion:
+        specifier: ^11.0.0
+        version: 11.18.2(react-dom@18.3.1)(react@18.3.1)
       googleapis:
         specifier: '144'
         version: 144.0.0
@@ -624,6 +684,12 @@ importers:
         specifier: ^3.23.8
         version: 3.25.76
     devDependencies:
+      '@tailwindcss/forms':
+        specifier: ^0.5.11
+        version: 0.5.11(tailwindcss@3.4.19)
+      '@tailwindcss/typography':
+        specifier: ^0.5.19
+        version: 0.5.19(tailwindcss@3.4.19)
       '@types/node':
         specifier: ^22
         version: 22.19.7
@@ -684,12 +750,21 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.90.9
         version: 5.90.19(react@18.3.1)
+      '@vertigo/admin':
+        specifier: workspace:*
+        version: link:../../packages/admin
       '@vertigo/ai-core':
         specifier: workspace:*
         version: link:../../packages/ai-core
+      '@vertigo/config':
+        specifier: workspace:*
+        version: link:../../packages/config
       '@vertigo/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@vertigo/design-tokens':
+        specifier: workspace:*
+        version: link:../../packages/design-tokens
       '@vertigo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -705,6 +780,9 @@ importers:
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
+      framer-motion:
+        specifier: ^11.0.0
+        version: 11.18.2(react-dom@18.3.1)(react@18.3.1)
       lucide-react:
         specifier: ^0.453.0
         version: 0.453.0(react@18.3.1)
@@ -817,15 +895,24 @@ importers:
       '@tiptap/starter-kit':
         specifier: ^3.10.7
         version: 3.16.0
+      '@vertigo/admin':
+        specifier: workspace:*
+        version: link:../../packages/admin
       '@vertigo/ai-core':
         specifier: workspace:*
         version: link:../../packages/ai-core
       '@vertigo/auth':
         specifier: workspace:*
         version: link:../../packages/auth
+      '@vertigo/config':
+        specifier: workspace:*
+        version: link:../../packages/config
       '@vertigo/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@vertigo/design-tokens':
+        specifier: workspace:*
+        version: link:../../packages/design-tokens
       '@vertigo/email':
         specifier: workspace:*
         version: link:../../packages/email
@@ -847,6 +934,9 @@ importers:
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
+      framer-motion:
+        specifier: ^11.15.0
+        version: 11.18.2(react-dom@18.3.1)(react@18.3.1)
       googleapis:
         specifier: ^144.0.0
         version: 144.0.0
@@ -893,6 +983,12 @@ importers:
         specifier: ^3.23.8
         version: 3.25.76
     devDependencies:
+      '@tailwindcss/forms':
+        specifier: ^0.5.7
+        version: 0.5.11(tailwindcss@3.4.19)
+      '@tailwindcss/typography':
+        specifier: ^0.5.12
+        version: 0.5.19(tailwindcss@3.4.19)
       '@types/node':
         specifier: ^22
         version: 22.19.7
@@ -953,6 +1049,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.90.9
         version: 5.90.19(react@18.3.1)
+      '@vertigo/admin':
+        specifier: workspace:*
+        version: link:../../packages/admin
       '@vertigo/ai-core':
         specifier: workspace:*
         version: link:../../packages/ai-core
@@ -1101,6 +1200,46 @@ importers:
       vitest:
         specifier: ^3.0.0
         version: 3.2.4(@types/node@22.19.7)(@vitest/ui@3.2.4)(jsdom@26.1.0)
+
+  packages/admin:
+    dependencies:
+      '@vertigo/design-tokens':
+        specifier: workspace:*
+        version: link:../design-tokens
+      '@vertigo/ui':
+        specifier: workspace:*
+        version: link:../ui
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
+      react:
+        specifier: ^18.2.0
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.3.1(react@18.3.1)
+      tailwind-merge:
+        specifier: ^2.6.0
+        version: 2.6.0
+    devDependencies:
+      '@types/react':
+        specifier: ^18.2.0
+        version: 18.3.27
+      '@types/react-dom':
+        specifier: ^18.2.0
+        version: 18.3.7(@types/react@18.3.27)
+      framer-motion:
+        specifier: ^11.0.0
+        version: 11.18.2(react-dom@18.3.1)(react@18.3.1)
+      lucide-react:
+        specifier: ^0.330.0
+        version: 0.330.0(react@18.3.1)
+      next:
+        specifier: ^14.0.0
+        version: 14.2.35(react-dom@18.3.1)(react@18.3.1)
+      typescript:
+        specifier: ^5.3.0
+        version: 5.9.3
 
   packages/ai-core:
     dependencies:
@@ -7385,7 +7524,6 @@ packages:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       tslib: 2.8.1
-    dev: false
 
   /fs-constants@1.0.0:
     resolution: {integrity: sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow==}
@@ -8729,7 +8867,6 @@ packages:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0
     dependencies:
       react: 18.3.1
-    dev: false
 
   /lucide-react@0.453.0(react@18.3.1):
     resolution: {integrity: sha512-kL+RGZCcJi9BvJtzg2kshO192Ddy9hv3ij+cPrVPWSRzgCWCVazoQJxOjAwgK53NomL07HB7GPHW120FimjNhQ==}
@@ -9176,11 +9313,9 @@ packages:
     resolution: {integrity: sha512-g76KvA001z+atjfxczdRtw/RXOM3OMSdd1f4DL77qCTF/+avrRJiawSG4yDibEQ215sr9kpinSlX2pCTJ9zbhw==}
     dependencies:
       motion-utils: 11.18.1
-    dev: false
 
   /motion-utils@11.18.1:
     resolution: {integrity: sha512-49Kt+HKjtbJKLtgO/LKj9Ld+6vw9BjH5d9sc40R/kVyH8GLAXgT42M2NnuPcJNuA3s9ZfZBUcwIgpmZWGEE+hA==}
-    dev: false
 
   /mrmime@2.0.1:
     resolution: {integrity: sha512-Y3wQdFg2Va6etvQ5I82yUhGdsKrcYox6p7FfL1LbK2J4V01F9TGlepTIhnK24t7koZibmg82KGglhA1XK5IsLQ==}
@@ -9260,7 +9395,7 @@ packages:
       '@panva/hkdf': 1.2.1
       cookie: 0.7.2
       jose: 4.15.9
-      next: 14.2.35(@babel/core@7.28.6)(@playwright/test@1.58.1)(react-dom@18.3.1)(react@18.3.1)
+      next: 14.2.35(react-dom@18.3.1)(react@18.3.1)
       oauth: 0.9.15
       openid-client: 5.7.1
       preact: 10.28.2

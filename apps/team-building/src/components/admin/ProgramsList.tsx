@@ -18,10 +18,7 @@ import { formatDuration, getObjectiveLabel } from '@/lib/utils'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
-import { StatusBadge } from '@/components/admin/shared/StatusBadge'
-import { ActionButtons } from '@/components/admin/shared/ActionButtons'
-import { SearchFilterBar } from '@/components/admin/shared/SearchFilterBar'
-import { ListPageHeader } from '@/components/admin/shared/ListPageHeader'
+import { StatusBadge, ActionButtons, SearchFilterBar, ListPageHeader } from '@vertigo/admin'
 import toast from 'react-hot-toast'
 
 interface Program {
