@@ -86,8 +86,8 @@ export default function NewExtraPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Nová doplňková služba</h1>
-          <p className="text-gray-600">Vytvořte novou doplňkovou službu</p>
+          <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">Nová doplňková služba</h1>
+          <p className="text-neutral-600 dark:text-neutral-400">Vytvořte novou doplňkovou službu</p>
         </div>
       </div>
 
@@ -97,7 +97,7 @@ export default function NewExtraPage() {
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                 Název služby *
               </label>
               <input
@@ -111,7 +111,7 @@ export default function NewExtraPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                 URL slug
               </label>
               <input
@@ -125,7 +125,7 @@ export default function NewExtraPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                   Kategorie *
                 </label>
                 <select
@@ -143,7 +143,7 @@ export default function NewExtraPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                   Stav
                 </label>
                 <select
@@ -158,7 +158,7 @@ export default function NewExtraPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                 Krátký popis
               </label>
               <textarea
@@ -177,7 +177,7 @@ export default function NewExtraPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                 Cena od (Kč)
               </label>
               <input
@@ -190,7 +190,7 @@ export default function NewExtraPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                 Jednotka ceny
               </label>
               <select

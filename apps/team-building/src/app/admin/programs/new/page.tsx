@@ -62,13 +62,13 @@ export default function NewProgramPage() {
       <div className="mb-6">
         <Link
           href="/admin/programs"
-          className="inline-flex items-center text-cyan-600 hover:text-cyan-700 font-medium mb-4"
+          className="inline-flex items-center text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium mb-4"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Zpět na programy
         </Link>
-        <h1 className="text-3xl font-bold text-gray-900">Nový program</h1>
-        <p className="text-gray-600 mt-2">Vytvořte nový teambuilding program</p>
+        <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">Nový program</h1>
+        <p className="text-neutral-600 dark:text-neutral-400 mt-2">Vytvořte nový teambuilding program</p>
       </div>
 
       <ProgramForm

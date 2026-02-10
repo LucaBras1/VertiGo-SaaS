@@ -6,7 +6,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
+import { Card } from '@/components/ui/Card'
 import {
   BarChart3,
   TrendingUp,
@@ -19,6 +19,9 @@ import {
   RefreshCw,
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { motion } from 'framer-motion'
+import { staggerContainer, staggerItem, fadeIn } from '@vertigo/ui'
+import { chartTheme } from '@/lib/chart-theme'
 import toast from 'react-hot-toast'
 import {
   BarChart,
@@ -49,13 +52,13 @@ interface Stats {
   sessionsByStatus: { status: string; count: number }[]
 }
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8']
+const COLORS = ['#6366F1', '#0EA5E9', '#22C55E', '#F59E0B', '#EC4899']
 
 const STATUS_COLORS: Record<string, string> = {
-  confirmed: '#10b981',
-  completed: '#0088FE',
-  tentative: '#FFBB28',
-  cancelled: '#FF8042',
+  confirmed: '#22C55E',
+  completed: '#6366F1',
+  tentative: '#F59E0B',
+  cancelled: '#EF4444',
 }
 
 export default function ReportsPage() {
@@ -325,21 +328,67 @@ export default function ReportsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-[50vh]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Načítám statistiky...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500 mx-auto" />
+          <p className="mt-4 text-neutral-600 dark:text-neutral-400">Načítám statistiky...</p>
         </div>
       </div>
     )
   }
 
+  const statsItems = [
+    {
+      label: 'Programy',
+      value: stats.totalPrograms,
+      icon: Users,
+      bgClass: 'bg-brand-100 dark:bg-brand-900/30',
+      iconClass: 'text-brand-600 dark:text-brand-400',
+    },
+    {
+      label: 'Aktivity',
+      value: stats.totalActivities,
+      icon: Activity,
+      bgClass: 'bg-success-100 dark:bg-success-900/30',
+      iconClass: 'text-success-600 dark:text-success-400',
+    },
+    {
+      label: 'Workshopy',
+      value: stats.totalSessions,
+      icon: Calendar,
+      bgClass: 'bg-violet-100 dark:bg-violet-900/30',
+      iconClass: 'text-violet-600 dark:text-violet-400',
+    },
+    {
+      label: 'Dokončené workshopy',
+      value: stats.completedSessions,
+      icon: FileText,
+      bgClass: 'bg-blue-100 dark:bg-blue-900/30',
+      iconClass: 'text-blue-600 dark:text-blue-400',
+    },
+    {
+      label: 'Zákazníci',
+      value: stats.totalCustomers,
+      icon: Users,
+      bgClass: 'bg-amber-100 dark:bg-amber-900/30',
+      iconClass: 'text-amber-600 dark:text-amber-400',
+    },
+    {
+      label: 'Celkové tržby',
+      value: `${stats.totalRevenue.toLocaleString('cs-CZ')} Kč`,
+      icon: DollarSign,
+      bgClass: 'bg-success-100 dark:bg-success-900/30',
+      iconClass: 'text-success-600 dark:text-success-400',
+    },
+  ]
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      {/* Header */}
+      <motion.div className="flex items-center justify-between mb-6" {...fadeIn}>
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Reporty</h1>
-          <p className="text-gray-600 mt-2">Přehled výkonnosti a statistiky</p>
+          <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">Reporty</h1>
+          <p className="mt-1 text-neutral-600 dark:text-neutral-400">Přehled výkonnosti a statistiky</p>
         </div>
         <div className="flex gap-3">
           <Button onClick={fetchStats} variant="outline" disabled={isLoading}>
@@ -351,222 +400,200 @@ export default function ReportsPage() {
             {isExporting ? 'Exportuji...' : 'Export PDF'}
           </Button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 mb-1">Programy</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.totalPrograms}</p>
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        {statsItems.map((item) => (
+          <motion.div key={item.label} variants={staggerItem}>
+            <Card>
+              <div className="flex items-center justify-between p-6">
+                <div>
+                  <p className="text-sm text-neutral-500 dark:text-neutral-400">{item.label}</p>
+                  <p className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">{item.value}</p>
+                </div>
+                <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${item.bgClass}`}>
+                  <item.icon className={`h-6 w-6 ${item.iconClass}`} />
+                </div>
               </div>
-              <div className="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center">
-                <Users className="w-6 h-6 text-cyan-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 mb-1">Aktivity</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.totalActivities}</p>
-              </div>
-              <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
-                <Activity className="w-6 h-6 text-emerald-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 mb-1">Workshopy</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.totalSessions}</p>
-              </div>
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                <Calendar className="w-6 h-6 text-purple-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 mb-1">Dokončené workshopy</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.completedSessions}</p>
-              </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <FileText className="w-6 h-6 text-blue-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 mb-1">Zákazníci</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.totalCustomers}</p>
-              </div>
-              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                <Users className="w-6 h-6 text-orange-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 mb-1">Celkové tržby</p>
-                <p className="text-3xl font-bold text-gray-900">
-                  {stats.totalRevenue.toLocaleString('cs-CZ')} Kč
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-green-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            </Card>
+          </motion.div>
+        ))}
+      </motion.div>
 
       {/* Charts Row 1 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5" />
-              Tržby podle měsíců
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {stats.revenueByMonth.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={stats.revenueByMonth}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`} />
-                  <Tooltip
-                    formatter={(value: number) => [`${value.toLocaleString('cs-CZ')} Kč`, 'Tržby']}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="revenue"
-                    stroke="#06b6d4"
-                    strokeWidth={2}
-                    dot={{ fill: '#06b6d4' }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="text-center py-12 text-gray-500">
-                Zatím nejsou k dispozici žádná data o tržbách
+      <motion.div
+        className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div variants={staggerItem}>
+          <Card>
+            <div className="p-6">
+              <div className="mb-4 flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-brand-600 dark:text-brand-400" />
+                <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Tržby podle měsíců</h3>
               </div>
-            )}
-          </CardContent>
-        </Card>
+              {stats.revenueByMonth.length > 0 ? (
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={stats.revenueByMonth}>
+                    <CartesianGrid strokeDasharray={chartTheme.grid.strokeDasharray} stroke={chartTheme.grid.stroke} />
+                    <XAxis dataKey="month" tick={chartTheme.axis.tick} />
+                    <YAxis tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`} tick={chartTheme.axis.tick} />
+                    <Tooltip
+                      formatter={(value: number) => [`${value.toLocaleString('cs-CZ')} Kč`, 'Tržby']}
+                      contentStyle={{
+                        backgroundColor: chartTheme.tooltip.bg,
+                        borderColor: chartTheme.tooltip.border,
+                        color: chartTheme.tooltip.text,
+                        borderRadius: '8px',
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="revenue"
+                      stroke={chartTheme.colors.primary}
+                      strokeWidth={2}
+                      dot={{ fill: chartTheme.colors.primary }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="text-center py-12 text-neutral-500 dark:text-neutral-400">
+                  Zatím nejsou k dispozici žádná data o tržebách
+                </div>
+              )}
+            </div>
+          </Card>
+        </motion.div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="w-5 h-5" />
-              Workshopy podle měsíců
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {stats.sessionsByMonth.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={stats.sessionsByMonth}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="count" fill="#10b981" name="Počet workshopů" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="text-center py-12 text-gray-500">
-                Zatím nejsou k dispozici žádná data o workshopech
+        <motion.div variants={staggerItem}>
+          <Card>
+            <div className="p-6">
+              <div className="mb-4 flex items-center gap-2">
+                <BarChart3 className="h-5 w-5 text-success-600 dark:text-success-400" />
+                <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Workshopy podle měsíců</h3>
               </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+              {stats.sessionsByMonth.length > 0 ? (
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={stats.sessionsByMonth}>
+                    <CartesianGrid strokeDasharray={chartTheme.grid.strokeDasharray} stroke={chartTheme.grid.stroke} />
+                    <XAxis dataKey="month" tick={chartTheme.axis.tick} />
+                    <YAxis tick={chartTheme.axis.tick} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: chartTheme.tooltip.bg,
+                        borderColor: chartTheme.tooltip.border,
+                        color: chartTheme.tooltip.text,
+                        borderRadius: '8px',
+                      }}
+                    />
+                    <Bar dataKey="count" fill={chartTheme.colors.success} name="Počet workshopů" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="text-center py-12 text-neutral-500 dark:text-neutral-400">
+                  Zatím nejsou k dispozici žádná data o workshopech
+                </div>
+              )}
+            </div>
+          </Card>
+        </motion.div>
+      </motion.div>
 
       {/* Charts Row 2 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Nejpopulárnější programy</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {stats.popularPrograms.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={stats.popularPrograms} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" />
-                  <YAxis dataKey="name" type="category" width={150} tick={{ fontSize: 12 }} />
-                  <Tooltip />
-                  <Bar dataKey="sessions" fill="#8884d8" name="Počet workshopů" radius={[0, 4, 4, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="text-center py-12 text-gray-500">
-                Zatím nejsou k dispozici žádná data o programech
+      <motion.div
+        className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div variants={staggerItem}>
+          <Card>
+            <div className="p-6">
+              <div className="mb-4 flex items-center gap-2">
+                <BarChart3 className="h-5 w-5 text-violet-600 dark:text-violet-400" />
+                <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Nejpopulárnější programy</h3>
               </div>
-            )}
-          </CardContent>
-        </Card>
+              {stats.popularPrograms.length > 0 ? (
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={stats.popularPrograms} layout="vertical">
+                    <CartesianGrid strokeDasharray={chartTheme.grid.strokeDasharray} stroke={chartTheme.grid.stroke} />
+                    <XAxis type="number" tick={chartTheme.axis.tick} />
+                    <YAxis dataKey="name" type="category" width={150} tick={chartTheme.axis.tick} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: chartTheme.tooltip.bg,
+                        borderColor: chartTheme.tooltip.border,
+                        color: chartTheme.tooltip.text,
+                        borderRadius: '8px',
+                      }}
+                    />
+                    <Bar dataKey="sessions" fill={chartTheme.colors.primary} name="Počet workshopů" radius={[0, 4, 4, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="text-center py-12 text-neutral-500 dark:text-neutral-400">
+                  Zatím nejsou k dispozici žádná data o programech
+                </div>
+              )}
+            </div>
+          </Card>
+        </motion.div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Workshopy podle stavu</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {stats.sessionsByStatus.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={stats.sessionsByStatus}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    label={({ status, percent }) => `${status} (${(percent * 100).toFixed(0)}%)`}
-                    outerRadius={100}
-                    fill="#8884d8"
-                    dataKey="count"
-                  >
-                    {stats.sessionsByStatus.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={STATUS_COLORS[entry.status] || COLORS[index % COLORS.length]}
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="text-center py-12 text-gray-500">
-                Zatím nejsou k dispozici žádná data o stavech workshopů
+        <motion.div variants={staggerItem}>
+          <Card>
+            <div className="p-6">
+              <div className="mb-4 flex items-center gap-2">
+                <Activity className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Workshopy podle stavu</h3>
               </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+              {stats.sessionsByStatus.length > 0 ? (
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={stats.sessionsByStatus}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ status, percent }) => `${status} (${(percent * 100).toFixed(0)}%)`}
+                      outerRadius={100}
+                      fill={chartTheme.colors.primary}
+                      dataKey="count"
+                    >
+                      {stats.sessionsByStatus.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={STATUS_COLORS[entry.status] || COLORS[index % COLORS.length]}
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: chartTheme.tooltip.bg,
+                        borderColor: chartTheme.tooltip.border,
+                        color: chartTheme.tooltip.text,
+                        borderRadius: '8px',
+                      }}
+                    />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="text-center py-12 text-neutral-500 dark:text-neutral-400">
+                  Zatím nejsou k dispozici žádná data o stavech workshopů
+                </div>
+              )}
+            </div>
+          </Card>
+        </motion.div>
+      </motion.div>
     </div>
   )
 }

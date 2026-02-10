@@ -12,6 +12,8 @@ import { z } from 'zod'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Save, X } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { staggerContainer, staggerItem } from '@vertigo/ui'
 
 const objectiveTypes = [
   { value: 'COMMUNICATION', label: 'Komunikace' },
@@ -139,104 +141,112 @@ export function ProgramForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <motion.form
+      onSubmit={handleSubmit(onSubmit)} className="space-y-6"
+      variants={staggerContainer}
+      initial="hidden"
+      animate="visible"
+    >
       {/* Basic Information */}
+      <motion.div variants={staggerItem}>
       <Card>
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Základní informace</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Základní informace</h3>
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Název programu *
             </label>
             <input
               {...register('title')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
               placeholder="Např. Leadership Intensive"
             />
             {errors.title && (
-              <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>
+              <p className="mt-1 text-sm text-error-600 dark:text-error-400">{errors.title.message}</p>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Podtitulek
             </label>
             <input
               {...register('subtitle')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
               placeholder="Krátký podtitulek"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Krátký popis
             </label>
             <textarea
               {...register('excerpt')}
               rows={3}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
               placeholder="Krátký popis programu..."
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Detailní popis
             </label>
             <textarea
               {...register('description')}
               rows={6}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
               placeholder="Detailní popis programu..."
             />
           </div>
         </div>
       </Card>
+      </motion.div>
 
       {/* Team Size & Objectives */}
+      <motion.div variants={staggerItem}>
       <Card>
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Parametry týmu</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Parametry týmu</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Ideální počet účastníků
             </label>
             <input
               type="number"
               {...register('teamSize', { valueAsNumber: true })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Minimální počet
             </label>
             <input
               type="number"
               {...register('minTeamSize', { valueAsNumber: true })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Maximální počet
             </label>
             <input
               type="number"
               {...register('maxTeamSize', { valueAsNumber: true })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
             Cíle programu
           </label>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -247,8 +257,8 @@ export function ProgramForm({
                 onClick={() => toggleObjective(objective.value)}
                 className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all ${
                   selectedObjectives.includes(objective.value)
-                    ? 'border-cyan-500 bg-cyan-50 text-cyan-700'
-                    : 'border-gray-200 bg-white text-gray-700 hover:border-cyan-300'
+                    ? 'border-brand-500 bg-brand-50 text-brand-700 dark:border-brand-400 dark:bg-brand-950/30 dark:text-brand-300'
+                    : 'border-neutral-200 bg-white text-neutral-700 hover:border-brand-300 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-brand-600'
                 }`}
               >
                 {objective.label}
@@ -257,19 +267,21 @@ export function ProgramForm({
           </div>
         </div>
       </Card>
+      </motion.div>
 
       {/* Physical & Location */}
+      <motion.div variants={staggerItem}>
       <Card>
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Fyzické parametry</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Fyzické parametry</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Fyzická náročnost
             </label>
             <select
               {...register('physicalLevel')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100"
             >
               <option value="">Vyberte...</option>
               {physicalLevels.map((level) => (
@@ -281,12 +293,12 @@ export function ProgramForm({
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Umístění
             </label>
             <select
               {...register('indoorOutdoor')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100"
             >
               <option value="">Vyberte...</option>
               {indoorOutdoorOptions.map((option) => (
@@ -298,27 +310,27 @@ export function ProgramForm({
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Délka (minuty) *
             </label>
             <input
               type="number"
               {...register('duration', { valueAsNumber: true })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
             />
             {errors.duration && (
-              <p className="mt-1 text-sm text-red-600">{errors.duration.message}</p>
+              <p className="mt-1 text-sm text-error-600 dark:text-error-400">{errors.duration.message}</p>
             )}
           </div>
         </div>
 
         <div className="mt-4">
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
             Průmysl
           </label>
           <select
             {...register('industryType')}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100"
           >
             <option value="">Vyberte...</option>
             {industryTypes.map((industry) => (
@@ -329,141 +341,151 @@ export function ProgramForm({
           </select>
         </div>
       </Card>
+      </motion.div>
 
       {/* Services */}
+      <motion.div variants={staggerItem}>
       <Card>
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Služby</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Služby</h3>
 
         <div className="space-y-3">
           <label className="flex items-center gap-3">
             <input
               type="checkbox"
               {...register('includesCatering')}
-              className="w-5 h-5 text-cyan-500 border-gray-300 rounded focus:ring-cyan-500"
+              className="h-5 w-5 rounded border-neutral-300 text-brand-500 focus:ring-brand-500 dark:border-neutral-600 dark:bg-neutral-800"
             />
-            <span className="text-sm font-medium text-gray-700">Zahrnuje catering</span>
+            <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Zahrnuje catering</span>
           </label>
 
           <label className="flex items-center gap-3">
             <input
               type="checkbox"
               {...register('debriefIncluded')}
-              className="w-5 h-5 text-cyan-500 border-gray-300 rounded focus:ring-cyan-500"
+              className="h-5 w-5 rounded border-neutral-300 text-brand-500 focus:ring-brand-500 dark:border-neutral-600 dark:bg-neutral-800"
             />
-            <span className="text-sm font-medium text-gray-700">Zahrnuje debrief</span>
+            <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Zahrnuje debrief</span>
           </label>
 
           <label className="flex items-center gap-3">
             <input
               type="checkbox"
               {...register('facilitationRequired')}
-              className="w-5 h-5 text-cyan-500 border-gray-300 rounded focus:ring-cyan-500"
+              className="h-5 w-5 rounded border-neutral-300 text-brand-500 focus:ring-brand-500 dark:border-neutral-600 dark:bg-neutral-800"
             />
-            <span className="text-sm font-medium text-gray-700">Vyžaduje facilitaci</span>
+            <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Vyžaduje facilitaci</span>
           </label>
         </div>
       </Card>
+      </motion.div>
 
       {/* Pricing */}
+      <motion.div variants={staggerItem}>
       <Card>
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Ceník</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Ceník</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Základní cena (Kč)
             </label>
             <input
               type="number"
               {...register('price', { valueAsNumber: true })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
               placeholder="10000"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Cena za osobu (Kč)
             </label>
             <input
               type="number"
               {...register('pricePerPerson', { valueAsNumber: true })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
               placeholder="500"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
             Poznámky k ceně
           </label>
           <textarea
             {...register('pricingNotes')}
             rows={3}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
             placeholder="Dodatečné informace o ceně..."
           />
         </div>
       </Card>
+      </motion.div>
 
       {/* Activities */}
       {activities.length > 0 && (
+        <motion.div variants={staggerItem}>
         <Card>
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Aktivity v programu</h3>
+          <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Aktivity v programu</h3>
 
           <div className="space-y-2">
             {activities.map((activity) => (
               <label
                 key={activity.id}
-                className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer"
+                className="flex items-start gap-3 p-3 border border-neutral-200 rounded-lg hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800 cursor-pointer"
               >
                 <input
                   type="checkbox"
                   checked={selectedActivities.includes(activity.id)}
                   onChange={() => toggleActivity(activity.id)}
-                  className="w-5 h-5 text-cyan-500 border-gray-300 rounded focus:ring-cyan-500 mt-0.5"
+                  className="h-5 w-5 rounded border-neutral-300 text-brand-500 focus:ring-brand-500 dark:border-neutral-600 dark:bg-neutral-800 mt-0.5"
                 />
                 <div className="flex-1">
-                  <p className="text-sm font-semibold text-gray-900">{activity.title}</p>
+                  <p className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">{activity.title}</p>
                   {activity.duration && (
-                    <p className="text-xs text-gray-500 mt-1">{activity.duration} minut</p>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">{activity.duration} minut</p>
                   )}
                 </div>
               </label>
             ))}
           </div>
         </Card>
+        </motion.div>
       )}
 
       {/* Media */}
+      <motion.div variants={staggerItem}>
       <Card>
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Média</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Média</h3>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
             URL hlavního obrázku
           </label>
           <input
             {...register('featuredImageUrl')}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
             placeholder="https://example.com/image.jpg"
           />
         </div>
       </Card>
+      </motion.div>
 
       {/* Status */}
+      <motion.div variants={staggerItem}>
       <Card>
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Stav</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Stav</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Status
             </label>
             <select
               {...register('status')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100"
             >
               <option value="active">Aktivní</option>
               <option value="draft">Koncept</option>
@@ -476,15 +498,17 @@ export function ProgramForm({
               <input
                 type="checkbox"
                 {...register('featured')}
-                className="w-5 h-5 text-cyan-500 border-gray-300 rounded focus:ring-cyan-500"
+                className="h-5 w-5 rounded border-neutral-300 text-brand-500 focus:ring-brand-500 dark:border-neutral-600 dark:bg-neutral-800"
               />
-              <span className="text-sm font-medium text-gray-700">Zvýrazněný program</span>
+              <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Zvýrazněný program</span>
             </label>
           </div>
         </div>
       </Card>
+      </motion.div>
 
       {/* Actions */}
+      <motion.div variants={staggerItem}>
       <div className="flex gap-4">
         <Button type="submit" isLoading={isLoading} className="flex-1">
           <Save className="w-5 h-5 mr-2" />
@@ -497,6 +521,7 @@ export function ProgramForm({
           </Button>
         )}
       </div>
-    </form>
+      </motion.div>
+    </motion.form>
   )
 }

@@ -2,57 +2,19 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import {
-  Mail,
-  Plus,
-  Play,
-  Pause,
-  Trash2,
-  MoreVertical,
-  Users,
-  Send,
-  Loader2,
-  Clock,
-  CheckCircle2,
-  FileText,
-} from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Mail, Plus, Play, Pause, Trash2, Users, Send, Loader2, Clock, CheckCircle2, FileText } from 'lucide-react'
+import { Card } from '@/components/ui/Card'
+import { Button } from '@/components/ui/Button'
+import { ListPageHeader } from '@/components/admin/shared/ListPageHeader'
+import { StatusBadge } from '@/components/admin/shared/StatusBadge'
+import { ActionButtons } from '@/components/admin/shared/ActionButtons'
+import { staggerContainer, staggerItem } from '@vertigo/ui'
 
-interface SequenceStep {
-  id: string
-  stepOrder: number
-  delayDays: number
-  delayHours: number
-  subject: string
-}
-
-interface SequenceStats {
-  totalEnrollments: number
-  activeEnrollments: number
-  completedEnrollments: number
-  totalEmailsSent: number
-  openRate: number
-  clickRate: number
-}
-
-interface EmailSequence {
-  id: string
-  name: string
-  description: string | null
-  triggerType: string
-  isActive: boolean
-  createdAt: string
-  steps: SequenceStep[]
-  _count: { enrollments: number }
-  stats: SequenceStats
-}
-
-interface Template {
-  key: string
-  name: string
-  description: string
-  triggerType: string
-  stepsCount: number
-}
+interface SequenceStep { id: string; stepOrder: number; delayDays: number; delayHours: number; subject: string }
+interface SequenceStats { totalEnrollments: number; activeEnrollments: number; completedEnrollments: number; totalEmailsSent: number; openRate: number; clickRate: number }
+interface EmailSequence { id: string; name: string; description: string | null; triggerType: string; isActive: boolean; createdAt: string; steps: SequenceStep[]; _count: { enrollments: number }; stats: SequenceStats }
+interface Template { key: string; name: string; description: string; triggerType: string; stepsCount: number }
 
 const triggerLabels: Record<string, string> = {
   session_completed: 'Po dokončení session',
@@ -67,38 +29,25 @@ export default function EmailSequencesPage() {
   const [sequences, setSequences] = useState<EmailSequence[]>([])
   const [templates, setTemplates] = useState<Template[]>([])
   const [loading, setLoading] = useState(true)
-  const [showNewModal, setShowNewModal] = useState(false)
   const [showTemplateModal, setShowTemplateModal] = useState(false)
   const [creating, setCreating] = useState(false)
 
-  useEffect(() => {
-    fetchSequences()
-    fetchTemplates()
-  }, [])
+  useEffect(() => { fetchSequences(); fetchTemplates() }, [])
 
   const fetchSequences = async () => {
     setLoading(true)
     try {
       const res = await fetch('/api/email-sequences')
-      if (res.ok) {
-        setSequences(await res.json())
-      }
-    } catch (error) {
-      console.error('Error fetching sequences:', error)
-    } finally {
-      setLoading(false)
-    }
+      if (res.ok) { setSequences(await res.json()) }
+    } catch (error) { console.error('Error fetching sequences:', error) }
+    finally { setLoading(false) }
   }
 
   const fetchTemplates = async () => {
     try {
       const res = await fetch('/api/email-sequences/templates')
-      if (res.ok) {
-        setTemplates(await res.json())
-      }
-    } catch (error) {
-      console.error('Error fetching templates:', error)
-    }
+      if (res.ok) { setTemplates(await res.json()) }
+    } catch (error) { console.error('Error fetching templates:', error) }
   }
 
   const toggleSequenceActive = async (id: string, currentActive: boolean) => {
@@ -108,25 +57,16 @@ export default function EmailSequencesPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isActive: !currentActive }),
       })
-      if (res.ok) {
-        setSequences((prev) => prev.map((seq) => (seq.id === id ? { ...seq, isActive: !currentActive } : seq)))
-      }
-    } catch (error) {
-      console.error('Error toggling sequence:', error)
-    }
+      if (res.ok) { setSequences((prev) => prev.map((seq) => (seq.id === id ? { ...seq, isActive: !currentActive } : seq))) }
+    } catch (error) { console.error('Error toggling sequence:', error) }
   }
 
   const deleteSequence = async (id: string) => {
     if (!confirm('Opravdu chcete smazat tuto sekvenci?')) return
-
     try {
       const res = await fetch(`/api/email-sequences/${id}`, { method: 'DELETE' })
-      if (res.ok) {
-        setSequences((prev) => prev.filter((seq) => seq.id !== id))
-      }
-    } catch (error) {
-      console.error('Error deleting sequence:', error)
-    }
+      if (res.ok) { setSequences((prev) => prev.filter((seq) => seq.id !== id)) }
+    } catch (error) { console.error('Error deleting sequence:', error) }
   }
 
   const createFromTemplate = async (templateKey: string) => {
@@ -137,223 +77,141 @@ export default function EmailSequencesPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ templateKey }),
       })
-      if (res.ok) {
-        setShowTemplateModal(false)
-        fetchSequences()
-      }
-    } catch (error) {
-      console.error('Error creating from template:', error)
-    } finally {
-      setCreating(false)
-    }
+      if (res.ok) { setShowTemplateModal(false); fetchSequences() }
+    } catch (error) { console.error('Error creating from template:', error) }
+    finally { setCreating(false) }
   }
-
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Email Sequences</h1>
-          <p className="text-gray-500 mt-1">Automatické follow-up kampaně</p>
-        </div>
-        <div className="flex gap-3">
-          <button
-            onClick={() => setShowTemplateModal(true)}
-            className="flex items-center gap-2 px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
-          >
-            <FileText className="h-4 w-4" />
-            Ze šablony
-          </button>
-          <Link
-            href="/admin/email-sequences/new"
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          >
-            <Plus className="h-4 w-4" />
-            Nová sekvence
-          </Link>
-        </div>
+      <ListPageHeader
+        title="Email Sequences"
+        description="Automatické follow-up kampaně"
+        actionLabel="Nová sekvence"
+        actionHref="/admin/email-sequences/new"
+        actionIcon={Plus}
+      />
+
+      {/* Extra action button for templates */}
+      <div className="flex justify-end -mt-4">
+        <Button variant="outline" onClick={() => setShowTemplateModal(true)}>
+          <FileText className="h-4 w-4" />
+          Ze šablony
+        </Button>
       </div>
 
-      {/* Stats overview */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-50 rounded-lg">
-              <Mail className="h-5 w-5 text-blue-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Celkem sekvencí</p>
-              <p className="text-xl font-bold text-gray-900">{sequences.length}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-green-50 rounded-lg">
-              <Play className="h-5 w-5 text-green-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Aktivní</p>
-              <p className="text-xl font-bold text-gray-900">{sequences.filter((s) => s.isActive).length}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-purple-50 rounded-lg">
-              <Users className="h-5 w-5 text-purple-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Enrollováno</p>
-              <p className="text-xl font-bold text-gray-900">
-                {sequences.reduce((sum, s) => sum + s.stats.activeEnrollments, 0)}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-orange-50 rounded-lg">
-              <Send className="h-5 w-5 text-orange-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Odesláno emailů</p>
-              <p className="text-xl font-bold text-gray-900">
-                {sequences.reduce((sum, s) => sum + s.stats.totalEmailsSent, 0)}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Sequences list */}
+      {/* Stats */}
+      <motion.div className="grid grid-cols-2 gap-3 sm:grid-cols-4" variants={staggerContainer} initial="hidden" animate="visible">
+        {[
+          { label: 'Celkem sekvencí', value: sequences.length, icon: Mail, color: 'bg-blue-50 dark:bg-blue-950/30', iconColor: 'text-blue-600 dark:text-blue-400' },
+          { label: 'Aktivní', value: sequences.filter((s) => s.isActive).length, icon: Play, color: 'bg-success-50 dark:bg-success-950/30', iconColor: 'text-success-600 dark:text-success-400' },
+          { label: 'Enrollováno', value: sequences.reduce((sum, s) => sum + s.stats.activeEnrollments, 0), icon: Users, color: 'bg-violet-50 dark:bg-violet-950/30', iconColor: 'text-violet-600 dark:text-violet-400' },
+          { label: 'Odesláno emailů', value: sequences.reduce((sum, s) => sum + s.stats.totalEmailsSent, 0), icon: Send, color: 'bg-orange-50 dark:bg-orange-950/30', iconColor: 'text-orange-600 dark:text-orange-400' },
+        ].map((s) => (
+          <motion.div key={s.label} variants={staggerItem}>
+            <Card className="p-4">
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-lg ${s.color}`}>
+                  <s.icon className={`h-5 w-5 ${s.iconColor}`} />
+                </div>
+                <div>
+                  <p className="text-sm text-neutral-500 dark:text-neutral-400">{s.label}</p>
+                  <p className="text-xl font-bold text-neutral-900 dark:text-neutral-50">{s.value}</p>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+        ))}
+      </motion.div>
+      {/* Sequences Table */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+          <Loader2 className="h-8 w-8 animate-spin text-brand-600" />
         </div>
       ) : sequences.length === 0 ? (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-          <Mail className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Žádné email sekvence</h3>
-          <p className="text-gray-500 mb-4">Vytvořte první sekvenci pro automatické follow-up emaily.</p>
-          <button
-            onClick={() => setShowTemplateModal(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          >
-            Vytvořit ze šablony
-          </button>
-        </div>
+        <Card className="p-12 text-center">
+          <Mail className="h-12 w-12 text-neutral-300 dark:text-neutral-600 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50 mb-2">Žádné email sekvence</h3>
+          <p className="text-neutral-500 dark:text-neutral-400 mb-4">Vytvořte první sekvenci pro automatické follow-up emaily.</p>
+          <Button onClick={() => setShowTemplateModal(true)}>Vytvořit ze šablony</Button>
+        </Card>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Sekvence
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Trigger
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Kroky
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Enrollováno
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Odesláno
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Akce
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {sequences.map((sequence) => (
-                <tr key={sequence.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4">
-                    <Link href={`/admin/email-sequences/${sequence.id}`} className="block">
-                      <p className="font-medium text-gray-900 hover:text-blue-600">{sequence.name}</p>
-                      {sequence.description && (
-                        <p className="text-sm text-gray-500 truncate max-w-xs">{sequence.description}</p>
-                      )}
-                    </Link>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
-                      <Clock className="h-3 w-3" />
-                      {triggerLabels[sequence.triggerType] || sequence.triggerType}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <span className="text-gray-900">{sequence.steps.length}</span>
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <span className="text-gray-900">{sequence.stats.activeEnrollments}</span>
-                    <span className="text-gray-400 text-sm"> / {sequence.stats.totalEnrollments}</span>
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <span className="text-gray-900">{sequence.stats.totalEmailsSent}</span>
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    {sequence.isActive ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                        <CheckCircle2 className="h-3 w-3" />
-                        Aktivní
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
-                        <Pause className="h-3 w-3" />
-                        Pozastaveno
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <button
-                        onClick={() => toggleSequenceActive(sequence.id, sequence.isActive)}
-                        className={`p-2 rounded-lg hover:bg-gray-100 ${
-                          sequence.isActive ? 'text-yellow-600' : 'text-green-600'
-                        }`}
-                        title={sequence.isActive ? 'Pozastavit' : 'Aktivovat'}
-                      >
-                        {sequence.isActive ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                      </button>
-                      <button
-                        onClick={() => deleteSequence(sequence.id)}
-                        className="p-2 rounded-lg hover:bg-gray-100 text-red-600"
-                        title="Smazat"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </td>
+        <Card className="overflow-hidden p-0">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-neutral-100 bg-neutral-50/50 dark:border-neutral-800 dark:bg-neutral-800/50">
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Sekvence</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Trigger</th>
+                  <th className="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Kroky</th>
+                  <th className="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Enrollováno</th>
+                  <th className="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Odesláno</th>
+                  <th className="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Status</th>
+                  <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Akce</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-neutral-100 dark:divide-neutral-800">
+                {sequences.map((sequence) => (
+                  <tr key={sequence.id} className="transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
+                    <td className="px-6 py-4">
+                      <Link href={`/admin/email-sequences/${sequence.id}`} className="block">
+                        <p className="font-medium text-neutral-900 dark:text-neutral-50 hover:text-brand-600 dark:hover:text-brand-400">{sequence.name}</p>
+                        {sequence.description && (<p className="text-sm text-neutral-500 dark:text-neutral-400 truncate max-w-xs">{sequence.description}</p>)}
+                      </Link>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
+                        <Clock className="h-3 w-3" />
+                        {triggerLabels[sequence.triggerType] || sequence.triggerType}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center text-neutral-900 dark:text-neutral-100">{sequence.steps.length}</td>
+                    <td className="px-6 py-4 text-center">
+                      <span className="text-neutral-900 dark:text-neutral-100">{sequence.stats.activeEnrollments}</span>
+                      <span className="text-neutral-400 text-sm"> / {sequence.stats.totalEnrollments}</span>
+                    </td>
+                    <td className="px-6 py-4 text-center text-neutral-900 dark:text-neutral-100">{sequence.stats.totalEmailsSent}</td>
+                    <td className="px-6 py-4 text-center"><StatusBadge status={sequence.isActive ? 'active' : 'inactive'} /></td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => toggleSequenceActive(sequence.id, sequence.isActive)}
+                          className={`inline-flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800 ${sequence.isActive ? "text-warning-600" : "text-success-600"}`}
+                          title={sequence.isActive ? 'Pozastavit' : 'Aktivovat'}
+                        >
+                          {sequence.isActive ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                        </button>
+                        <button
+                          onClick={() => deleteSequence(sequence.id)}
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-error-600 transition-colors hover:bg-error-50 dark:hover:bg-error-950/50"
+                          title="Smazat"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
       )}
-
       {/* Template Modal */}
       {showTemplateModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 max-w-lg w-full mx-4">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Vytvořit ze šablony</h2>
+          <Card className="p-6 max-w-lg w-full mx-4">
+            <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50 mb-4">Vytvořit ze šablony</h2>
             <div className="space-y-3">
               {templates.map((template) => (
                 <button
                   key={template.key}
                   onClick={() => createFromTemplate(template.key)}
                   disabled={creating}
-                  className="w-full text-left p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors disabled:opacity-50"
+                  className="w-full text-left p-4 border border-neutral-200 dark:border-neutral-700 rounded-lg hover:border-brand-300 hover:bg-brand-50 dark:hover:border-brand-700 dark:hover:bg-brand-950/20 transition-colors disabled:opacity-50"
                 >
-                  <p className="font-medium text-gray-900">{template.name}</p>
-                  <p className="text-sm text-gray-500">{template.description}</p>
-                  <div className="flex gap-3 mt-2 text-xs text-gray-400">
+                  <p className="font-medium text-neutral-900 dark:text-neutral-50">{template.name}</p>
+                  <p className="text-sm text-neutral-500 dark:text-neutral-400">{template.description}</p>
+                  <div className="flex gap-3 mt-2 text-xs text-neutral-400">
                     <span>{template.stepsCount} kroků</span>
                     <span>•</span>
                     <span>{triggerLabels[template.triggerType]}</span>
@@ -362,14 +220,9 @@ export default function EmailSequencesPage() {
               ))}
             </div>
             <div className="flex justify-end gap-3 mt-6">
-              <button
-                onClick={() => setShowTemplateModal(false)}
-                className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-              >
-                Zrušit
-              </button>
+              <Button variant="ghost" onClick={() => setShowTemplateModal(false)}>Zrušit</Button>
             </div>
-          </div>
+          </Card>
         </div>
       )}
     </div>

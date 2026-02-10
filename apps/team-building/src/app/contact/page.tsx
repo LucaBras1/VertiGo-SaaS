@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Contact Page
  * Contact form and company information
  */
@@ -105,11 +105,11 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-emerald-50">
       {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-200">
+      <nav className="bg-white/80 dark:bg-neutral-950/80 backdrop-blur-sm border-b border-neutral-200 dark:border-neutral-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link href="/" className="flex items-center gap-2">
-              <Users className="w-8 h-8 text-brand-primary" />
+              <Users className="w-8 h-8 text-brand-600 dark:text-brand-400" />
               <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
                 TeamForge
               </span>
@@ -127,7 +127,7 @@ export default function ContactPage() {
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent mb-4">
             Kontaktujte nás
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto">
             Máte dotaz nebo potřebujete pomoc? Jsme tu pro vás.
           </p>
         </div>
@@ -141,7 +141,7 @@ export default function ContactPage() {
               <form onSubmit={handleSubmit} className="space-y-5">
                 {/* Name */}
                 <div>
-                  <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="name" className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                     Jméno a příjmení
                   </label>
                   <input
@@ -165,7 +165,7 @@ export default function ContactPage() {
 
                 {/* Email */}
                 <div>
-                  <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="email" className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                     Email
                   </label>
                   <input
@@ -189,7 +189,7 @@ export default function ContactPage() {
 
                 {/* Phone */}
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="phone" className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                     Telefon (nepovinné)
                   </label>
                   <input
@@ -207,7 +207,7 @@ export default function ContactPage() {
 
                 {/* Inquiry Type */}
                 <div>
-                  <label htmlFor="inquiryType" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="inquiryType" className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                     Typ dotazu
                   </label>
                   <select
@@ -228,7 +228,7 @@ export default function ContactPage() {
 
                 {/* Message */}
                 <div>
-                  <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="message" className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                     Vaše zpráva
                   </label>
                   <textarea
@@ -279,11 +279,11 @@ export default function ContactPage() {
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Mail className="w-5 h-5 text-brand-primary" />
+                    <Mail className="w-5 h-5 text-brand-600 dark:text-brand-400" />
                   </div>
                   <div>
-                    <div className="text-sm font-semibold text-gray-700 mb-1">Email</div>
-                    <a href="mailto:info@teamforge.cz" className="text-brand-primary hover:underline">
+                    <div className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">Email</div>
+                    <a href="mailto:info@teamforge.cz" className="text-brand-600 dark:text-brand-400 hover:underline">
                       info@teamforge.cz
                     </a>
                   </div>
@@ -294,8 +294,8 @@ export default function ContactPage() {
                     <Phone className="w-5 h-5 text-brand-secondary" />
                   </div>
                   <div>
-                    <div className="text-sm font-semibold text-gray-700 mb-1">Telefon</div>
-                    <a href="tel:+420123456789" className="text-brand-primary hover:underline">
+                    <div className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">Telefon</div>
+                    <a href="tel:+420123456789" className="text-brand-600 dark:text-brand-400 hover:underline">
                       +420 123 456 789
                     </a>
                   </div>
@@ -306,8 +306,8 @@ export default function ContactPage() {
                     <MapPin className="w-5 h-5 text-purple-600" />
                   </div>
                   <div>
-                    <div className="text-sm font-semibold text-gray-700 mb-1">Adresa</div>
-                    <div className="text-gray-600 text-sm">
+                    <div className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">Adresa</div>
+                    <div className="text-neutral-600 dark:text-neutral-400 text-sm">
                       VertiGo SaaS<br />
                       Václavské náměstí 1<br />
                       110 00 Praha 1<br />
@@ -323,11 +323,11 @@ export default function ContactPage() {
               <h3 className="text-xl font-bold mb-4">Pracovní doba</h3>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Pondělí - Pátek</span>
+                  <span className="text-neutral-600 dark:text-neutral-400">Pondělí - Pátek</span>
                   <span className="font-semibold">9:00 - 18:00</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Sobota - Neděle</span>
+                  <span className="text-neutral-600 dark:text-neutral-400">Sobota - Neděle</span>
                   <span className="font-semibold">Zavřeno</span>
                 </div>
               </div>

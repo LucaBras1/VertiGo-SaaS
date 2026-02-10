@@ -98,8 +98,8 @@ export default function EditActivityPage({ params }: { params: { id: string } })
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Načítám data...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500 mx-auto"></div>
+          <p className="mt-4 text-neutral-600 dark:text-neutral-400">Načítám data...</p>
         </div>
       </div>
     )
@@ -114,15 +114,15 @@ export default function EditActivityPage({ params }: { params: { id: string } })
       <div className="mb-6">
         <Link
           href="/admin/activities"
-          className="inline-flex items-center text-cyan-600 hover:text-cyan-700 font-medium mb-4"
+          className="inline-flex items-center text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium mb-4"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Zpět na aktivity
         </Link>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Upravit aktivitu</h1>
-            <p className="text-gray-600 mt-2">{activity.title}</p>
+            <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">Upravit aktivitu</h1>
+            <p className="text-neutral-600 dark:text-neutral-400 mt-2">{activity.title}</p>
           </div>
           <Button
             variant="danger"

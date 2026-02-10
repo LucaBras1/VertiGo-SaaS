@@ -18,10 +18,10 @@ export function GoogleCalendarConnect({ onConnect }: GoogleCalendarConnectProps)
 
   return (
     <div className="space-y-4">
-      <p className="text-gray-600">
+      <p className="text-neutral-600 dark:text-neutral-400">
         Připojte svůj Google Calendar pro automatickou synchronizaci team building sessions.
       </p>
-      <ul className="text-sm text-gray-500 space-y-1 list-disc list-inside">
+      <ul className="text-sm text-neutral-500 dark:text-neutral-400 space-y-1 list-disc list-inside">
         <li>Sessions se automaticky přidají do vašeho kalendáře</li>
         <li>Změny v TeamForge se okamžitě promítnou</li>
         <li>Zrušené sessions se automaticky smažou</li>
@@ -29,7 +29,7 @@ export function GoogleCalendarConnect({ onConnect }: GoogleCalendarConnectProps)
       <button
         onClick={handleConnect}
         disabled={connecting}
-        className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+        className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 disabled:opacity-50"
       >
         {connecting ? (
           <Loader2 className="h-4 w-4 animate-spin" />

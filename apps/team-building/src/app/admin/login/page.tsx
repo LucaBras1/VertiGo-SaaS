@@ -12,9 +12,9 @@ export const dynamic = 'force-dynamic'
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-8 text-center">
-          <p className="text-gray-600">Načítám...</p>
+      <div className="min-h-screen bg-gradient-to-br from-brand-500 to-emerald-500 flex items-center justify-center p-4">
+        <div className="w-full max-w-md bg-white dark:bg-neutral-900 rounded-xl shadow-lg p-8 text-center">
+          <p className="text-neutral-600 dark:text-neutral-400">Načítám...</p>
         </div>
       </div>
     }>

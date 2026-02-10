@@ -12,6 +12,8 @@ import { z } from 'zod'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Save, X } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { staggerContainer, staggerItem } from '@vertigo/ui'
 import { format } from 'date-fns'
 
 const objectiveTypes = [
@@ -132,19 +134,25 @@ export function SessionForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+    <motion.form
+      onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6"
+      variants={staggerContainer}
+      initial="hidden"
+      animate="visible"
+    >
       {/* Program & Customer */}
+      <motion.div variants={staggerItem}>
       <Card>
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Program a zákazník</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Program a zákazník</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Program *
             </label>
             <select
               {...register('programId')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100"
             >
               <option value="">Vyberte program...</option>
               {programs.map((program) => (
@@ -154,17 +162,17 @@ export function SessionForm({
               ))}
             </select>
             {errors.programId && (
-              <p className="mt-1 text-sm text-red-600">{errors.programId.message}</p>
+              <p className="mt-1 text-sm text-error-600 dark:text-error-400">{errors.programId.message}</p>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Zákazník
             </label>
             <select
               {...register('customerId')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100"
             >
               <option value="">Vyberte zákazníka...</option>
               {customers.map((customer) => (
@@ -176,72 +184,74 @@ export function SessionForm({
           </div>
         </div>
       </Card>
+      </motion.div>
 
       {/* Date & Venue */}
+      <motion.div variants={staggerItem}>
       <Card>
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Termín a místo</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Termín a místo</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Datum začátku *
             </label>
             <input
               type="date"
               {...register('date')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
             />
             {errors.date && (
-              <p className="mt-1 text-sm text-red-600">{errors.date.message}</p>
+              <p className="mt-1 text-sm text-error-600 dark:text-error-400">{errors.date.message}</p>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Datum konce
             </label>
             <input
               type="date"
               {...register('endDate')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
             />
           </div>
         </div>
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Název místa *
             </label>
             <input
               {...register('venueName')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
               placeholder="Např. Hotel Panorama"
             />
             {errors.venueName && (
-              <p className="mt-1 text-sm text-red-600">{errors.venueName.message}</p>
+              <p className="mt-1 text-sm text-error-600 dark:text-error-400">{errors.venueName.message}</p>
             )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                 Město
               </label>
               <input
                 {...register('venueCity')}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
                 placeholder="Praha"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                 Umístění
               </label>
               <select
                 {...register('venueIndoorOutdoor')}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100"
               >
                 <option value="">Vyberte...</option>
                 <option value="INDOOR">Uvnitř</option>
@@ -252,43 +262,45 @@ export function SessionForm({
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Adresa
             </label>
             <textarea
               {...register('venueAddress')}
               rows={2}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
               placeholder="Úplná adresa místa konání"
             />
           </div>
         </div>
       </Card>
+      </motion.div>
 
       {/* Team Information */}
+      <motion.div variants={staggerItem}>
       <Card>
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Informace o týmu</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Informace o týmu</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Název týmu
             </label>
             <input
               {...register('teamName')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
               placeholder="Např. Marketing Team"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Počet účastníků
             </label>
             <input
               type="number"
               {...register('teamSize', { valueAsNumber: true })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
               placeholder="20"
             />
           </div>
@@ -296,23 +308,23 @@ export function SessionForm({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Název společnosti
             </label>
             <input
               {...register('companyName')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
               placeholder="Acme Corp"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Průmysl
             </label>
             <select
               {...register('industryType')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100"
             >
               <option value="">Vyberte...</option>
               {industryTypes.map((industry) => (
@@ -324,13 +336,15 @@ export function SessionForm({
           </div>
         </div>
       </Card>
+      </motion.div>
 
       {/* Objectives */}
+      <motion.div variants={staggerItem}>
       <Card>
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Cíle workshopu</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Cíle workshopu</h3>
 
         <div className="mb-4">
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
             Vyberte cíle
           </label>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -341,8 +355,8 @@ export function SessionForm({
                 onClick={() => toggleObjective(objective.value)}
                 className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all ${
                   selectedObjectives.includes(objective.value)
-                    ? 'border-cyan-500 bg-cyan-50 text-cyan-700'
-                    : 'border-gray-200 bg-white text-gray-700 hover:border-cyan-300'
+                    ? 'border-brand-500 bg-brand-50 text-brand-700 dark:border-brand-400 dark:bg-brand-950/30 dark:text-brand-300'
+                    : 'border-neutral-200 bg-white text-neutral-700 hover:border-brand-300 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-brand-600'
                 }`}
               >
                 {objective.label}
@@ -352,30 +366,32 @@ export function SessionForm({
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
             Vlastní cíle (volitelné)
           </label>
           <textarea
             {...register('customObjectives')}
             rows={3}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
             placeholder="Specifické cíle klienta..."
           />
         </div>
       </Card>
+      </motion.div>
 
       {/* Status & Notes */}
+      <motion.div variants={staggerItem}>
       <Card>
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Stav a poznámky</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Stav a poznámky</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Status
             </label>
             <select
               {...register('status')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100"
             >
               <option value="confirmed">Potvrzeno</option>
               <option value="tentative">Předběžně</option>
@@ -389,27 +405,29 @@ export function SessionForm({
               <input
                 type="checkbox"
                 {...register('isPublic')}
-                className="w-5 h-5 text-cyan-500 border-gray-300 rounded focus:ring-cyan-500"
+                className="h-5 w-5 rounded border-neutral-300 text-brand-500 focus:ring-brand-500 dark:border-neutral-600 dark:bg-neutral-800"
               />
-              <span className="text-sm font-medium text-gray-700">Veřejná akce</span>
+              <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Veřejná akce</span>
             </label>
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
             Interní poznámky
           </label>
           <textarea
             {...register('notes')}
             rows={4}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
             placeholder="Interní poznámky k workshopu..."
           />
         </div>
       </Card>
+      </motion.div>
 
       {/* Actions */}
+      <motion.div variants={staggerItem}>
       <div className="flex gap-4">
         <Button type="submit" isLoading={isLoading} className="flex-1">
           <Save className="w-5 h-5 mr-2" />
@@ -422,6 +440,7 @@ export function SessionForm({
           </Button>
         )}
       </div>
-    </form>
+      </motion.div>
+    </motion.form>
   )
 }

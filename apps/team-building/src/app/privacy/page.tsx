@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { Users, Shield, ArrowLeft } from 'lucide-react'
 
 export const metadata = {
@@ -10,16 +10,16 @@ export default function PrivacyPage() {
   return (
     <div className="bg-gradient-to-br from-blue-50 via-white to-emerald-50 min-h-screen">
       {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+      <nav className="bg-white/80 dark:bg-neutral-950/80 backdrop-blur-sm border-b border-neutral-200 dark:border-neutral-700 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link href="/" className="flex items-center gap-2">
-              <Users className="w-8 h-8 text-brand-primary" />
+              <Users className="w-8 h-8 text-brand-600 dark:text-brand-400" />
               <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
                 TeamForge
               </span>
             </Link>
-            <Link href="/" className="flex items-center gap-2 text-gray-700 hover:text-brand-primary transition-colors">
+            <Link href="/" className="flex items-center gap-2 text-neutral-700 dark:text-neutral-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
               <ArrowLeft className="w-4 h-4" />
               Zpět na hlavní stránku
             </Link>
@@ -31,12 +31,12 @@ export default function PrivacyPage() {
       <section className="pt-20 pb-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Shield className="w-8 h-8 text-brand-primary" />
+            <Shield className="w-8 h-8 text-brand-600 dark:text-brand-400" />
           </div>
           <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
             Zásady ochrany osobních údajů
           </h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-neutral-600 dark:text-neutral-400">
             Poslední aktualizace: 23. ledna 2025
           </p>
         </div>
@@ -270,7 +270,7 @@ export default function PrivacyPage() {
                 <li>Pravidelné zálohy s šifrováním</li>
               </ul>
               <p>
-                Více informací o bezpečnosti najdete na stránce <Link href="/security" className="text-brand-primary hover:underline">Bezpečnost</Link>.
+                Více informací o bezpečnosti najdete na stránce <Link href="/security" className="text-brand-600 dark:text-brand-400 hover:underline">Bezpečnost</Link>.
               </p>
 
               <h2>9. Mezinárodní přenosy dat</h2>
@@ -330,21 +330,21 @@ export default function PrivacyPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 px-4">
+      <footer className="bg-neutral-900 text-white py-12 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <Users className="w-6 h-6 text-brand-primary" />
+                <Users className="w-6 h-6 text-brand-600 dark:text-brand-400" />
                 <span className="text-xl font-bold">TeamForge</span>
               </div>
-              <p className="text-gray-400 text-sm">
+              <p className="text-neutral-400 dark:text-neutral-500 text-sm">
                 AI-powered team building management pro firemní poskytovatele
               </p>
             </div>
             <div>
               <h4 className="font-bold mb-4">Produkt</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
+              <ul className="space-y-2 text-sm text-neutral-400 dark:text-neutral-500">
                 <li><Link href="/#features" className="hover:text-white">Funkce</Link></li>
                 <li><Link href="/#ai-powered" className="hover:text-white">AI nástroje</Link></li>
                 <li><Link href="/#pricing" className="hover:text-white">Ceník</Link></li>
@@ -352,21 +352,21 @@ export default function PrivacyPage() {
             </div>
             <div>
               <h4 className="font-bold mb-4">Společnost</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
+              <ul className="space-y-2 text-sm text-neutral-400 dark:text-neutral-500">
                 <li><Link href="/about" className="hover:text-white">O nás</Link></li>
                 <li><Link href="/contact" className="hover:text-white">Kontakt</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-bold mb-4">Právní informace</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
+              <ul className="space-y-2 text-sm text-neutral-400 dark:text-neutral-500">
                 <li><Link href="/privacy" className="hover:text-white">Ochrana osobních údajů</Link></li>
                 <li><Link href="/terms" className="hover:text-white">Obchodní podmínky</Link></li>
                 <li><Link href="/security" className="hover:text-white">Bezpečnost</Link></li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
+          <div className="border-t border-neutral-800 mt-8 pt-8 text-center text-sm text-neutral-400 dark:text-neutral-500">
             © 2025 TeamForge. Součást platformy VertiGo SaaS.
           </div>
         </div>

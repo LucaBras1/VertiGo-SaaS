@@ -156,7 +156,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500"></div>
       </div>
     )
   }
@@ -177,8 +177,8 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">{order.orderNumber}</h1>
-            <p className="text-gray-600">
+            <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">{order.orderNumber}</h1>
+            <p className="text-neutral-600 dark:text-neutral-400">
               Vytvořeno {new Date(order.createdAt).toLocaleDateString('cs-CZ')}
             </p>
           </div>
@@ -188,7 +188,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             <Button
               variant="outline"
               onClick={() => setShowDeleteDialog(true)}
-              className="text-red-600 hover:bg-red-50"
+              className="text-error-600 dark:text-error-400 hover:bg-error-50 dark:hover:bg-error-950/20"
             >
               <Trash2 className="w-4 h-4 mr-2" />
               Smazat
@@ -218,7 +218,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                   Stav objednávky
                 </label>
                 <select
@@ -235,7 +235,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                   Velikost týmu
                 </label>
                 <input
@@ -247,7 +247,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                   Název workshopu
                 </label>
                 <input
@@ -260,7 +260,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             </div>
 
             <div className="mt-4">
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                 Cíle a poznámky od klienta
               </label>
               <textarea
@@ -277,32 +277,32 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             <h2 className="text-xl font-bold mb-4">Položky objednávky</h2>
 
             {order.items.length === 0 ? (
-              <p className="text-gray-500 text-center py-8">
+              <p className="text-neutral-500 dark:text-neutral-400 text-center py-8">
                 Tato objednávka nemá žádné položky.
               </p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="text-left py-2 text-sm font-semibold text-gray-700">
+                    <tr className="border-b border-neutral-200 dark:border-neutral-700">
+                      <th className="text-left py-2 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                         Položka
                       </th>
-                      <th className="text-left py-2 text-sm font-semibold text-gray-700">
+                      <th className="text-left py-2 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                         Datum
                       </th>
-                      <th className="text-right py-2 text-sm font-semibold text-gray-700">
+                      <th className="text-right py-2 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                         Cena
                       </th>
                     </tr>
                   </thead>
                   <tbody>
                     {order.items.map((item) => (
-                      <tr key={item.id} className="border-b border-gray-100">
+                      <tr key={item.id} className="border-b border-neutral-100 dark:border-neutral-800">
                         <td className="py-3">
                           {item.program?.title || item.activity?.title || item.extra?.title || 'Neznámá položka'}
                         </td>
-                        <td className="py-3 text-gray-600">
+                        <td className="py-3 text-neutral-600 dark:text-neutral-400">
                           {item.date ? new Date(item.date).toLocaleDateString('cs-CZ') : '-'}
                         </td>
                         <td className="py-3 text-right font-semibold">
@@ -312,11 +312,11 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     ))}
                   </tbody>
                   <tfoot>
-                    <tr className="border-t-2 border-gray-200">
+                    <tr className="border-t-2 border-neutral-200 dark:border-neutral-700">
                       <td colSpan={2} className="py-3 font-bold">
                         Celkem
                       </td>
-                      <td className="py-3 text-right font-bold text-brand-primary">
+                      <td className="py-3 text-right font-bold text-brand-600 dark:text-brand-400">
                         {totalPrice.toLocaleString('cs-CZ')} Kč
                       </td>
                     </tr>
@@ -347,12 +347,12 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             {order.customer ? (
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-gray-400" />
+                  <Building2 className="w-4 h-4 text-neutral-400 dark:text-neutral-500" />
                   <span className="font-semibold">
                     {order.customer.organization || `${order.customer.firstName} ${order.customer.lastName}`}
                   </span>
                 </div>
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-neutral-600 dark:text-neutral-400">
                   {order.customer.email}
                 </div>
                 <Link href={`/admin/customers/${order.customer.id}`}>
@@ -362,7 +362,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 </Link>
               </div>
             ) : (
-              <p className="text-gray-500">Zákazník není přiřazen</p>
+              <p className="text-neutral-500 dark:text-neutral-400">Zákazník není přiřazen</p>
             )}
           </div>
 
@@ -377,18 +377,18 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               </Link>
             </div>
             {order.invoices.length === 0 ? (
-              <p className="text-gray-500 text-sm">Zatím žádné faktury</p>
+              <p className="text-neutral-500 dark:text-neutral-400 text-sm">Zatím žádné faktury</p>
             ) : (
               <div className="space-y-2">
                 {order.invoices.map((invoice) => (
                   <Link
                     key={invoice.id}
                     href={`/admin/invoices/${invoice.id}`}
-                    className="flex items-center justify-between p-2 bg-gray-50 rounded hover:bg-gray-100"
+                    className="flex items-center justify-between p-2 bg-neutral-50 dark:bg-neutral-800/50 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800"
                   >
                     <div>
                       <div className="font-semibold text-sm">{invoice.invoiceNumber}</div>
-                      <div className="text-xs text-gray-500">{invoice.status}</div>
+                      <div className="text-xs text-neutral-500 dark:text-neutral-400">{invoice.status}</div>
                     </div>
                     <div className="text-sm font-semibold">
                       {(invoice.totalAmount / 100).toLocaleString('cs-CZ')} Kč

@@ -127,8 +127,8 @@ export default function NewOrderPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Nová objednávka</h1>
-          <p className="text-gray-600">Vytvořte novou objednávku</p>
+          <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">Nová objednávka</h1>
+          <p className="text-neutral-600 dark:text-neutral-400">Vytvořte novou objednávku</p>
         </div>
       </div>
 
@@ -138,7 +138,7 @@ export default function NewOrderPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                 Zákazník
               </label>
               <select
@@ -156,7 +156,7 @@ export default function NewOrderPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                 Stav
               </label>
               <select
@@ -173,7 +173,7 @@ export default function NewOrderPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                 Název workshopu
               </label>
               <input
@@ -186,7 +186,7 @@ export default function NewOrderPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                 Velikost týmu
               </label>
               <input
@@ -200,7 +200,7 @@ export default function NewOrderPage() {
           </div>
 
           <div className="mt-4">
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Cíle a poznámky
             </label>
             <textarea
@@ -224,15 +224,15 @@ export default function NewOrderPage() {
           </div>
 
           {formData.items.length === 0 ? (
-            <p className="text-gray-500 text-center py-8">
+            <p className="text-neutral-500 dark:text-neutral-400 text-center py-8">
               Zatím nemáte žádné položky. Klikněte na &quot;Přidat položku&quot;.
             </p>
           ) : (
             <div className="space-y-4">
               {formData.items.map((item, index) => (
-                <div key={index} className="flex gap-4 items-end p-4 bg-gray-50 rounded-lg">
+                <div key={index} className="flex gap-4 items-end p-4 bg-neutral-50 dark:bg-neutral-800/50 rounded-lg">
                   <div className="flex-1">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                       Program
                     </label>
                     <select
@@ -255,7 +255,7 @@ export default function NewOrderPage() {
                     </select>
                   </div>
                   <div className="w-40">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                       Datum
                     </label>
                     <input
@@ -266,7 +266,7 @@ export default function NewOrderPage() {
                     />
                   </div>
                   <div className="w-32">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                       Cena (Kč)
                     </label>
                     <input
@@ -281,7 +281,7 @@ export default function NewOrderPage() {
                     variant="outline"
                     size="sm"
                     onClick={() => removeItem(index)}
-                    className="text-red-600 hover:bg-red-50"
+                    className="text-error-600 dark:text-error-400 hover:bg-error-50 dark:hover:bg-error-950/20"
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>

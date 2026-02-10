@@ -8,9 +8,17 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Plus, Edit, Trash2, Eye } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Plus, Trash2 } from 'lucide-react'
 import { formatDuration, getObjectiveLabel, getPhysicalLevelLabel } from '@/lib/utils'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
+import { Card } from '@/components/ui/Card'
+import { Button } from '@/components/ui/Button'
+import { StatusBadge } from '@/components/admin/shared/StatusBadge'
+import { ListPageHeader } from '@/components/admin/shared/ListPageHeader'
+import { SearchFilterBar } from '@/components/admin/shared/SearchFilterBar'
+import { ActionButtons } from '@/components/admin/shared/ActionButtons'
+import { staggerContainer, staggerItem, hoverLift } from '@vertigo/ui'
 import toast from 'react-hot-toast'
 
 interface Activity {
@@ -48,7 +56,6 @@ export function ActivitiesList({ initialActivities }: ActivitiesListProps) {
   })
   const [isDeleting, setIsDeleting] = useState(false)
 
-  // Filter activities
   const filteredActivities = activities.filter((activity) => {
     const matchesStatus = !statusFilter || activity.status === statusFilter
     const matchesPhysicalLevel = !physicalLevelFilter || activity.physicalDemand === physicalLevelFilter
@@ -71,15 +78,15 @@ export function ActivitiesList({ initialActivities }: ActivitiesListProps) {
 
       if (!response.ok) {
         const data = await response.json()
-        throw new Error(data.error || 'Nepodařilo se smazat aktivitu')
+        throw new Error(data.error || 'Nepoda\u0159ilo se smazat aktivitu')
       }
 
       setActivities(activities.filter((a) => a.id !== deleteDialog.activity!.id))
-      toast.success('Aktivita byla úspěšně smazána')
+      toast.success('Aktivita byla \u00fasp\u011b\u0161n\u011b smaz\u00e1na')
       setDeleteDialog({ isOpen: false, activity: null })
       router.refresh()
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Chyba při mazání aktivity')
+      toast.error(error instanceof Error ? error.message : 'Chyba p\u0159i maz\u00e1n\u00ed aktivity')
     } finally {
       setIsDeleting(false)
     }
@@ -94,230 +101,191 @@ export function ActivitiesList({ initialActivities }: ActivitiesListProps) {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Activities</h1>
-          <p className="text-gray-600 mt-1">
-            Manage your team building activities catalog
-          </p>
-        </div>
-        <Link href="/admin/activities/new" className="btn-primary inline-flex items-center gap-2">
-          <Plus className="w-5 h-5" />
-          Add Activity
-        </Link>
-      </div>
-
-      {/* Filters */}
-      <div className="card">
-        <div className="flex items-center gap-4">
-          <select
-            className="input-field max-w-xs"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option value="">All Statuses</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-            <option value="draft">Draft</option>
-          </select>
-          <select
-            className="input-field max-w-xs"
-            value={physicalLevelFilter}
-            onChange={(e) => setPhysicalLevelFilter(e.target.value)}
-          >
-            <option value="">All Physical Levels</option>
-            <option value="LOW">Low</option>
-            <option value="MEDIUM">Medium</option>
-            <option value="HIGH">High</option>
-          </select>
-          <select
-            className="input-field max-w-xs"
-            value={indoorOutdoorFilter}
-            onChange={(e) => setIndoorOutdoorFilter(e.target.value)}
-          >
-            <option value="">All Locations</option>
-            <option value="INDOOR">Indoor</option>
-            <option value="OUTDOOR">Outdoor</option>
-            <option value="BOTH">Both</option>
-            <option value="FLEXIBLE">Flexible</option>
-          </select>
-          <input
-            type="text"
-            placeholder="Search activities..."
-            className="input-field flex-1"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-      </div>
-
-      {/* Activities Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredActivities.length === 0 ? (
-          <div className="col-span-full card text-center py-12">
-            <p className="text-gray-500">
-              {searchQuery || statusFilter || physicalLevelFilter || indoorOutdoorFilter
-                ? 'No activities match your filters.'
-                : 'No activities found. Add your first activity to get started.'}
-            </p>
-          </div>
-        ) : (
-          filteredActivities.map((activity) => (
-            <div key={activity.id} className="card hover:shadow-xl transition-shadow group">
-              {/* Image */}
-              {activity.featuredImageUrl ? (
-                <img
-                  src={activity.featuredImageUrl}
-                  alt={activity.featuredImageAlt || activity.title}
-                  className="w-full h-48 object-cover rounded-lg mb-4"
-                />
-              ) : (
-                <div className="w-full h-48 bg-gradient-to-br from-blue-100 to-emerald-100 rounded-lg mb-4 flex items-center justify-center">
-                  <span className="text-4xl font-bold text-gray-300">
-                    {activity.title.charAt(0)}
-                  </span>
-                </div>
-              )}
-
-              {/* Content */}
-              <div className="space-y-3">
-                {/* Title & Status */}
-                <div>
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <h3 className="font-bold text-lg text-gray-900 line-clamp-2">
-                      {activity.title}
-                    </h3>
-                    {activity.featured && (
-                      <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full font-semibold flex-shrink-0">
-                        ⭐
-                      </span>
-                    )}
-                  </div>
-                  {activity.excerpt && (
-                    <p className="text-sm text-gray-600 line-clamp-2">{activity.excerpt}</p>
-                  )}
-                </div>
-
-                {/* Objectives */}
-                {activity.objectives && (
-                  <div className="flex flex-wrap gap-1">
-                    {(activity.objectives as string[]).slice(0, 2).map((obj: string) => (
-                      <span
-                        key={obj}
-                        className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full"
-                      >
-                        {getObjectiveLabel(obj)}
-                      </span>
-                    ))}
-                    {(activity.objectives as string[]).length > 2 && (
-                      <span className="text-xs text-gray-500">
-                        +{(activity.objectives as string[]).length - 2}
-                      </span>
-                    )}
-                  </div>
-                )}
-
-                {/* Meta Info */}
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div>
-                    <p className="text-gray-500">Duration</p>
-                    <p className="font-semibold text-gray-900">
-                      {formatDuration(activity.duration)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-gray-500">Participants</p>
-                    <p className="font-semibold text-gray-900">
-                      {activity.minParticipants && activity.maxParticipants
-                        ? `${activity.minParticipants}-${activity.maxParticipants}`
-                        : 'Flexible'}
-                    </p>
-                  </div>
-                  {activity.physicalDemand && (
-                    <div className="col-span-2">
-                      <p className="text-gray-500">Physical Demand</p>
-                      <p className="font-semibold text-gray-900">
-                        {getPhysicalLevelLabel(activity.physicalDemand)}
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Stats */}
-                <div className="flex items-center gap-4 text-sm text-gray-600 pt-3 border-t border-gray-200">
-                  <span>{activity._count.programLinks} programs</span>
-                  <span className="text-gray-300">•</span>
-                  <span
-                    className={`font-semibold ${
-                      activity.status === 'active'
-                        ? 'text-emerald-600'
-                        : 'text-gray-500'
-                    }`}
-                  >
-                    {activity.status}
-                  </span>
-                </div>
-
-                {/* Actions */}
-                <div className="flex items-center gap-2 pt-2">
-                  <Link
-                    href={`/admin/activities/${activity.id}`}
-                    className="flex-1 text-center py-2 text-sm font-semibold text-brand-primary hover:bg-blue-50 rounded-lg transition-colors"
-                  >
-                    View
-                  </Link>
-                  <Link
-                    href={`/admin/activities/${activity.id}`}
-                    className="flex-1 text-center py-2 text-sm font-semibold text-brand-primary hover:bg-blue-50 rounded-lg transition-colors"
-                  >
-                    Edit
-                  </Link>
-                  <button
-                    onClick={() => setDeleteDialog({ isOpen: true, activity })}
-                    className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    title="Delete"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
+      <ListPageHeader
+        title="Activities"
+        description="Manage your team building activities catalog"
+        actionLabel="Add Activity"
+        actionHref="/admin/activities/new"
+        actionIcon={Plus}
+      />
 
       {/* Stats */}
       {activities.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="card bg-blue-50 border-blue-200">
-            <p className="text-sm text-gray-600 mb-1">Total Activities</p>
-            <p className="text-2xl font-bold text-brand-primary">{stats.total}</p>
-          </div>
-          <div className="card bg-emerald-50 border-emerald-200">
-            <p className="text-sm text-gray-600 mb-1">Active</p>
-            <p className="text-2xl font-bold text-brand-secondary">{stats.active}</p>
-          </div>
-          <div className="card bg-purple-50 border-purple-200">
-            <p className="text-sm text-gray-600 mb-1">In Programs</p>
-            <p className="text-2xl font-bold text-purple-600">{stats.inPrograms}</p>
-          </div>
-          <div className="card bg-orange-50 border-orange-200">
-            <p className="text-sm text-gray-600 mb-1">Featured</p>
-            <p className="text-2xl font-bold text-orange-600">{stats.featured}</p>
-          </div>
-        </div>
+        <motion.div
+          className="grid grid-cols-2 gap-3 sm:grid-cols-4"
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+        >
+          {[
+            { label: 'Total', value: stats.total, color: 'text-brand-600' },
+            { label: 'Active', value: stats.active, color: 'text-success-600' },
+            { label: 'In Programs', value: stats.inPrograms, color: 'text-violet-600' },
+            { label: 'Featured', value: stats.featured, color: 'text-amber-600' },
+          ].map((s) => (
+            <motion.div key={s.label} variants={staggerItem}>
+              <Card className="py-4">
+                <p className="text-sm text-neutral-500 dark:text-neutral-400">{s.label}</p>
+                <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
+              </Card>
+            </motion.div>
+          ))}
+        </motion.div>
       )}
 
-      {/* Delete Confirmation Dialog */}
+      {/* Filters */}
+      <SearchFilterBar
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder="Search activities..."
+        filters={[
+          {
+            label: 'Status',
+            value: statusFilter,
+            options: [
+              { label: 'All Statuses', value: '' },
+              { label: 'Active', value: 'active' },
+              { label: 'Inactive', value: 'inactive' },
+              { label: 'Draft', value: 'draft' },
+            ],
+            onChange: setStatusFilter,
+          },
+          {
+            label: 'Physical',
+            value: physicalLevelFilter,
+            options: [
+              { label: 'All Levels', value: '' },
+              { label: 'Low', value: 'LOW' },
+              { label: 'Medium', value: 'MEDIUM' },
+              { label: 'High', value: 'HIGH' },
+            ],
+            onChange: setPhysicalLevelFilter,
+          },
+          {
+            label: 'Location',
+            value: indoorOutdoorFilter,
+            options: [
+              { label: 'All Locations', value: '' },
+              { label: 'Indoor', value: 'INDOOR' },
+              { label: 'Outdoor', value: 'OUTDOOR' },
+              { label: 'Both', value: 'BOTH' },
+              { label: 'Flexible', value: 'FLEXIBLE' },
+            ],
+            onChange: setIndoorOutdoorFilter,
+          },
+        ]}
+      />
+
+      {/* Activities Grid */}
+      {filteredActivities.length === 0 ? (
+        <Card className="py-12 text-center">
+          <p className="text-neutral-500 dark:text-neutral-400">
+            {searchQuery || statusFilter || physicalLevelFilter || indoorOutdoorFilter
+              ? 'No activities match your filters.'
+              : 'No activities found. Add your first activity to get started.'}
+          </p>
+        </Card>
+      ) : (
+        <motion.div
+          className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+        >
+          {filteredActivities.map((activity) => (
+            <motion.div key={activity.id} variants={staggerItem}>
+              <motion.div {...hoverLift}>
+                <Card className="group overflow-hidden p-0">
+                  {/* Image */}
+                  {activity.featuredImageUrl ? (
+                    <img
+                      src={activity.featuredImageUrl}
+                      alt={activity.featuredImageAlt || activity.title}
+                      className="h-48 w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-48 w-full items-center justify-center bg-gradient-to-br from-brand-100 to-accent-100 dark:from-brand-900/30 dark:to-accent-900/30">
+                      <span className="text-4xl font-bold text-neutral-300 dark:text-neutral-600">
+                        {activity.title.charAt(0)}
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="space-y-3 p-5">
+                    {/* Title & Status */}
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="line-clamp-2 text-base font-semibold text-neutral-900 dark:text-neutral-100">
+                        {activity.title}
+                      </h3>
+                      <StatusBadge status={activity.status} />
+                    </div>
+
+                    {activity.excerpt && (
+                      <p className="line-clamp-2 text-sm text-neutral-500 dark:text-neutral-400">{activity.excerpt}</p>
+                    )}
+
+                    {/* Objectives */}
+                    {activity.objectives && activity.objectives.length > 0 && (
+                      <div className="flex flex-wrap gap-1">
+                        {(activity.objectives as string[]).slice(0, 2).map((obj: string) => (
+                          <span
+                            key={obj}
+                            className="rounded-full bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-700 dark:bg-brand-950/30 dark:text-brand-300"
+                          >
+                            {getObjectiveLabel(obj)}
+                          </span>
+                        ))}
+                        {(activity.objectives as string[]).length > 2 && (
+                          <span className="text-xs text-neutral-400">
+                            +{(activity.objectives as string[]).length - 2}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Meta Info */}
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div>
+                        <p className="text-neutral-400 dark:text-neutral-500">Duration</p>
+                        <p className="font-medium text-neutral-700 dark:text-neutral-200">
+                          {formatDuration(activity.duration)}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-neutral-400 dark:text-neutral-500">Participants</p>
+                        <p className="font-medium text-neutral-700 dark:text-neutral-200">
+                          {activity.minParticipants && activity.maxParticipants
+                            ? `${activity.minParticipants}-${activity.maxParticipants}`
+                            : 'Flexible'}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Footer */}
+                    <div className="flex items-center justify-between border-t border-neutral-100 pt-3 dark:border-neutral-800">
+                      <span className="text-xs text-neutral-500">{activity._count.programLinks} programs</span>
+                      <ActionButtons
+                        viewHref={`/admin/activities/${activity.id}`}
+                        editHref={`/admin/activities/${activity.id}`}
+                        onDelete={() => setDeleteDialog({ isOpen: true, activity })}
+                      />
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
+
       <ConfirmDialog
         isOpen={deleteDialog.isOpen}
         onClose={() => setDeleteDialog({ isOpen: false, activity: null })}
         onConfirm={handleDelete}
         title="Smazat aktivitu"
-        message={`Opravdu chcete smazat aktivitu "${deleteDialog.activity?.title}"? Tato akce je nevratná.`}
+        message={`Opravdu chcete smazat aktivitu "${deleteDialog.activity?.title}"? Tato akce je nevratn\u00e1.`}
         confirmText="Smazat"
-        cancelText="Zrušit"
+        cancelText="Zru\u0161it"
         variant="danger"
         isLoading={isDeleting}
       />
