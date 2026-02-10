@@ -128,7 +128,7 @@ export default function ExtraDetailPage({ params }: { params: Promise<{ id: stri
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500"></div>
       </div>
     )
   }
@@ -149,8 +149,8 @@ export default function ExtraDetailPage({ params }: { params: Promise<{ id: stri
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">{extra.title}</h1>
-            <p className="text-gray-600">Úprava doplňkové služby</p>
+            <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">{extra.title}</h1>
+            <p className="text-neutral-600 dark:text-neutral-400">Úprava doplňkové služby</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -158,7 +158,7 @@ export default function ExtraDetailPage({ params }: { params: Promise<{ id: stri
             <Button
               variant="outline"
               onClick={() => setShowDeleteDialog(true)}
-              className="text-red-600 hover:bg-red-50"
+              className="text-error-600 dark:text-error-400 hover:bg-error-50 dark:hover:bg-error-950/20"
             >
               <Trash2 className="w-4 h-4 mr-2" />
               Smazat
@@ -186,7 +186,7 @@ export default function ExtraDetailPage({ params }: { params: Promise<{ id: stri
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                 Název služby
               </label>
               <input
@@ -198,7 +198,7 @@ export default function ExtraDetailPage({ params }: { params: Promise<{ id: stri
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                 URL slug
               </label>
               <input
@@ -211,7 +211,7 @@ export default function ExtraDetailPage({ params }: { params: Promise<{ id: stri
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                   Kategorie
                 </label>
                 <select
@@ -228,7 +228,7 @@ export default function ExtraDetailPage({ params }: { params: Promise<{ id: stri
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                   Stav
                 </label>
                 <select
@@ -243,7 +243,7 @@ export default function ExtraDetailPage({ params }: { params: Promise<{ id: stri
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                 Krátký popis
               </label>
               <textarea
@@ -261,7 +261,7 @@ export default function ExtraDetailPage({ params }: { params: Promise<{ id: stri
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                 Cena od (Kč)
               </label>
               <input
@@ -273,7 +273,7 @@ export default function ExtraDetailPage({ params }: { params: Promise<{ id: stri
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                 Jednotka ceny
               </label>
               <select
@@ -291,8 +291,8 @@ export default function ExtraDetailPage({ params }: { params: Promise<{ id: stri
         </div>
 
         {extra._count && extra._count.orderItems > 0 && (
-          <div className="card bg-yellow-50 border-yellow-200">
-            <p className="text-sm text-yellow-800">
+          <div className="card bg-warning-50 dark:bg-warning-950/20 border-warning-200 dark:border-warning-800">
+            <p className="text-sm text-warning-800 dark:text-warning-300">
               Tato služba je použita v {extra._count.orderItems} objednávkách a nelze ji smazat.
             </p>
           </div>

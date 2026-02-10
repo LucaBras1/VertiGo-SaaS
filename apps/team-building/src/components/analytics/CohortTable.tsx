@@ -1,5 +1,7 @@
 'use client'
 
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card'
+
 interface CohortData {
   cohortLabel: string
   cohortSize: number
@@ -13,62 +15,96 @@ interface CohortTableProps {
 
 export function CohortTable({ cohorts, months }: CohortTableProps) {
   const getRetentionColor = (rate: number): string => {
-    if (rate >= 80) return 'bg-green-100 text-green-800'
-    if (rate >= 60) return 'bg-green-50 text-green-700'
-    if (rate >= 40) return 'bg-yellow-50 text-yellow-700'
-    if (rate >= 20) return 'bg-orange-50 text-orange-700'
-    if (rate > 0) return 'bg-red-50 text-red-700'
-    return 'bg-gray-50 text-gray-400'
+    if (rate >= 80) return 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300'
+    if (rate >= 60) return 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400'
+    if (rate >= 40) return 'bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400'
+    if (rate >= 20) return 'bg-orange-50 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400'
+    if (rate > 0) return 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400'
+    return 'bg-neutral-50 text-neutral-400 dark:bg-neutral-800 dark:text-neutral-500'
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Kohortová analýza</h3>
-      <p className="text-sm text-gray-500 mb-4">Měsíční retence zákazníků podle doby registrace</p>
-      <div className="overflow-x-auto">
-        <table className="min-w-full">
-          <thead>
-            <tr className="border-b border-gray-200">
-              <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Kohorta</th>
-              <th className="text-center py-3 px-4 text-sm font-medium text-gray-500">Počet</th>
-              {months.slice(0, 7).map((month) => (
-                <th key={month} className="text-center py-3 px-2 text-sm font-medium text-gray-500 min-w-[60px]">
-                  {month}
+    <Card hover={false} animated={false}>
+      <CardHeader>
+        <CardTitle>Kohortová analýza</CardTitle>
+        <CardDescription>Měsíční retence zákazníků podle doby registrace</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="overflow-x-auto">
+          <table className="min-w-full">
+            <thead>
+              <tr className="border-b border-neutral-200 dark:border-neutral-700">
+                <th className="text-left py-3 px-4 text-sm font-medium text-neutral-500 dark:text-neutral-400">
+                  Kohorta
                 </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {cohorts.map((cohort, index) => (
-              <tr key={cohort.cohortLabel} className={index % 2 === 0 ? 'bg-gray-50' : ''}>
-                <td className="py-3 px-4 text-sm font-medium text-gray-900">{cohort.cohortLabel}</td>
-                <td className="py-3 px-4 text-sm text-center text-gray-600">{cohort.cohortSize}</td>
-                {months.slice(0, 7).map((month, monthIndex) => {
-                  const rate = cohort.retentionByMonth[monthIndex]
-                  return (
-                    <td key={month} className="py-3 px-2 text-center">
-                      {rate !== undefined ? (
-                        <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${getRetentionColor(rate)}`}>
-                          {rate.toFixed(0)}%
-                        </span>
-                      ) : (
-                        <span className="text-gray-300">-</span>
-                      )}
-                    </td>
-                  )
-                })}
+                <th className="text-center py-3 px-4 text-sm font-medium text-neutral-500 dark:text-neutral-400">
+                  Pocet
+                </th>
+                {months.slice(0, 7).map((month) => (
+                  <th
+                    key={month}
+                    className="text-center py-3 px-2 text-sm font-medium text-neutral-500 dark:text-neutral-400 min-w-[60px]"
+                  >
+                    {month}
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="mt-4 flex gap-2 flex-wrap text-xs">
-        <span className="px-2 py-1 rounded bg-green-100 text-green-800">≥80%</span>
-        <span className="px-2 py-1 rounded bg-green-50 text-green-700">60-80%</span>
-        <span className="px-2 py-1 rounded bg-yellow-50 text-yellow-700">40-60%</span>
-        <span className="px-2 py-1 rounded bg-orange-50 text-orange-700">20-40%</span>
-        <span className="px-2 py-1 rounded bg-red-50 text-red-700">&lt;20%</span>
-      </div>
-    </div>
+            </thead>
+            <tbody>
+              {cohorts.map((cohort, index) => (
+                <tr
+                  key={cohort.cohortLabel}
+                  className={
+                    index % 2 === 0
+                      ? 'bg-neutral-50 dark:bg-neutral-800/50'
+                      : 'bg-white dark:bg-neutral-900'
+                  }
+                >
+                  <td className="py-3 px-4 text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                    {cohort.cohortLabel}
+                  </td>
+                  <td className="py-3 px-4 text-sm text-center text-neutral-600 dark:text-neutral-400">
+                    {cohort.cohortSize}
+                  </td>
+                  {months.slice(0, 7).map((month, monthIndex) => {
+                    const rate = cohort.retentionByMonth[monthIndex]
+                    return (
+                      <td key={month} className="py-3 px-2 text-center">
+                        {rate !== undefined ? (
+                          <span
+                            className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${getRetentionColor(rate)}`}
+                          >
+                            {rate.toFixed(0)}%
+                          </span>
+                        ) : (
+                          <span className="text-neutral-300 dark:text-neutral-600">-</span>
+                        )}
+                      </td>
+                    )
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="mt-4 flex gap-2 flex-wrap text-xs">
+          <span className="px-2 py-1 rounded-md bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300">
+            {'\u2265'}80%
+          </span>
+          <span className="px-2 py-1 rounded-md bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400">
+            60-80%
+          </span>
+          <span className="px-2 py-1 rounded-md bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400">
+            40-60%
+          </span>
+          <span className="px-2 py-1 rounded-md bg-orange-50 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400">
+            20-40%
+          </span>
+          <span className="px-2 py-1 rounded-md bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400">
+            &lt;20%
+          </span>
+        </div>
+      </CardContent>
+    </Card>
   )
 }

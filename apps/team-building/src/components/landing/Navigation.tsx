@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, Fragment } from 'react'
 import Link from 'next/link'
@@ -15,12 +15,12 @@ export function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+    <nav className="bg-white/80 dark:bg-neutral-950/80 backdrop-blur-sm border-b border-neutral-200 dark:border-neutral-700 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <Users className="w-8 h-8 text-brand-primary" />
+            <Users className="w-8 h-8 text-brand-600 dark:text-brand-400" />
             <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
               TeamForge
             </span>
@@ -32,7 +32,7 @@ export function Navigation() {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-gray-700 hover:text-brand-primary transition-colors"
+                className="text-neutral-700 dark:text-neutral-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
               >
                 {link.label}
               </a>
@@ -45,7 +45,7 @@ export function Navigation() {
           {/* Mobile menu button */}
           <button
             type="button"
-            className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-brand-primary hover:bg-gray-100 transition-colors"
+            className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-neutral-700 dark:text-neutral-300 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
             onClick={() => setMobileMenuOpen(true)}
           >
             <span className="sr-only">Open main menu</span>
@@ -84,18 +84,18 @@ export function Navigation() {
                   leaveTo="translate-x-full"
                 >
                   <Dialog.Panel className="pointer-events-auto w-screen max-w-sm">
-                    <div className="flex h-full flex-col overflow-y-auto bg-white shadow-xl">
+                    <div className="flex h-full flex-col overflow-y-auto bg-white dark:bg-neutral-950 shadow-xl">
                       {/* Header */}
-                      <div className="flex items-center justify-between px-4 py-4 border-b border-gray-200">
+                      <div className="flex items-center justify-between px-4 py-4 border-b border-neutral-200 dark:border-neutral-700">
                         <Link href="/" className="flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
-                          <Users className="w-7 h-7 text-brand-primary" />
+                          <Users className="w-7 h-7 text-brand-600 dark:text-brand-400" />
                           <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
                             TeamForge
                           </span>
                         </Link>
                         <button
                           type="button"
-                          className="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+                          className="p-2 rounded-md text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           <span className="sr-only">Close menu</span>
@@ -110,7 +110,7 @@ export function Navigation() {
                             <a
                               key={link.href}
                               href={link.href}
-                              className="block px-4 py-3 text-lg font-medium text-gray-700 hover:text-brand-primary hover:bg-gray-50 rounded-lg transition-colors"
+                              className="block px-4 py-3 text-lg font-medium text-neutral-700 dark:text-neutral-300 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg transition-colors"
                               onClick={() => setMobileMenuOpen(false)}
                             >
                               {link.label}
@@ -120,10 +120,10 @@ export function Navigation() {
                       </div>
 
                       {/* CTA buttons */}
-                      <div className="border-t border-gray-200 px-4 py-6 space-y-3">
+                      <div className="border-t border-neutral-200 dark:border-neutral-700 px-4 py-6 space-y-3">
                         <Link
                           href="/login"
-                          className="block w-full text-center px-4 py-3 text-gray-700 font-medium hover:bg-gray-50 rounded-lg transition-colors"
+                          className="block w-full text-center px-4 py-3 text-neutral-700 dark:text-neutral-300 font-medium hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg transition-colors"
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           Sign In

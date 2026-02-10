@@ -1,6 +1,8 @@
 'use client'
 
 import { Building2 } from 'lucide-react'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
+import { chartTheme } from '@/lib/chart-theme'
 
 interface IndustryDistributionProps {
   data: Record<string, number>
@@ -20,18 +22,18 @@ const industryLabels: Record<string, string> = {
   OTHER: 'Ostatní',
 }
 
-const industryColors: Record<string, string> = {
-  TECHNOLOGY: 'bg-blue-500',
-  FINANCE: 'bg-green-500',
-  HEALTHCARE: 'bg-red-500',
-  EDUCATION: 'bg-yellow-500',
-  MANUFACTURING: 'bg-gray-500',
-  RETAIL: 'bg-purple-500',
-  HOSPITALITY: 'bg-pink-500',
-  CONSULTING: 'bg-indigo-500',
-  GOVERNMENT: 'bg-cyan-500',
-  NONPROFIT: 'bg-emerald-500',
-  OTHER: 'bg-slate-400',
+const industryColorMap: Record<string, string> = {
+  TECHNOLOGY: chartTheme.colors.primary,
+  FINANCE: chartTheme.colors.success,
+  HEALTHCARE: chartTheme.colors.error,
+  EDUCATION: chartTheme.colors.warning,
+  MANUFACTURING: '#64748B',
+  RETAIL: '#8B5CF6',
+  HOSPITALITY: '#EC4899',
+  CONSULTING: '#6366F1',
+  GOVERNMENT: '#0EA5E9',
+  NONPROFIT: '#22C55E',
+  OTHER: '#94A3B8',
 }
 
 export function IndustryDistribution({ data }: IndustryDistributionProps) {
@@ -41,33 +43,47 @@ export function IndustryDistribution({ data }: IndustryDistributionProps) {
     .slice(0, 8)
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6">
-      <div className="flex items-center gap-2 mb-4">
-        <Building2 className="h-5 w-5 text-gray-500" />
-        <h3 className="text-lg font-semibold text-gray-900">Zákazníci podle odvětví</h3>
-      </div>
-      <div className="space-y-3">
-        {sorted.map(([industry, count]) => {
-          const percentage = total > 0 ? (count / total) * 100 : 0
-          return (
-            <div key={industry}>
-              <div className="flex justify-between text-sm mb-1">
-                <span className="font-medium text-gray-700">{industryLabels[industry] || industry}</span>
-                <span className="text-gray-500">
-                  {count} ({percentage.toFixed(1)}%)
-                </span>
+    <Card hover={false} animated={false}>
+      <CardHeader>
+        <div className="flex items-center gap-2">
+          <Building2 className="h-5 w-5 text-neutral-500 dark:text-neutral-400" />
+          <CardTitle>Zákazníci podle odvětví</CardTitle>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-3">
+          {sorted.map(([industry, count]) => {
+            const percentage = total > 0 ? (count / total) * 100 : 0
+            const barColor = industryColorMap[industry] || '#94A3B8'
+            return (
+              <div key={industry}>
+                <div className="flex justify-between text-sm mb-1.5">
+                  <span className="font-medium text-neutral-700 dark:text-neutral-300">
+                    {industryLabels[industry] || industry}
+                  </span>
+                  <span className="text-neutral-500 dark:text-neutral-400">
+                    {count} ({percentage.toFixed(1)}%)
+                  </span>
+                </div>
+                <div className="w-full bg-neutral-100 dark:bg-neutral-800 rounded-full h-2">
+                  <div
+                    className="h-2 rounded-full transition-all duration-500"
+                    style={{
+                      width: `${Math.max(percentage, 2)}%`,
+                      backgroundColor: barColor,
+                    }}
+                  />
+                </div>
               </div>
-              <div className="w-full bg-gray-100 rounded-full h-2">
-                <div
-                  className={`h-2 rounded-full transition-all duration-500 ${industryColors[industry] || 'bg-gray-400'}`}
-                  style={{ width: `${Math.max(percentage, 2)}%` }}
-                />
-              </div>
-            </div>
-          )
-        })}
-      </div>
-      {total === 0 && <p className="text-center text-gray-500 py-4">Žádná data k zobrazení</p>}
-    </div>
+            )
+          })}
+        </div>
+        {total === 0 && (
+          <p className="text-center text-neutral-500 dark:text-neutral-400 py-4">
+            Žádná data k zobrazení
+          </p>
+        )}
+      </CardContent>
+    </Card>
   )
 }

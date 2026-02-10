@@ -155,8 +155,8 @@ export default function EditSessionPage({ params }: { params: { id: string } }) 
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Načítám data...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500 mx-auto"></div>
+          <p className="mt-4 text-neutral-600 dark:text-neutral-400">Načítám data...</p>
         </div>
       </div>
     )
@@ -171,15 +171,15 @@ export default function EditSessionPage({ params }: { params: { id: string } }) 
       <div className="mb-6">
         <Link
           href="/admin/sessions"
-          className="inline-flex items-center text-cyan-600 hover:text-cyan-700 font-medium mb-4"
+          className="inline-flex items-center text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium mb-4"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Zpět na workshopy
         </Link>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Detail workshopu</h1>
-            <p className="text-gray-600 mt-2">
+            <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">Detail workshopu</h1>
+            <p className="text-neutral-600 dark:text-neutral-400 mt-2">
               {session.teamName || session.companyName || 'Workshop'} •{' '}
               {format(new Date(session.date), 'dd.MM.yyyy')}
             </p>
@@ -207,22 +207,22 @@ export default function EditSessionPage({ params }: { params: { id: string } }) 
           <CardContent>
             {debriefReport ? (
               <div className="space-y-4">
-                <div className="bg-white rounded-lg p-6 border border-emerald-200">
-                  <h3 className="text-lg font-bold text-gray-900 mb-3">
+                <div className="bg-white dark:bg-neutral-900 rounded-lg p-6 border border-emerald-200">
+                  <h3 className="text-lg font-bold text-neutral-900 dark:text-neutral-100 mb-3">
                     {debriefReport.title || 'Workshop Report'}
                   </h3>
 
                   {debriefReport.summary && (
                     <div className="mb-4">
-                      <h4 className="font-semibold text-gray-700 mb-2">Shrnutí</h4>
-                      <p className="text-gray-600">{debriefReport.summary}</p>
+                      <h4 className="font-semibold text-neutral-700 dark:text-neutral-300 mb-2">Shrnutí</h4>
+                      <p className="text-neutral-600 dark:text-neutral-400">{debriefReport.summary}</p>
                     </div>
                   )}
 
                   {debriefReport.keyInsights && debriefReport.keyInsights.length > 0 && (
                     <div className="mb-4">
-                      <h4 className="font-semibold text-gray-700 mb-2">Klíčové poznatky</h4>
-                      <ul className="list-disc list-inside space-y-1 text-gray-600">
+                      <h4 className="font-semibold text-neutral-700 dark:text-neutral-300 mb-2">Klíčové poznatky</h4>
+                      <ul className="list-disc list-inside space-y-1 text-neutral-600 dark:text-neutral-400">
                         {debriefReport.keyInsights.map((insight: string, idx: number) => (
                           <li key={idx}>{insight}</li>
                         ))}
@@ -232,8 +232,8 @@ export default function EditSessionPage({ params }: { params: { id: string } }) 
 
                   {debriefReport.recommendations && debriefReport.recommendations.length > 0 && (
                     <div className="mb-4">
-                      <h4 className="font-semibold text-gray-700 mb-2">Doporučení</h4>
-                      <ul className="list-disc list-inside space-y-1 text-gray-600">
+                      <h4 className="font-semibold text-neutral-700 dark:text-neutral-300 mb-2">Doporučení</h4>
+                      <ul className="list-disc list-inside space-y-1 text-neutral-600 dark:text-neutral-400">
                         {debriefReport.recommendations.map((rec: string, idx: number) => (
                           <li key={idx}>{rec}</li>
                         ))}
@@ -242,7 +242,7 @@ export default function EditSessionPage({ params }: { params: { id: string } }) 
                   )}
 
                   {session.debriefGeneratedAt && (
-                    <p className="text-sm text-gray-500 mt-4">
+                    <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-4">
                       Vygenerováno: {format(new Date(session.debriefGeneratedAt), 'dd.MM.yyyy HH:mm')}
                     </p>
                   )}
@@ -259,7 +259,7 @@ export default function EditSessionPage({ params }: { params: { id: string } }) 
               </div>
             ) : (
               <div className="text-center py-8">
-                <p className="text-gray-600 mb-4">
+                <p className="text-neutral-600 dark:text-neutral-400 mb-4">
                   Workshop byl dokončen. Můžete vygenerovat AI debrief report.
                 </p>
                 <Button

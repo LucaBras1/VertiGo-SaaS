@@ -7,9 +7,13 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import { Plus, Mail, Phone, Building2, Search } from 'lucide-react'
+import { ListPageHeader } from '@/components/admin/shared/ListPageHeader'
+import { SearchFilterBar } from '@/components/admin/shared/SearchFilterBar'
+import { staggerContainer, staggerItem } from '@vertigo/ui'
+import { Plus, Mail, Phone, Building2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 export default function CustomersPage() {
@@ -17,179 +21,131 @@ export default function CustomersPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
 
-  useEffect(() => {
-    fetchCustomers()
-  }, [])
+  useEffect(() => { fetchCustomers() }, [])
 
   const fetchCustomers = async () => {
     try {
       const response = await fetch('/api/customers')
       const data = await response.json()
-
-      if (data.success) {
-        setCustomers(data.data)
-      } else {
-        toast.error('Nepodařilo se načíst zákazníky')
-      }
+      if (data.success) { setCustomers(data.data) }
+      else { toast.error('Nepodařilo se načíst zákazníky') }
     } catch (error) {
       console.error('Error fetching customers:', error)
       toast.error('Nastala chyba při načítání zákazníků')
-    } finally {
-      setIsLoading(false)
-    }
+    } finally { setIsLoading(false) }
   }
 
   const filteredCustomers = customers.filter((customer) => {
     const query = searchQuery.toLowerCase()
-    return (
-      customer.firstName.toLowerCase().includes(query) ||
+    return customer.firstName.toLowerCase().includes(query) ||
       customer.lastName.toLowerCase().includes(query) ||
       customer.email.toLowerCase().includes(query) ||
       (customer.organization && customer.organization.toLowerCase().includes(query))
-    )
   })
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Načítám zákazníky...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500 mx-auto"></div>
+          <p className="mt-4 text-neutral-500 dark:text-neutral-400">Načítám zákazníky...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Zákazníci</h1>
-          <p className="text-gray-600 mt-2">Správa kontaktů a organizací</p>
-        </div>
-        <Link href="/admin/customers/new">
-          <Button>
-            <Plus className="w-5 h-5 mr-2" />
-            Nový zákazník
-          </Button>
-        </Link>
-      </div>
+    <div className="space-y-6">
+      <ListPageHeader
+        title="Zákazníci"
+        description="Správa kontaktů a organizací"
+        actionLabel="Nový zákazník"
+        actionHref="/admin/customers/new"
+        actionIcon={Plus}
+      />
 
-      {/* Search */}
-      <Card className="mb-6">
-        <div className="flex items-center gap-3">
-          <Search className="w-5 h-5 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Hledat zákazníka..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 outline-none"
-          />
-        </div>
-      </Card>
+      <SearchFilterBar
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder="Hledat zákazníka..."
+      />
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <Card>
-          <div className="text-sm text-gray-600 mb-1">Celkem zákazníků</div>
-          <div className="text-3xl font-bold text-gray-900">{customers.length}</div>
-        </Card>
-        <Card>
-          <div className="text-sm text-gray-600 mb-1">S organizací</div>
-          <div className="text-3xl font-bold text-gray-900">
-            {customers.filter((c) => c.organization).length}
-          </div>
-        </Card>
-        <Card>
-          <div className="text-sm text-gray-600 mb-1">S objednávkami</div>
-          <div className="text-3xl font-bold text-gray-900">
-            {customers.filter((c) => c._count.orders > 0).length}
-          </div>
-        </Card>
-      </div>
-
+      <motion.div
+        className="grid grid-cols-1 gap-3 sm:grid-cols-3"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        {[
+          { label: 'Celkem zákazníků', value: customers.length, color: 'text-brand-600' },
+          { label: 'S organizací', value: customers.filter((c) => c.organization).length, color: 'text-violet-600' },
+          { label: 'S objednávkami', value: customers.filter((c) => c._count.orders > 0).length, color: 'text-success-600' },
+        ].map((s) => (
+          <motion.div key={s.label} variants={staggerItem}>
+            <Card className="p-5">
+              <p className="text-sm text-neutral-500 dark:text-neutral-400">{s.label}</p>
+              <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
+            </Card>
+          </motion.div>
+        ))}
+      </motion.div>
       {/* Customers List */}
-      <div className="space-y-4">
-        {filteredCustomers.length === 0 ? (
-          <Card>
-            <div className="text-center py-12">
-              <p className="text-gray-500">
-                {searchQuery ? 'Žádní zákazníci nenalezeni' : 'Zatím žádní zákazníci'}
-              </p>
-              {!searchQuery && (
-                <Link href="/admin/customers/new">
-                  <Button className="mt-4">
-                    <Plus className="w-5 h-5 mr-2" />
-                    Přidat prvního zákazníka
-                  </Button>
-                </Link>
-              )}
-            </div>
-          </Card>
-        ) : (
-          filteredCustomers.map((customer) => (
-            <Link key={customer.id} href={`/admin/customers/${customer.id}`}>
-              <Card className="hover:shadow-xl transition-shadow cursor-pointer">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-lg font-bold text-gray-900">
-                        {customer.firstName} {customer.lastName}
-                      </h3>
-                      {customer.organization && (
-                        <span className="px-3 py-1 bg-cyan-100 text-cyan-700 text-sm font-medium rounded-full">
-                          {customer.organization}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="space-y-1 text-sm text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <Mail className="w-4 h-4" />
-                        <span>{customer.email}</span>
-                      </div>
-                      {customer.phone && (
-                        <div className="flex items-center gap-2">
-                          <Phone className="w-4 h-4" />
-                          <span>{customer.phone}</span>
-                        </div>
-                      )}
-                      {customer.industryType && (
-                        <div className="flex items-center gap-2">
-                          <Building2 className="w-4 h-4" />
-                          <span>{customer.industryType}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="text-right">
-                    <div className="text-sm text-gray-600">
-                      {customer._count.orders > 0 && (
-                        <div className="mb-1">
-                          <span className="font-semibold text-cyan-600">
-                            {customer._count.orders}
-                          </span>{' '}
-                          objednávek
-                        </div>
-                      )}
-                      {customer._count.invoices > 0 && (
-                        <div>
-                          <span className="font-semibold text-emerald-600">
-                            {customer._count.invoices}
-                          </span>{' '}
-                          faktur
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </Card>
+      {filteredCustomers.length === 0 ? (
+        <Card className="p-12 text-center">
+          <p className="text-neutral-500 dark:text-neutral-400">
+            {searchQuery ? 'Žádní zákazníci nenalezeni' : 'Zatím žádní zákazníci'}
+          </p>
+          {!searchQuery && (
+            <Link href="/admin/customers/new">
+              <Button className="mt-4">
+                <Plus className="w-5 h-5" />
+                Přidat prvního zákazníka
+              </Button>
             </Link>
-          ))
-        )}
-      </div>
+          )}
+        </Card>
+      ) : (
+        <motion.div
+          className="space-y-3"
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+        >
+          {filteredCustomers.map((customer) => (
+            <motion.div key={customer.id} variants={staggerItem}>
+              <Link href={`/admin/customers/${customer.id}`}>
+                <Card className="p-5 cursor-pointer" variant="interactive">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="text-lg font-bold text-neutral-900 dark:text-neutral-50">
+                          {customer.firstName} {customer.lastName}
+                        </h3>
+                        {customer.organization && (
+                          <span className="px-3 py-1 bg-brand-50 text-brand-700 dark:bg-brand-950/30 dark:text-brand-400 text-sm font-medium rounded-full">
+                            {customer.organization}
+                          </span>
+                        )}
+                      </div>
+                      <div className="space-y-1 text-sm text-neutral-500 dark:text-neutral-400">
+                        <div className="flex items-center gap-2"><Mail className="w-4 h-4" /><span>{customer.email}</span></div>
+                        {customer.phone && (<div className="flex items-center gap-2"><Phone className="w-4 h-4" /><span>{customer.phone}</span></div>)}
+                        {customer.industryType && (<div className="flex items-center gap-2"><Building2 className="w-4 h-4" /><span>{customer.industryType}</span></div>)}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm text-neutral-500 dark:text-neutral-400">
+                        {customer._count.orders > 0 && (<div className="mb-1"><span className="font-semibold text-brand-600 dark:text-brand-400">{customer._count.orders}</span>{' '}objednávek</div>)}
+                        {customer._count.invoices > 0 && (<div><span className="font-semibold text-success-600 dark:text-success-400">{customer._count.invoices}</span>{' '}faktur</div>)}
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              </Link>
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
     </div>
   )
 }

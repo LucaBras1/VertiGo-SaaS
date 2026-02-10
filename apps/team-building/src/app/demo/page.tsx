@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Demo Request Page
  * Schedule a demo and learn about TeamForge benefits
  */
@@ -103,17 +103,17 @@ export default function DemoPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-emerald-50">
       {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-200">
+      <nav className="bg-white/80 dark:bg-neutral-950/80 backdrop-blur-sm border-b border-neutral-200 dark:border-neutral-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link href="/" className="flex items-center gap-2">
-              <Users className="w-8 h-8 text-brand-primary" />
+              <Users className="w-8 h-8 text-brand-600 dark:text-brand-400" />
               <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
                 TeamForge
               </span>
             </Link>
             <div className="flex items-center gap-4">
-              <Link href="/login" className="text-gray-700 hover:text-brand-primary transition-colors">
+              <Link href="/login" className="text-neutral-700 dark:text-neutral-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
                 Přihlásit se
               </Link>
               <Link href="/signup" className="btn-primary">
@@ -127,14 +127,14 @@ export default function DemoPage() {
       <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-blue-100 text-brand-primary px-4 py-2 rounded-full mb-6">
+          <div className="inline-flex items-center gap-2 bg-blue-100 text-brand-600 dark:text-brand-400 px-4 py-2 rounded-full mb-6">
             <Sparkles className="w-4 h-4" />
             <span className="text-sm font-semibold">30minutová personalizovaná prezentace</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent mb-4">
             Naplánovat demo
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto">
             Uvidíte, jak TeamForge AI může transformovat váš team building business
           </p>
         </div>
@@ -153,7 +153,7 @@ export default function DemoPage() {
               <form onSubmit={handleSubmit} className="space-y-5">
                 {/* Name */}
                 <div>
-                  <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="name" className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                     Jméno a příjmení
                   </label>
                   <input
@@ -177,7 +177,7 @@ export default function DemoPage() {
 
                 {/* Email */}
                 <div>
-                  <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="email" className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                     Pracovní email
                   </label>
                   <input
@@ -201,7 +201,7 @@ export default function DemoPage() {
 
                 {/* Company */}
                 <div>
-                  <label htmlFor="company" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="company" className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                     Název společnosti
                   </label>
                   <input
@@ -225,7 +225,7 @@ export default function DemoPage() {
 
                 {/* Team Size */}
                 <div>
-                  <label htmlFor="teamSize" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="teamSize" className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                     Velikost týmu
                   </label>
                   <select
@@ -246,7 +246,7 @@ export default function DemoPage() {
 
                 {/* Message */}
                 <div>
-                  <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="message" className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                     Dodatečné poznámky (nepovinné)
                   </label>
                   <textarea
@@ -279,7 +279,7 @@ export default function DemoPage() {
                   )}
                 </button>
 
-                <p className="text-sm text-gray-500 text-center">
+                <p className="text-sm text-neutral-500 dark:text-neutral-400 text-center">
                   Ozveme se vám do 24 hodin pro domluvení termínu
                 </p>
               </form>
@@ -291,7 +291,7 @@ export default function DemoPage() {
             {/* Demo Benefits */}
             <div className="card">
               <div className="flex items-center gap-3 mb-6">
-                <Video className="w-6 h-6 text-brand-primary" />
+                <Video className="w-6 h-6 text-brand-600 dark:text-brand-400" />
                 <h3 className="text-xl font-bold">Co uvidíte</h3>
               </div>
 
@@ -300,7 +300,7 @@ export default function DemoPage() {
                   <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
                   <div>
                     <div className="font-semibold text-sm mb-1">Live AI Demo</div>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400">
                       Živá ukázka všech 4 AI modulů v akci
                     </p>
                   </div>
@@ -310,7 +310,7 @@ export default function DemoPage() {
                   <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
                   <div>
                     <div className="font-semibold text-sm mb-1">Personalizovaná ukázka</div>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400">
                       Přizpůsobeno vašemu businessu a cílům
                     </p>
                   </div>
@@ -320,7 +320,7 @@ export default function DemoPage() {
                   <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
                   <div>
                     <div className="font-semibold text-sm mb-1">Q&A Session</div>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400">
                       Prostor pro vaše otázky a konzultaci
                     </p>
                   </div>
@@ -330,7 +330,7 @@ export default function DemoPage() {
                   <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
                   <div>
                     <div className="font-semibold text-sm mb-1">ROI kalkulace</div>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400">
                       Analýza návratnosti investice pro váš případ
                     </p>
                   </div>
@@ -376,7 +376,7 @@ export default function DemoPage() {
             {/* CTA Card */}
             <div className="card border-2 border-brand-primary">
               <h3 className="text-lg font-bold mb-3">Raději vyzkoušet rovnou?</h3>
-              <p className="text-sm text-gray-600 mb-4">
+              <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
                 Začněte s 14denní zkušební verzí zdarma a prozkoumejte všechny funkce sami.
               </p>
               <Link href="/signup" className="btn-primary w-full inline-flex items-center justify-center gap-2 text-sm">

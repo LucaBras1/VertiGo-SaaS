@@ -12,6 +12,8 @@ import { z } from 'zod'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Save, X } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { staggerContainer, staggerItem } from '@vertigo/ui'
 
 const objectiveTypes = [
   { value: 'COMMUNICATION', label: 'Komunikace' },
@@ -111,104 +113,112 @@ export function ActivityForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <motion.form
+      onSubmit={handleSubmit(onSubmit)} className="space-y-6"
+      variants={staggerContainer}
+      initial="hidden"
+      animate="visible"
+    >
       {/* Basic Information */}
+      <motion.div variants={staggerItem}>
       <Card>
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Základní informace</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Základní informace</h3>
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Název aktivity *
             </label>
             <input
               {...register('title')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
               placeholder="Např. Escape Room Challenge"
             />
             {errors.title && (
-              <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>
+              <p className="mt-1 text-sm text-error-600 dark:text-error-400">{errors.title.message}</p>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Podtitulek
             </label>
             <input
               {...register('subtitle')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
               placeholder="Krátký podtitulek"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Krátký popis
             </label>
             <textarea
               {...register('excerpt')}
               rows={3}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
               placeholder="Krátký popis aktivity..."
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Detailní popis
             </label>
             <textarea
               {...register('description')}
               rows={6}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
               placeholder="Detailní popis aktivity včetně pravidel..."
             />
           </div>
         </div>
       </Card>
+      </motion.div>
 
       {/* Participants & Objectives */}
+      <motion.div variants={staggerItem}>
       <Card>
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Účastníci a cíle</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Účastníci a cíle</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Min. účastníků
             </label>
             <input
               type="number"
               {...register('minParticipants', { valueAsNumber: true })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Max. účastníků
             </label>
             <input
               type="number"
               {...register('maxParticipants', { valueAsNumber: true })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Ideální velikost skupiny
             </label>
             <input
               type="number"
               {...register('idealGroupSize', { valueAsNumber: true })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
             Cíle aktivity
           </label>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -219,8 +229,8 @@ export function ActivityForm({
                 onClick={() => toggleObjective(objective.value)}
                 className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all ${
                   selectedObjectives.includes(objective.value)
-                    ? 'border-cyan-500 bg-cyan-50 text-cyan-700'
-                    : 'border-gray-200 bg-white text-gray-700 hover:border-cyan-300'
+                    ? 'border-brand-500 bg-brand-50 text-brand-700 dark:border-brand-400 dark:bg-brand-950/30 dark:text-brand-300'
+                    : 'border-neutral-200 bg-white text-neutral-700 hover:border-brand-300 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-brand-600'
                 }`}
               >
                 {objective.label}
@@ -229,19 +239,21 @@ export function ActivityForm({
           </div>
         </div>
       </Card>
+      </motion.div>
 
       {/* Physical Parameters */}
+      <motion.div variants={staggerItem}>
       <Card>
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Fyzické parametry</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Fyzické parametry</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Fyzická náročnost
             </label>
             <select
               {...register('physicalDemand')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100"
             >
               <option value="">Vyberte...</option>
               {physicalDemands.map((demand) => (
@@ -253,12 +265,12 @@ export function ActivityForm({
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Umístění
             </label>
             <select
               {...register('indoorOutdoor')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100"
             >
               <option value="">Vyberte...</option>
               {indoorOutdoorOptions.map((option) => (
@@ -270,44 +282,46 @@ export function ActivityForm({
           </div>
         </div>
       </Card>
+      </motion.div>
 
       {/* Duration & Difficulty */}
+      <motion.div variants={staggerItem}>
       <Card>
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Délka a obtížnost</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Délka a obtížnost</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Délka (minuty) *
             </label>
             <input
               type="number"
               {...register('duration', { valueAsNumber: true })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
             />
             {errors.duration && (
-              <p className="mt-1 text-sm text-red-600">{errors.duration.message}</p>
+              <p className="mt-1 text-sm text-error-600 dark:text-error-400">{errors.duration.message}</p>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Čas přípravy (minuty)
             </label>
             <input
               type="number"
               {...register('setupTime', { valueAsNumber: true })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Obtížnost
             </label>
             <select
               {...register('difficultyLevel')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100"
             >
               <option value="">Vyberte...</option>
               {difficultyLevels.map((level) => (
@@ -319,19 +333,21 @@ export function ActivityForm({
           </div>
         </div>
       </Card>
+      </motion.div>
 
       {/* Scalability */}
+      <motion.div variants={staggerItem}>
       <Card>
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Škálovatelnost</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Škálovatelnost</h3>
 
         <div className="space-y-3">
           <label className="flex items-center gap-3">
             <input
               type="checkbox"
               {...register('scalable')}
-              className="w-5 h-5 text-cyan-500 border-gray-300 rounded focus:ring-cyan-500"
+              className="h-5 w-5 rounded border-neutral-300 text-brand-500 focus:ring-brand-500 dark:border-neutral-600 dark:bg-neutral-800"
             />
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
               Škálovatelná (lze přizpůsobit počtu účastníků)
             </span>
           </label>
@@ -340,60 +356,66 @@ export function ActivityForm({
             <input
               type="checkbox"
               {...register('canCombine')}
-              className="w-5 h-5 text-cyan-500 border-gray-300 rounded focus:ring-cyan-500"
+              className="h-5 w-5 rounded border-neutral-300 text-brand-500 focus:ring-brand-500 dark:border-neutral-600 dark:bg-neutral-800"
             />
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
               Lze kombinovat s jinými aktivitami
             </span>
           </label>
         </div>
       </Card>
+      </motion.div>
 
       {/* Pricing */}
+      <motion.div variants={staggerItem}>
       <Card>
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Ceník</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Ceník</h3>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
             Cena (Kč)
           </label>
           <input
             type="number"
             {...register('price', { valueAsNumber: true })}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
             placeholder="5000"
           />
         </div>
       </Card>
+      </motion.div>
 
       {/* Media */}
+      <motion.div variants={staggerItem}>
       <Card>
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Média</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Média</h3>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
             URL hlavního obrázku
           </label>
           <input
             {...register('featuredImageUrl')}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
             placeholder="https://example.com/image.jpg"
           />
         </div>
       </Card>
+      </motion.div>
 
       {/* Status */}
+      <motion.div variants={staggerItem}>
       <Card>
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Stav</h3>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">Stav</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Status
             </label>
             <select
               {...register('status')}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100"
             >
               <option value="active">Aktivní</option>
               <option value="draft">Koncept</option>
@@ -406,15 +428,17 @@ export function ActivityForm({
               <input
                 type="checkbox"
                 {...register('featured')}
-                className="w-5 h-5 text-cyan-500 border-gray-300 rounded focus:ring-cyan-500"
+                className="h-5 w-5 rounded border-neutral-300 text-brand-500 focus:ring-brand-500 dark:border-neutral-600 dark:bg-neutral-800"
               />
-              <span className="text-sm font-medium text-gray-700">Zvýrazněná aktivita</span>
+              <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Zvýrazněná aktivita</span>
             </label>
           </div>
         </div>
       </Card>
+      </motion.div>
 
       {/* Actions */}
+      <motion.div variants={staggerItem}>
       <div className="flex gap-4">
         <Button type="submit" isLoading={isLoading} className="flex-1">
           <Save className="w-5 h-5 mr-2" />
@@ -427,6 +451,7 @@ export function ActivityForm({
           </Button>
         )}
       </div>
-    </form>
+      </motion.div>
+    </motion.form>
   )
 }

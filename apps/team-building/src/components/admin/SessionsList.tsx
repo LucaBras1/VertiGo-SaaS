@@ -8,9 +8,17 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Plus, Calendar, CheckCircle, Clock, XCircle, FileText, Eye, Edit, Trash2 } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Plus, Calendar, CheckCircle, Clock, XCircle, FileText } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
+import { Card } from '@/components/ui/Card'
+import { Button } from '@/components/ui/Button'
+import { StatusBadge } from '@/components/admin/shared/StatusBadge'
+import { ListPageHeader } from '@/components/admin/shared/ListPageHeader'
+import { SearchFilterBar } from '@/components/admin/shared/SearchFilterBar'
+import { ActionButtons } from '@/components/admin/shared/ActionButtons'
+import { staggerContainer, staggerItem } from '@vertigo/ui'
 import toast from 'react-hot-toast'
 
 interface Program {
@@ -48,32 +56,6 @@ export function SessionsList({ initialSessions, programs }: SessionsListProps) {
   })
   const [isDeleting, setIsDeleting] = useState(false)
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'confirmed':
-        return <CheckCircle className="w-5 h-5 text-emerald-600" />
-      case 'tentative':
-        return <Clock className="w-5 h-5 text-yellow-600" />
-      case 'completed':
-        return <CheckCircle className="w-5 h-5 text-blue-600" />
-      case 'cancelled':
-        return <XCircle className="w-5 h-5 text-red-600" />
-      default:
-        return <Calendar className="w-5 h-5 text-gray-400" />
-    }
-  }
-
-  const getStatusBadge = (status: string) => {
-    const styles = {
-      confirmed: 'bg-emerald-100 text-emerald-700',
-      tentative: 'bg-yellow-100 text-yellow-700',
-      completed: 'bg-blue-100 text-blue-700',
-      cancelled: 'bg-red-100 text-red-700',
-    }
-    return styles[status as keyof typeof styles] || 'bg-gray-100 text-gray-700'
-  }
-
-  // Filter sessions
   const filteredSessions = sessions.filter((session) => {
     const matchesStatus = !statusFilter || session.status === statusFilter
     const matchesProgram = !programFilter || session.programId === programFilter
@@ -109,125 +91,112 @@ export function SessionsList({ initialSessions, programs }: SessionsListProps) {
     }
   }
 
-  // Group sessions by status
   const upcomingSessions = sessions.filter(
     (s) => new Date(s.date) >= new Date() && s.status !== 'cancelled' && s.status !== 'completed'
   )
-  const completedSessions = sessions.filter((s) => s.status === 'completed')
-  const cancelledSessions = sessions.filter((s) => s.status === 'cancelled')
 
   const stats = {
     total: sessions.length,
     upcoming: upcomingSessions.length,
-    completed: completedSessions.length,
+    completed: sessions.filter((s) => s.status === 'completed').length,
     withDebrief: sessions.filter((s) => s.debriefCompleted).length,
   }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Sessions</h1>
-          <p className="text-gray-600 mt-1">
-            Manage scheduled team building sessions
-          </p>
-        </div>
-        <Link href="/admin/sessions/new" className="btn-primary inline-flex items-center gap-2">
-          <Plus className="w-5 h-5" />
-          Schedule Session
-        </Link>
-      </div>
+      <ListPageHeader
+        title="Sessions"
+        description="Manage scheduled team building sessions"
+        actionLabel="Schedule Session"
+        actionHref="/admin/sessions/new"
+        actionIcon={Plus}
+      />
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="card bg-blue-50 border-blue-200">
-          <p className="text-sm text-gray-600 mb-1">Total Sessions</p>
-          <p className="text-2xl font-bold text-brand-primary">{stats.total}</p>
-        </div>
-        <div className="card bg-emerald-50 border-emerald-200">
-          <p className="text-sm text-gray-600 mb-1">Upcoming</p>
-          <p className="text-2xl font-bold text-brand-secondary">{stats.upcoming}</p>
-        </div>
-        <div className="card bg-purple-50 border-purple-200">
-          <p className="text-sm text-gray-600 mb-1">Completed</p>
-          <p className="text-2xl font-bold text-purple-600">{stats.completed}</p>
-        </div>
-        <div className="card bg-orange-50 border-orange-200">
-          <p className="text-sm text-gray-600 mb-1">With Debrief</p>
-          <p className="text-2xl font-bold text-orange-600">{stats.withDebrief}</p>
-        </div>
-      </div>
+      <motion.div
+        className="grid grid-cols-2 gap-3 sm:grid-cols-4"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        {[
+          { label: 'Total', value: stats.total, color: 'text-brand-600' },
+          { label: 'Upcoming', value: stats.upcoming, color: 'text-success-600' },
+          { label: 'Completed', value: stats.completed, color: 'text-violet-600' },
+          { label: 'With Debrief', value: stats.withDebrief, color: 'text-amber-600' },
+        ].map((s) => (
+          <motion.div key={s.label} variants={staggerItem}>
+            <Card className="py-4">
+              <p className="text-sm text-neutral-500 dark:text-neutral-400">{s.label}</p>
+              <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
+            </Card>
+          </motion.div>
+        ))}
+      </motion.div>
 
       {/* Filters */}
-      <div className="card">
-        <div className="flex items-center gap-4">
-          <select
-            className="input-field max-w-xs"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option value="">All Statuses</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="tentative">Tentative</option>
-            <option value="completed">Completed</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-          <select
-            className="input-field max-w-xs"
-            value={programFilter}
-            onChange={(e) => setProgramFilter(e.target.value)}
-          >
-            <option value="">All Programs</option>
-            {programs.map((program) => (
-              <option key={program.id} value={program.id}>
-                {program.title}
-              </option>
-            ))}
-          </select>
-          <input
-            type="text"
-            placeholder="Search by company..."
-            className="input-field flex-1"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-      </div>
+      <SearchFilterBar
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder="Search by company..."
+        filters={[
+          {
+            label: 'Status',
+            value: statusFilter,
+            options: [
+              { label: 'All Statuses', value: '' },
+              { label: 'Confirmed', value: 'confirmed' },
+              { label: 'Tentative', value: 'tentative' },
+              { label: 'Completed', value: 'completed' },
+              { label: 'Cancelled', value: 'cancelled' },
+            ],
+            onChange: setStatusFilter,
+          },
+          {
+            label: 'Program',
+            value: programFilter,
+            options: [
+              { label: 'All Programs', value: '' },
+              ...programs.map((p) => ({ label: p.title, value: p.id })),
+            ],
+            onChange: setProgramFilter,
+          },
+        ]}
+      />
 
       {/* Sessions Table */}
-      <div className="card overflow-hidden p-0">
+      <Card className="overflow-hidden p-0">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            <thead>
+              <tr className="border-b border-neutral-100 bg-neutral-50/50 dark:border-neutral-800 dark:bg-neutral-800/50">
+                <th className="sticky left-0 z-10 bg-neutral-50/95 px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500 backdrop-blur-sm dark:bg-neutral-800/95 dark:text-neutral-400">
                   Session
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                   Date
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                   Program
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Team Size
+                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                  Size
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                   Debrief
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-neutral-100 dark:divide-neutral-800">
               {filteredSessions.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan={7} className="px-6 py-12 text-center text-neutral-500 dark:text-neutral-400">
                     {searchQuery || statusFilter || programFilter
                       ? 'No sessions match your filters.'
                       : 'No sessions found. Schedule your first session to get started.'}
@@ -237,96 +206,53 @@ export function SessionsList({ initialSessions, programs }: SessionsListProps) {
                 filteredSessions.map((session) => {
                   const venue = session.venue as any
                   return (
-                    <tr key={session.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4">
+                    <tr key={session.id} className="transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
+                      <td className="sticky left-0 z-10 bg-white/95 px-6 py-4 backdrop-blur-sm dark:bg-neutral-900/95">
                         <div>
-                          <div className="flex items-center gap-2">
-                            {getStatusIcon(session.status)}
-                            <div>
-                              <p className="font-semibold text-gray-900">
-                                {session.companyName || 'Unnamed Session'}
-                              </p>
-                              {session.teamName && (
-                                <p className="text-sm text-gray-600">{session.teamName}</p>
-                              )}
-                              {venue?.name && (
-                                <p className="text-xs text-gray-500 mt-1">
-                                  📍 {venue.name}
-                                  {venue.city && `, ${venue.city}`}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-700">
-                        <div>
-                          <p className="font-semibold">{formatDate(session.date, 'short')}</p>
-                          {session.endDate && (
-                            <p className="text-xs text-gray-500">
-                              to {formatDate(session.endDate, 'short')}
+                          <p className="font-medium text-neutral-900 dark:text-neutral-100">
+                            {session.companyName || 'Unnamed Session'}
+                          </p>
+                          {session.teamName && (
+                            <p className="text-sm text-neutral-500 dark:text-neutral-400">{session.teamName}</p>
+                          )}
+                          {venue?.name && (
+                            <p className="mt-0.5 text-xs text-neutral-400">
+                              {venue.name}{venue.city && `, ${venue.city}`}
                             </p>
                           )}
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-700">
+                      <td className="px-6 py-4 text-sm">
+                        <p className="font-medium text-neutral-700 dark:text-neutral-200">{formatDate(session.date, 'short')}</p>
+                        {session.endDate && (
+                          <p className="text-xs text-neutral-400">to {formatDate(session.endDate, 'short')}</p>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-neutral-600 dark:text-neutral-300">
                         {session.program?.title || 'Custom Program'}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-700">
-                        {session.teamSize || 'N/A'} participants
+                      <td className="px-6 py-4 text-sm text-neutral-600 dark:text-neutral-300">
+                        {session.teamSize || 'N/A'}
                       </td>
                       <td className="px-6 py-4">
-                        <span
-                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(
-                            session.status
-                          )}`}
-                        >
-                          {session.status}
-                        </span>
+                        <StatusBadge status={session.status} />
                       </td>
                       <td className="px-6 py-4">
                         {session.debriefCompleted ? (
-                          <span className="inline-flex items-center gap-1 text-sm text-emerald-600">
-                            <CheckCircle className="w-4 h-4" />
-                            Complete
+                          <span className="inline-flex items-center gap-1 text-sm text-success-600">
+                            <CheckCircle className="h-4 w-4" />
+                            Done
                           </span>
                         ) : (
-                          <span className="text-sm text-gray-400">-</span>
+                          <span className="text-sm text-neutral-400">&mdash;</span>
                         )}
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <Link
-                            href={`/admin/sessions/${session.id}`}
-                            className="p-2 text-gray-600 hover:text-brand-primary hover:bg-blue-50 rounded-lg transition-colors"
-                            title="View"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </Link>
-                          <Link
-                            href={`/admin/sessions/${session.id}`}
-                            className="p-2 text-gray-600 hover:text-brand-primary hover:bg-blue-50 rounded-lg transition-colors"
-                            title="Edit"
-                          >
-                            <Edit className="w-4 h-4" />
-                          </Link>
-                          {session.status === 'completed' && !session.debriefCompleted && (
-                            <Link
-                              href={`/admin/sessions/${session.id}/debrief`}
-                              className="p-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
-                              title="Generate Debrief"
-                            >
-                              <FileText className="w-4 h-4" />
-                            </Link>
-                          )}
-                          <button
-                            onClick={() => setDeleteDialog({ isOpen: true, session })}
-                            className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
+                        <ActionButtons
+                          viewHref={`/admin/sessions/${session.id}`}
+                          editHref={`/admin/sessions/${session.id}`}
+                          onDelete={() => setDeleteDialog({ isOpen: true, session })}
+                        />
                       </td>
                     </tr>
                   )
@@ -335,45 +261,37 @@ export function SessionsList({ initialSessions, programs }: SessionsListProps) {
             </tbody>
           </table>
         </div>
-      </div>
+      </Card>
 
-      {/* Quick View - Upcoming Sessions */}
+      {/* Upcoming Preview */}
       {upcomingSessions.length > 0 && (
-        <div className="card">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
+        <Card>
+          <h2 className="mb-4 text-lg font-semibold text-neutral-900 dark:text-neutral-100">
             Next 7 Days ({upcomingSessions.slice(0, 7).length} sessions)
           </h2>
-          <div className="space-y-3">
-            {upcomingSessions.slice(0, 7).map((session) => {
-              const venue = session.venue as any
-              return (
-                <div
-                  key={session.id}
-                  className="flex items-center justify-between p-4 bg-blue-50 rounded-lg"
-                >
+          <motion.div className="space-y-2" variants={staggerContainer} initial="hidden" animate="visible">
+            {upcomingSessions.slice(0, 7).map((session) => (
+              <motion.div key={session.id} variants={staggerItem}>
+                <div className="flex items-center justify-between rounded-lg bg-brand-50/50 p-4 dark:bg-brand-950/20">
                   <div className="flex items-center gap-3">
-                    <Calendar className="w-5 h-5 text-brand-primary" />
+                    <Calendar className="h-5 w-5 text-brand-600 dark:text-brand-400" />
                     <div>
-                      <p className="font-semibold text-gray-900">{session.companyName}</p>
-                      <p className="text-sm text-gray-600">
-                        {formatDate(session.date, 'long')} • {session.teamSize} participants
+                      <p className="font-medium text-neutral-900 dark:text-neutral-100">{session.companyName}</p>
+                      <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                        {formatDate(session.date, 'long')} &bull; {session.teamSize} participants
                       </p>
                     </div>
                   </div>
-                  <Link
-                    href={`/admin/sessions/${session.id}`}
-                    className="btn-outline py-2 px-4 text-sm"
-                  >
-                    View Details
+                  <Link href={`/admin/sessions/${session.id}`}>
+                    <Button variant="outline" size="sm">View Details</Button>
                   </Link>
                 </div>
-              )
-            })}
-          </div>
-        </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </Card>
       )}
 
-      {/* Delete Confirmation Dialog */}
       <ConfirmDialog
         isOpen={deleteDialog.isOpen}
         onClose={() => setDeleteDialog({ isOpen: false, session: null })}

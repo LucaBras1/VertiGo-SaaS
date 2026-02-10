@@ -193,7 +193,7 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500"></div>
       </div>
     )
   }
@@ -212,10 +212,10 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
               Faktura {invoice.invoiceNumber}
             </h1>
-            <p className="text-gray-600">
+            <p className="text-neutral-600 dark:text-neutral-400">
               Vystaveno {new Date(invoice.issueDate).toLocaleDateString('cs-CZ')}
             </p>
           </div>
@@ -225,7 +225,7 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
             <Button
               variant="outline"
               onClick={() => setShowDeleteDialog(true)}
-              className="text-red-600 hover:bg-red-50"
+              className="text-error-600 dark:text-error-400 hover:bg-error-50 dark:hover:bg-error-950/20"
             >
               <Trash2 className="w-4 h-4 mr-2" />
               Smazat
@@ -261,7 +261,7 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                   Stav
                 </label>
                 <select
@@ -278,7 +278,7 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                   Splatnost
                 </label>
                 <input
@@ -290,7 +290,7 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                   Uhrazená částka (haléře)
                 </label>
                 <input
@@ -310,24 +310,24 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-gray-200">
-                    <th className="text-left py-2 text-sm font-semibold text-gray-700">
+                  <tr className="border-b border-neutral-200 dark:border-neutral-700">
+                    <th className="text-left py-2 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                       Popis
                     </th>
-                    <th className="text-center py-2 text-sm font-semibold text-gray-700">
+                    <th className="text-center py-2 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                       Množství
                     </th>
-                    <th className="text-right py-2 text-sm font-semibold text-gray-700">
+                    <th className="text-right py-2 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                       Cena/ks
                     </th>
-                    <th className="text-right py-2 text-sm font-semibold text-gray-700">
+                    <th className="text-right py-2 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                       Celkem
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {invoice.items.map((item, index) => (
-                    <tr key={index} className="border-b border-gray-100">
+                    <tr key={index} className="border-b border-neutral-100 dark:border-neutral-800">
                       <td className="py-3">{item.description}</td>
                       <td className="py-3 text-center">{item.quantity}</td>
                       <td className="py-3 text-right">{formatCurrency(item.unitPrice)}</td>
@@ -338,8 +338,8 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
                   ))}
                 </tbody>
                 <tfoot>
-                  <tr className="border-t border-gray-200">
-                    <td colSpan={3} className="py-2 text-right text-gray-600">
+                  <tr className="border-t border-neutral-200 dark:border-neutral-700">
+                    <td colSpan={3} className="py-2 text-right text-neutral-600 dark:text-neutral-400">
                       Mezisoučet
                     </td>
                     <td className="py-2 text-right font-semibold">
@@ -347,18 +347,18 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
                     </td>
                   </tr>
                   <tr>
-                    <td colSpan={3} className="py-2 text-right text-gray-600">
+                    <td colSpan={3} className="py-2 text-right text-neutral-600 dark:text-neutral-400">
                       DPH ({invoice.vatRate}%)
                     </td>
                     <td className="py-2 text-right font-semibold">
                       {formatCurrency(invoice.vatAmount)}
                     </td>
                   </tr>
-                  <tr className="border-t-2 border-gray-200">
+                  <tr className="border-t-2 border-neutral-200 dark:border-neutral-700">
                     <td colSpan={3} className="py-3 text-right font-bold text-lg">
                       Celkem k úhradě
                     </td>
-                    <td className="py-3 text-right font-bold text-lg text-brand-primary">
+                    <td className="py-3 text-right font-bold text-lg text-brand-600 dark:text-brand-400">
                       {formatCurrency(invoice.totalAmount)}
                     </td>
                   </tr>
@@ -387,12 +387,12 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
             <h2 className="text-lg font-bold mb-4">Zákazník</h2>
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <Building2 className="w-4 h-4 text-gray-400" />
+                <Building2 className="w-4 h-4 text-neutral-400 dark:text-neutral-500" />
                 <span className="font-semibold">
                   {invoice.customer.organization || `${invoice.customer.firstName} ${invoice.customer.lastName}`}
                 </span>
               </div>
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-neutral-600 dark:text-neutral-400">
                 {invoice.customer.email}
               </div>
               <Link href={`/admin/customers/${invoice.customer.id}`}>
@@ -410,7 +410,7 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
               <div className="space-y-2">
                 <div className="font-semibold">{invoice.order.orderNumber}</div>
                 {invoice.order.sessionName && (
-                  <div className="text-sm text-gray-600">{invoice.order.sessionName}</div>
+                  <div className="text-sm text-neutral-600 dark:text-neutral-400">{invoice.order.sessionName}</div>
                 )}
                 <Link href={`/admin/orders/${invoice.order.id}`}>
                   <Button variant="outline" size="sm" className="w-full mt-2">
@@ -426,18 +426,18 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
             <h2 className="text-lg font-bold mb-4">Platba</h2>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-gray-600">K úhradě:</span>
+                <span className="text-neutral-600 dark:text-neutral-400">K úhradě:</span>
                 <span className="font-semibold">{formatCurrency(invoice.totalAmount)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Uhrazeno:</span>
+                <span className="text-neutral-600 dark:text-neutral-400">Uhrazeno:</span>
                 <span className="font-semibold text-emerald-600">
                   {formatCurrency(invoice.paidAmount)}
                 </span>
               </div>
               <div className="flex justify-between border-t pt-2">
-                <span className="text-gray-600">Zbývá:</span>
-                <span className={`font-bold ${invoice.totalAmount - invoice.paidAmount > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+                <span className="text-neutral-600 dark:text-neutral-400">Zbývá:</span>
+                <span className={`font-bold ${invoice.totalAmount - invoice.paidAmount > 0 ? 'text-error-600 dark:text-error-400' : 'text-emerald-600'}`}>
                   {formatCurrency(invoice.totalAmount - invoice.paidAmount)}
                 </span>
               </div>

@@ -153,8 +153,8 @@ export default function NewInvoicePage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Nová faktura</h1>
-          <p className="text-gray-600">Vytvořte novou fakturu</p>
+          <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">Nová faktura</h1>
+          <p className="text-neutral-600 dark:text-neutral-400">Vytvořte novou fakturu</p>
         </div>
       </div>
 
@@ -164,7 +164,7 @@ export default function NewInvoicePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                 Zákazník *
               </label>
               <select
@@ -183,7 +183,7 @@ export default function NewInvoicePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                 Splatnost *
               </label>
               <input
@@ -196,7 +196,7 @@ export default function NewInvoicePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                 Sazba DPH (%)
               </label>
               <select
@@ -212,7 +212,7 @@ export default function NewInvoicePage() {
           </div>
 
           <div className="mt-4">
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
               Text před položkami
             </label>
             <textarea
@@ -236,15 +236,15 @@ export default function NewInvoicePage() {
           </div>
 
           {formData.items.length === 0 ? (
-            <p className="text-gray-500 text-center py-8">
+            <p className="text-neutral-500 dark:text-neutral-400 text-center py-8">
               Zatím nemáte žádné položky. Klikněte na &quot;Přidat položku&quot;.
             </p>
           ) : (
             <div className="space-y-4">
               {formData.items.map((item, index) => (
-                <div key={index} className="flex gap-4 items-end p-4 bg-gray-50 rounded-lg">
+                <div key={index} className="flex gap-4 items-end p-4 bg-neutral-50 dark:bg-neutral-800/50 rounded-lg">
                   <div className="flex-1">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                       Popis
                     </label>
                     <input
@@ -256,7 +256,7 @@ export default function NewInvoicePage() {
                     />
                   </div>
                   <div className="w-24">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                       Množství
                     </label>
                     <input
@@ -268,7 +268,7 @@ export default function NewInvoicePage() {
                     />
                   </div>
                   <div className="w-32">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                       Cena/ks (Kč)
                     </label>
                     <input
@@ -279,13 +279,13 @@ export default function NewInvoicePage() {
                     />
                   </div>
                   <div className="w-32">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                       Celkem
                     </label>
                     <input
                       type="text"
                       value={`${item.totalPrice.toLocaleString('cs-CZ')} Kč`}
-                      className="input-field bg-gray-100"
+                      className="input-field bg-neutral-100 dark:bg-neutral-800"
                       disabled
                     />
                   </div>
@@ -294,7 +294,7 @@ export default function NewInvoicePage() {
                     variant="outline"
                     size="sm"
                     onClick={() => removeItem(index)}
-                    className="text-red-600 hover:bg-red-50"
+                    className="text-error-600 dark:text-error-400 hover:bg-error-50 dark:hover:bg-error-950/20"
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
@@ -302,20 +302,20 @@ export default function NewInvoicePage() {
               ))}
 
               {/* Totals */}
-              <div className="border-t border-gray-200 pt-4 mt-4">
+              <div className="border-t border-neutral-200 dark:border-neutral-700 pt-4 mt-4">
                 <div className="flex justify-end">
                   <div className="w-64 space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Mezisoučet:</span>
+                      <span className="text-neutral-600 dark:text-neutral-400">Mezisoučet:</span>
                       <span className="font-semibold">{subtotal.toLocaleString('cs-CZ')} Kč</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">DPH ({formData.vatRate}%):</span>
+                      <span className="text-neutral-600 dark:text-neutral-400">DPH ({formData.vatRate}%):</span>
                       <span className="font-semibold">{vatAmount.toLocaleString('cs-CZ')} Kč</span>
                     </div>
                     <div className="flex justify-between text-lg border-t pt-2">
                       <span className="font-bold">Celkem:</span>
-                      <span className="font-bold text-brand-primary">
+                      <span className="font-bold text-brand-600 dark:text-brand-400">
                         {totalAmount.toLocaleString('cs-CZ')} Kč
                       </span>
                     </div>
@@ -332,7 +332,7 @@ export default function NewInvoicePage() {
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                 Text za položkami
               </label>
               <textarea
@@ -345,7 +345,7 @@ export default function NewInvoicePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                 Interní poznámky
               </label>
               <textarea

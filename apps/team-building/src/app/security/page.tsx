@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { Users, Shield, Lock, Server, Eye, AlertTriangle, CheckCircle, ArrowLeft } from 'lucide-react'
 
 export const metadata = {
@@ -10,16 +10,16 @@ export default function SecurityPage() {
   return (
     <div className="bg-gradient-to-br from-blue-50 via-white to-emerald-50 min-h-screen">
       {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+      <nav className="bg-white/80 dark:bg-neutral-950/80 backdrop-blur-sm border-b border-neutral-200 dark:border-neutral-700 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link href="/" className="flex items-center gap-2">
-              <Users className="w-8 h-8 text-brand-primary" />
+              <Users className="w-8 h-8 text-brand-600 dark:text-brand-400" />
               <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
                 TeamForge
               </span>
             </Link>
-            <Link href="/" className="flex items-center gap-2 text-gray-700 hover:text-brand-primary transition-colors">
+            <Link href="/" className="flex items-center gap-2 text-neutral-700 dark:text-neutral-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
               <ArrowLeft className="w-4 h-4" />
               Zpět na hlavní stránku
             </Link>
@@ -31,12 +31,12 @@ export default function SecurityPage() {
       <section className="pt-20 pb-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Shield className="w-8 h-8 text-brand-primary" />
+            <Shield className="w-8 h-8 text-brand-600 dark:text-brand-400" />
           </div>
           <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
             Bezpečnost vašich dat
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto">
             Bezpečnost je pro nás priorita číslo jedna. Používáme nejmodernější technologie
             a osvědčené postupy k ochraně vašich dat a zajištění spolehlivosti platformy.
           </p>
@@ -49,10 +49,10 @@ export default function SecurityPage() {
           <div className="grid md:grid-cols-3 gap-8 mb-16">
             <div className="card text-center">
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Lock className="w-6 h-6 text-brand-primary" />
+                <Lock className="w-6 h-6 text-brand-600 dark:text-brand-400" />
               </div>
               <h3 className="text-xl font-bold mb-2">Šifrování na všech úrovních</h3>
-              <p className="text-gray-600">
+              <p className="text-neutral-600 dark:text-neutral-400">
                 Veškerá komunikace i uložená data jsou šifrována pomocí standardů AES-256 a TLS 1.3
               </p>
             </div>
@@ -62,7 +62,7 @@ export default function SecurityPage() {
                 <Server className="w-6 h-6 text-brand-secondary" />
               </div>
               <h3 className="text-xl font-bold mb-2">EU datová centra</h3>
-              <p className="text-gray-600">
+              <p className="text-neutral-600 dark:text-neutral-400">
                 Vaše data jsou uložena výhradně v evropských datových centrech (Frankfurt, Amsterdam)
               </p>
             </div>
@@ -72,7 +72,7 @@ export default function SecurityPage() {
                 <CheckCircle className="w-6 h-6 text-purple-600" />
               </div>
               <h3 className="text-xl font-bold mb-2">GDPR compliant</h3>
-              <p className="text-gray-600">
+              <p className="text-neutral-600 dark:text-neutral-400">
                 Plně v souladu s nařízením GDPR a českými právními předpisy o ochraně osobních údajů
               </p>
             </div>
@@ -81,11 +81,11 @@ export default function SecurityPage() {
       </section>
 
       {/* Detailed Security Measures */}
-      <section className="py-16 px-4 bg-white/50">
+      <section className="py-16 px-4 bg-white/50 dark:bg-neutral-950/50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">Bezpečnostní opatření</h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-neutral-600 dark:text-neutral-400">
               Komplexní přístup k ochraně vašich dat
             </p>
           </div>
@@ -95,11 +95,11 @@ export default function SecurityPage() {
             <div className="card">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Lock className="w-6 h-6 text-brand-primary" />
+                  <Lock className="w-6 h-6 text-brand-600 dark:text-brand-400" />
                 </div>
                 <div className="flex-1">
                   <h3 className="text-2xl font-bold mb-3">Šifrování dat</h3>
-                  <div className="prose prose-lg text-gray-600">
+                  <div className="prose prose-lg text-neutral-600 dark:text-neutral-400">
                     <p>
                       <strong>Šifrování při přenosu (Data in Transit):</strong>
                     </p>
@@ -131,7 +131,7 @@ export default function SecurityPage() {
                 </div>
                 <div className="flex-1">
                   <h3 className="text-2xl font-bold mb-3">Autentizace a řízení přístupu</h3>
-                  <div className="prose prose-lg text-gray-600">
+                  <div className="prose prose-lg text-neutral-600 dark:text-neutral-400">
                     <p>
                       <strong>Silná autentizace:</strong>
                     </p>
@@ -164,7 +164,7 @@ export default function SecurityPage() {
                 </div>
                 <div className="flex-1">
                   <h3 className="text-2xl font-bold mb-3">Infrastruktura a hosting</h3>
-                  <div className="prose prose-lg text-gray-600">
+                  <div className="prose prose-lg text-neutral-600 dark:text-neutral-400">
                     <p>
                       <strong>Cloud poskytovatelé:</strong>
                     </p>
@@ -202,7 +202,7 @@ export default function SecurityPage() {
                 </div>
                 <div className="flex-1">
                   <h3 className="text-2xl font-bold mb-3">Zálohy a obnova dat</h3>
-                  <div className="prose prose-lg text-gray-600">
+                  <div className="prose prose-lg text-neutral-600 dark:text-neutral-400">
                     <p>
                       <strong>Strategie zálohování:</strong>
                     </p>
@@ -235,7 +235,7 @@ export default function SecurityPage() {
                 </div>
                 <div className="flex-1">
                   <h3 className="text-2xl font-bold mb-3">Monitorování a incident response</h3>
-                  <div className="prose prose-lg text-gray-600">
+                  <div className="prose prose-lg text-neutral-600 dark:text-neutral-400">
                     <p>
                       <strong>Bezpečnostní monitoring:</strong>
                     </p>
@@ -267,7 +267,7 @@ export default function SecurityPage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">Compliance a certifikace</h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-neutral-600 dark:text-neutral-400">
               Splňujeme přísné bezpečnostní standardy a právní požadavky
             </p>
           </div>
@@ -275,7 +275,7 @@ export default function SecurityPage() {
           <div className="grid md:grid-cols-2 gap-8">
             <div className="card">
               <h3 className="text-2xl font-bold mb-4">GDPR (General Data Protection Regulation)</h3>
-              <div className="prose prose-lg text-gray-600">
+              <div className="prose prose-lg text-neutral-600 dark:text-neutral-400">
                 <ul>
                   <li>Data Processing Addendum (DPA) dostupný na požádání</li>
                   <li>Pověřenec pro ochranu osobních údajů (DPO) jmenován</li>
@@ -288,7 +288,7 @@ export default function SecurityPage() {
 
             <div className="card">
               <h3 className="text-2xl font-bold mb-4">ISO 27001 (v procesu certifikace)</h3>
-              <div className="prose prose-lg text-gray-600">
+              <div className="prose prose-lg text-neutral-600 dark:text-neutral-400">
                 <ul>
                   <li>Information Security Management System (ISMS)</li>
                   <li>Pravidelné bezpečnostní audity (kvartálně)</li>
@@ -301,7 +301,7 @@ export default function SecurityPage() {
 
             <div className="card">
               <h3 className="text-2xl font-bold mb-4">SOC 2 Type II (plánováno 2026)</h3>
-              <div className="prose prose-lg text-gray-600">
+              <div className="prose prose-lg text-neutral-600 dark:text-neutral-400">
                 <ul>
                   <li>Trust Service Criteria: Security, Availability, Confidentiality</li>
                   <li>Nezávislý audit bezpečnostních kontrol</li>
@@ -313,7 +313,7 @@ export default function SecurityPage() {
 
             <div className="card">
               <h3 className="text-2xl font-bold mb-4">Další standardy</h3>
-              <div className="prose prose-lg text-gray-600">
+              <div className="prose prose-lg text-neutral-600 dark:text-neutral-400">
                 <ul>
                   <li>
                     <strong>OWASP Top 10:</strong> Pravidelné testy zranitelností
@@ -332,11 +332,11 @@ export default function SecurityPage() {
       </section>
 
       {/* Security Best Practices for Users */}
-      <section className="py-16 px-4 bg-white/50">
+      <section className="py-16 px-4 bg-white/50 dark:bg-neutral-950/50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">Doporučení pro uživatele</h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-neutral-600 dark:text-neutral-400">
               Jak můžete vy sami přispět k bezpečnosti vašeho účtu
             </p>
           </div>
@@ -408,7 +408,7 @@ export default function SecurityPage() {
               </div>
               <a
                 href="mailto:security@teamforge.cz"
-                className="inline-block bg-white text-brand-primary hover:bg-gray-100 font-semibold py-3 px-8 rounded-lg transition-colors shadow-md"
+                className="inline-block bg-white text-brand-600 dark:text-brand-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 font-semibold py-3 px-8 rounded-lg transition-colors shadow-md"
               >
                 Nahlásit bezpečnostní problém
               </a>
@@ -418,17 +418,17 @@ export default function SecurityPage() {
       </section>
 
       {/* Security Updates */}
-      <section className="py-16 px-4 bg-white/50">
+      <section className="py-16 px-4 bg-white/50 dark:bg-neutral-950/50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold mb-4">Zůstaňte informováni</h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-neutral-600 dark:text-neutral-400">
               Přihlaste se k odběru bezpečnostních oznámení a aktualizací
             </p>
           </div>
 
           <div className="card text-center max-w-2xl mx-auto">
-            <p className="text-gray-600 mb-6">
+            <p className="text-neutral-600 dark:text-neutral-400 mb-6">
               Bezpečnostní bulletin zasíláme pouze v případě důležitých aktualizací
               nebo incidentů, které by mohly ovlivnit vaše data. Žádný spam, jen
               relevantní informace.
@@ -466,21 +466,21 @@ export default function SecurityPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 px-4">
+      <footer className="bg-neutral-900 text-white py-12 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <Users className="w-6 h-6 text-brand-primary" />
+                <Users className="w-6 h-6 text-brand-600 dark:text-brand-400" />
                 <span className="text-xl font-bold">TeamForge</span>
               </div>
-              <p className="text-gray-400 text-sm">
+              <p className="text-neutral-400 dark:text-neutral-500 text-sm">
                 AI-powered team building management pro firemní poskytovatele
               </p>
             </div>
             <div>
               <h4 className="font-bold mb-4">Produkt</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
+              <ul className="space-y-2 text-sm text-neutral-400 dark:text-neutral-500">
                 <li><Link href="/#features" className="hover:text-white">Funkce</Link></li>
                 <li><Link href="/#ai-powered" className="hover:text-white">AI nástroje</Link></li>
                 <li><Link href="/#pricing" className="hover:text-white">Ceník</Link></li>
@@ -488,21 +488,21 @@ export default function SecurityPage() {
             </div>
             <div>
               <h4 className="font-bold mb-4">Společnost</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
+              <ul className="space-y-2 text-sm text-neutral-400 dark:text-neutral-500">
                 <li><Link href="/about" className="hover:text-white">O nás</Link></li>
                 <li><Link href="/contact" className="hover:text-white">Kontakt</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-bold mb-4">Právní informace</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
+              <ul className="space-y-2 text-sm text-neutral-400 dark:text-neutral-500">
                 <li><Link href="/privacy" className="hover:text-white">Ochrana osobních údajů</Link></li>
                 <li><Link href="/terms" className="hover:text-white">Obchodní podmínky</Link></li>
                 <li><Link href="/security" className="hover:text-white">Bezpečnost</Link></li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
+          <div className="border-t border-neutral-800 mt-8 pt-8 text-center text-sm text-neutral-400 dark:text-neutral-500">
             © 2025 TeamForge. Součást platformy VertiGo SaaS.
           </div>
         </div>

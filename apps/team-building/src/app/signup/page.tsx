@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Signup Page
  * Registration form for new TeamForge users
  */
@@ -108,16 +108,16 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-emerald-50">
       {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-200">
+      <nav className="bg-white/80 dark:bg-neutral-950/80 backdrop-blur-sm border-b border-neutral-200 dark:border-neutral-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link href="/" className="flex items-center gap-2">
-              <Users className="w-8 h-8 text-brand-primary" />
+              <Users className="w-8 h-8 text-brand-600 dark:text-brand-400" />
               <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
                 TeamForge
               </span>
             </Link>
-            <Link href="/login" className="text-gray-700 hover:text-brand-primary transition-colors">
+            <Link href="/login" className="text-neutral-700 dark:text-neutral-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
               Již máte účet?
             </Link>
           </div>
@@ -134,14 +134,14 @@ export default function SignupPage() {
             <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent mb-2">
               Vytvořit účet
             </h1>
-            <p className="text-gray-600">Začněte s 14denní zkušební verzí zdarma</p>
+            <p className="text-neutral-600 dark:text-neutral-400">Začněte s 14denní zkušební verzí zdarma</p>
           </div>
 
           <div className="card">
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Name */}
               <div>
-                <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="name" className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                   Celé jméno
                 </label>
                 <input
@@ -165,7 +165,7 @@ export default function SignupPage() {
 
               {/* Email */}
               <div>
-                <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="email" className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                   Pracovní email
                 </label>
                 <input
@@ -189,7 +189,7 @@ export default function SignupPage() {
 
               {/* Company */}
               <div>
-                <label htmlFor="company" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="company" className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                   Název společnosti
                 </label>
                 <input
@@ -213,7 +213,7 @@ export default function SignupPage() {
 
               {/* Password */}
               <div>
-                <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="password" className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                   Heslo
                 </label>
                 <input
@@ -237,7 +237,7 @@ export default function SignupPage() {
 
               {/* Confirm Password */}
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="confirmPassword" className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
                   Potvrdit heslo
                 </label>
                 <input
@@ -278,10 +278,10 @@ export default function SignupPage() {
               </button>
             </form>
 
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <p className="text-center text-sm text-gray-600">
+            <div className="mt-6 pt-6 border-t border-neutral-200 dark:border-neutral-700">
+              <p className="text-center text-sm text-neutral-600 dark:text-neutral-400">
                 Již máte účet?{' '}
-                <Link href="/login" className="font-semibold text-brand-primary hover:text-blue-700">
+                <Link href="/login" className="font-semibold text-brand-600 dark:text-brand-400 hover:text-blue-700">
                   Přihlásit se
                 </Link>
               </p>
@@ -290,15 +290,15 @@ export default function SignupPage() {
 
           {/* Benefits */}
           <div className="mt-8 space-y-3">
-            <div className="flex items-center gap-3 text-sm text-gray-700">
+            <div className="flex items-center gap-3 text-sm text-neutral-700 dark:text-neutral-300">
               <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0" />
               <span>14 dní zdarma, bez platební karty</span>
             </div>
-            <div className="flex items-center gap-3 text-sm text-gray-700">
+            <div className="flex items-center gap-3 text-sm text-neutral-700 dark:text-neutral-300">
               <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0" />
               <span>Plný přístup ke všem AI funkcím</span>
             </div>
-            <div className="flex items-center gap-3 text-sm text-gray-700">
+            <div className="flex items-center gap-3 text-sm text-neutral-700 dark:text-neutral-300">
               <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0" />
               <span>Podpora 24/7</span>
             </div>

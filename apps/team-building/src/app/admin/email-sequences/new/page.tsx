@@ -62,51 +62,51 @@ export default function NewEmailSequencePage() {
     <div className="max-w-2xl mx-auto">
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
-        <Link href="/admin/email-sequences" className="p-2 hover:bg-gray-100 rounded-lg">
-          <ArrowLeft className="h-5 w-5 text-gray-500" />
+        <Link href="/admin/email-sequences" className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg">
+          <ArrowLeft className="h-5 w-5 text-neutral-500 dark:text-neutral-400" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Nová email sekvence</h1>
-          <p className="text-gray-500">Vytvořte automatickou follow-up kampaň</p>
+          <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">Nová email sekvence</h1>
+          <p className="text-neutral-500 dark:text-neutral-400">Vytvořte automatickou follow-up kampaň</p>
         </div>
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-200 p-6 space-y-6">
+      <form onSubmit={handleSubmit} className="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 space-y-6">
         {error && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">{error}</div>
+          <div className="p-4 bg-error-50 dark:bg-error-950/20 border border-error-200 dark:border-error-800 rounded-lg text-error-700 dark:text-error-300 text-sm">{error}</div>
         )}
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Název sekvence <span className="text-red-500">*</span>
+          <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+            Název sekvence <span className="text-error-500 dark:text-error-400">*</span>
           </label>
           <input
             type="text"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             placeholder="Follow-up po session"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Popis</label>
+          <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Popis</label>
           <textarea
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             rows={3}
             placeholder="Automatický follow-up pro zákazníky po dokončení team buildingu..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Trigger</label>
+          <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Trigger</label>
           <select
             value={formData.triggerType}
             onChange={(e) => setFormData({ ...formData, triggerType: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
           >
             {Object.entries(triggerLabels).map(([value, label]) => (
               <option key={value} value={value}>
@@ -114,12 +114,12 @@ export default function NewEmailSequencePage() {
               </option>
             ))}
           </select>
-          <p className="text-xs text-gray-500 mt-1">Kdy se zákazníci automaticky enrollují do této sekvence.</p>
+          <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Kdy se zákazníci automaticky enrollují do této sekvence.</p>
         </div>
 
         {formData.triggerType === 'no_booking_days' && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Počet neaktivních dní</label>
+            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Počet neaktivních dní</label>
             <input
               type="number"
               min="1"
@@ -130,15 +130,15 @@ export default function NewEmailSequencePage() {
                   triggerConfig: { ...formData.triggerConfig, inactiveDays: parseInt(e.target.value) || 90 },
                 })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
             />
-            <p className="text-xs text-gray-500 mt-1">Zákazníci bez objednávky po tomto počtu dní budou enrollováni.</p>
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Zákazníci bez objednávky po tomto počtu dní budou enrollováni.</p>
           </div>
         )}
 
         {formData.triggerType === 'days_after_session' && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Počet dní po session</label>
+            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Počet dní po session</label>
             <input
               type="number"
               min="1"
@@ -149,7 +149,7 @@ export default function NewEmailSequencePage() {
                   triggerConfig: { ...formData.triggerConfig, daysAfter: parseInt(e.target.value) || 3 },
                 })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
             />
           </div>
         )}
@@ -160,21 +160,21 @@ export default function NewEmailSequencePage() {
             id="isActive"
             checked={formData.isActive}
             onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            className="w-4 h-4 text-brand-600 dark:text-brand-400 border-neutral-300 dark:border-neutral-600 rounded focus:ring-brand-500"
           />
-          <label htmlFor="isActive" className="text-sm text-gray-700">
+          <label htmlFor="isActive" className="text-sm text-neutral-700 dark:text-neutral-300">
             Aktivovat sekvenci ihned po vytvoření
           </label>
         </div>
 
         <div className="flex justify-end gap-3 pt-4 border-t">
-          <Link href="/admin/email-sequences" className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
+          <Link href="/admin/email-sequences" className="px-4 py-2 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg">
             Zrušit
           </Link>
           <button
             type="submit"
             disabled={saving}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 disabled:opacity-50"
           >
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             Vytvořit sekvenci

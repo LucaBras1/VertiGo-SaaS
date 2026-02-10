@@ -1,6 +1,9 @@
 'use client'
 
 import { LucideIcon, TrendingUp, TrendingDown } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { staggerItem } from '@vertigo/ui'
+import { Card } from '@/components/ui/Card'
 
 interface MetricCardProps {
   title: string
@@ -14,34 +17,28 @@ interface MetricCardProps {
 
 const colorClasses = {
   blue: {
-    bg: 'bg-blue-50',
-    icon: 'text-blue-600',
-    ring: 'ring-blue-100',
+    bg: 'bg-blue-50 dark:bg-blue-950/40',
+    icon: 'text-blue-600 dark:text-blue-400',
   },
   green: {
-    bg: 'bg-green-50',
-    icon: 'text-green-600',
-    ring: 'ring-green-100',
+    bg: 'bg-green-50 dark:bg-green-950/40',
+    icon: 'text-green-600 dark:text-green-400',
   },
   purple: {
-    bg: 'bg-purple-50',
-    icon: 'text-purple-600',
-    ring: 'ring-purple-100',
+    bg: 'bg-purple-50 dark:bg-purple-950/40',
+    icon: 'text-purple-600 dark:text-purple-400',
   },
   orange: {
-    bg: 'bg-orange-50',
-    icon: 'text-orange-600',
-    ring: 'ring-orange-100',
+    bg: 'bg-orange-50 dark:bg-orange-950/40',
+    icon: 'text-orange-600 dark:text-orange-400',
   },
   red: {
-    bg: 'bg-red-50',
-    icon: 'text-red-600',
-    ring: 'ring-red-100',
+    bg: 'bg-red-50 dark:bg-red-950/40',
+    icon: 'text-red-600 dark:text-red-400',
   },
   emerald: {
-    bg: 'bg-emerald-50',
-    icon: 'text-emerald-600',
-    ring: 'ring-emerald-100',
+    bg: 'bg-emerald-50 dark:bg-emerald-950/40',
+    icon: 'text-emerald-600 dark:text-emerald-400',
   },
 }
 
@@ -62,25 +59,29 @@ export function MetricCard({ title, value, subtitle, change, icon: Icon, color, 
   }
 
   return (
-    <div className={`bg-white rounded-xl border border-gray-200 p-6 ring-1 ${colors.ring}`}>
-      <div className="flex items-center justify-between">
-        <div className={`p-3 rounded-lg ${colors.bg}`}>
-          <Icon className={`h-6 w-6 ${colors.icon}`} />
-        </div>
-        {change !== undefined && (
-          <div
-            className={`flex items-center gap-1 text-sm font-medium ${change >= 0 ? 'text-green-600' : 'text-red-600'}`}
-          >
-            {change >= 0 ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
-            {Math.abs(change).toFixed(1)}%
+    <motion.div variants={staggerItem}>
+      <Card hover={false} animated={false} className="p-6">
+        <div className="flex items-center justify-between">
+          <div className={`p-3 rounded-lg ${colors.bg}`}>
+            <Icon className={`h-6 w-6 ${colors.icon}`} />
           </div>
-        )}
-      </div>
-      <div className="mt-4">
-        <h3 className="text-sm font-medium text-gray-500">{title}</h3>
-        <p className="mt-1 text-2xl font-bold text-gray-900">{formatValue(value)}</p>
-        {subtitle && <p className="mt-1 text-sm text-gray-500">{subtitle}</p>}
-      </div>
-    </div>
+          {change !== undefined && (
+            <div
+              className={`flex items-center gap-1 text-sm font-medium ${
+                change >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+              }`}
+            >
+              {change >= 0 ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
+              {Math.abs(change).toFixed(1)}%
+            </div>
+          )}
+        </div>
+        <div className="mt-4">
+          <h3 className="text-sm font-medium text-neutral-500 dark:text-neutral-400">{title}</h3>
+          <p className="mt-1 text-2xl font-bold text-neutral-900 dark:text-neutral-50">{formatValue(value)}</p>
+          {subtitle && <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">{subtitle}</p>}
+        </div>
+      </Card>
+    </motion.div>
   )
 }

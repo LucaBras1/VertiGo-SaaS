@@ -7,19 +7,16 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import {
-  ShoppingCart,
-  Plus,
-  Search,
-  Filter,
-  Eye,
-  Trash2,
-  Calendar,
-  Building2,
-  Users,
-} from 'lucide-react'
+import { motion } from 'framer-motion'
+import { ShoppingCart, Plus, Calendar, Building2, Users } from 'lucide-react'
+import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
+import { ListPageHeader } from '@/components/admin/shared/ListPageHeader'
+import { SearchFilterBar } from '@/components/admin/shared/SearchFilterBar'
+import { ActionButtons } from '@/components/admin/shared/ActionButtons'
+import { StatusBadge } from '@/components/admin/shared/StatusBadge'
+import { staggerContainer, staggerItem } from '@vertigo/ui'
 import toast from 'react-hot-toast'
 
 interface Order {
@@ -36,25 +33,15 @@ interface Order {
     organization: string | null
   } | null
   items: any[]
-  _count: {
-    invoices: number
-  }
+  _count: { invoices: number }
 }
 
-const statusColors: Record<string, string> = {
-  new: 'bg-blue-100 text-blue-700',
-  confirmed: 'bg-emerald-100 text-emerald-700',
-  in_progress: 'bg-yellow-100 text-yellow-700',
-  completed: 'bg-green-100 text-green-700',
-  cancelled: 'bg-red-100 text-red-700',
-}
-
-const statusLabels: Record<string, string> = {
-  new: 'Nová',
-  confirmed: 'Potvrzená',
-  in_progress: 'Probíhá',
-  completed: 'Dokončená',
-  cancelled: 'Zrušená',
+const statusMap: Record<string, string> = {
+  new: 'pending',
+  confirmed: 'confirmed',
+  in_progress: 'active',
+  completed: 'completed',
+  cancelled: 'cancelled',
 }
 
 export default function OrdersPage() {
@@ -68,193 +55,128 @@ export default function OrdersPage() {
     try {
       const params = new URLSearchParams()
       if (statusFilter) params.append('status', statusFilter)
-
       const response = await fetch(`/api/orders?${params}`)
       const data = await response.json()
-
-      if (data.success) {
-        setOrders(data.data)
-      } else {
-        toast.error('Nepodařilo se načíst objednávky')
-      }
-    } catch (error) {
-      toast.error('Chyba při načítání objednávek')
-    } finally {
-      setIsLoading(false)
-    }
+      if (data.success) { setOrders(data.data) }
+      else { toast.error('Nepodařilo se načíst objednávky') }
+    } catch (error) { toast.error('Chyba při načítání objednávek') }
+    finally { setIsLoading(false) }
   }, [statusFilter])
 
-  useEffect(() => {
-    fetchOrders()
-  }, [fetchOrders])
+  useEffect(() => { fetchOrders() }, [fetchOrders])
 
   const handleDelete = async () => {
     if (!deleteId) return
-
     try {
-      const response = await fetch(`/api/orders/${deleteId}`, {
-        method: 'DELETE',
-      })
+      const response = await fetch(`/api/orders/${deleteId}`, { method: 'DELETE' })
       const data = await response.json()
-
-      if (data.success) {
-        toast.success('Objednávka byla smazána')
-        fetchOrders()
-      } else {
-        toast.error(data.error || 'Nepodařilo se smazat objednávku')
-      }
-    } catch (error) {
-      toast.error('Chyba při mazání objednávky')
-    } finally {
-      setDeleteId(null)
-    }
+      if (data.success) { toast.success('Objednávka byla smazána'); fetchOrders() }
+      else { toast.error(data.error || 'Nepodařilo se smazat objednávku') }
+    } catch (error) { toast.error('Chyba při mazání objednávky') }
+    finally { setDeleteId(null) }
   }
 
   const filteredOrders = orders.filter(order => {
     if (!searchTerm) return true
     const searchLower = searchTerm.toLowerCase()
-    return (
-      order.orderNumber.toLowerCase().includes(searchLower) ||
+    return order.orderNumber.toLowerCase().includes(searchLower) ||
       order.sessionName?.toLowerCase().includes(searchLower) ||
       order.customer?.firstName.toLowerCase().includes(searchLower) ||
       order.customer?.lastName.toLowerCase().includes(searchLower) ||
       order.customer?.organization?.toLowerCase().includes(searchLower)
-    )
   })
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
-      </div>
-    )
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500"></div>
+      </div>)
   }
-
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Objednávky</h1>
-          <p className="text-gray-600 mt-2">Správa objednávek a zakázek</p>
-        </div>
-        <Link href="/admin/orders/new">
-          <Button>
-            <Plus className="w-5 h-5 mr-2" />
-            Nová objednávka
-          </Button>
-        </Link>
-      </div>
+    <div className="space-y-6">
+      <ListPageHeader
+        title="Objednávky"
+        description="Správa objednávek a zakázek"
+        actionLabel="Nová objednávka"
+        actionHref="/admin/orders/new"
+        actionIcon={Plus}
+      />
 
-      {/* Filters */}
-      <div className="card mb-6">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Hledat objednávky..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="input-field pl-10"
-            />
-          </div>
-          <div className="w-full md:w-48">
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="input-field"
-            >
-              <option value="">Všechny stavy</option>
-              <option value="new">Nové</option>
-              <option value="confirmed">Potvrzené</option>
-              <option value="in_progress">Probíhající</option>
-              <option value="completed">Dokončené</option>
-              <option value="cancelled">Zrušené</option>
-            </select>
-          </div>
-        </div>
-      </div>
+      <SearchFilterBar
+        searchValue={searchTerm}
+        onSearchChange={setSearchTerm}
+        searchPlaceholder="Hledat objednávky..."
+        filters={[{
+          label: 'Status', value: statusFilter,
+          options: [
+            { label: 'Všechny stavy', value: '' },
+            { label: 'Nové', value: 'new' },
+            { label: 'Potvrzené', value: 'confirmed' },
+            { label: 'Probíhající', value: 'in_progress' },
+            { label: 'Dokončené', value: 'completed' },
+            { label: 'Zrušené', value: 'cancelled' },
+          ], onChange: setStatusFilter,
+        }]}
+      />
 
-      {/* Orders List */}
       {filteredOrders.length === 0 ? (
-        <div className="card text-center py-12">
-          <ShoppingCart className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Žádné objednávky
-          </h3>
-          <p className="text-gray-600 mb-6">
-            Zatím nemáte žádné objednávky. Vytvořte první!
-          </p>
-          <Link href="/admin/orders/new">
-            <Button>
-              <Plus className="w-5 h-5 mr-2" />
-              Vytvořit objednávku
-            </Button>
-          </Link>
-        </div>
+        <Card className="text-center p-12">
+          <ShoppingCart className="w-12 h-12 text-neutral-300 dark:text-neutral-600 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50 mb-2">Žádné objednávky</h3>
+          <p className="text-neutral-500 dark:text-neutral-400 mb-6">Zatím nemáte žádné objednávky.</p>
+          <Link href="/admin/orders/new"><Button><Plus className="w-5 h-5" />Vytvořit objednávku</Button></Link>
+        </Card>
       ) : (
-        <div className="space-y-4">
-          {filteredOrders.map((order) => (
-            <div key={order.id} className="card hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center">
-                    <ShoppingCart className="w-6 h-6 text-cyan-600" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-3">
-                      <h3 className="font-semibold text-gray-900">
-                        {order.orderNumber}
-                      </h3>
-                      <span className={`text-xs font-semibold px-2 py-1 rounded-full ${statusColors[order.status]}`}>
-                        {statusLabels[order.status]}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600">
-                      {order.sessionName || 'Bez názvu'}
-                    </p>
-                    <div className="flex items-center gap-4 mt-1 text-xs text-gray-500">
-                      {order.customer && (
-                        <span className="flex items-center gap-1">
-                          <Building2 className="w-3 h-3" />
-                          {order.customer.organization || `${order.customer.firstName} ${order.customer.lastName}`}
-                        </span>
-                      )}
-                      {order.teamSize && (
-                        <span className="flex items-center gap-1">
-                          <Users className="w-3 h-3" />
-                          {order.teamSize} účastníků
-                        </span>
-                      )}
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
-                        {new Date(order.createdAt).toLocaleDateString('cs-CZ')}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Link href={`/admin/orders/${order.id}`}>
-                    <Button variant="outline" size="sm">
-                      <Eye className="w-4 h-4 mr-1" />
-                      Detail
-                    </Button>
-                  </Link>
-                  {order._count.invoices === 0 && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setDeleteId(order.id)}
-                      className="text-red-600 hover:bg-red-50"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        <Card className="overflow-hidden p-0">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-neutral-100 bg-neutral-50/50 dark:border-neutral-800 dark:bg-neutral-800/50">
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Objednávka</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Zákazník</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Stav</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Datum</th>
+                  <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Akce</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-neutral-100 dark:divide-neutral-800">
+                {filteredOrders.map((order) => (
+                  <tr key={order.id} className="transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-brand-50 dark:bg-brand-950/30 rounded-lg flex items-center justify-center">
+                          <ShoppingCart className="w-5 h-5 text-brand-600 dark:text-brand-400" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-neutral-900 dark:text-neutral-50">{order.orderNumber}</p>
+                          <p className="text-sm text-neutral-500 dark:text-neutral-400">{order.sessionName || 'Bez názvu'}</p>
+                        </div>
+                      </div>
+                    </td>                    <td className="px-6 py-4">
+                      {order.customer ? (
+                        <div>
+                          <div className="flex items-center gap-1.5 text-sm text-neutral-900 dark:text-neutral-100">
+                            <Building2 className="w-3.5 h-3.5 text-neutral-400" />
+                            {order.customer.organization || `${order.customer.firstName} ${order.customer.lastName}`}
+                          </div>
+                          {order.teamSize && (<div className="flex items-center gap-1.5 mt-0.5 text-xs text-neutral-400"><Users className="w-3 h-3" />{order.teamSize} účastníků</div>)}
+                        </div>
+                      ) : (<span className="text-sm text-neutral-400">&mdash;</span>)}
+                    </td>
+                    <td className="px-6 py-4"><StatusBadge status={statusMap[order.status] || order.status} /></td>
+                    <td className="px-6 py-4"><div className="flex items-center gap-1.5 text-sm text-neutral-600 dark:text-neutral-300"><Calendar className="w-3.5 h-3.5 text-neutral-400" />{new Date(order.createdAt).toLocaleDateString('cs-CZ')}</div></td>
+                    <td className="px-6 py-4 text-right">
+                      <ActionButtons
+                        viewHref={`/admin/orders/${order.id}`}
+                        onDelete={order._count.invoices === 0 ? () => setDeleteId(order.id) : undefined}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
       )}
 
       <ConfirmDialog
