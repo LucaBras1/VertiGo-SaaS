@@ -147,6 +147,14 @@ export function getSubscriptionTier(tier: SubscriptionTier) {
   return SUBSCRIPTION_TIERS[tier];
 }
 
+// Feature flags
+export {
+  featureFlags,
+  isRedesignEnabled,
+  isFeatureEnabled,
+  type FeatureFlags,
+} from './feature-flags';
+
 // Utility function for class names
 export { clsx } from 'clsx';
 export { twMerge } from 'tailwind-merge';

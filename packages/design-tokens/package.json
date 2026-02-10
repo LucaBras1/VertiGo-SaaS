@@ -1,0 +1,46 @@
+{
+  "name": "@vertigo/design-tokens",
+  "version": "0.1.0",
+  "private": true,
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./colors": {
+      "types": "./src/colors.ts",
+      "default": "./src/colors.ts"
+    },
+    "./typography": {
+      "types": "./src/typography.ts",
+      "default": "./src/typography.ts"
+    },
+    "./spacing": {
+      "types": "./src/spacing.ts",
+      "default": "./src/spacing.ts"
+    },
+    "./shadows": {
+      "types": "./src/shadows.ts",
+      "default": "./src/shadows.ts"
+    },
+    "./animations": {
+      "types": "./src/animations.ts",
+      "default": "./src/animations.ts"
+    },
+    "./radius": {
+      "types": "./src/radius.ts",
+      "default": "./src/radius.ts"
+    }
+  },
+  "scripts": {
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.0"
+  }
+}

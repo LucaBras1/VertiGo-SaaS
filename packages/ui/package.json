@@ -1,6 +1,6 @@
 {
   "name": "@vertigo/ui",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "sideEffects": false,
   "main": "./src/index.ts",
@@ -17,6 +17,10 @@
     "./hooks/*": {
       "types": "./src/hooks/*.ts",
       "default": "./src/hooks/*.ts"
+    },
+    "./animations": {
+      "types": "./src/animations/index.ts",
+      "default": "./src/animations/index.ts"
     }
   },
   "scripts": {
@@ -32,6 +36,7 @@
     "@radix-ui/react-popover": "^1.0.7",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tooltip": "^1.0.7",
+    "@vertigo/design-tokens": "workspace:*",
     "ai": "^3.0.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
