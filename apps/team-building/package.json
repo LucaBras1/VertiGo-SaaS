@@ -29,6 +29,7 @@
     "@vertigo/database": "workspace:*",
     "@vertigo/email": "workspace:*",
     "@vertigo/stripe": "workspace:*",
+    "@vertigo/admin": "workspace:*",
     "@vertigo/config": "workspace:*",
     "@vertigo/design-tokens": "workspace:*",
     "@vertigo/ui": "workspace:*",

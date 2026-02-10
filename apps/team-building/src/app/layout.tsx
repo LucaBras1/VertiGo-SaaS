@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Toaster } from 'react-hot-toast'
-import { ThemeProvider } from '@/providers/ThemeProvider'
+import { ThemeProvider } from '@vertigo/admin'
 import './globals.css'
 
 const inter = Inter({

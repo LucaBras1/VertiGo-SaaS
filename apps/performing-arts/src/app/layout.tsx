@@ -1,10 +1,14 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { Toaster } from 'react-hot-toast'
+import { ThemeProvider } from '@vertigo/admin'
 import { SessionProvider } from '@/components/providers/SessionProvider'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+})
 
 export const metadata: Metadata = {
   title: 'StageManager - Theater Production Management',
@@ -39,33 +43,33 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <SessionProvider>
-          {children}
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 4000,
-              style: {
-                background: '#1F2937', // Backstage Black
-                color: '#fff',
-              },
-              success: {
-                iconTheme: {
-                  primary: '#10B981',
-                  secondary: '#fff',
-                },
-              },
-              error: {
-                iconTheme: {
-                  primary: '#DC2626', // Stage Red
-                  secondary: '#fff',
-                },
-              },
-            }}
-          />
-        </SessionProvider>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const t = localStorage.getItem('theme');
+                if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
+      <body className={`${inter.variable} font-sans`}>
+        <ThemeProvider>
+          <SessionProvider>
+            {children}
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                className: '!bg-white !text-neutral-900 !shadow-lg !border !border-neutral-200 dark:!bg-neutral-800 dark:!text-neutral-100 dark:!border-neutral-700',
+              }}
+            />
+          </SessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

@@ -25,12 +25,12 @@ export interface FeatureFlags {
 export const featureFlags: FeatureFlags = {
   redesignEnabled: {
     TEAM_BUILDING: true,
-    MUSICIANS: false,
-    FITNESS: false,
-    PHOTOGRAPHY: false,
-    KIDS_ENTERTAINMENT: false,
-    EVENTS: false,
-    PERFORMING_ARTS: false,
+    MUSICIANS: true,
+    FITNESS: true,
+    PHOTOGRAPHY: true,
+    KIDS_ENTERTAINMENT: true,
+    EVENTS: true,
+    PERFORMING_ARTS: true,
   },
   darkMode: true,
   animations: true,
