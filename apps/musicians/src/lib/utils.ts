@@ -1,9 +1,4 @@
-import { type ClassValue, clsx } from 'clsx'
-import { twMerge } from 'tailwind-merge'
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
+export { cn } from '@vertigo/ui'
 
 export function formatCurrency(amount: number, currency: string = 'CZK'): string {
   return `${amount.toLocaleString('cs-CZ')} ${currency}`

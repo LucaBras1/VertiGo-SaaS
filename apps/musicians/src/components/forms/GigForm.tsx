@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import toast from 'react-hot-toast'
-import { DatePicker } from '@/components/ui/date-picker'
+import { DatePicker } from '@vertigo/ui'
 import { Button, Input, Textarea, Select, SelectOption, Label, Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
 
 const gigSchema = z.object({
@@ -155,6 +155,9 @@ export function GigForm({ initialData, onSuccess }: GigFormProps) {
                 value={eventDate}
                 onChange={(date) => setValue('eventDate', date)}
                 placeholder="Vyberte datum"
+                dayNames={['Po', 'Út', 'St', 'Čt', 'Pá', 'So', 'Ne']}
+                clearLabel="Vymazat"
+                todayLabel="Dnes"
               />
             </div>
           </div>

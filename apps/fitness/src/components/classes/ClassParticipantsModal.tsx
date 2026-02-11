@@ -1,8 +1,8 @@
 'use client'
 
-import { Fragment, useState, useEffect } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
-import { X, Loader2, UserPlus, Check, UserX, Users, RefreshCw } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Dialog, DialogHeader, DialogTitle } from '@vertigo/ui'
+import { Loader2, UserPlus, Check, UserX, Users, RefreshCw } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 interface Client {
@@ -165,64 +165,31 @@ export function ClassParticipantsModal({
   const availableSpots = capacity - confirmedBookings.length
 
   return (
-    <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-50" onClose={onClose}>
-        <Transition.Child
-          as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="fixed inset-0 bg-black/25 backdrop-blur-sm" />
-        </Transition.Child>
-
-        <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <Dialog.Panel className="w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all">
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <Dialog.Title className="text-lg font-semibold text-gray-900">
-                      {className}
-                    </Dialog.Title>
-                    <div className="flex items-center gap-4 mt-1 text-sm text-gray-600">
-                      <span className="flex items-center gap-1">
-                        <Users className="h-4 w-4" />
-                        {confirmedBookings.length}/{capacity} účastníků
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Check className="h-4 w-4 text-green-600" />
-                        {checkedInCount} check-in
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={fetchBookings}
-                      className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                      title="Obnovit"
-                    >
-                      <RefreshCw className="h-5 w-5 text-gray-500" />
-                    </button>
-                    <button
-                      onClick={onClose}
-                      className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                    >
-                      <X className="h-5 w-5 text-gray-500" />
-                    </button>
-                  </div>
-                </div>
+    <Dialog open={isOpen} onClose={onClose} className="max-w-lg">
+      <DialogHeader onClose={onClose}>
+        <div className="flex items-center justify-between w-full">
+          <div>
+            <DialogTitle>{className}</DialogTitle>
+            <div className="flex items-center gap-4 mt-1 text-sm text-gray-600">
+              <span className="flex items-center gap-1">
+                <Users className="h-4 w-4" />
+                {confirmedBookings.length}/{capacity} účastníků
+              </span>
+              <span className="flex items-center gap-1">
+                <Check className="h-4 w-4 text-green-600" />
+                {checkedInCount} check-in
+              </span>
+            </div>
+          </div>
+          <button
+            onClick={fetchBookings}
+            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            title="Obnovit"
+          >
+            <RefreshCw className="h-5 w-5 text-gray-500" />
+          </button>
+        </div>
+      </DialogHeader>
 
                 {/* Add Client Section */}
                 {availableSpots > 0 && (
@@ -353,11 +320,6 @@ export function ClassParticipantsModal({
                     Zavřít
                   </button>
                 </div>
-              </Dialog.Panel>
-            </Transition.Child>
-          </div>
-        </div>
       </Dialog>
-    </Transition>
   )
 }

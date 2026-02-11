@@ -20,8 +20,7 @@ import {
   Ruler,
   Clock,
 } from 'lucide-react'
-import { Menu, Transition } from '@headlessui/react'
-import { Fragment } from 'react'
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuItems, DropdownMenuItem, DropdownMenuGroup, DropdownMenuLabel } from '@vertigo/ui'
 import toast from 'react-hot-toast'
 import { cn, formatDate, formatCurrency } from '@/lib/utils'
 import { ClientFormModal } from '@/components/clients/ClientFormModal'
@@ -209,22 +208,14 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
                 <Edit className="h-4 w-4" />
                 Upravit
               </button>
-              <Menu as="div" className="relative">
-                <Menu.Button className="p-2 border border-neutral-300 dark:border-neutral-600 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:bg-neutral-950">
+              <DropdownMenu>
+                <DropdownMenuTrigger className="p-2 border border-neutral-300 dark:border-neutral-600 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:bg-neutral-950">
                   <MoreHorizontal className="h-5 w-5" />
-                </Menu.Button>
-                <Transition
-                  as={Fragment}
-                  enter="transition ease-out duration-100"
-                  enterFrom="transform opacity-0 scale-95"
-                  enterTo="transform opacity-100 scale-100"
-                  leave="transition ease-in duration-75"
-                  leaveFrom="transform opacity-100 scale-100"
-                  leaveTo="transform opacity-0 scale-95"
-                >
-                  <Menu.Items className="absolute right-0 mt-2 w-48 origin-top-right rounded-lg bg-white dark:bg-neutral-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
-                    <div className="py-1">
-                      <Menu.Item>
+                </DropdownMenuTrigger>
+                
+                  <DropdownMenuItems align="end" className="absolute right-0 mt-2 w-48 origin-top-right rounded-lg bg-white dark:bg-neutral-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem>
                         {({ active }) => (
                           <button
                             onClick={handleDelete}
@@ -237,11 +228,11 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
                             Smazat klienta
                           </button>
                         )}
-                      </Menu.Item>
-                    </div>
-                  </Menu.Items>
-                </Transition>
-              </Menu>
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+      </DropdownMenuItems>
+                
+              </DropdownMenu>
             </div>
           </div>
         </div>

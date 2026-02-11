@@ -14,8 +14,7 @@ import {
   Edit,
   Trash2,
 } from 'lucide-react'
-import { Menu, Transition } from '@headlessui/react'
-import { Fragment } from 'react'
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuItems, DropdownMenuItem, DropdownMenuGroup } from '@vertigo/ui'
 import {
   format,
   startOfWeek,
@@ -287,24 +286,16 @@ export default function SessionsPage() {
                           >
                             <div className="flex items-center justify-between">
                               <span className="font-medium truncate">{session.client.name}</span>
-                              <Menu as="div" className="relative">
-                                <Menu.Button className="p-0.5 hover:bg-black/10 rounded">
+                              <DropdownMenu>
+                                <DropdownMenuTrigger className="p-0.5 hover:bg-black/10 rounded">
                                   <MoreHorizontal className="h-3 w-3" />
-                                </Menu.Button>
-                                <Transition
-                                  as={Fragment}
-                                  enter="transition ease-out duration-100"
-                                  enterFrom="transform opacity-0 scale-95"
-                                  enterTo="transform opacity-100 scale-100"
-                                  leave="transition ease-in duration-75"
-                                  leaveFrom="transform opacity-100 scale-100"
-                                  leaveTo="transform opacity-0 scale-95"
-                                >
-                                  <Menu.Items className="absolute right-0 mt-1 w-40 origin-top-right rounded-lg bg-white dark:bg-neutral-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
-                                    <div className="py-1">
+                                </DropdownMenuTrigger>
+                                
+                                  <DropdownMenuItems align="end" className="absolute right-0 mt-1 w-40 origin-top-right rounded-lg bg-white dark:bg-neutral-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                                    <DropdownMenuGroup>
                                       {session.status === 'scheduled' && (
                                         <>
-                                          <Menu.Item>
+                                          <DropdownMenuItem>
                                             {({ active }) => (
                                               <button
                                                 onClick={() =>
@@ -319,8 +310,8 @@ export default function SessionsPage() {
                                                 Dokončit
                                               </button>
                                             )}
-                                          </Menu.Item>
-                                          <Menu.Item>
+                                          </DropdownMenuItem>
+                                          <DropdownMenuItem>
                                             {({ active }) => (
                                               <button
                                                 onClick={() =>
@@ -335,10 +326,10 @@ export default function SessionsPage() {
                                                 Nepřišel
                                               </button>
                                             )}
-                                          </Menu.Item>
+                                          </DropdownMenuItem>
                                         </>
                                       )}
-                                      <Menu.Item>
+                                      <DropdownMenuItem>
                                         {({ active }) => (
                                           <button
                                             onClick={() => handleDelete(session.id)}
@@ -351,11 +342,11 @@ export default function SessionsPage() {
                                             Smazat
                                           </button>
                                         )}
-                                      </Menu.Item>
-                                    </div>
-                                  </Menu.Items>
-                                </Transition>
-                              </Menu>
+                                      </DropdownMenuItem>
+                                    </DropdownMenuGroup>
+      </DropdownMenuItems>
+                                
+                              </DropdownMenu>
                             </div>
                             <div className="flex items-center gap-1 mt-1 text-[10px] opacity-80">
                               <Clock className="h-3 w-3" />

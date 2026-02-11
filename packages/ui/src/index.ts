@@ -59,6 +59,9 @@ export type { SelectProps, SelectOption, SelectOptionType } from './components/S
 export { ConfirmDialog } from './components/ConfirmDialog';
 export type { ConfirmDialogProps } from './components/ConfirmDialog';
 
+export { ConfirmDialogProvider, useConfirmContext, useConfirmDefaults } from './components/ConfirmDialogProvider';
+export type { ConfirmDialogProviderProps, ConfirmOptions, ConfirmDefaults } from './components/ConfirmDialogProvider';
+
 export {
   Dialog,
   DialogHeader,
@@ -69,6 +72,19 @@ export {
 } from './components/Dialog';
 
 export { Tabs, TabList, TabTrigger, TabPanels, TabPanel } from './components/Tabs';
+
+export { DatePicker } from './components/DatePicker';
+export type { DatePickerProps } from './components/DatePicker';
+
+export {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuItems,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+  DropdownMenuGroup,
+} from './components/DropdownMenu';
 
 // --- AI Components ---
 export { AIAssistantWidget } from './components/AIAssistantWidget';
@@ -145,6 +161,7 @@ export {
 export { useAIChat } from './hooks/useAIChat';
 export { useAICompletion } from './hooks/useAICompletion';
 export { useVerticalTheme } from './hooks/useVerticalTheme';
+export { useConfirm } from './hooks/useConfirm';
 
 // --- Types ---
 export type { AIMessage, AIWidgetProps, QuoteSuggestion, InsightData, ThemeConfig } from './types';

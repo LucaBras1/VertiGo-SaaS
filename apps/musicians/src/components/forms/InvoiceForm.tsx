@@ -6,7 +6,7 @@ import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import toast from 'react-hot-toast'
-import { DatePicker } from '@/components/ui/date-picker'
+import { DatePicker } from '@vertigo/ui'
 import { Plus, Trash2 } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
 import { Button, Input, Textarea, Select, SelectOption, Label, Card, CardContent, CardHeader, CardTitle } from '@vertigo/ui'
@@ -164,6 +164,9 @@ export function InvoiceForm({ initialData, clients = [], gigs = [], onSuccess }:
                 value={dueDate}
                 onChange={(date) => setValue('dueDate', date || new Date())}
                 minDate={new Date()}
+                dayNames={['Po', 'Út', 'St', 'Čt', 'Pá', 'So', 'Ne']}
+                clearLabel="Vymazat"
+                todayLabel="Dnes"
               />
             </div>
             <div>

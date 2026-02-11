@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Package, Plus, Check, CreditCard, Clock, MoreHorizontal, Edit, Trash2, ToggleLeft, ToggleRight } from 'lucide-react'
-import { Menu, Transition } from '@headlessui/react'
-import { Fragment } from 'react'
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuItems, DropdownMenuItem, DropdownMenuGroup, DropdownMenuLabel } from '@vertigo/ui'
 import toast from 'react-hot-toast'
 import { cn, formatCurrency } from '@/lib/utils'
 import { PackageFormModal } from '@/components/packages/PackageFormModal'
@@ -163,22 +162,14 @@ export default function PackagesPage() {
                       </span>
                       <h3 className="text-xl font-bold text-neutral-900 dark:text-neutral-100 mt-1">{pkg.name}</h3>
                     </div>
-                    <Menu as="div" className="relative">
-                      <Menu.Button className="p-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="p-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800">
                         <MoreHorizontal className="h-5 w-5 text-neutral-400" />
-                      </Menu.Button>
-                      <Transition
-                        as={Fragment}
-                        enter="transition ease-out duration-100"
-                        enterFrom="transform opacity-0 scale-95"
-                        enterTo="transform opacity-100 scale-100"
-                        leave="transition ease-in duration-75"
-                        leaveFrom="transform opacity-100 scale-100"
-                        leaveTo="transform opacity-0 scale-95"
-                      >
-                        <Menu.Items className="absolute right-0 mt-2 w-40 origin-top-right rounded-lg bg-white dark:bg-neutral-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
-                          <div className="py-1">
-                            <Menu.Item>
+                      </DropdownMenuTrigger>
+                      
+                        <DropdownMenuItems align="end" className="absolute right-0 mt-2 w-40 origin-top-right rounded-lg bg-white dark:bg-neutral-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                          <DropdownMenuGroup>
+                            <DropdownMenuItem>
                               {({ active }) => (
                                 <button
                                   onClick={() => handleOpenModal(pkg)}
@@ -191,8 +182,8 @@ export default function PackagesPage() {
                                   Upravit
                                 </button>
                               )}
-                            </Menu.Item>
-                            <Menu.Item>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
                               {({ active }) => (
                                 <button
                                   onClick={() => handleToggleActive(pkg)}
@@ -214,8 +205,8 @@ export default function PackagesPage() {
                                   )}
                                 </button>
                               )}
-                            </Menu.Item>
-                            <Menu.Item>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
                               {({ active }) => (
                                 <button
                                   onClick={() => handleDelete(pkg.id)}
@@ -228,11 +219,11 @@ export default function PackagesPage() {
                                   Smazat
                                 </button>
                               )}
-                            </Menu.Item>
-                          </div>
-                        </Menu.Items>
-                      </Transition>
-                    </Menu>
+                            </DropdownMenuItem>
+                          </DropdownMenuGroup>
+      </DropdownMenuItems>
+                      
+                    </DropdownMenu>
                   </div>
 
                   <p className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-1">

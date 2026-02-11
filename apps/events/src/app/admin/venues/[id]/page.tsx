@@ -24,7 +24,7 @@ import {
 import { format } from 'date-fns'
 import { useVenue, useDeleteVenue, useUpdateVenue } from '@/hooks/use-venues'
 import { useToast } from '@/hooks/use-toast'
-import { useConfirmContext } from '@/components/ui/confirm-dialog'
+import { useConfirmContext } from '@vertigo/ui'
 import { Skeleton } from '@/components/ui/skeleton'
 
 interface PageProps {
