@@ -2,6 +2,16 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  transpilePackages: [
+    '@vertigo/ui',
+    '@vertigo/admin',
+    '@vertigo/ai-core',
+    '@vertigo/auth',
+    '@vertigo/config',
+    '@vertigo/design-tokens',
+    '@vertigo/email',
+    '@vertigo/stripe',
+  ],
   images: {
     domains: ['localhost'],
     remotePatterns: [
