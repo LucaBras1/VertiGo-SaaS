@@ -14,8 +14,7 @@ import {
   AlertCircle,
   Trash2,
 } from 'lucide-react'
-import { Menu, Transition } from '@headlessui/react'
-import { Fragment } from 'react'
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuItems, DropdownMenuItem, DropdownMenuGroup, DropdownMenuLabel } from '@vertigo/ui'
 import { format, parseISO, isPast } from 'date-fns'
 import { cs } from 'date-fns/locale'
 import toast from 'react-hot-toast'
@@ -323,22 +322,14 @@ export default function InvoicesPage() {
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <Menu as="div" className="relative inline-block text-left">
-                            <Menu.Button className="p-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger className="p-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800">
                               <MoreHorizontal className="h-5 w-5 text-neutral-400" />
-                            </Menu.Button>
-                            <Transition
-                              as={Fragment}
-                              enter="transition ease-out duration-100"
-                              enterFrom="transform opacity-0 scale-95"
-                              enterTo="transform opacity-100 scale-100"
-                              leave="transition ease-in duration-75"
-                              leaveFrom="transform opacity-100 scale-100"
-                              leaveTo="transform opacity-0 scale-95"
-                            >
-                              <Menu.Items className="absolute right-0 mt-2 w-48 origin-top-right rounded-lg bg-white dark:bg-neutral-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
-                                <div className="py-1">
-                                  <Menu.Item>
+                            </DropdownMenuTrigger>
+                            
+                              <DropdownMenuItems align="end" className="absolute right-0 mt-2 w-48 origin-top-right rounded-lg bg-white dark:bg-neutral-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                                <DropdownMenuGroup>
+                                  <DropdownMenuItem>
                                     {({ active }) => (
                                       <button
                                         className={cn(
@@ -350,8 +341,8 @@ export default function InvoicesPage() {
                                         Zobrazit
                                       </button>
                                     )}
-                                  </Menu.Item>
-                                  <Menu.Item>
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem>
                                     {({ active }) => (
                                       <button
                                         className={cn(
@@ -363,10 +354,10 @@ export default function InvoicesPage() {
                                         Stáhnout PDF
                                       </button>
                                     )}
-                                  </Menu.Item>
+                                  </DropdownMenuItem>
                                   {invoice.status === 'draft' && (
                                     <>
-                                      <Menu.Item>
+                                      <DropdownMenuItem>
                                         {({ active }) => (
                                           <button
                                             onClick={() => handleSendInvoice(invoice.id)}
@@ -379,8 +370,8 @@ export default function InvoicesPage() {
                                             Odeslat
                                           </button>
                                         )}
-                                      </Menu.Item>
-                                      <Menu.Item>
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem>
                                         {({ active }) => (
                                           <button
                                             onClick={() => handleDelete(invoice.id)}
@@ -393,11 +384,11 @@ export default function InvoicesPage() {
                                             Smazat
                                           </button>
                                         )}
-                                      </Menu.Item>
+                                      </DropdownMenuItem>
                                     </>
                                   )}
                                   {(invoice.status === 'sent' || invoice.status === 'overdue') && (
-                                    <Menu.Item>
+                                    <DropdownMenuItem>
                                       {({ active }) => (
                                         <button
                                           onClick={() => handleMarkAsPaid(invoice.id)}
@@ -410,12 +401,11 @@ export default function InvoicesPage() {
                                           Označit jako zaplaceno
                                         </button>
                                       )}
-                                    </Menu.Item>
+                                    </DropdownMenuItem>
                                   )}
-                                </div>
-                              </Menu.Items>
-                            </Transition>
-                          </Menu>
+                                </DropdownMenuGroup>
+      </DropdownMenuItems>
+    </DropdownMenu>
                         </td>
                       </tr>
                     )

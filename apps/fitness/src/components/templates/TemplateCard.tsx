@@ -1,8 +1,12 @@
 'use client'
 
 import { Clock, Dumbbell, Users, MoreVertical, Edit2, Trash2, Copy } from 'lucide-react'
-import { Menu, Transition } from '@headlessui/react'
-import { Fragment } from 'react'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuItems,
+  DropdownMenuItem,
+} from '@vertigo/ui'
 
 interface Exercise {
   name: string
@@ -82,66 +86,56 @@ export function TemplateCard({
           </div>
 
           {/* Actions Menu */}
-          <Menu as="div" className="relative">
-            <Menu.Button className="p-1 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600">
+          <DropdownMenu>
+            <DropdownMenuTrigger className="p-1 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600">
               <MoreVertical className="h-5 w-5" />
-            </Menu.Button>
-            <Transition
-              as={Fragment}
-              enter="transition ease-out duration-100"
-              enterFrom="transform opacity-0 scale-95"
-              enterTo="transform opacity-100 scale-100"
-              leave="transition ease-in duration-75"
-              leaveFrom="transform opacity-100 scale-100"
-              leaveTo="transform opacity-0 scale-95"
-            >
-              <Menu.Items className="absolute right-0 mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-10">
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      onClick={() => onEdit(template)}
-                      className={`${
-                        active ? 'bg-gray-50' : ''
-                      } flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700`}
-                    >
-                      <Edit2 className="h-4 w-4" />
-                      Upravit
-                    </button>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      onClick={() => onDuplicate(template)}
-                      className={`${
-                        active ? 'bg-gray-50' : ''
-                      } flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700`}
-                    >
-                      <Copy className="h-4 w-4" />
-                      Duplikovat
-                    </button>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      onClick={() => {
-                        if (confirm('Opravdu chcete smazat tuto šablonu?')) {
-                          onDelete(template.id)
-                        }
-                      }}
-                      className={`${
-                        active ? 'bg-gray-50' : ''
-                      } flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600`}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      Smazat
-                    </button>
-                  )}
-                </Menu.Item>
-              </Menu.Items>
-            </Transition>
-          </Menu>
+            </DropdownMenuTrigger>
+            <DropdownMenuItems align="end" className="w-40">
+              <DropdownMenuItem>
+                {({ active }) => (
+                  <button
+                    onClick={() => onEdit(template)}
+                    className={`${
+                      active ? 'bg-gray-50' : ''
+                    } flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700`}
+                  >
+                    <Edit2 className="h-4 w-4" />
+                    Upravit
+                  </button>
+                )}
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                {({ active }) => (
+                  <button
+                    onClick={() => onDuplicate(template)}
+                    className={`${
+                      active ? 'bg-gray-50' : ''
+                    } flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-700`}
+                  >
+                    <Copy className="h-4 w-4" />
+                    Duplikovat
+                  </button>
+                )}
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                {({ active }) => (
+                  <button
+                    onClick={() => {
+                      if (confirm('Opravdu chcete smazat tuto šablonu?')) {
+                        onDelete(template.id)
+                      }
+                    }}
+                    className={`${
+                      active ? 'bg-gray-50' : ''
+                    } flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600`}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    Smazat
+                  </button>
+                )}
+              </DropdownMenuItem>
+            </DropdownMenuItems>
+          </DropdownMenu>
         </div>
       </div>
 

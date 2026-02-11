@@ -1,13 +1,6 @@
-import { type ClassValue, clsx } from 'clsx'
-import { twMerge } from 'tailwind-merge'
-import { format, formatDistanceToNow, parseISO } from 'date-fns'
+export { cn } from '@vertigo/ui'
 
-/**
- * Merge Tailwind CSS classes with clsx
- */
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
+import { format, formatDistanceToNow, parseISO } from 'date-fns'
 
 /**
  * Format a date for display

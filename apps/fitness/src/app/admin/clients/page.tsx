@@ -17,8 +17,7 @@ import {
   Edit,
   Trash2,
 } from 'lucide-react'
-import { Menu, Transition } from '@headlessui/react'
-import { Fragment } from 'react'
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuItems, DropdownMenuItem, DropdownMenuGroup, DropdownMenuLabel } from '@vertigo/ui'
 import toast from 'react-hot-toast'
 import { cn } from '@/lib/utils'
 import { ClientFormModal } from '@/components/clients/ClientFormModal'
@@ -356,22 +355,14 @@ export default function ClientsPage() {
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <Menu as="div" className="relative inline-block text-left">
-                            <Menu.Button className="p-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger className="p-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800">
                               <MoreHorizontal className="h-5 w-5 text-neutral-400" />
-                            </Menu.Button>
-                            <Transition
-                              as={Fragment}
-                              enter="transition ease-out duration-100"
-                              enterFrom="transform opacity-0 scale-95"
-                              enterTo="transform opacity-100 scale-100"
-                              leave="transition ease-in duration-75"
-                              leaveFrom="transform opacity-100 scale-100"
-                              leaveTo="transform opacity-0 scale-95"
-                            >
-                              <Menu.Items className="absolute right-0 mt-2 w-48 origin-top-right rounded-lg bg-white dark:bg-neutral-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
-                                <div className="py-1">
-                                  <Menu.Item>
+                            </DropdownMenuTrigger>
+                            
+                              <DropdownMenuItems align="end" className="absolute right-0 mt-2 w-48 origin-top-right rounded-lg bg-white dark:bg-neutral-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                                <DropdownMenuGroup>
+                                  <DropdownMenuItem>
                                     {({ active }) => (
                                       <Link
                                         href={`/admin/clients/${client.id}`}
@@ -384,8 +375,8 @@ export default function ClientsPage() {
                                         Zobrazit profil
                                       </Link>
                                     )}
-                                  </Menu.Item>
-                                  <Menu.Item>
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem>
                                     {({ active }) => (
                                       <button
                                         onClick={() => {
@@ -401,8 +392,8 @@ export default function ClientsPage() {
                                         Upravit
                                       </button>
                                     )}
-                                  </Menu.Item>
-                                  <Menu.Item>
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem>
                                     {({ active }) => (
                                       <button
                                         onClick={() => handleDeleteClient(client.id)}
@@ -415,11 +406,10 @@ export default function ClientsPage() {
                                         Smazat
                                       </button>
                                     )}
-                                  </Menu.Item>
-                                </div>
-                              </Menu.Items>
-                            </Transition>
-                          </Menu>
+                                  </DropdownMenuItem>
+                                </DropdownMenuGroup>
+      </DropdownMenuItems>
+    </DropdownMenu>
                         </td>
                       </tr>
                     ))}

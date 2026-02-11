@@ -1,8 +1,8 @@
 'use client'
 
-import { Fragment, useState, useEffect } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
-import { X, Loader2, Plus, Trash2 } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Dialog, DialogHeader, DialogTitle } from '@vertigo/ui'
+import { Loader2, Plus, Trash2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -128,46 +128,10 @@ export function MeasurementFormModal({
   }
 
   return (
-    <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-50" onClose={onClose}>
-        <Transition.Child
-          as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="fixed inset-0 bg-black/25 backdrop-blur-sm" />
-        </Transition.Child>
-
-        <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all max-h-[90vh] overflow-y-auto">
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <Dialog.Title className="text-lg font-semibold text-gray-900">
-                      Nové měření
-                    </Dialog.Title>
-                    <p className="text-sm text-gray-600">{clientName}</p>
-                  </div>
-                  <button
-                    onClick={onClose}
-                    className="p-1 rounded-lg hover:bg-gray-100 transition-colors"
-                  >
-                    <X className="h-5 w-5 text-gray-500" />
-                  </button>
-                </div>
+    <Dialog open={isOpen} onClose={onClose}>
+      <DialogHeader onClose={onClose}>
+        <DialogTitle>Nové měření</DialogTitle>
+      </DialogHeader>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   {/* Basic Measurements */}
@@ -274,11 +238,6 @@ export function MeasurementFormModal({
                     </button>
                   </div>
                 </form>
-              </Dialog.Panel>
-            </Transition.Child>
-          </div>
-        </div>
       </Dialog>
-    </Transition>
   )
 }

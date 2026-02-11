@@ -2,15 +2,7 @@
  * Utility functions for PartyPal
  */
 
-import { type ClassValue, clsx } from 'clsx'
-import { twMerge } from 'tailwind-merge'
-
-/**
- * Merge Tailwind classes with proper handling of conflicts
- */
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
+export { cn } from '@vertigo/ui'
 
 /**
  * Format price in CZK

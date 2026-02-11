@@ -21,7 +21,7 @@ import {
   Trash2,
   AlertCircle,
 } from 'lucide-react'
-import { useConfirm } from '@/hooks/use-confirm'
+import { useConfirm } from '@vertigo/ui'
 import { useToast } from '@/hooks/use-toast'
 import { useClients, useDeleteClient, type Client } from '@/hooks/use-clients'
 import { SkeletonClientCard, SkeletonStatCard, Skeleton } from '@/components/ui/skeleton'
