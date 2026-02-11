@@ -86,6 +86,18 @@ export {
   DropdownMenuGroup,
 } from './components/DropdownMenu';
 
+export { SlideOver, SlideOverPanel, SlideOverTitle } from './components/SlideOver';
+
+export {
+  Combobox,
+  ComboboxInput,
+  ComboboxButton,
+  ComboboxOptions,
+  ComboboxOption,
+  ComboboxEmpty,
+  ComboboxLoading,
+} from './components/Combobox';
+
 // --- AI Components ---
 export { AIAssistantWidget } from './components/AIAssistantWidget';
 export { AIQuoteSuggestion } from './components/AIQuoteSuggestion';

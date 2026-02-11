@@ -397,6 +397,9 @@ importers:
       '@vertigo/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@vertigo/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       '@vertigo/design-tokens':
         specifier: workspace:*
         version: link:../../packages/design-tokens
@@ -744,6 +747,9 @@ importers:
       '@prisma/client':
         specifier: ^7.0.0
         version: 7.3.0(prisma@7.3.0)(typescript@5.9.3)
+      '@prisma/client-runtime-utils':
+        specifier: ^7.0.0
+        version: 7.3.0
       '@tanstack/react-query':
         specifier: ^5.90.9
         version: 5.90.19(react@18.3.1)
@@ -1379,13 +1385,22 @@ importers:
 
   packages/database:
     dependencies:
+      '@prisma/adapter-pg':
+        specifier: ^7.0.0
+        version: 7.3.0
       '@prisma/client':
         specifier: ^7.0.0
         version: 7.3.0(prisma@7.3.0)(typescript@5.9.3)
+      pg:
+        specifier: ^8.0.0
+        version: 8.18.0
     devDependencies:
       '@types/node':
         specifier: ^20.11.0
         version: 20.19.30
+      '@types/pg':
+        specifier: ^8.0.0
+        version: 8.16.0
       prisma:
         specifier: ^7.0.0
         version: 7.3.0(@types/react@18.3.27)(better-sqlite3@12.6.2)(react-dom@18.3.1)(react@18.3.1)(typescript@5.9.3)
@@ -9362,7 +9377,7 @@ packages:
       '@panva/hkdf': 1.2.1
       cookie: 0.7.2
       jose: 4.15.9
-      next: 14.2.35(@babel/core@7.28.6)(@playwright/test@1.58.1)(react-dom@18.3.1)(react@18.3.1)
+      next: 14.2.35(react-dom@18.3.1)(react@18.3.1)
       oauth: 0.9.15
       openid-client: 5.7.1
       preact: 10.28.2

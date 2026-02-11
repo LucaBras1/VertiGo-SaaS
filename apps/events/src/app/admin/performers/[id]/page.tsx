@@ -31,7 +31,7 @@ import { format } from 'date-fns'
 import { usePerformer, useDeletePerformer, useUpdatePerformer } from '@/hooks/use-performers'
 import { useToast } from '@/hooks/use-toast'
 import { useConfirmContext } from '@vertigo/ui'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Skeleton } from '@vertigo/ui'
 
 interface PageProps {
   params: Promise<{ id: string }>

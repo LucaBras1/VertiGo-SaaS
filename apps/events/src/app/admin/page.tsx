@@ -12,11 +12,11 @@ import {
   AlertCircle,
   ArrowRight,
 } from 'lucide-react'
+import { Skeleton } from '@vertigo/ui'
 import {
   SkeletonDashboardStats,
   SkeletonEventCard,
-  Skeleton,
-} from '@/components/ui/skeleton'
+} from '@/components/skeletons'
 import Link from 'next/link'
 import { format } from 'date-fns'
 

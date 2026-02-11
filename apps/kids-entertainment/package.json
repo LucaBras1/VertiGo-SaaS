@@ -41,6 +41,7 @@
     "@vertigo/ai-core": "workspace:*",
     "@vertigo/auth": "workspace:*",
     "@vertigo/config": "workspace:*",
+    "@vertigo/database": "workspace:*",
     "@vertigo/design-tokens": "workspace:*",
     "@vertigo/email": "workspace:*",
     "@vertigo/stripe": "workspace:*",

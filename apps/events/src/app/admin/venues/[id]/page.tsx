@@ -25,7 +25,7 @@ import { format } from 'date-fns'
 import { useVenue, useDeleteVenue, useUpdateVenue } from '@/hooks/use-venues'
 import { useToast } from '@/hooks/use-toast'
 import { useConfirmContext } from '@vertigo/ui'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Skeleton } from '@vertigo/ui'
 
 interface PageProps {
   params: Promise<{ id: string }>

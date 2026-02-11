@@ -1,12 +1,22 @@
 'use client'
 
-import { Fragment, useEffect, useState } from 'react'
-import { Combobox, Transition } from '@headlessui/react'
-import { Dialog, DialogHeader, DialogTitle } from '@vertigo/ui'
+import { useEffect, useState } from 'react'
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxButton,
+  ComboboxOptions,
+  ComboboxOption,
+  ComboboxEmpty,
+  ComboboxLoading,
+  Dialog,
+  DialogHeader,
+  DialogTitle,
+} from '@vertigo/ui'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Loader2, Check, ChevronsUpDown } from 'lucide-react'
+import { Loader2, Check } from 'lucide-react'
 import { format } from 'date-fns'
 import toast from 'react-hot-toast'
 import { cn } from '@/lib/utils'
@@ -173,80 +183,67 @@ export function BookSessionModal({
                     </label>
                     <Combobox
                       value={selectedClient}
-                      onChange={(client) => {
+                      onChange={(client: Client | null) => {
                         setSelectedClient(client)
                         setValue('clientId', client?.id || '')
                       }}
                     >
                       <div className="relative">
                         <div className="relative">
-                          <Combobox.Input
+                          <ComboboxInput
                             className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                             displayValue={(client: Client | null) => client?.name || ''}
                             onChange={(e) => setClientSearch(e.target.value)}
                             placeholder="Vyberte klienta..."
                           />
-                          <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
-                            <ChevronsUpDown className="h-5 w-5 text-gray-400" />
-                          </Combobox.Button>
+                          <ComboboxButton />
                         </div>
-                        <Transition
-                          as={Fragment}
-                          leave="transition ease-in duration-100"
-                          leaveFrom="opacity-100"
-                          leaveTo="opacity-0"
-                        >
-                          <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                            {isLoadingClients ? (
-                              <div className="px-4 py-2 text-sm text-gray-500">
-                                Načítám klienty...
-                              </div>
-                            ) : filteredClients.length === 0 ? (
-                              <div className="px-4 py-2 text-sm text-gray-500">
-                                Žádní klienti nenalezeni
-                              </div>
-                            ) : (
-                              filteredClients.map((client) => (
-                                <Combobox.Option
-                                  key={client.id}
-                                  value={client}
-                                  className={({ active }) =>
-                                    cn(
-                                      'relative cursor-pointer select-none py-2 pl-10 pr-4',
-                                      active ? 'bg-primary-50 text-primary-900' : 'text-gray-900'
-                                    )
-                                  }
-                                >
-                                  {({ selected }) => (
-                                    <>
-                                      <div className="flex items-center justify-between">
-                                        <span
-                                          className={cn(
-                                            'block truncate',
-                                            selected ? 'font-medium' : 'font-normal'
-                                          )}
-                                        >
-                                          {client.name}
-                                        </span>
-                                        <span className="text-xs text-gray-500">
-                                          {client.creditsRemaining} kreditů
-                                        </span>
-                                      </div>
-                                      <span className="block text-xs text-gray-500 truncate">
-                                        {client.email}
+                        <ComboboxOptions>
+                          {isLoadingClients ? (
+                            <ComboboxLoading>Načítám klienty...</ComboboxLoading>
+                          ) : filteredClients.length === 0 ? (
+                            <ComboboxEmpty>Žádní klienti nenalezeni</ComboboxEmpty>
+                          ) : (
+                            filteredClients.map((client) => (
+                              <ComboboxOption
+                                key={client.id}
+                                value={client}
+                                className={({ active }: { active: boolean }) =>
+                                  cn(
+                                    'relative cursor-pointer select-none py-2 pl-10 pr-4',
+                                    active ? 'bg-primary-50 text-primary-900' : 'text-gray-900'
+                                  )
+                                }
+                              >
+                                {({ selected }: { selected: boolean }) => (
+                                  <>
+                                    <div className="flex items-center justify-between">
+                                      <span
+                                        className={cn(
+                                          'block truncate',
+                                          selected ? 'font-medium' : 'font-normal'
+                                        )}
+                                      >
+                                        {client.name}
                                       </span>
-                                      {selected && (
-                                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-primary-600">
-                                          <Check className="h-5 w-5" />
-                                        </span>
-                                      )}
-                                    </>
-                                  )}
-                                </Combobox.Option>
-                              ))
-                            )}
-                          </Combobox.Options>
-                        </Transition>
+                                      <span className="text-xs text-gray-500">
+                                        {client.creditsRemaining} kreditů
+                                      </span>
+                                    </div>
+                                    <span className="block text-xs text-gray-500 truncate">
+                                      {client.email}
+                                    </span>
+                                    {selected && (
+                                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-primary-600">
+                                        <Check className="h-5 w-5" />
+                                      </span>
+                                    )}
+                                  </>
+                                )}
+                              </ComboboxOption>
+                            ))
+                          )}
+                        </ComboboxOptions>
                       </div>
                     </Combobox>
                     {errors.clientId && (

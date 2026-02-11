@@ -19,7 +19,8 @@ import {
 import { useConfirm } from '@vertigo/ui'
 import { useToast } from '@/hooks/use-toast'
 import { useEvents, useDeleteEvent, type Event } from '@/hooks/use-events'
-import { SkeletonTable, SkeletonQuickStats, Skeleton } from '@/components/ui/skeleton'
+import { Skeleton } from '@vertigo/ui'
+import { SkeletonTable, SkeletonQuickStats } from '@/components/skeletons'
 
 type EventStatusFilter = 'all' | 'planning' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled'
 

@@ -24,7 +24,8 @@ import {
 import { useConfirm } from '@vertigo/ui'
 import { useToast } from '@/hooks/use-toast'
 import { useVenues, useDeleteVenue, type Venue } from '@/hooks/use-venues'
-import { SkeletonVenueCard, SkeletonQuickStats, Skeleton } from '@/components/ui/skeleton'
+import { Skeleton } from '@vertigo/ui'
+import { SkeletonVenueCard, SkeletonQuickStats } from '@/components/skeletons'
 
 type VenueType = 'all' | 'indoor' | 'outdoor' | 'mixed'
 
