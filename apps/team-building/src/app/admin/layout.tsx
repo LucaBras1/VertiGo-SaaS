@@ -1,3 +1,5 @@
+'use client'
+
 import { AdminLayoutClient } from '@vertigo/admin'
 import { teamBuildingAdminConfig } from '@/config/admin-config'
 

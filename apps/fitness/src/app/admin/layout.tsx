@@ -1,3 +1,5 @@
+'use client'
+
 import { AdminLayoutClient } from '@vertigo/admin'
 import { fitnessAdminConfig } from '@/config/admin-config'
 
