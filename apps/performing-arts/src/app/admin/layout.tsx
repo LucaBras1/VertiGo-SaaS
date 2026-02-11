@@ -1,10 +1,7 @@
-'use client'
-
 import { redirect } from 'next/navigation'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { AdminLayoutClient } from '@vertigo/admin'
-import { performingArtsAdminConfig } from '@/config/admin-config'
+import { AdminLayoutWrapper } from './admin-layout-wrapper'
 
 export default async function AdminLayout({
   children,
@@ -17,5 +14,5 @@ export default async function AdminLayout({
     redirect('/login')
   }
 
-  return <AdminLayoutClient config={performingArtsAdminConfig}>{children}</AdminLayoutClient>
+  return <AdminLayoutWrapper>{children}</AdminLayoutWrapper>
 }
