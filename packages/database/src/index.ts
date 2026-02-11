@@ -32,3 +32,6 @@ export * from './types';
 
 // Database utilities
 export * from './utils';
+
+// Prisma proxy factory
+export { createPrismaProxy } from './prisma-factory';

@@ -24,7 +24,8 @@ import {
 import { useConfirm } from '@vertigo/ui'
 import { useToast } from '@/hooks/use-toast'
 import { useClients, useDeleteClient, type Client } from '@/hooks/use-clients'
-import { SkeletonClientCard, SkeletonStatCard, Skeleton } from '@/components/ui/skeleton'
+import { Skeleton } from '@vertigo/ui'
+import { SkeletonClientCard, SkeletonStatCard } from '@/components/skeletons'
 
 type ClientTypeFilter = 'all' | 'individual' | 'corporate'
 

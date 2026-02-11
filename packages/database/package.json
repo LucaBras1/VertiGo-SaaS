@@ -12,6 +12,10 @@
     "./client": {
       "types": "./src/client.ts",
       "default": "./src/client.ts"
+    },
+    "./factory": {
+      "types": "./src/prisma-factory.ts",
+      "default": "./src/prisma-factory.ts"
     }
   },
   "scripts": {
@@ -26,10 +30,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@prisma/client": "^7.0.0"
+    "@prisma/adapter-pg": "^7.0.0",
+    "@prisma/client": "^7.0.0",
+    "pg": "^8.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
+    "@types/pg": "^8.0.0",
     "prisma": "^7.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.0"

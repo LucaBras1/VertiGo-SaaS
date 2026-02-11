@@ -43,6 +43,9 @@
 // Main factory
 export { createAuthOptions } from './config'
 
+// Auth proxy factory (build-time safe)
+export { createAuthProxy } from './proxy'
+
 // Types
 export type {
   AuthConfig,

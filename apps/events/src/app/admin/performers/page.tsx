@@ -17,7 +17,8 @@ import {
 import { useConfirm } from '@vertigo/ui'
 import { useToast } from '@/hooks/use-toast'
 import { usePerformers, useDeletePerformer, type Performer, type PerformerType } from '@/hooks/use-performers'
-import { SkeletonPerformerCard, SkeletonQuickStats, Skeleton } from '@/components/ui/skeleton'
+import { Skeleton } from '@vertigo/ui'
+import { SkeletonPerformerCard, SkeletonQuickStats } from '@/components/skeletons'
 
 export default function PerformersPage() {
   const [searchQuery, setSearchQuery] = useState('')
