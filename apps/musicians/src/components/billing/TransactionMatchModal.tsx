@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Dialog, DialogHeader, DialogTitle, DialogContent, DialogFooter } from '@/components/ui/dialog'
+import { Dialog, DialogHeader, DialogTitle, DialogContent, DialogFooter } from '@vertigo/ui'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { Loader2, Check, AlertCircle } from 'lucide-react'
 import toast from 'react-hot-toast'

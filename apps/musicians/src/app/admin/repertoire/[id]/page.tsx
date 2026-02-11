@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft, Edit, Trash2, Music, Clock, Gauge, ExternalLink } from 'lucide-react'
-import { Dialog, DialogHeader, DialogTitle, DialogContent, DialogFooter } from '@/components/ui/dialog'
+import { Dialog, DialogHeader, DialogTitle, DialogContent, DialogFooter } from '@vertigo/ui'
 import toast from 'react-hot-toast'
 import { Button, Card, CardContent, CardHeader, CardTitle, Badge } from '@vertigo/ui'
 
