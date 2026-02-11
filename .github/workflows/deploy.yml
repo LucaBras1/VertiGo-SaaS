@@ -71,7 +71,7 @@ jobs:
           DATABASE_URL: postgresql://user:password@localhost:5432/db
 
       - name: Type check
-        run: pnpm run type-check || true
+        run: pnpm run type-check
 
       - name: Build all apps
         run: pnpm run build

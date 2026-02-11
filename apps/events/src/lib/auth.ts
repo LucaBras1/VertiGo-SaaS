@@ -1,76 +1,73 @@
-import { PrismaAdapter } from '@auth/prisma-adapter'
-import { compare } from 'bcryptjs'
+/**
+ * NextAuth Configuration - EventPro
+ * Authentication for event management dashboard
+ * Using @vertigo/auth shared package
+ */
+
+import { createAuthOptions, hashPassword, verifyPassword } from '@vertigo/auth'
 import type { NextAuthOptions } from 'next-auth'
-import CredentialsProvider from 'next-auth/providers/credentials'
-import { prisma } from './prisma'
 
-export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma as any) as NextAuthOptions['adapter'],
-  session: {
-    strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-  },
-  pages: {
-    signIn: '/login',
-    error: '/login',
-  },
-  providers: [
-    CredentialsProvider({
-      name: 'credentials',
-      credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
-      },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error('Please enter email and password')
-        }
-
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
-          include: { tenant: true },
-        })
-
-        // IMPORTANT: Events schema uses `passwordHash` (not `password` like Fitness)
-        if (!user || !user.passwordHash) {
-          throw new Error('Invalid email or password')
-        }
-
-        const isPasswordValid = await compare(credentials.password, user.passwordHash)
-
-        if (!isPasswordValid) {
-          throw new Error('Invalid email or password')
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-          tenantId: user.tenantId,
-          tenantName: user.tenant.name,
-        }
-      },
-    }),
-  ],
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id
-        token.role = user.role
-        token.tenantId = user.tenantId
-        token.tenantName = user.tenantName
-      }
-      return token
-    },
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id as string
-        session.user.role = token.role as string
-        session.user.tenantId = token.tenantId as string
-        session.user.tenantName = token.tenantName as string
-      }
-      return session
-    },
-  },
+// Detect build time
+function isBuildTime(): boolean {
+  const dbUrl = process.env.DATABASE_URL
+  return !dbUrl || dbUrl.includes('dummy') || dbUrl.includes('localhost:5432/dummy')
 }
+
+// Lazy-loaded auth options
+let _authOptions: NextAuthOptions | null = null
+
+function getAuthOptionsImpl(): NextAuthOptions {
+  if (!_authOptions) {
+    // Use require for lazy loading to avoid build-time initialization
+    const dbModule = require('./prisma')
+    const prisma = dbModule.default || dbModule.prisma
+
+    _authOptions = createAuthOptions({
+      prisma: prisma as any,
+      pages: {
+        signIn: '/login',
+        error: '/login',
+      },
+      schema: {
+        passwordField: 'passwordHash',
+      },
+      multiTenant: {
+        enabled: true,
+        includeSlug: false,
+      },
+      locale: 'en',
+    })
+  }
+  return _authOptions
+}
+
+// Create auth options proxy
+// At build time: returns a stub object that satisfies NextAuthOptions shape
+// At runtime: returns the actual auth options
+export const authOptions: NextAuthOptions = new Proxy({} as NextAuthOptions, {
+  get(target, prop) {
+    // At build time, return stub values
+    if (isBuildTime()) {
+      if (prop === 'providers') return []
+      if (prop === 'callbacks') return {}
+      if (prop === 'pages') return {}
+      if (prop === 'session') return { strategy: 'jwt' }
+      if (prop === 'secret') return process.env.NEXTAUTH_SECRET
+      if (prop === 'then') return undefined
+      return undefined
+    }
+
+    // At runtime, delegate to real auth options
+    const options = getAuthOptionsImpl()
+    const value = (options as any)[prop]
+    if (typeof value === 'function') {
+      return value.bind(options)
+    }
+    return value
+  },
+})
+
+// Re-export utilities for convenience
+export { hashPassword, verifyPassword }
+
+// Type extensions are in src/types/next-auth.d.ts

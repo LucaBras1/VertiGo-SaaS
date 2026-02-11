@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
+import { ConfirmDialog } from '@vertigo/ui'
 import { Trash2, Download, CheckCircle, XCircle, X } from 'lucide-react'
 import { Button } from '@vertigo/ui'
 
@@ -110,7 +110,7 @@ export function BulkActionsBar({
             `Opravdu chcete provést tuto akci na ${selectedCount} ${entityName}?`
           }
           variant="danger"
-          isLoading={isExecuting}
+          loading={isExecuting}
         />
       )}
     </>

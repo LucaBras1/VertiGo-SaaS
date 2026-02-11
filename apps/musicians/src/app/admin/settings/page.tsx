@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useSession } from 'next-auth/react'
-import { Tabs, TabList, TabTrigger, TabPanels, TabPanel } from '@/components/ui/tabs'
+import { Tabs, TabList, TabTrigger, TabPanels, TabPanel } from '@vertigo/ui'
 import { User, Building, CreditCard, Bell, Calendar, Globe, ChevronRight, Clock } from 'lucide-react'
 import Link from 'next/link'
 import CalendarSettings from '@/components/calendar/CalendarSettings'

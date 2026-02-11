@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ['@vertigo/ui', '@vertigo/ai-core', '@vertigo/database'],
+  transpilePackages: ['@vertigo/ui', '@vertigo/auth', '@vertigo/ai-core', '@vertigo/database'],
   experimental: {
     serverActions: {
       bodySizeLimit: '2mb',

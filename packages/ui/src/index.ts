@@ -59,6 +59,17 @@ export type { SelectProps, SelectOption, SelectOptionType } from './components/S
 export { ConfirmDialog } from './components/ConfirmDialog';
 export type { ConfirmDialogProps } from './components/ConfirmDialog';
 
+export {
+  Dialog,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogContent,
+  DialogFooter,
+} from './components/Dialog';
+
+export { Tabs, TabList, TabTrigger, TabPanels, TabPanel } from './components/Tabs';
+
 // --- AI Components ---
 export { AIAssistantWidget } from './components/AIAssistantWidget';
 export { AIQuoteSuggestion } from './components/AIQuoteSuggestion';

@@ -1,36 +1,122 @@
 'use client';
 
 import * as React from 'react';
-import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Dialog as HeadlessDialog,
+  DialogPanel,
+  DialogTitle as HeadlessDialogTitle,
+  Description as HeadlessDescription,
+  Transition,
+  TransitionChild,
+} from '@headlessui/react';
 import { X } from 'lucide-react';
-import { modalOverlay, modalContent } from '../animations';
 import { cn } from '../utils';
 
-const Modal = DialogPrimitive.Root;
-const ModalTrigger = DialogPrimitive.Trigger;
-const ModalPortal = DialogPrimitive.Portal;
-const ModalClose = DialogPrimitive.Close;
+// --- Modal (Root) ---
+// Controlled dialog wrapper matching Radix API: open + onOpenChange
+interface ModalProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  children: React.ReactNode;
+}
 
-const ModalOverlay = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Overlay>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Overlay ref={ref} asChild {...props}>
-    <motion.div
-      className={cn(
-        'fixed inset-0 z-50 bg-black/40 backdrop-blur-sm',
-        className
-      )}
-      variants={modalOverlay}
-      initial="hidden"
-      animate="visible"
-      exit="exit"
+function Modal({ open, onOpenChange, children }: ModalProps) {
+  // Store internal state for uncontrolled usage via ModalTrigger
+  const [internalOpen, setInternalOpen] = React.useState(false);
+  const isControlled = open !== undefined;
+  const isOpen = isControlled ? open : internalOpen;
+
+  const handleOpenChange = React.useCallback(
+    (value: boolean) => {
+      if (!isControlled) setInternalOpen(value);
+      onOpenChange?.(value);
+    },
+    [isControlled, onOpenChange]
+  );
+
+  return (
+    <ModalContext.Provider value={{ isOpen, setOpen: handleOpenChange }}>
+      {children}
+    </ModalContext.Provider>
+  );
+}
+Modal.displayName = 'Modal';
+
+// Internal context for ModalTrigger / ModalClose
+interface ModalContextValue {
+  isOpen: boolean;
+  setOpen: (value: boolean) => void;
+}
+
+const ModalContext = React.createContext<ModalContextValue>({
+  isOpen: false,
+  setOpen: () => {},
+});
+
+function useModalContext() {
+  return React.useContext(ModalContext);
+}
+
+// --- ModalTrigger ---
+const ModalTrigger = React.forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ onClick, ...props }, ref) => {
+  const { setOpen } = useModalContext();
+  return (
+    <button
+      ref={ref}
+      type="button"
+      onClick={(e) => {
+        setOpen(true);
+        onClick?.(e);
+      }}
+      {...props}
     />
-  </DialogPrimitive.Overlay>
+  );
+});
+ModalTrigger.displayName = 'ModalTrigger';
+
+// --- ModalClose ---
+const ModalClose = React.forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ onClick, ...props }, ref) => {
+  const { setOpen } = useModalContext();
+  return (
+    <button
+      ref={ref}
+      type="button"
+      onClick={(e) => {
+        setOpen(false);
+        onClick?.(e);
+      }}
+      {...props}
+    />
+  );
+});
+ModalClose.displayName = 'ModalClose';
+
+// --- ModalPortal --- (HeadlessUI auto-portals, this is a passthrough)
+function ModalPortal({ children }: { children: React.ReactNode }) {
+  return <>{children}</>;
+}
+ModalPortal.displayName = 'ModalPortal';
+
+// --- ModalOverlay --- (standalone overlay, used internally by ModalContent)
+const ModalOverlay = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn('fixed inset-0 z-50 bg-black/40 backdrop-blur-sm', className)}
+    {...props}
+  />
 ));
 ModalOverlay.displayName = 'ModalOverlay';
 
+// --- ModalContent ---
 type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
 
 const sizeClasses: Record<ModalSize, string> = {
@@ -41,47 +127,79 @@ const sizeClasses: Record<ModalSize, string> = {
   full: 'max-w-[calc(100vw-2rem)] h-[calc(100vh-2rem)]',
 };
 
-interface ModalContentProps
-  extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
+interface ModalContentProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: ModalSize;
   showClose?: boolean;
 }
 
-const ModalContent = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Content>,
-  ModalContentProps
->(({ className, children, size = 'md', showClose = true, ...props }, ref) => (
-  <ModalPortal>
-    <AnimatePresence>
-      <ModalOverlay />
-      <DialogPrimitive.Content ref={ref} asChild {...props}>
-        <motion.div
-          className={cn(
-            'fixed left-1/2 top-1/2 z-50 w-full -translate-x-1/2 -translate-y-1/2',
-            'rounded-2xl border border-neutral-200 bg-white p-0 shadow-xl',
-            'dark:border-neutral-800 dark:bg-neutral-900',
-            sizeClasses[size],
-            className
-          )}
-          variants={modalContent}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
+const ModalContent = React.forwardRef<HTMLDivElement, ModalContentProps>(
+  ({ className, children, size = 'md', showClose = true, ...props }, ref) => {
+    const { isOpen, setOpen } = useModalContext();
+
+    return (
+      <Transition show={isOpen}>
+        <HeadlessDialog
+          as="div"
+          className="relative z-50"
+          onClose={() => setOpen(false)}
         >
-          {children}
-          {showClose && (
-            <DialogPrimitive.Close className="absolute right-4 top-4 rounded-lg p-1.5 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:hover:bg-neutral-800 dark:hover:text-neutral-300">
-              <X className="h-4 w-4" />
-              <span className="sr-only">Close</span>
-            </DialogPrimitive.Close>
-          )}
-        </motion.div>
-      </DialogPrimitive.Content>
-    </AnimatePresence>
-  </ModalPortal>
-));
+          {/* Overlay */}
+          <TransitionChild
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" />
+          </TransitionChild>
+
+          {/* Content */}
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <TransitionChild
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <DialogPanel
+                  ref={ref}
+                  className={cn(
+                    'w-full',
+                    'rounded-2xl border border-neutral-200 bg-white p-0 shadow-xl',
+                    'dark:border-neutral-800 dark:bg-neutral-900',
+                    sizeClasses[size],
+                    className
+                  )}
+                  {...props}
+                >
+                  {children}
+                  {showClose && (
+                    <button
+                      type="button"
+                      className="absolute right-4 top-4 rounded-lg p-1.5 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
+                      onClick={() => setOpen(false)}
+                    >
+                      <X className="h-4 w-4" />
+                      <span className="sr-only">Close</span>
+                    </button>
+                  )}
+                </DialogPanel>
+              </TransitionChild>
+            </div>
+          </div>
+        </HeadlessDialog>
+      </Transition>
+    );
+  }
+);
 ModalContent.displayName = 'ModalContent';
 
+// --- ModalHeader ---
 const ModalHeader = ({
   className,
   ...props
@@ -96,6 +214,7 @@ const ModalHeader = ({
 );
 ModalHeader.displayName = 'ModalHeader';
 
+// --- ModalFooter ---
 const ModalFooter = ({
   className,
   ...props
@@ -110,11 +229,12 @@ const ModalFooter = ({
 );
 ModalFooter.displayName = 'ModalFooter';
 
+// --- ModalTitle ---
 const ModalTitle = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
+  HTMLHeadingElement,
+  React.HTMLAttributes<HTMLHeadingElement>
 >(({ className, ...props }, ref) => (
-  <DialogPrimitive.Title
+  <HeadlessDialogTitle
     ref={ref}
     className={cn(
       'text-lg font-semibold text-neutral-900 dark:text-neutral-50',
@@ -125,11 +245,12 @@ const ModalTitle = React.forwardRef<
 ));
 ModalTitle.displayName = 'ModalTitle';
 
+// --- ModalDescription ---
 const ModalDescription = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Description>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <DialogPrimitive.Description
+  <HeadlessDescription
     ref={ref}
     className={cn('text-sm text-neutral-500 dark:text-neutral-400', className)}
     {...props}
@@ -137,6 +258,7 @@ const ModalDescription = React.forwardRef<
 ));
 ModalDescription.displayName = 'ModalDescription';
 
+// --- ModalBody ---
 const ModalBody = ({
   className,
   ...props

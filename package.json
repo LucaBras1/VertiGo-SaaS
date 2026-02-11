@@ -15,6 +15,7 @@
     "clean": "turbo run clean && rm -rf node_modules",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "ai:cost-report": "turbo run ai:cost-report",
+    "type-check": "turbo run type-check",
     "db:push": "turbo run db:push --filter=@vertigo/database",
     "db:generate": "turbo run db:generate --filter=@vertigo/database",
     "db:migrate": "turbo run db:migrate --filter=@vertigo/database"
